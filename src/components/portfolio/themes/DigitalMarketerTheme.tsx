@@ -517,14 +517,36 @@ export default function DigitalMarketerTheme({ profile, portfolio, skills, proje
 
       {/* Footer */}
       <footer className="py-8 px-4 sm:px-6 border-t border-white/5">
-        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
-              <TrendingUp className="w-4 h-4" />
+        <div className="max-w-7xl mx-auto">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
+            {/* Logo */}
+            <div className="flex items-center gap-3">
+              {portfolio?.logo_url ? (
+                <img src={portfolio.logo_url} alt="Logo" className="h-8 w-auto object-contain" />
+              ) : (
+                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
+                  <TrendingUp className="w-4 h-4" />
+                </div>
+              )}
+              <span className="text-sm text-white/40">{profile?.display_name}</span>
             </div>
-            <span className="text-sm text-white/40">{profile?.display_name}</span>
+
+            {/* Footer Nav */}
+            <div className="flex flex-wrap justify-center gap-6">
+              {["Home", "About", "Skills", "Works", "Contact"].map((item) => (
+                <button
+                  key={item}
+                  onClick={() => scrollTo(item.toLowerCase() === "home" ? "hero" : item.toLowerCase() === "about" ? "bio" : item.toLowerCase())}
+                  className="text-sm text-white/30 hover:text-blue-400 transition-colors"
+                >
+                  {item}
+                </button>
+              ))}
+            </div>
+
+            {/* Copyright */}
+            <p className="text-xs text-white/30">© {new Date().getFullYear()} All rights reserved.</p>
           </div>
-          <p className="text-xs text-white/30">© {new Date().getFullYear()} All rights reserved.</p>
         </div>
       </footer>
     </div>

@@ -9,3 +9,4 @@ export { default as CosmicTheme } from "./CosmicTheme";
 
 export * from "./types";
 export * from "./utils";
+export * from "./ThemeLayout";

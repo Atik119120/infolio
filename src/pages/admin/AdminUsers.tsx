@@ -13,8 +13,21 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Search, Users, Eye, ExternalLink, Loader2 } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { Search, Users, Eye, ExternalLink, Loader2, CheckCircle, XCircle, Clock, Phone } from "lucide-react";
 import { format } from "date-fns";
+import { toast } from "@/hooks/use-toast";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface UserWithPortfolio {
   id: string;
@@ -22,10 +35,14 @@ interface UserWithPortfolio {
   username: string;
   display_name: string | null;
   email: string | null;
+  phone_number: string | null;
   avatar_url: string | null;
+  is_approved: boolean;
+  approved_at: string | null;
   created_at: string;
   portfolio?: {
     is_published: boolean;
+    pending_publish: boolean;
     theme: string | null;
   };
 }
@@ -34,6 +51,8 @@ export default function AdminUsers() {
   const [users, setUsers] = useState<UserWithPortfolio[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
+  const [actionLoading, setActionLoading] = useState<string | null>(null);
+  const { user: currentUser } = useAuth();
 
   useEffect(() => {
     fetchUsers();
@@ -48,12 +67,11 @@ export default function AdminUsers() {
 
       if (error) throw error;
 
-      // Fetch portfolios for each user
       const usersWithPortfolios = await Promise.all(
         (profiles || []).map(async (profile) => {
           const { data: portfolio } = await supabase
             .from("portfolios")
-            .select("is_published, theme")
+            .select("is_published, pending_publish, theme")
             .eq("user_id", profile.user_id)
             .single();
 
@@ -72,12 +90,135 @@ export default function AdminUsers() {
     }
   };
 
+  const handleApprove = async (user: UserWithPortfolio) => {
+    setActionLoading(user.id);
+    try {
+      const { error } = await supabase
+        .from("profiles")
+        .update({
+          is_approved: true,
+          approved_at: new Date().toISOString(),
+          approved_by: currentUser?.id,
+        })
+        .eq("id", user.id);
+
+      if (error) throw error;
+
+      // Send approval email
+      await supabase.functions.invoke("send-notification", {
+        body: {
+          type: "account_approved",
+          to: user.email,
+          data: {
+            name: user.display_name || user.username,
+            username: user.username,
+          },
+        },
+      });
+
+      toast({
+        title: "User Approved",
+        description: `${user.display_name || user.username} has been approved successfully.`,
+      });
+
+      fetchUsers();
+    } catch (error) {
+      console.error("Error approving user:", error);
+      toast({
+        title: "Error",
+        description: "Failed to approve user. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
+  const handleReject = async (user: UserWithPortfolio) => {
+    setActionLoading(user.id);
+    try {
+      // Send rejection email first
+      await supabase.functions.invoke("send-notification", {
+        body: {
+          type: "account_rejected",
+          to: user.email,
+          data: {
+            name: user.display_name || user.username,
+          },
+        },
+      });
+
+      toast({
+        title: "User Rejected",
+        description: `${user.display_name || user.username} has been notified of the rejection.`,
+      });
+
+      fetchUsers();
+    } catch (error) {
+      console.error("Error rejecting user:", error);
+      toast({
+        title: "Error",
+        description: "Failed to reject user. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
+  const handleApprovePublish = async (user: UserWithPortfolio) => {
+    setActionLoading(user.id);
+    try {
+      const { error } = await supabase
+        .from("portfolios")
+        .update({
+          is_published: true,
+          pending_publish: false,
+        })
+        .eq("user_id", user.user_id);
+
+      if (error) throw error;
+
+      // Send publish approval email
+      await supabase.functions.invoke("send-notification", {
+        body: {
+          type: "publish_approved",
+          to: user.email,
+          data: {
+            name: user.display_name || user.username,
+            username: user.username,
+          },
+        },
+      });
+
+      toast({
+        title: "Portfolio Published",
+        description: `${user.display_name || user.username}'s portfolio is now live.`,
+      });
+
+      fetchUsers();
+    } catch (error) {
+      console.error("Error approving publish:", error);
+      toast({
+        title: "Error",
+        description: "Failed to approve publishing. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
   const filteredUsers = users.filter(
     (user) =>
       user.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
       user.display_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      user.email?.toLowerCase().includes(searchQuery.toLowerCase())
+      user.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      user.phone_number?.includes(searchQuery)
   );
+
+  const pendingApprovalUsers = filteredUsers.filter((u) => !u.is_approved);
+  const pendingPublishUsers = filteredUsers.filter((u) => u.portfolio?.pending_publish);
 
   return (
     <div className="space-y-6">
@@ -88,6 +229,159 @@ export default function AdminUsers() {
         </p>
       </div>
 
+      {/* Pending Approvals Section */}
+      {pendingApprovalUsers.length > 0 && (
+        <Card className="border-yellow-500 bg-yellow-50 dark:bg-yellow-900/10">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-yellow-700 dark:text-yellow-400">
+              <Clock className="w-5 h-5" />
+              Pending Account Approvals ({pendingApprovalUsers.length})
+            </CardTitle>
+            <CardDescription>These users are waiting for account approval</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              {pendingApprovalUsers.map((user) => (
+                <div
+                  key={user.id}
+                  className="flex items-center justify-between p-4 rounded-lg bg-background border"
+                >
+                  <div className="flex items-center gap-4">
+                    <Avatar className="w-12 h-12">
+                      <AvatarImage src={user.avatar_url || undefined} />
+                      <AvatarFallback className="bg-primary/10 text-primary">
+                        {(user.display_name || user.username).charAt(0).toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div>
+                      <p className="font-semibold">{user.display_name || user.username}</p>
+                      <p className="text-sm text-muted-foreground">{user.email}</p>
+                      {user.phone_number && (
+                        <p className="text-sm text-muted-foreground flex items-center gap-1">
+                          <Phone className="w-3 h-3" />
+                          {user.phone_number}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs text-muted-foreground mr-2">
+                      {format(new Date(user.created_at), "MMM d, yyyy")}
+                    </span>
+                    <Button
+                      size="sm"
+                      onClick={() => handleApprove(user)}
+                      disabled={actionLoading === user.id}
+                      className="bg-green-600 hover:bg-green-700"
+                    >
+                      {actionLoading === user.id ? (
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                      ) : (
+                        <>
+                          <CheckCircle className="w-4 h-4 mr-1" />
+                          Approve
+                        </>
+                      )}
+                    </Button>
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button
+                          size="sm"
+                          variant="destructive"
+                          disabled={actionLoading === user.id}
+                        >
+                          <XCircle className="w-4 h-4 mr-1" />
+                          Reject
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Reject User?</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            This will send a rejection email to {user.email}. The user will need to contact support if they want to appeal.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Cancel</AlertDialogCancel>
+                          <AlertDialogAction
+                            onClick={() => handleReject(user)}
+                            className="bg-destructive text-destructive-foreground"
+                          >
+                            Reject
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Pending Publish Section */}
+      {pendingPublishUsers.length > 0 && (
+        <Card className="border-purple-500 bg-purple-50 dark:bg-purple-900/10">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-purple-700 dark:text-purple-400">
+              <Eye className="w-5 h-5" />
+              Pending Publish Requests ({pendingPublishUsers.length})
+            </CardTitle>
+            <CardDescription>These users want to publish their portfolios</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              {pendingPublishUsers.map((user) => (
+                <div
+                  key={user.id}
+                  className="flex items-center justify-between p-4 rounded-lg bg-background border"
+                >
+                  <div className="flex items-center gap-4">
+                    <Avatar className="w-12 h-12">
+                      <AvatarImage src={user.avatar_url || undefined} />
+                      <AvatarFallback className="bg-primary/10 text-primary">
+                        {(user.display_name || user.username).charAt(0).toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div>
+                      <p className="font-semibold">{user.display_name || user.username}</p>
+                      <p className="text-sm text-muted-foreground">@{user.username}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => window.open(`/u/${user.username}`, "_blank")}
+                    >
+                      <Eye className="w-4 h-4 mr-1" />
+                      Preview
+                    </Button>
+                    <Button
+                      size="sm"
+                      onClick={() => handleApprovePublish(user)}
+                      disabled={actionLoading === user.id}
+                      className="bg-purple-600 hover:bg-purple-700"
+                    >
+                      {actionLoading === user.id ? (
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                      ) : (
+                        <>
+                          <CheckCircle className="w-4 h-4 mr-1" />
+                          Approve Publish
+                        </>
+                      )}
+                    </Button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* All Users Table */}
       <Card>
         <CardHeader>
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -96,9 +390,7 @@ export default function AdminUsers() {
                 <Users className="w-5 h-5" />
                 All Users ({users.length})
               </CardTitle>
-              <CardDescription>
-                View and manage user accounts
-              </CardDescription>
+              <CardDescription>View and manage user accounts</CardDescription>
             </div>
             <div className="relative w-full sm:w-64">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
@@ -122,9 +414,10 @@ export default function AdminUsers() {
                 <TableHeader>
                   <TableRow>
                     <TableHead>User</TableHead>
-                    <TableHead>Username</TableHead>
+                    <TableHead>Contact</TableHead>
                     <TableHead>Theme</TableHead>
-                    <TableHead>Status</TableHead>
+                    <TableHead>Account</TableHead>
+                    <TableHead>Site</TableHead>
                     <TableHead>Joined</TableHead>
                     <TableHead className="text-right">Actions</TableHead>
                   </TableRow>
@@ -132,7 +425,7 @@ export default function AdminUsers() {
                 <TableBody>
                   {filteredUsers.length === 0 ? (
                     <TableRow>
-                      <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
+                      <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">
                         No users found
                       </TableCell>
                     </TableRow>
@@ -149,21 +442,44 @@ export default function AdminUsers() {
                             </Avatar>
                             <div>
                               <p className="font-medium">{user.display_name || user.username}</p>
-                              <p className="text-xs text-muted-foreground">{user.email}</p>
+                              <p className="text-xs text-muted-foreground">@{user.username}</p>
                             </div>
                           </div>
                         </TableCell>
-                        <TableCell className="font-mono text-sm">@{user.username}</TableCell>
+                        <TableCell>
+                          <div className="text-sm">
+                            <p>{user.email}</p>
+                            {user.phone_number && (
+                              <p className="text-muted-foreground flex items-center gap-1">
+                                <Phone className="w-3 h-3" />
+                                {user.phone_number}
+                              </p>
+                            )}
+                          </div>
+                        </TableCell>
                         <TableCell>
                           <Badge variant="outline" className="capitalize">
                             {user.portfolio?.theme || "default"}
                           </Badge>
                         </TableCell>
                         <TableCell>
-                          {user.portfolio?.is_published ? (
+                          {user.is_approved ? (
                             <Badge className="bg-green-500/10 text-green-600 hover:bg-green-500/20">
-                              Published
+                              <CheckCircle className="w-3 h-3 mr-1" />
+                              Approved
                             </Badge>
+                          ) : (
+                            <Badge variant="secondary" className="bg-yellow-500/20 text-yellow-700">
+                              <Clock className="w-3 h-3 mr-1" />
+                              Pending
+                            </Badge>
+                          )}
+                        </TableCell>
+                        <TableCell>
+                          {user.portfolio?.is_published ? (
+                            <Badge className="bg-green-500/10 text-green-600">Published</Badge>
+                          ) : user.portfolio?.pending_publish ? (
+                            <Badge className="bg-purple-500/10 text-purple-600">Pending Publish</Badge>
                           ) : (
                             <Badge variant="secondary">Draft</Badge>
                           )}
@@ -172,15 +488,30 @@ export default function AdminUsers() {
                           {format(new Date(user.created_at), "MMM d, yyyy")}
                         </TableCell>
                         <TableCell className="text-right">
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => window.open(`/u/${user.username}`, "_blank")}
-                          >
-                            <Eye className="w-4 h-4 mr-1" />
-                            View
-                            <ExternalLink className="w-3 h-3 ml-1" />
-                          </Button>
+                          <div className="flex items-center justify-end gap-1">
+                            {!user.is_approved && (
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => handleApprove(user)}
+                                disabled={actionLoading === user.id}
+                                className="text-green-600 hover:text-green-700 hover:bg-green-50"
+                              >
+                                {actionLoading === user.id ? (
+                                  <Loader2 className="w-4 h-4 animate-spin" />
+                                ) : (
+                                  <CheckCircle className="w-4 h-4" />
+                                )}
+                              </Button>
+                            )}
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => window.open(`/u/${user.username}`, "_blank")}
+                            >
+                              <Eye className="w-4 h-4" />
+                            </Button>
+                          </div>
                         </TableCell>
                       </TableRow>
                     ))

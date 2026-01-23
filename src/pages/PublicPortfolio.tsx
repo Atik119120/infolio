@@ -27,6 +27,7 @@ export default function PublicPortfolio() {
   const { username } = useParams<{ username: string }>();
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
+  const [userId, setUserId] = useState<string | null>(null);
   const [profile, setProfile] = useState<ThemeProfile | null>(null);
   const [portfolio, setPortfolio] = useState<ThemePortfolio | null>(null);
   const [skills, setSkills] = useState<ThemeSkill[]>([]);
@@ -54,12 +55,13 @@ export default function PublicPortfolio() {
       return;
     }
 
-    const userId = profileData.user_id;
+    const fetchedUserId = profileData.user_id;
+    setUserId(fetchedUserId);
 
     const { data: portfolioData } = await supabase
       .from("portfolios")
       .select("*")
-      .eq("user_id", userId)
+      .eq("user_id", fetchedUserId)
       .maybeSingle();
 
     if (!portfolioData?.is_published) {
@@ -69,11 +71,11 @@ export default function PublicPortfolio() {
     }
 
     const [skillsRes, projectsRes, experiencesRes, educationRes, socialRes] = await Promise.all([
-      supabase.from("skills").select("*").eq("user_id", userId).order("created_at"),
-      supabase.from("projects").select("*").eq("user_id", userId).order("display_order"),
-      supabase.from("experiences").select("*").eq("user_id", userId).order("display_order"),
-      supabase.from("education").select("*").eq("user_id", userId).order("display_order"),
-      supabase.from("social_links").select("*").eq("user_id", userId).order("display_order"),
+      supabase.from("skills").select("*").eq("user_id", fetchedUserId).order("created_at"),
+      supabase.from("projects").select("*").eq("user_id", fetchedUserId).order("display_order"),
+      supabase.from("experiences").select("*").eq("user_id", fetchedUserId).order("display_order"),
+      supabase.from("education").select("*").eq("user_id", fetchedUserId).order("display_order"),
+      supabase.from("social_links").select("*").eq("user_id", fetchedUserId).order("display_order"),
     ]);
 
     setProfile(profileData);
@@ -117,6 +119,7 @@ export default function PublicPortfolio() {
     experiences,
     education,
     socialLinks,
+    userId: userId || undefined,
   };
 
   // Get theme from portfolio or default to 'personal'

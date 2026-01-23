@@ -4,11 +4,12 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { ContactForm } from "@/components/portfolio/ContactForm";
 import {
   MapPin, Mail, Phone, ExternalLink, Heart, Sparkles, BookOpen,
   Briefcase, GraduationCap, Menu, X, Quote, Star, Feather, Flower2
 } from "lucide-react";
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef } from "react";
 import { motion, AnimatePresence, useInView, useScroll, useTransform } from "framer-motion";
 
 // Scroll Animation Wrapper
@@ -38,7 +39,7 @@ const ScrollReveal = ({ children, delay = 0, direction = "up" }: { children: Rea
   );
 };
 
-export default function PersonalTheme({ profile, portfolio, skills, projects, experiences, education, socialLinks }: ThemeProps) {
+export default function PersonalTheme({ profile, portfolio, skills, projects, experiences, education, socialLinks, userId }: ThemeProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [hoveredProject, setHoveredProject] = useState<string | null>(null);
   const featuredProjects = projects.filter((p) => p.featured);
@@ -665,31 +666,45 @@ export default function PersonalTheme({ profile, portfolio, skills, projects, ex
 
       {/* Contact Section */}
       <section id="contact" className="py-24 sm:py-32 px-4 sm:px-6 relative z-10">
-        <div className="max-w-3xl mx-auto text-center">
+        <div className="max-w-4xl mx-auto">
           <ScrollReveal>
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-rose-100 to-pink-100 border border-rose-200 mb-6">
-              <Mail className="w-4 h-4 text-rose-500" />
-              <span className="text-xs tracking-widest uppercase text-rose-600">Get In Touch</span>
+            <div className="text-center mb-12">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-rose-100 to-pink-100 border border-rose-200 mb-6">
+                <Mail className="w-4 h-4 text-rose-500" />
+                <span className="text-xs tracking-widest uppercase text-rose-600">Get In Touch</span>
+              </div>
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-serif mb-6">
+                <span className="bg-gradient-to-r from-rose-500 via-pink-500 to-purple-500 bg-clip-text text-transparent">
+                  Let's Connect
+                </span>
+              </h2>
+              <p className="text-lg text-slate-500 max-w-xl mx-auto">
+                I'd love to hear from you. Whether you have a question or just want to say hi, feel free to reach out.
+              </p>
             </div>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-serif mb-6">
-              <span className="bg-gradient-to-r from-rose-500 via-pink-500 to-purple-500 bg-clip-text text-transparent">
-                Let's Connect
-              </span>
-            </h2>
-            <p className="text-lg text-slate-500 mb-10 max-w-xl mx-auto">
-              I'd love to hear from you. Whether you have a question or just want to say hi, feel free to reach out.
-            </p>
 
-            <div className="flex flex-wrap justify-center gap-4 mb-12">
+            {/* Contact Form */}
+            {userId && (
+              <div className="bg-white/80 backdrop-blur-sm rounded-3xl p-6 sm:p-8 shadow-xl border border-rose-100 mb-12">
+                <ContactForm 
+                  portfolioOwnerId={userId} 
+                  variant="personal"
+                />
+              </div>
+            )}
+
+            {/* Alternative Contact Methods */}
+            <div className="flex flex-wrap justify-center gap-4 mb-8">
               {profile?.email && (
                 <Button 
                   size="lg" 
-                  className="rounded-full bg-gradient-to-r from-rose-500 via-pink-500 to-purple-500 hover:from-rose-600 hover:via-pink-600 hover:to-purple-600 shadow-lg shadow-rose-300/30 px-8" 
+                  variant="outline"
+                  className="rounded-full border-rose-200 text-rose-600 hover:bg-rose-50 px-8" 
                   asChild
                 >
                   <a href={`mailto:${profile.email}`}>
                     <Mail className="w-4 h-4 mr-2" />
-                    Say Hello
+                    Email Directly
                   </a>
                 </Button>
               )}
@@ -697,7 +712,7 @@ export default function PersonalTheme({ profile, portfolio, skills, projects, ex
                 <Button 
                   size="lg" 
                   variant="outline" 
-                  className="rounded-full border-rose-200 text-rose-600 hover:bg-rose-50 px-8" 
+                  className="rounded-full border-purple-200 text-purple-600 hover:bg-purple-50 px-8" 
                   asChild
                 >
                   <a href={`tel:${portfolio.phone}`}>

@@ -9,6 +9,9 @@ import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
 import DashboardOverview from "./pages/DashboardOverview";
+import PortfolioEdit from "./pages/PortfolioEdit";
+import DashboardSettings from "./pages/DashboardSettings";
+import PublicPortfolio from "./pages/PublicPortfolio";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -23,12 +26,15 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/auth" element={<Auth />} />
+            <Route path="/u/:username" element={<PublicPortfolio />} />
             <Route path="/dashboard" element={
               <ProtectedRoute>
                 <Dashboard />
               </ProtectedRoute>
             }>
               <Route index element={<DashboardOverview />} />
+              <Route path="edit" element={<PortfolioEdit />} />
+              <Route path="settings" element={<DashboardSettings />} />
             </Route>
             <Route path="*" element={<NotFound />} />
           </Routes>

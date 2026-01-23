@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Settings, Shield, Bell, Database, Globe } from "lucide-react";
+import WildcardDomainInstructions from "@/components/settings/WildcardDomainInstructions";
 
 export default function AdminSettings() {
   return (
@@ -13,6 +14,9 @@ export default function AdminSettings() {
           Configure platform-wide settings
         </p>
       </div>
+
+      {/* Wildcard Domain Setup - Admin Only */}
+      <WildcardDomainInstructions />
 
       <div className="grid gap-6 md:grid-cols-2">
         {/* General Settings */}

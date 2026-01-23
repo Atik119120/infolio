@@ -12,6 +12,7 @@ import {
   OfficialTheme,
   PersonalTheme,
   CosmicTheme,
+  SimpleTheme,
   ThemeProps,
 } from "@/components/portfolio/themes";
 
@@ -129,6 +130,8 @@ export default function ThemeDemo() {
 
   const renderTheme = () => {
     switch (themeName) {
+      case 'simple':
+        return <SimpleTheme {...demoData} />;
       case 'photographer':
         return <PhotographerTheme {...demoData} />;
       case 'graphic-designer':

@@ -11,6 +11,7 @@ import {
   OfficialTheme,
   PersonalTheme,
   CosmicTheme,
+  SimpleTheme,
   ThemeProfile,
   ThemePortfolio,
   ThemeSkill,
@@ -178,9 +179,11 @@ function SubdomainPortfolio({ username }: { username: string }) {
     socialLinks,
   };
 
-  const selectedTheme = portfolio?.theme || 'personal';
+  const selectedTheme = portfolio?.theme || 'simple';
 
   switch (selectedTheme) {
+    case 'simple':
+      return <SimpleTheme {...themeProps} />;
     case 'photographer':
       return <PhotographerTheme {...themeProps} />;
     case 'graphic-designer':

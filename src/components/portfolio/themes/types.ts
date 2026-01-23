@@ -72,14 +72,15 @@ export interface ThemeProps {
 }
 
 export const THEME_OPTIONS = [
-  { value: 'photographer', label: 'Photographer', description: 'Visual-focused theme with gallery layouts' },
-  { value: 'graphic-designer', label: 'Graphic Designer', description: 'Creative theme with bold typography' },
-  { value: 'video-editor', label: 'Video Editor', description: 'Dynamic theme with cinematic feel' },
-  { value: 'digital-marketer', label: 'Digital Marketer', description: 'Modern theme with analytics focus' },
-  { value: 'web-developer', label: 'Web Developer', description: 'Tech-focused theme with code aesthetics' },
-  { value: 'official', label: 'Official/Corporate', description: 'Professional business-oriented theme' },
-  { value: 'personal', label: 'Personal/Biography', description: 'Elegant personal portfolio theme' },
-  { value: 'cosmic', label: 'Cosmic/Universe', description: 'Premium space-inspired luxury theme' },
+  { value: 'simple', label: 'Simple', description: 'Clean minimal free theme', isPremium: false, price: 0 },
+  { value: 'photographer', label: 'Photographer', description: 'Visual-focused theme with gallery layouts', isPremium: true, price: 200 },
+  { value: 'graphic-designer', label: 'Graphic Designer', description: 'Creative theme with bold typography', isPremium: true, price: 200 },
+  { value: 'video-editor', label: 'Video Editor', description: 'Dynamic theme with cinematic feel', isPremium: true, price: 200 },
+  { value: 'digital-marketer', label: 'Digital Marketer', description: 'Modern theme with analytics focus', isPremium: true, price: 200 },
+  { value: 'web-developer', label: 'Web Developer', description: 'Tech-focused theme with code aesthetics', isPremium: true, price: 200 },
+  { value: 'official', label: 'Official/Corporate', description: 'Professional business-oriented theme', isPremium: true, price: 200 },
+  { value: 'personal', label: 'Personal/Biography', description: 'Elegant personal portfolio theme', isPremium: true, price: 200 },
+  { value: 'cosmic', label: 'Cosmic/Universe', description: 'Premium space-inspired luxury theme', isPremium: true, price: 200 },
 ] as const;
 
 export type ThemeType = typeof THEME_OPTIONS[number]['value'];

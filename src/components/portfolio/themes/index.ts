@@ -6,6 +6,7 @@ export { default as WebDeveloperTheme } from "./WebDeveloperTheme";
 export { default as OfficialTheme } from "./OfficialTheme";
 export { default as PersonalTheme } from "./PersonalTheme";
 export { default as CosmicTheme } from "./CosmicTheme";
+export { default as SimpleTheme } from "./SimpleTheme";
 
 export * from "./types";
 export * from "./utils";

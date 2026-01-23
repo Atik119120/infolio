@@ -161,7 +161,9 @@ export type Database = {
           is_published: boolean | null
           location: string | null
           logo_url: string | null
+          pending_publish: boolean | null
           phone: string | null
+          publish_requested_at: string | null
           theme: string | null
           updated_at: string
           user_id: string
@@ -175,7 +177,9 @@ export type Database = {
           is_published?: boolean | null
           location?: string | null
           logo_url?: string | null
+          pending_publish?: boolean | null
           phone?: string | null
+          publish_requested_at?: string | null
           theme?: string | null
           updated_at?: string
           user_id: string
@@ -189,7 +193,9 @@ export type Database = {
           is_published?: boolean | null
           location?: string | null
           logo_url?: string | null
+          pending_publish?: boolean | null
           phone?: string | null
+          publish_requested_at?: string | null
           theme?: string | null
           updated_at?: string
           user_id?: string
@@ -199,31 +205,43 @@ export type Database = {
       }
       profiles: {
         Row: {
+          approved_at: string | null
+          approved_by: string | null
           avatar_url: string | null
           created_at: string
           display_name: string | null
           email: string | null
           id: string
+          is_approved: boolean | null
+          phone_number: string | null
           updated_at: string
           user_id: string
           username: string
         }
         Insert: {
+          approved_at?: string | null
+          approved_by?: string | null
           avatar_url?: string | null
           created_at?: string
           display_name?: string | null
           email?: string | null
           id?: string
+          is_approved?: boolean | null
+          phone_number?: string | null
           updated_at?: string
           user_id: string
           username: string
         }
         Update: {
+          approved_at?: string | null
+          approved_by?: string | null
           avatar_url?: string | null
           created_at?: string
           display_name?: string | null
           email?: string | null
           id?: string
+          is_approved?: boolean | null
+          phone_number?: string | null
           updated_at?: string
           user_id?: string
           username?: string

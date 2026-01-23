@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, ArrowRight } from "lucide-react";
+import { Loader2, ArrowRight, Phone, Mail, User, Lock } from "lucide-react";
 import { z } from "zod";
 import alphaLogo from "@/assets/alpha-portfolio-logo.png";
 
@@ -21,8 +21,16 @@ const signupSchema = z.object({
     .min(3, { message: "Username must be at least 3 characters" })
     .max(30, { message: "Username must be less than 30 characters" })
     .regex(/^[a-zA-Z0-9_]+$/, { message: "Username can only contain letters, numbers, and underscores" }),
-  email: z.string().trim().email({ message: "Invalid email address" }),
+  email: z.string().trim()
+    .email({ message: "Invalid email address" })
+    .refine((email) => email.endsWith("@gmail.com"), {
+      message: "Only Gmail addresses are allowed (e.g., yourname@gmail.com)",
+    }),
   password: z.string().min(6, { message: "Password must be at least 6 characters" }),
+  phone: z.string().trim()
+    .min(10, { message: "Phone number must be at least 10 digits" })
+    .max(15, { message: "Phone number must be less than 15 digits" })
+    .regex(/^[+]?[0-9]+$/, { message: "Phone number can only contain numbers and optional + prefix" }),
 });
 
 export default function Auth() {
@@ -30,6 +38,7 @@ export default function Auth() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [username, setUsername] = useState("");
+  const [phone, setPhone] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -86,7 +95,7 @@ export default function Auth() {
     e.preventDefault();
     setErrors({});
 
-    const result = signupSchema.safeParse({ username, email, password });
+    const result = signupSchema.safeParse({ username, email, password, phone });
     if (!result.success) {
       const fieldErrors: Record<string, string> = {};
       result.error.errors.forEach((err) => {
@@ -99,7 +108,7 @@ export default function Auth() {
     }
 
     setIsLoading(true);
-    const { error } = await signUp(email, password, username);
+    const { error } = await signUp(email, password, username, phone);
     setIsLoading(false);
 
     if (error) {
@@ -119,9 +128,10 @@ export default function Auth() {
       }
     } else {
       toast({
-        title: "Account created!",
-        description: "Welcome to Alpha Portfolio. Let's build your portfolio!",
+        title: "Verification email sent!",
+        description: "Please check your Gmail inbox to verify your email address before logging in.",
       });
+      setActiveTab("login");
     }
   };
 
@@ -158,7 +168,7 @@ export default function Auth() {
               <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
                 <ArrowRight className="w-4 h-4" />
               </div>
-              <span>Live updates in real-time</span>
+              <span>Admin approval for quality</span>
             </div>
           </div>
         </div>
@@ -197,11 +207,14 @@ export default function Auth() {
                 <TabsContent value="login">
                   <form onSubmit={handleLogin} className="space-y-4">
                     <div className="space-y-2">
-                      <Label htmlFor="login-email">Email</Label>
+                      <Label htmlFor="login-email" className="flex items-center gap-2">
+                        <Mail className="w-4 h-4" />
+                        Email
+                      </Label>
                       <Input
                         id="login-email"
                         type="email"
-                        placeholder="you@example.com"
+                        placeholder="you@gmail.com"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         className={errors.email ? "border-destructive" : ""}
@@ -213,7 +226,10 @@ export default function Auth() {
                     </div>
                     <div className="space-y-2">
                       <div className="flex items-center justify-between">
-                        <Label htmlFor="login-password">Password</Label>
+                        <Label htmlFor="login-password" className="flex items-center gap-2">
+                          <Lock className="w-4 h-4" />
+                          Password
+                        </Label>
                         <Button
                           type="button"
                           variant="link"
@@ -256,7 +272,10 @@ export default function Auth() {
                 <TabsContent value="signup">
                   <form onSubmit={handleSignup} className="space-y-4">
                     <div className="space-y-2">
-                      <Label htmlFor="signup-username">Username</Label>
+                      <Label htmlFor="signup-username" className="flex items-center gap-2">
+                        <User className="w-4 h-4" />
+                        Username
+                      </Label>
                       <Input
                         id="signup-username"
                         type="text"
@@ -274,11 +293,14 @@ export default function Auth() {
                       </p>
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="signup-email">Email</Label>
+                      <Label htmlFor="signup-email" className="flex items-center gap-2">
+                        <Mail className="w-4 h-4" />
+                        Gmail Address
+                      </Label>
                       <Input
                         id="signup-email"
                         type="email"
-                        placeholder="you@example.com"
+                        placeholder="you@gmail.com"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         className={errors.email ? "border-destructive" : ""}
@@ -287,9 +309,33 @@ export default function Auth() {
                       {errors.email && (
                         <p className="text-sm text-destructive">{errors.email}</p>
                       )}
+                      <p className="text-xs text-muted-foreground">
+                        Only Gmail addresses are accepted
+                      </p>
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="signup-password">Password</Label>
+                      <Label htmlFor="signup-phone" className="flex items-center gap-2">
+                        <Phone className="w-4 h-4" />
+                        Phone Number
+                      </Label>
+                      <Input
+                        id="signup-phone"
+                        type="tel"
+                        placeholder="+8801XXXXXXXXX"
+                        value={phone}
+                        onChange={(e) => setPhone(e.target.value)}
+                        className={errors.phone ? "border-destructive" : ""}
+                        disabled={isLoading}
+                      />
+                      {errors.phone && (
+                        <p className="text-sm text-destructive">{errors.phone}</p>
+                      )}
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="signup-password" className="flex items-center gap-2">
+                        <Lock className="w-4 h-4" />
+                        Password
+                      </Label>
                       <Input
                         id="signup-password"
                         type="password"
@@ -317,6 +363,9 @@ export default function Auth() {
                         "Create Account"
                       )}
                     </Button>
+                    <p className="text-xs text-center text-muted-foreground">
+                      After signup, your account will need admin approval before you can publish your portfolio.
+                    </p>
                   </form>
                 </TabsContent>
               </Tabs>

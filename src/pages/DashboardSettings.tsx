@@ -8,18 +8,44 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Globe, Copy, ExternalLink, CheckCircle, Palette, Camera, PenTool, Film, TrendingUp, Code2, Building2, Heart, Sparkles } from "lucide-react";
+import { 
+  Loader2, 
+  Globe, 
+  Copy, 
+  ExternalLink, 
+  CheckCircle, 
+  Palette, 
+  Camera, 
+  PenTool, 
+  Film, 
+  TrendingUp, 
+  Code2, 
+  Building2, 
+  Heart, 
+  Sparkles,
+  Clock,
+  Send,
+  MessageSquare,
+  AlertCircle,
+  Shield
+} from "lucide-react";
 import { THEME_OPTIONS } from "@/components/portfolio/themes/types";
 import CustomDomainManager from "@/components/settings/CustomDomainManager";
 
 interface Profile {
   username: string;
+  is_approved: boolean | null;
+  approved_at: string | null;
+  phone_number: string | null;
 }
 
 interface Portfolio {
   is_published: boolean | null;
   theme: string | null;
+  pending_publish: boolean | null;
+  publish_requested_at: string | null;
 }
 
 const themeIcons: Record<string, typeof Camera> = {
@@ -39,6 +65,9 @@ export default function DashboardSettings() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [supportMessage, setSupportMessage] = useState("");
+  const [sendingSupport, setSendingSupport] = useState(false);
+  const [requestingPublish, setRequestingPublish] = useState(false);
 
   const { user } = useAuth();
   const { toast } = useToast();
@@ -53,8 +82,8 @@ export default function DashboardSettings() {
     if (!user) return;
 
     const [profileRes, portfolioRes] = await Promise.all([
-      supabase.from("profiles").select("username").eq("user_id", user.id).maybeSingle(),
-      supabase.from("portfolios").select("is_published, theme").eq("user_id", user.id).maybeSingle(),
+      supabase.from("profiles").select("username, is_approved, approved_at, phone_number").eq("user_id", user.id).maybeSingle(),
+      supabase.from("portfolios").select("is_published, theme, pending_publish, publish_requested_at").eq("user_id", user.id).maybeSingle(),
     ]);
 
     if (profileRes.data) setProfile(profileRes.data);
@@ -64,7 +93,17 @@ export default function DashboardSettings() {
   };
 
   const handleTogglePublish = async () => {
-    if (!user) return;
+    if (!user || !profile) return;
+
+    // Check if user is approved
+    if (!profile.is_approved) {
+      toast({
+        variant: "destructive",
+        title: "Account Not Approved",
+        description: "Your account needs admin approval before you can publish your portfolio.",
+      });
+      return;
+    }
 
     setSaving(true);
 
@@ -89,6 +128,83 @@ export default function DashboardSettings() {
           : "Your portfolio is now live!",
       });
       fetchData();
+    }
+  };
+
+  const handleRequestPublish = async () => {
+    if (!user || !profile) return;
+
+    setRequestingPublish(true);
+
+    try {
+      // Update portfolio with pending_publish flag
+      const { error: portfolioError } = await supabase
+        .from("portfolios")
+        .update({ 
+          pending_publish: true, 
+          publish_requested_at: new Date().toISOString() 
+        })
+        .eq("user_id", user.id);
+
+      if (portfolioError) throw portfolioError;
+
+      // Send notification email
+      await supabase.functions.invoke("send-notification", {
+        body: {
+          type: "publish_request",
+          userEmail: user.email,
+          userName: profile.username,
+        },
+      });
+
+      toast({
+        title: "Publish Request Sent",
+        description: "Admin will review your portfolio and approve it soon. You'll receive an email notification.",
+      });
+
+      fetchData();
+    } catch (error) {
+      console.error("Error requesting publish:", error);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to send publish request",
+      });
+    } finally {
+      setRequestingPublish(false);
+    }
+  };
+
+  const handleSendSupport = async () => {
+    if (!user || !profile || !supportMessage.trim()) return;
+
+    setSendingSupport(true);
+
+    try {
+      await supabase.functions.invoke("send-notification", {
+        body: {
+          type: "support",
+          userEmail: user.email,
+          userName: profile.username,
+          message: supportMessage,
+        },
+      });
+
+      toast({
+        title: "Support Message Sent",
+        description: "We've received your message and will get back to you soon.",
+      });
+
+      setSupportMessage("");
+    } catch (error) {
+      console.error("Error sending support:", error);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to send support message",
+      });
+    } finally {
+      setSendingSupport(false);
     }
   };
 
@@ -137,7 +253,6 @@ export default function DashboardSettings() {
   }
 
   const portfolioUrl = `${window.location.origin}/u/${profile?.username}`;
-  // Subdomain URL (will work when deployed with custom domain)
   const subdomainUrl = `${profile?.username}.alphaportfolio.com`;
 
   return (
@@ -146,6 +261,51 @@ export default function DashboardSettings() {
         <h1 className="text-2xl font-bold">Settings</h1>
         <p className="text-muted-foreground">Manage your portfolio settings</p>
       </div>
+
+      {/* Account Status Card */}
+      <Card className={profile?.is_approved ? "border-green-500/50" : "border-yellow-500/50"}>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Shield className="w-5 h-5" />
+            Account Status
+          </CardTitle>
+          <CardDescription>Your account approval status</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              {profile?.is_approved ? (
+                <>
+                  <div className="w-10 h-10 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
+                    <CheckCircle className="w-5 h-5 text-green-600" />
+                  </div>
+                  <div>
+                    <p className="font-medium text-green-700 dark:text-green-400">Account Approved</p>
+                    <p className="text-sm text-muted-foreground">
+                      You can now publish your portfolio
+                    </p>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="w-10 h-10 rounded-full bg-yellow-100 dark:bg-yellow-900/30 flex items-center justify-center">
+                    <Clock className="w-5 h-5 text-yellow-600" />
+                  </div>
+                  <div>
+                    <p className="font-medium text-yellow-700 dark:text-yellow-400">Pending Approval</p>
+                    <p className="text-sm text-muted-foreground">
+                      Admin will review your account soon. You'll receive an email once approved.
+                    </p>
+                  </div>
+                </>
+              )}
+            </div>
+            <Badge variant={profile?.is_approved ? "default" : "secondary"} className={profile?.is_approved ? "bg-green-500" : "bg-yellow-500/20 text-yellow-700"}>
+              {profile?.is_approved ? "Approved" : "Pending"}
+            </Badge>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Portfolio URL */}
       <Card>
@@ -157,14 +317,13 @@ export default function DashboardSettings() {
           <CardDescription>Share this link with others to view your portfolio</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          {/* Current URL (Path-based) */}
           <div className="space-y-2">
             <Label className="text-xs text-muted-foreground">Current URL</Label>
             <div className="flex gap-2">
               <Input value={portfolioUrl} readOnly className="font-mono text-sm" />
               <Button variant="outline" onClick={copyUrl}>
                 {copied ? (
-                  <CheckCircle className="w-4 h-4 text-success" />
+                  <CheckCircle className="w-4 h-4 text-green-500" />
                 ) : (
                   <Copy className="w-4 h-4" />
                 )}
@@ -177,7 +336,6 @@ export default function DashboardSettings() {
             </div>
           </div>
           
-          {/* Subdomain URL (After Launch) */}
           <div className="space-y-2 pt-2 border-t">
             <Label className="text-xs text-muted-foreground">Your Subdomain (After Launch)</Label>
             <div className="flex items-center gap-2">
@@ -260,30 +418,112 @@ export default function DashboardSettings() {
           <CardTitle>Publish Settings</CardTitle>
           <CardDescription>Control who can see your portfolio</CardDescription>
         </CardHeader>
-        <CardContent>
-          <div className="flex items-center justify-between">
-            <div className="space-y-1">
-              <div className="flex items-center gap-2">
-                <Label htmlFor="publish" className="text-base">
-                  Portfolio Published
-                </Label>
-                <Badge variant={portfolio?.is_published ? "default" : "secondary"}>
-                  {portfolio?.is_published ? "Live" : "Draft"}
-                </Badge>
+        <CardContent className="space-y-4">
+          {profile?.is_approved ? (
+            <div className="flex items-center justify-between">
+              <div className="space-y-1">
+                <div className="flex items-center gap-2">
+                  <Label htmlFor="publish" className="text-base">
+                    Portfolio Published
+                  </Label>
+                  <Badge variant={portfolio?.is_published ? "default" : "secondary"}>
+                    {portfolio?.is_published ? "Live" : "Draft"}
+                  </Badge>
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  {portfolio?.is_published
+                    ? "Your portfolio is visible to everyone"
+                    : "Only you can see your portfolio"}
+                </p>
               </div>
-              <p className="text-sm text-muted-foreground">
-                {portfolio?.is_published
-                  ? "Your portfolio is visible to everyone"
-                  : "Only you can see your portfolio"}
-              </p>
+              <Switch
+                id="publish"
+                checked={portfolio?.is_published || false}
+                onCheckedChange={handleTogglePublish}
+                disabled={saving}
+              />
             </div>
-            <Switch
-              id="publish"
-              checked={portfolio?.is_published || false}
-              onCheckedChange={handleTogglePublish}
-              disabled={saving}
-            />
-          </div>
+          ) : (
+            <div className="space-y-4">
+              <div className="flex items-center gap-3 p-4 rounded-lg bg-yellow-50 dark:bg-yellow-900/10 border border-yellow-200 dark:border-yellow-800">
+                <AlertCircle className="w-5 h-5 text-yellow-600" />
+                <div>
+                  <p className="font-medium text-yellow-800 dark:text-yellow-200">Account Approval Required</p>
+                  <p className="text-sm text-yellow-700 dark:text-yellow-300">
+                    Your account needs admin approval before you can publish your portfolio.
+                  </p>
+                </div>
+              </div>
+              
+              {portfolio?.pending_publish ? (
+                <div className="flex items-center gap-3 p-4 rounded-lg bg-blue-50 dark:bg-blue-900/10 border border-blue-200 dark:border-blue-800">
+                  <Clock className="w-5 h-5 text-blue-600" />
+                  <div>
+                    <p className="font-medium text-blue-800 dark:text-blue-200">Publish Request Pending</p>
+                    <p className="text-sm text-blue-700 dark:text-blue-300">
+                      Your publish request is under review. You'll receive an email once approved.
+                    </p>
+                  </div>
+                </div>
+              ) : (
+                <Button 
+                  onClick={handleRequestPublish}
+                  disabled={requestingPublish}
+                  className="w-full"
+                >
+                  {requestingPublish ? (
+                    <>
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      Sending Request...
+                    </>
+                  ) : (
+                    <>
+                      <Send className="w-4 h-4 mr-2" />
+                      Request to Publish
+                    </>
+                  )}
+                </Button>
+              )}
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Support */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <MessageSquare className="w-5 h-5" />
+            Need Help?
+          </CardTitle>
+          <CardDescription>
+            Having issues or questions? Send us a message and we'll get back to you.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <Textarea
+            placeholder="Describe your issue or question here..."
+            value={supportMessage}
+            onChange={(e) => setSupportMessage(e.target.value)}
+            rows={4}
+          />
+          <Button 
+            onClick={handleSendSupport}
+            disabled={sendingSupport || !supportMessage.trim()}
+            className="w-full"
+          >
+            {sendingSupport ? (
+              <>
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                Sending...
+              </>
+            ) : (
+              <>
+                <Send className="w-4 h-4 mr-2" />
+                Send Support Message
+              </>
+            )}
+          </Button>
         </CardContent>
       </Card>
 
@@ -293,12 +533,20 @@ export default function DashboardSettings() {
           <CardTitle>Account Information</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="space-y-2">
-            <Label>Email</Label>
-            <Input value={user?.email || ""} readOnly disabled />
+          <div className="grid gap-4 md:grid-cols-2">
+            <div className="space-y-2">
+              <Label>Email</Label>
+              <Input value={user?.email || ""} readOnly disabled />
+            </div>
+            {profile?.phone_number && (
+              <div className="space-y-2">
+                <Label>Phone Number</Label>
+                <Input value={profile.phone_number} readOnly disabled />
+              </div>
+            )}
           </div>
           <p className="text-sm text-muted-foreground">
-            Contact support if you need to change your email address.
+            Contact support if you need to change your account details.
           </p>
         </CardContent>
       </Card>

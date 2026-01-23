@@ -9,8 +9,9 @@ import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Globe, Copy, ExternalLink, CheckCircle, Palette, Camera, PenTool, Film, TrendingUp, Code2, Building2, Heart } from "lucide-react";
+import { Loader2, Globe, Copy, ExternalLink, CheckCircle, Palette, Camera, PenTool, Film, TrendingUp, Code2, Building2, Heart, Sparkles } from "lucide-react";
 import { THEME_OPTIONS } from "@/components/portfolio/themes/types";
+import CustomDomainManager from "@/components/settings/CustomDomainManager";
 
 interface Profile {
   username: string;
@@ -29,6 +30,7 @@ const themeIcons: Record<string, typeof Camera> = {
   'web-developer': Code2,
   'official': Building2,
   'personal': Heart,
+  'cosmic': Sparkles,
 };
 
 export default function DashboardSettings() {
@@ -173,6 +175,9 @@ export default function DashboardSettings() {
           </p>
         </CardContent>
       </Card>
+
+      {/* Custom Domains */}
+      <CustomDomainManager />
 
       {/* Theme Selection */}
       <Card>

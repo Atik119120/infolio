@@ -22,7 +22,6 @@ import {
   LogOut,
   Menu,
   X,
-  Home,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -133,18 +132,6 @@ export default function AdminDashboard() {
               );
             })}
           </nav>
-
-          {/* Back to User Dashboard */}
-          <div className="p-4 border-t">
-            <Button
-              variant="outline"
-              className="w-full justify-start gap-3"
-              onClick={() => navigate("/dashboard")}
-            >
-              <Home className="w-5 h-5" />
-              User Dashboard
-            </Button>
-          </div>
 
           {/* User Profile */}
           <div className="p-4 border-t">

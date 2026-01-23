@@ -3,13 +3,14 @@ import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { User, Sparkles, Briefcase, GraduationCap, Link2, FolderOpen } from "lucide-react";
+import { User, Sparkles, Briefcase, GraduationCap, Link2, FolderOpen, Palette } from "lucide-react";
 import { BasicInfoForm } from "@/components/portfolio/BasicInfoForm";
 import { SkillsForm } from "@/components/portfolio/SkillsForm";
 import { ProjectsForm } from "@/components/portfolio/ProjectsForm";
 import { ExperienceForm } from "@/components/portfolio/ExperienceForm";
 import { EducationForm } from "@/components/portfolio/EducationForm";
 import { SocialLinksForm } from "@/components/portfolio/SocialLinksForm";
+import { ThemeSelector } from "@/components/portfolio/ThemeSelector";
 
 export interface Profile {
   username: string;
@@ -25,6 +26,7 @@ export interface Portfolio {
   phone: string | null;
   website: string | null;
   is_published: boolean | null;
+  theme: string | null;
 }
 
 export interface Skill {
@@ -76,7 +78,7 @@ export interface SocialLink {
 }
 
 export default function PortfolioEdit() {
-  const [activeTab, setActiveTab] = useState("basic");
+  const [activeTab, setActiveTab] = useState("theme");
   const [profile, setProfile] = useState<Profile | null>(null);
   const [portfolio, setPortfolio] = useState<Portfolio | null>(null);
   const [skills, setSkills] = useState<Skill[]>([]);
@@ -138,6 +140,7 @@ export default function PortfolioEdit() {
   }
 
   const tabs = [
+    { value: "theme", label: "Theme", icon: Palette },
     { value: "basic", label: "Basic Info", icon: User },
     { value: "skills", label: "Skills", icon: Sparkles },
     { value: "projects", label: "Projects", icon: FolderOpen },
@@ -150,22 +153,34 @@ export default function PortfolioEdit() {
     <div className="space-y-6 animate-fade-in">
       <div>
         <h1 className="text-2xl font-bold">Edit Portfolio</h1>
-        <p className="text-muted-foreground">Customize your portfolio content</p>
+        <p className="text-muted-foreground">Choose your theme and customize your portfolio content</p>
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-        <TabsList className="grid grid-cols-3 lg:grid-cols-6 h-auto gap-2 bg-transparent p-0">
+        <TabsList className="grid grid-cols-4 lg:grid-cols-7 h-auto gap-2 bg-transparent p-0">
           {tabs.map((tab) => (
             <TabsTrigger
               key={tab.value}
               value={tab.value}
-              className="flex items-center gap-2 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground px-4 py-3 rounded-lg border"
+              className={`flex items-center gap-2 px-4 py-3 rounded-lg border ${
+                tab.value === 'theme' 
+                  ? 'data-[state=active]:bg-primary data-[state=active]:text-primary-foreground border-primary/50' 
+                  : 'data-[state=active]:bg-primary data-[state=active]:text-primary-foreground'
+              }`}
             >
               <tab.icon className="w-4 h-4" />
               <span className="hidden sm:inline">{tab.label}</span>
             </TabsTrigger>
           ))}
         </TabsList>
+
+        <TabsContent value="theme" className="mt-6">
+          <ThemeSelector
+            currentTheme={portfolio?.theme || null}
+            userId={user?.id || ""}
+            onUpdate={fetchAllData}
+          />
+        </TabsContent>
 
         <TabsContent value="basic" className="mt-6">
           <BasicInfoForm

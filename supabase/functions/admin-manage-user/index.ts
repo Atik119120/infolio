@@ -13,38 +13,50 @@ Deno.serve(async (req) => {
 
   try {
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+    const supabaseAnonKey = Deno.env.get("SUPABASE_ANON_KEY")!;
     const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 
-    const supabase = createClient(supabaseUrl, supabaseServiceKey);
-
-    // Verify admin access
+    // Verify admin access using anon client with user's token
     const authHeader = req.headers.get("Authorization");
-    if (!authHeader) {
+    if (!authHeader?.startsWith("Bearer ")) {
+      console.error("No authorization header provided");
       return new Response(
         JSON.stringify({ error: "Unauthorized" }),
         { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
+
+    // Create client with user's auth for verification
+    const userClient = createClient(supabaseUrl, supabaseAnonKey, {
+      global: { headers: { Authorization: authHeader } },
+    });
 
     const token = authHeader.replace("Bearer ", "");
-    const { data: { user }, error: authError } = await supabase.auth.getUser(token);
+    const { data: claimsData, error: claimsError } = await userClient.auth.getUser(token);
 
-    if (authError || !user) {
+    if (claimsError || !claimsData?.user) {
+      console.error("Auth verification failed:", claimsError);
       return new Response(
         JSON.stringify({ error: "Unauthorized" }),
         { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
+
+    const userId = claimsData.user.id;
+
+    // Create service role client for admin operations
+    const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
     // Check admin role
     const { data: roleData } = await supabase
       .from("user_roles")
       .select("role")
-      .eq("user_id", user.id)
+      .eq("user_id", userId)
       .eq("role", "admin")
       .single();
 
     if (!roleData) {
+      console.error("User is not an admin:", userId);
       return new Response(
         JSON.stringify({ error: "Admin access required" }),
         { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } }
@@ -225,7 +237,7 @@ Deno.serve(async (req) => {
       }
 
       // Don't allow removing own admin role
-      if (targetUserId === user.id) {
+      if (targetUserId === userId) {
         return new Response(
           JSON.stringify({ error: "Cannot remove your own admin role" }),
           { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }

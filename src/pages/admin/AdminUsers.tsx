@@ -122,11 +122,8 @@ export default function AdminUsers() {
       await supabase.functions.invoke("send-notification", {
         body: {
           type: "account_approved",
-          to: user.email,
-          data: {
-            name: user.display_name || user.username,
-            username: user.username,
-          },
+          userEmail: user.email,
+          userName: user.display_name || user.username,
         },
       });
 
@@ -155,10 +152,8 @@ export default function AdminUsers() {
       await supabase.functions.invoke("send-notification", {
         body: {
           type: "account_rejected",
-          to: user.email,
-          data: {
-            name: user.display_name || user.username,
-          },
+          userEmail: user.email,
+          userName: user.display_name || user.username,
         },
       });
 
@@ -242,11 +237,8 @@ export default function AdminUsers() {
       await supabase.functions.invoke("send-notification", {
         body: {
           type: "publish_approved",
-          to: user.email,
-          data: {
-            name: user.display_name || user.username,
-            username: user.username,
-          },
+          userEmail: user.email,
+          userName: user.display_name || user.username,
         },
       });
 

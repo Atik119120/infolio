@@ -7,12 +7,14 @@ import { Card, CardContent } from "@/components/ui/card";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import {
   MapPin, Mail, Phone, ExternalLink, Github, Building2, Award,
-  Briefcase, GraduationCap, Menu, X, Users, CheckCircle
+  Briefcase, GraduationCap, Menu, X, Users, CheckCircle, ArrowRight
 } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function OfficialTheme({ profile, portfolio, skills, projects, experiences, education, socialLinks }: ThemeProps) {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const featuredProjects = projects.filter((p) => p.featured);
   const otherProjects = projects.filter((p) => !p.featured);
 
@@ -23,81 +25,119 @@ export default function OfficialTheme({ profile, portfolio, skills, projects, ex
     return acc;
   }, {} as Record<string, typeof skills>);
 
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 50);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   const scrollTo = (id: string) => {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
     setMenuOpen(false);
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      {/* Navigation - Professional/Corporate */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-background border-b border-border">
+    <div className="min-h-screen bg-white text-slate-900 overflow-hidden">
+      {/* Navigation - Apple Style */}
+      <motion.nav 
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+          scrolled 
+            ? 'bg-white/80 backdrop-blur-xl shadow-sm' 
+            : 'bg-transparent'
+        }`}
+        initial={{ y: -100 }}
+        animate={{ y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
         <div className="container mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Building2 className="w-6 h-6 text-primary" />
-            <span className="font-semibold text-lg">{profile?.display_name || "Portfolio"}</span>
-          </div>
+          <motion.div 
+            className="flex items-center gap-2"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+          >
+            <span className="font-semibold text-xl tracking-tight">{profile?.display_name || "Portfolio"}</span>
+          </motion.div>
           
           <div className="hidden md:flex items-center gap-8">
-            <button onClick={() => scrollTo('hero')} className="text-sm hover:text-primary transition-colors">Home</button>
-            <button onClick={() => scrollTo('bio')} className="text-sm hover:text-primary transition-colors">About</button>
-            <button onClick={() => scrollTo('skills')} className="text-sm hover:text-primary transition-colors">Services</button>
-            <button onClick={() => scrollTo('works')} className="text-sm hover:text-primary transition-colors">Portfolio</button>
-            <button onClick={() => scrollTo('contact')} className="text-sm hover:text-primary transition-colors">Contact</button>
+            {["Home", "About", "Services", "Portfolio", "Contact"].map((item, i) => (
+              <motion.button 
+                key={item}
+                onClick={() => scrollTo(item.toLowerCase() === "home" ? "hero" : item.toLowerCase() === "services" ? "skills" : item.toLowerCase() === "about" ? "bio" : item.toLowerCase() === "portfolio" ? "works" : item.toLowerCase())} 
+                className="text-sm text-slate-600 hover:text-slate-900 transition-colors"
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.1 }}
+              >
+                {item}
+              </motion.button>
+            ))}
             <ThemeToggle />
           </div>
 
           <div className="flex md:hidden items-center gap-2">
             <ThemeToggle />
-            <button onClick={() => setMenuOpen(!menuOpen)} className="p-2">
+            <button onClick={() => setMenuOpen(!menuOpen)} className="p-2 text-slate-600">
               {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
           </div>
         </div>
 
-        {menuOpen && (
-          <div className="md:hidden bg-background border-b border-border px-6 py-4 space-y-3">
-            <button onClick={() => scrollTo('hero')} className="block w-full text-left py-2">Home</button>
-            <button onClick={() => scrollTo('bio')} className="block w-full text-left py-2">About</button>
-            <button onClick={() => scrollTo('skills')} className="block w-full text-left py-2">Services</button>
-            <button onClick={() => scrollTo('works')} className="block w-full text-left py-2">Portfolio</button>
-            <button onClick={() => scrollTo('contact')} className="block w-full text-left py-2">Contact</button>
-          </div>
-        )}
-      </nav>
-
-      {/* Hero - Clean Corporate with Cover */}
-      <section id="hero" className="min-h-screen flex items-center pt-20 relative">
-        {/* Cover Background */}
-        <div className="absolute inset-0 bg-gradient-to-b from-muted/50 to-background">
-          {projects[0]?.image_url && (
-            <img 
-              src={projects[0].image_url} 
-              alt="Cover" 
-              className="w-full h-full object-cover opacity-10"
-            />
+        <AnimatePresence>
+          {menuOpen && (
+            <motion.div 
+              className="md:hidden bg-white border-t border-slate-100 px-6 py-4 space-y-3"
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: "auto", opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+            >
+              {["Home", "About", "Services", "Portfolio", "Contact"].map((item) => (
+                <button 
+                  key={item}
+                  onClick={() => scrollTo(item.toLowerCase() === "home" ? "hero" : item.toLowerCase() === "services" ? "skills" : item.toLowerCase() === "about" ? "bio" : item.toLowerCase() === "portfolio" ? "works" : item.toLowerCase())} 
+                  className="block w-full text-left py-2 text-slate-600"
+                >
+                  {item}
+                </button>
+              ))}
+            </motion.div>
           )}
-        </div>
+        </AnimatePresence>
+      </motion.nav>
+
+      {/* Hero Section - Clean & Minimal */}
+      <section id="hero" className="min-h-screen flex items-center pt-20 relative overflow-hidden">
+        {/* Subtle Background */}
+        <div className="absolute inset-0 bg-gradient-to-b from-slate-50 to-white" />
+        
+        {/* Decorative Circles */}
+        <div className="absolute top-20 right-20 w-[600px] h-[600px] rounded-full bg-blue-50/50 blur-3xl" />
+        <div className="absolute bottom-20 left-20 w-[400px] h-[400px] rounded-full bg-purple-50/50 blur-3xl" />
 
         <div className="container mx-auto px-6 relative z-10">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
-            <div>
-              <Badge className="mb-6 bg-primary/10 text-primary border-0">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
+            >
+              <Badge className="mb-6 bg-slate-900 text-white border-0 rounded-full px-4 py-1.5">
                 <Award className="w-3 h-3 mr-2" />
                 Professional Profile
               </Badge>
 
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
+              <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-[1.1] tracking-tight">
                 {profile?.display_name || "Your Name"}
               </h1>
 
               {portfolio?.headline && (
-                <p className="text-xl text-primary font-medium mb-6">
+                <p className="text-xl md:text-2xl text-slate-500 font-light mb-8 leading-relaxed">
                   {portfolio.headline}
                 </p>
               )}
 
-              <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground mb-8">
+              <div className="flex flex-wrap items-center gap-4 text-sm text-slate-500 mb-8">
                 {portfolio?.location && (
                   <span className="flex items-center gap-2">
                     <MapPin className="w-4 h-4" />
@@ -105,144 +145,162 @@ export default function OfficialTheme({ profile, portfolio, skills, projects, ex
                   </span>
                 )}
                 {profile?.email && (
-                  <a href={`mailto:${profile.email}`} className="flex items-center gap-2 hover:text-primary">
+                  <a href={`mailto:${profile.email}`} className="flex items-center gap-2 hover:text-slate-900 transition-colors">
                     <Mail className="w-4 h-4" />
                     {profile.email}
                   </a>
-                )}
-                {portfolio?.phone && (
-                  <span className="flex items-center gap-2">
-                    <Phone className="w-4 h-4" />
-                    {portfolio.phone}
-                  </span>
                 )}
               </div>
 
               <div className="flex flex-wrap gap-4">
                 {profile?.email && (
-                  <Button size="lg" asChild>
+                  <Button 
+                    size="lg" 
+                    className="rounded-full bg-slate-900 hover:bg-slate-800 px-8"
+                    asChild
+                  >
                     <a href={`mailto:${profile.email}`}>
-                      <Mail className="w-4 h-4 mr-2" />
                       Get In Touch
+                      <ArrowRight className="w-4 h-4 ml-2" />
                     </a>
                   </Button>
                 )}
-                <Button size="lg" variant="outline" onClick={() => scrollTo('works')}>
+                <Button 
+                  size="lg" 
+                  variant="outline" 
+                  className="rounded-full px-8 border-slate-200"
+                  onClick={() => scrollTo('works')}
+                >
                   View Work
                 </Button>
               </div>
-            </div>
+            </motion.div>
 
-            <div className="flex justify-center">
+            <motion.div 
+              className="flex justify-center"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+            >
               <div className="relative">
-                <div className="absolute -inset-4 bg-primary/5 rounded-full" />
-                <div className="absolute -inset-8 bg-primary/3 rounded-full" />
-                <Avatar className="relative w-72 h-72 border-4 border-background shadow-2xl">
+                <div className="absolute -inset-4 bg-gradient-to-br from-blue-100 to-purple-100 rounded-full blur-2xl" />
+                <Avatar className="relative w-72 h-72 md:w-80 md:h-80 border-8 border-white shadow-2xl">
                   <AvatarImage src={profile?.avatar_url || undefined} />
-                  <AvatarFallback className="text-6xl bg-primary/10 text-primary">
+                  <AvatarFallback className="text-7xl bg-slate-100 text-slate-400">
                     {profile?.display_name?.[0]?.toUpperCase() || "?"}
                   </AvatarFallback>
                 </Avatar>
               </div>
-            </div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* Stats Section */}
+      <section className="py-16 bg-slate-900 text-white">
+        <div className="container mx-auto px-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto">
+            {[
+              { value: `${experiences.length}+`, label: "Years Experience" },
+              { value: `${projects.length}+`, label: "Projects" },
+              { value: `${skills.length}+`, label: "Skills" },
+              { value: "100%", label: "Satisfaction" },
+            ].map((stat, i) => (
+              <motion.div 
+                key={stat.label}
+                className="text-center"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1 }}
+              >
+                <div className="text-4xl md:text-5xl font-bold mb-2">{stat.value}</div>
+                <div className="text-sm text-slate-400">{stat.label}</div>
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>
 
       {/* Bio Section */}
-      <section id="bio" className="py-24 px-6">
-        <div className="container mx-auto">
-          <div className="grid lg:grid-cols-2 gap-16 items-center max-w-6xl mx-auto">
-            {/* Stats */}
-            <div className="grid grid-cols-2 gap-6">
-              <Card className="text-center">
-                <CardContent className="p-8">
-                  <div className="text-4xl font-bold text-primary mb-2">{experiences.length}+</div>
-                  <div className="text-sm text-muted-foreground">Years Experience</div>
-                </CardContent>
-              </Card>
-              <Card className="text-center">
-                <CardContent className="p-8">
-                  <div className="text-4xl font-bold text-primary mb-2">{projects.length}+</div>
-                  <div className="text-sm text-muted-foreground">Projects</div>
-                </CardContent>
-              </Card>
-              <Card className="text-center">
-                <CardContent className="p-8">
-                  <div className="text-4xl font-bold text-primary mb-2">{skills.length}+</div>
-                  <div className="text-sm text-muted-foreground">Skills</div>
-                </CardContent>
-              </Card>
-              <Card className="text-center">
-                <CardContent className="p-8">
-                  <div className="text-4xl font-bold text-primary mb-2">100%</div>
-                  <div className="text-sm text-muted-foreground">Satisfaction</div>
-                </CardContent>
-              </Card>
-            </div>
+      <section id="bio" className="py-32 px-6">
+        <div className="container mx-auto max-w-4xl">
+          <motion.div 
+            className="text-center"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+          >
+            <h2 className="text-sm font-semibold uppercase tracking-widest text-slate-400 mb-4">About Me</h2>
+            <h3 className="text-4xl md:text-5xl font-bold mb-8">Professional Background</h3>
+            
+            {portfolio?.bio && (
+              <p className="text-xl text-slate-500 leading-relaxed mb-12 max-w-2xl mx-auto">
+                {portfolio.bio}
+              </p>
+            )}
 
-            {/* Bio Content */}
-            <div>
-              <h2 className="text-sm font-semibold uppercase tracking-widest text-primary mb-4">About Me</h2>
-              <h3 className="text-4xl font-bold mb-6">Professional Background</h3>
-              
-              {portfolio?.bio && (
-                <p className="text-lg text-muted-foreground leading-relaxed mb-8">
-                  {portfolio.bio}
-                </p>
-              )}
-
-              {/* Social Links */}
-              {socialLinks.length > 0 && (
-                <div className="flex gap-3">
-                  {socialLinks.map((link) => {
-                    const Icon = getSocialIcon(link.platform);
-                    return (
-                      <a
-                        key={link.id}
-                        href={link.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="w-12 h-12 rounded-lg border border-border flex items-center justify-center hover:border-primary hover:text-primary transition-all"
-                      >
-                        <Icon className="w-5 h-5" />
-                      </a>
-                    );
-                  })}
-                </div>
-              )}
-            </div>
-          </div>
+            {/* Social Links */}
+            {socialLinks.length > 0 && (
+              <div className="flex justify-center gap-4">
+                {socialLinks.map((link) => {
+                  const Icon = getSocialIcon(link.platform);
+                  return (
+                    <motion.a
+                      key={link.id}
+                      href={link.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-12 h-12 rounded-full border border-slate-200 flex items-center justify-center text-slate-400 hover:text-slate-900 hover:border-slate-900 transition-all"
+                      whileHover={{ scale: 1.1 }}
+                    >
+                      <Icon className="w-5 h-5" />
+                    </motion.a>
+                  );
+                })}
+              </div>
+            )}
+          </motion.div>
         </div>
       </section>
 
       {/* Skills/Services Section */}
       {skills.length > 0 && (
-        <section id="skills" className="py-24 px-6 bg-muted/30">
+        <section id="skills" className="py-32 px-6 bg-slate-50">
           <div className="container mx-auto">
-            <div className="text-center mb-16">
-              <h2 className="text-sm font-semibold uppercase tracking-widest text-primary mb-4">Expertise</h2>
+            <motion.div 
+              className="text-center mb-16"
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+            >
+              <h2 className="text-sm font-semibold uppercase tracking-widest text-slate-400 mb-4">Expertise</h2>
               <h3 className="text-4xl font-bold">Services & Skills</h3>
-            </div>
+            </motion.div>
 
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-5xl mx-auto">
-              {Object.entries(groupedSkills).map(([category, categorySkills]) => (
-                <Card key={category} className="hover:shadow-lg transition-shadow">
-                  <CardContent className="p-6">
-                    <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
-                      <CheckCircle className="w-6 h-6 text-primary" />
-                    </div>
-                    <h4 className="text-xl font-semibold mb-4">{category}</h4>
-                    <ul className="space-y-2">
-                      {categorySkills.map((skill) => (
-                        <li key={skill.id} className="flex items-center gap-2 text-muted-foreground">
-                          <div className="w-1.5 h-1.5 rounded-full bg-primary" />
-                          {skill.name}
-                        </li>
-                      ))}
-                    </ul>
-                  </CardContent>
-                </Card>
+              {Object.entries(groupedSkills).map(([category, categorySkills], i) => (
+                <motion.div 
+                  key={category}
+                  className="bg-white rounded-2xl p-8 shadow-sm hover:shadow-lg transition-shadow"
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.1 }}
+                >
+                  <div className="w-12 h-12 rounded-xl bg-slate-900 text-white flex items-center justify-center mb-6">
+                    <CheckCircle className="w-6 h-6" />
+                  </div>
+                  <h4 className="text-xl font-bold mb-4">{category}</h4>
+                  <ul className="space-y-2">
+                    {categorySkills.map((skill) => (
+                      <li key={skill.id} className="flex items-center gap-2 text-slate-500">
+                        <div className="w-1.5 h-1.5 rounded-full bg-slate-900" />
+                        {skill.name}
+                      </li>
+                    ))}
+                  </ul>
+                </motion.div>
               ))}
             </div>
           </div>
@@ -251,27 +309,39 @@ export default function OfficialTheme({ profile, portfolio, skills, projects, ex
 
       {/* Education Section */}
       {education.length > 0 && (
-        <section id="education" className="py-24 px-6">
-          <div className="container mx-auto max-w-5xl">
-            <div className="text-center mb-16">
-              <h2 className="text-sm font-semibold uppercase tracking-widest text-secondary mb-4">Background</h2>
+        <section id="education" className="py-32 px-6">
+          <div className="container mx-auto max-w-4xl">
+            <motion.div 
+              className="text-center mb-16"
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+            >
+              <h2 className="text-sm font-semibold uppercase tracking-widest text-slate-400 mb-4">Background</h2>
               <h3 className="text-4xl font-bold">Education</h3>
-            </div>
-            <div className="space-y-8">
-              {education.map((edu) => (
-                <div key={edu.id} className="relative pl-8 border-l-2 border-secondary/20">
-                  <div className="absolute -left-2 top-0 w-4 h-4 rounded-full bg-secondary" />
-                  <Card>
-                    <CardContent className="p-6">
-                      <h4 className="text-xl font-semibold">{edu.degree}</h4>
-                      <p className="text-secondary font-medium">{edu.institution}</p>
-                      {edu.field_of_study && <p className="text-sm text-muted-foreground mt-1">{edu.field_of_study}</p>}
-                      <p className="text-sm text-muted-foreground mt-2">
-                        {formatDate(edu.start_date)} - {edu.is_current ? "Present" : formatDate(edu.end_date)}
-                      </p>
-                    </CardContent>
-                  </Card>
-                </div>
+            </motion.div>
+            <div className="space-y-6">
+              {education.map((edu, i) => (
+                <motion.div 
+                  key={edu.id}
+                  className="flex gap-6 items-start"
+                  initial={{ opacity: 0, x: -20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.1 }}
+                >
+                  <div className="w-12 h-12 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center flex-shrink-0">
+                    <GraduationCap className="w-6 h-6" />
+                  </div>
+                  <div className="flex-1 pb-6 border-b border-slate-100">
+                    <h4 className="text-xl font-bold">{edu.degree}</h4>
+                    <p className="text-blue-600 font-medium">{edu.institution}</p>
+                    {edu.field_of_study && <p className="text-sm text-slate-400 mt-1">{edu.field_of_study}</p>}
+                    <p className="text-sm text-slate-400 mt-2">
+                      {formatDate(edu.start_date)} - {edu.is_current ? "Present" : formatDate(edu.end_date)}
+                    </p>
+                  </div>
+                </motion.div>
               ))}
             </div>
           </div>
@@ -280,34 +350,41 @@ export default function OfficialTheme({ profile, portfolio, skills, projects, ex
 
       {/* Experience Section */}
       {experiences.length > 0 && (
-        <section className="py-24 px-6 bg-muted/30">
-          <div className="container mx-auto max-w-5xl">
-            <div className="text-center mb-16">
-              <h2 className="text-sm font-semibold uppercase tracking-widest text-primary mb-4">Career</h2>
+        <section className="py-32 px-6 bg-slate-50">
+          <div className="container mx-auto max-w-4xl">
+            <motion.div 
+              className="text-center mb-16"
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+            >
+              <h2 className="text-sm font-semibold uppercase tracking-widest text-slate-400 mb-4">Career</h2>
               <h3 className="text-4xl font-bold">Work Experience</h3>
-            </div>
-            <div className="space-y-8">
-              {experiences.map((exp) => (
-                <div key={exp.id} className="relative pl-8 border-l-2 border-primary/20">
-                  <div className="absolute -left-2 top-0 w-4 h-4 rounded-full bg-primary" />
-                  <Card>
-                    <CardContent className="p-6">
-                      <div className="flex items-start gap-4">
-                        <div className="hidden md:flex w-12 h-12 rounded-lg bg-primary/10 items-center justify-center flex-shrink-0">
-                          <Briefcase className="w-6 h-6 text-primary" />
-                        </div>
-                        <div className="flex-1">
-                          <h4 className="text-xl font-semibold">{exp.position}</h4>
-                          <p className="text-primary font-medium">{exp.company}</p>
-                          <p className="text-sm text-muted-foreground mt-1">
-                            {formatDate(exp.start_date)} - {exp.is_current ? "Present" : formatDate(exp.end_date)}
-                          </p>
-                          {exp.description && <p className="text-muted-foreground mt-3">{exp.description}</p>}
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </div>
+            </motion.div>
+            <div className="space-y-6">
+              {experiences.map((exp, i) => (
+                <motion.div 
+                  key={exp.id}
+                  className="bg-white rounded-2xl p-8 shadow-sm"
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.1 }}
+                >
+                  <div className="flex items-start gap-6">
+                    <div className="w-12 h-12 rounded-xl bg-slate-900 text-white flex items-center justify-center flex-shrink-0">
+                      <Briefcase className="w-6 h-6" />
+                    </div>
+                    <div>
+                      <h4 className="text-xl font-bold">{exp.position}</h4>
+                      <p className="text-slate-600 font-medium">{exp.company}</p>
+                      <p className="text-sm text-slate-400 mt-1">
+                        {formatDate(exp.start_date)} - {exp.is_current ? "Present" : formatDate(exp.end_date)}
+                      </p>
+                      {exp.description && <p className="text-slate-500 mt-4">{exp.description}</p>}
+                    </div>
+                  </div>
+                </motion.div>
               ))}
             </div>
           </div>
@@ -316,17 +393,29 @@ export default function OfficialTheme({ profile, portfolio, skills, projects, ex
 
       {/* Works/Portfolio Section */}
       {projects.length > 0 && (
-        <section id="works" className="py-24 px-6">
+        <section id="works" className="py-32 px-6">
           <div className="container mx-auto">
-            <div className="text-center mb-16">
-              <h2 className="text-sm font-semibold uppercase tracking-widest text-primary mb-4">Portfolio</h2>
+            <motion.div 
+              className="text-center mb-16"
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+            >
+              <h2 className="text-sm font-semibold uppercase tracking-widest text-slate-400 mb-4">Portfolio</h2>
               <h3 className="text-4xl font-bold">Recent Work</h3>
-            </div>
+            </motion.div>
 
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
-              {[...featuredProjects, ...otherProjects].map((project) => (
-                <Card key={project.id} className="group overflow-hidden">
-                  <div className="relative aspect-[4/3] bg-muted overflow-hidden">
+              {[...featuredProjects, ...otherProjects].map((project, i) => (
+                <motion.div 
+                  key={project.id}
+                  className="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all"
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.1 }}
+                >
+                  <div className="relative aspect-[4/3] bg-slate-100 overflow-hidden">
                     {project.image_url ? (
                       <img
                         src={project.image_url}
@@ -335,22 +424,22 @@ export default function OfficialTheme({ profile, portfolio, skills, projects, ex
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center">
-                        <Building2 className="w-12 h-12 text-muted-foreground/30" />
+                        <Building2 className="w-12 h-12 text-slate-300" />
                       </div>
                     )}
                     {project.featured && (
-                      <Badge className="absolute top-4 right-4 bg-primary">Featured</Badge>
+                      <Badge className="absolute top-4 right-4 bg-slate-900 text-white border-0">Featured</Badge>
                     )}
                   </div>
-                  <CardContent className="p-6">
-                    <h4 className="text-xl font-semibold mb-2">{project.title}</h4>
+                  <div className="p-6">
+                    <h4 className="text-xl font-bold mb-2">{project.title}</h4>
                     {project.description && (
-                      <p className="text-muted-foreground text-sm mb-4 line-clamp-2">{project.description}</p>
+                      <p className="text-slate-500 text-sm mb-4 line-clamp-2">{project.description}</p>
                     )}
                     {project.tech_stack && project.tech_stack.length > 0 && (
                       <div className="flex flex-wrap gap-2 mb-4">
                         {project.tech_stack.slice(0, 3).map((tech) => (
-                          <Badge key={tech} variant="secondary" className="text-xs">
+                          <Badge key={tech} variant="secondary" className="text-xs bg-slate-100">
                             {tech}
                           </Badge>
                         ))}
@@ -358,23 +447,23 @@ export default function OfficialTheme({ profile, portfolio, skills, projects, ex
                     )}
                     <div className="flex gap-2">
                       {project.live_url && (
-                        <Button size="sm" asChild>
+                        <Button size="sm" className="rounded-full bg-slate-900" asChild>
                           <a href={project.live_url} target="_blank" rel="noopener noreferrer">
-                            <ExternalLink className="w-4 h-4 mr-1" />
+                            <ExternalLink className="w-3 h-3 mr-1" />
                             View
                           </a>
                         </Button>
                       )}
                       {project.github_url && (
-                        <Button size="sm" variant="outline" asChild>
+                        <Button size="sm" variant="outline" className="rounded-full" asChild>
                           <a href={project.github_url} target="_blank" rel="noopener noreferrer">
-                            <Github className="w-4 h-4" />
+                            <Github className="w-3 h-3" />
                           </a>
                         </Button>
                       )}
                     </div>
-                  </CardContent>
-                </Card>
+                  </div>
+                </motion.div>
               ))}
             </div>
           </div>
@@ -382,68 +471,61 @@ export default function OfficialTheme({ profile, portfolio, skills, projects, ex
       )}
 
       {/* Contact Section */}
-      <section id="contact" className="py-24 px-6 bg-primary text-primary-foreground">
+      <section id="contact" className="py-32 px-6 bg-slate-900 text-white">
         <div className="container mx-auto max-w-3xl text-center">
-          <Users className="w-12 h-12 mx-auto mb-6 opacity-80" />
-          <h2 className="text-4xl font-bold mb-6">Let's Work Together</h2>
-          <p className="text-primary-foreground/80 text-lg mb-8">
-            I'm open to new opportunities and collaborations. Feel free to reach out.
-          </p>
-          <div className="flex flex-wrap justify-center gap-4">
-            {profile?.email && (
-              <Button size="lg" variant="secondary" asChild>
-                <a href={`mailto:${profile.email}`}>
-                  <Mail className="w-4 h-4 mr-2" />
-                  {profile.email}
-                </a>
-              </Button>
-            )}
-            {portfolio?.phone && (
-              <Button size="lg" variant="outline" className="bg-transparent border-primary-foreground text-primary-foreground hover:bg-primary-foreground hover:text-primary" asChild>
-                <a href={`tel:${portfolio.phone}`}>
-                  <Phone className="w-4 h-4 mr-2" />
-                  {portfolio.phone}
-                </a>
-              </Button>
-            )}
-          </div>
-
-          {socialLinks.length > 0 && (
-            <div className="flex justify-center gap-4 mt-8">
-              {socialLinks.map((link) => {
-                const Icon = getSocialIcon(link.platform);
-                return (
-                  <a
-                    key={link.id}
-                    href={link.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-10 h-10 rounded-full bg-primary-foreground/10 flex items-center justify-center hover:bg-primary-foreground/20 transition-colors"
-                  >
-                    <Icon className="w-4 h-4" />
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+          >
+            <Users className="w-12 h-12 mx-auto mb-6 text-slate-400" />
+            <h2 className="text-4xl font-bold mb-6">Let's Work Together</h2>
+            <p className="text-slate-400 text-lg mb-8">
+              I'm always open to discussing new projects, creative ideas, or opportunities to be part of your vision.
+            </p>
+            <div className="flex flex-wrap justify-center gap-4">
+              {profile?.email && (
+                <Button 
+                  size="lg" 
+                  className="rounded-full bg-white text-slate-900 hover:bg-slate-100 px-8"
+                  asChild
+                >
+                  <a href={`mailto:${profile.email}`}>
+                    <Mail className="w-4 h-4 mr-2" />
+                    {profile.email}
                   </a>
-                );
-              })}
+                </Button>
+              )}
+              {portfolio?.phone && (
+                <Button 
+                  size="lg" 
+                  variant="outline" 
+                  className="rounded-full border-white/20 text-white hover:bg-white/10 px-8"
+                  asChild
+                >
+                  <a href={`tel:${portfolio.phone}`}>
+                    <Phone className="w-4 h-4 mr-2" />
+                    {portfolio.phone}
+                  </a>
+                </Button>
+              )}
             </div>
-          )}
+          </motion.div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="py-8 px-6 border-t border-border">
+      <footer className="py-8 px-6 bg-slate-950">
         <div className="container mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
-            <Building2 className="w-5 h-5 text-primary" />
-            <span className="font-semibold">{profile?.display_name}</span>
-          </div>
-          <p className="text-sm text-muted-foreground">
+          <span className="font-semibold text-white">{profile?.display_name || "Portfolio"}</span>
+          <p className="text-sm text-slate-500">
             © {new Date().getFullYear()} All Rights Reserved
           </p>
-          <div className="flex gap-3">
+          <div className="flex gap-4">
             {socialLinks.slice(0, 4).map((link) => {
               const Icon = getSocialIcon(link.platform);
               return (
-                <a key={link.id} href={link.url} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
+                <a key={link.id} href={link.url} target="_blank" rel="noopener noreferrer" className="text-slate-500 hover:text-white transition-colors">
                   <Icon className="w-4 h-4" />
                 </a>
               );

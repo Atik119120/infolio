@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Plus, X, Loader2, ExternalLink, Github, Upload, Star, Image } from "lucide-react";
+import { compressImage } from "@/lib/imageCompression";
 import type { Project } from "@/pages/PortfolioEdit";
 
 interface ProjectsFormProps {
@@ -78,24 +79,41 @@ export function ProjectsForm({ projects, userId, onUpdate, onSuccess, onError }:
       return;
     }
 
-    setUploading(true);
-
-    const fileExt = file.name.split(".").pop();
-    const fileName = `${userId}/${Date.now()}.${fileExt}`;
-
-    const { error: uploadError } = await supabase.storage
-      .from("projects")
-      .upload(fileName, file);
-
-    if (uploadError) {
-      setUploading(false);
-      onError("Failed to upload image");
+    if (file.size > 10 * 1024 * 1024) {
+      onError("Image must be less than 10MB");
       return;
     }
 
-    const { data: urlData } = supabase.storage.from("projects").getPublicUrl(fileName);
-    setFormData({ ...formData, image_url: urlData.publicUrl });
-    setUploading(false);
+    setUploading(true);
+
+    try {
+      // Compress image before upload
+      const compressedFile = await compressImage(file, {
+        maxWidth: 1200,
+        maxHeight: 800,
+        quality: 0.8,
+        maxSizeKB: 300,
+      });
+
+      const fileName = `${userId}/${Date.now()}.jpg`;
+
+      const { error: uploadError } = await supabase.storage
+        .from("projects")
+        .upload(fileName, compressedFile);
+
+      if (uploadError) {
+        throw uploadError;
+      }
+
+      const { data: urlData } = supabase.storage.from("projects").getPublicUrl(fileName);
+      setFormData({ ...formData, image_url: urlData.publicUrl });
+      onSuccess("Image compressed and uploaded!");
+    } catch (err) {
+      console.error("Upload error:", err);
+      onError("Failed to upload image");
+    } finally {
+      setUploading(false);
+    }
   };
 
   const handleSave = async () => {

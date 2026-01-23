@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Loader2, Upload, Camera } from "lucide-react";
+import { compressImage } from "@/lib/imageCompression";
 import type { Profile, Portfolio } from "@/pages/PortfolioEdit";
 
 interface BasicInfoFormProps {
@@ -82,33 +83,43 @@ export function BasicInfoForm({ profile, portfolio, userId, onUpdate, onSuccess,
 
     setUploading(true);
 
-    const fileExt = file.name.split(".").pop();
-    const fileName = `${userId}/avatar.${fileExt}`;
+    try {
+      // Compress avatar image
+      const compressedFile = await compressImage(file, {
+        maxWidth: 400,
+        maxHeight: 400,
+        quality: 0.85,
+        maxSizeKB: 100,
+      });
 
-    const { error: uploadError } = await supabase.storage
-      .from("avatars")
-      .upload(fileName, file, { upsert: true });
+      const fileName = `${userId}/avatar.jpg`;
 
-    if (uploadError) {
-      setUploading(false);
-      onError("Failed to upload image");
-      return;
-    }
+      const { error: uploadError } = await supabase.storage
+        .from("avatars")
+        .upload(fileName, compressedFile, { upsert: true });
 
-    const { data: urlData } = supabase.storage.from("avatars").getPublicUrl(fileName);
+      if (uploadError) {
+        throw uploadError;
+      }
 
-    const { error: updateError } = await supabase
-      .from("profiles")
-      .update({ avatar_url: urlData.publicUrl })
-      .eq("user_id", userId);
+      const { data: urlData } = supabase.storage.from("avatars").getPublicUrl(fileName);
 
-    setUploading(false);
+      const { error: updateError } = await supabase
+        .from("profiles")
+        .update({ avatar_url: urlData.publicUrl + "?t=" + Date.now() })
+        .eq("user_id", userId);
 
-    if (updateError) {
-      onError("Failed to update profile");
-    } else {
-      onSuccess("Avatar uploaded successfully");
+      if (updateError) {
+        throw updateError;
+      }
+
+      onSuccess("Avatar compressed and uploaded!");
       onUpdate();
+    } catch (err) {
+      console.error("Upload error:", err);
+      onError("Failed to upload image");
+    } finally {
+      setUploading(false);
     }
   };
 

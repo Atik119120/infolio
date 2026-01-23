@@ -11,7 +11,7 @@ const corsHeaders = {
 };
 
 interface NotificationRequest {
-  type: "welcome" | "publish_request" | "support" | "account_approved" | "account_rejected";
+  type: "welcome" | "publish_request" | "support" | "account_approved" | "account_rejected" | "publish_approved";
   userId?: string;
   userEmail?: string;
   userName?: string;
@@ -232,6 +232,39 @@ const handler = async (req: Request): Promise<Response> => {
                   <li>✅ Connect custom domains</li>
                 </ul>
                 <a href="https://alphaportfolio.com/dashboard" class="button">Go to Dashboard</a>
+              </div>
+            </div>
+          </body>
+          </html>
+        `;
+        break;
+
+      case "publish_approved":
+        // Send publish approval notification to user
+        emailTo = userEmail!;
+        emailSubject = "🚀 Your Portfolio is Now Live! - Alpha Portfolio";
+        emailHtml = `
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <style>
+              body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; }
+              .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+              .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; border-radius: 10px 10px 0 0; text-align: center; }
+              .content { background: #f9fafb; padding: 30px; border-radius: 0 0 10px 10px; }
+              .button { display: inline-block; background: #667eea; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; margin-top: 20px; }
+            </style>
+          </head>
+          <body>
+            <div class="container">
+              <div class="header">
+                <h1>🚀 Portfolio Published!</h1>
+              </div>
+              <div class="content">
+                <h2>Congratulations, ${userName}!</h2>
+                <p>Your portfolio has been approved and is now live for the world to see!</p>
+                <p>Share your portfolio link with friends, colleagues, and potential employers.</p>
+                <a href="https://alphaportfolio.com/dashboard" class="button">View Your Portfolio</a>
               </div>
             </div>
           </body>

@@ -14,6 +14,36 @@ export type Database = {
   }
   public: {
     Tables: {
+      contact_messages: {
+        Row: {
+          created_at: string
+          id: string
+          is_read: boolean | null
+          message: string
+          portfolio_owner_id: string
+          sender_email: string
+          sender_name: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_read?: boolean | null
+          message: string
+          portfolio_owner_id: string
+          sender_email: string
+          sender_name: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_read?: boolean | null
+          message?: string
+          portfolio_owner_id?: string
+          sender_email?: string
+          sender_name?: string
+        }
+        Relationships: []
+      }
       domains: {
         Row: {
           created_at: string

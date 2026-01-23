@@ -28,9 +28,9 @@ import AdminSettings from "./pages/admin/AdminSettings";
 const queryClient = new QueryClient();
 
 // Configure your main domain here when you deploy
-// Example: "portfoliohub.com" or "yoursite.com"
-// Users will get subdomains like: username.portfoliohub.com
-const MAIN_DOMAIN = "portfoliohub.com";
+// Example: "alphaportfolio.com" or "yoursite.com"
+// Users will get subdomains like: username.alphaportfolio.com
+const MAIN_DOMAIN = "alphaportfolio.com";
 
 const App = () => (
   <QueryClientProvider client={queryClient}>

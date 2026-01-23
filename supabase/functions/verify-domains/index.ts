@@ -100,7 +100,7 @@ async function sendVerificationEmail(
     const name = displayName || "there";
     
     const { error } = await resend.emails.send({
-      from: "PortfolioHub <noreply@resend.dev>",
+      from: "Alpha Portfolio <noreply@resend.dev>",
       to: [email],
       subject: `🎉 Your domain ${domain} is now verified!`,
       html: `
@@ -138,12 +138,12 @@ async function sendVerificationEmail(
               </p>
             </div>
             
-            <p style="font-size: 16px;">Thank you for using PortfolioHub!</p>
+            <p style="font-size: 16px;">Thank you for using Alpha Portfolio!</p>
             
             <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 30px 0;">
             
             <p style="font-size: 12px; color: #6b7280; text-align: center;">
-              This email was sent by PortfolioHub. If you didn't add this domain, please contact support.
+              This email was sent by Alpha Portfolio. If you didn't add this domain, please contact support.
             </p>
           </div>
         </body>

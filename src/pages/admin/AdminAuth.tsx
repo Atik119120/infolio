@@ -90,7 +90,7 @@ export default function AdminAuth() {
             </div>
             <div>
               <span className="text-3xl font-bold">Admin Panel</span>
-              <p className="text-white/60 text-sm">PortfolioHub</p>
+              <p className="text-white/60 text-sm">Alpha Portfolio</p>
             </div>
           </div>
           
@@ -142,7 +142,7 @@ export default function AdminAuth() {
             </div>
             <div>
               <span className="text-2xl font-bold">Admin Panel</span>
-              <p className="text-muted-foreground text-xs">PortfolioHub</p>
+              <p className="text-muted-foreground text-xs">Alpha Portfolio</p>
             </div>
           </div>
 

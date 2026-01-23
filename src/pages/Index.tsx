@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { Sparkles, ArrowRight, Zap, Globe, Palette, Users } from "lucide-react";
 
 export default function Index() {
@@ -17,6 +18,7 @@ export default function Index() {
             <span className="text-xl font-bold">PortfolioHub</span>
           </div>
           <div className="flex items-center gap-4">
+            <ThemeToggle />
             <Button variant="ghost" onClick={() => navigate("/auth")}>
               Login
             </Button>

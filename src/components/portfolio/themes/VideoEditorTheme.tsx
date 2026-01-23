@@ -188,187 +188,413 @@ export default function VideoEditorTheme({ profile, portfolio, skills, projects,
         </AnimatePresence>
       </motion.nav>
 
-      {/* Hero Section - Program Monitor */}
-      <section id="hero" className="min-h-screen pt-14 flex items-center justify-center px-4">
+      {/* Hero Section - Cinematic Editor Workspace */}
+      <section id="hero" className="min-h-screen pt-14 flex items-center justify-center px-4 relative overflow-hidden">
+        {/* Animated Film Grain */}
+        <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
+        }} />
+
+        {/* Cinematic Letterbox Bars */}
         <motion.div 
-          className="w-full max-w-5xl"
-          initial={{ opacity: 0, y: 50 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 2.2 }}
-        >
-          {/* Monitor Frame */}
-          <div className="rounded-2xl overflow-hidden bg-[#1a1a2e]/80 border border-white/10 shadow-2xl shadow-purple-500/10">
-            <div className="flex items-center justify-between px-4 py-3 border-b border-white/10 bg-[#12121f]">
-              <div className="flex items-center gap-3">
-                <div className="flex gap-1.5">
-                  <div className="w-3 h-3 rounded-full bg-red-500" />
-                  <div className="w-3 h-3 rounded-full bg-yellow-500" />
-                  <div className="w-3 h-3 rounded-full bg-green-500" />
-                </div>
-                <span className="text-xs text-white/40">Program: {profile?.display_name || "Sequence 01"}</span>
-              </div>
-              <span className="text-xs font-mono text-purple-400">{formatTime(progress)}</span>
-            </div>
+          className="absolute top-0 left-0 right-0 h-16 bg-black z-20"
+          initial={{ y: -64 }}
+          animate={{ y: 0 }}
+          transition={{ delay: 2.3, duration: 0.5 }}
+        />
+        <motion.div 
+          className="absolute bottom-0 left-0 right-0 h-16 bg-black z-20"
+          initial={{ y: 64 }}
+          animate={{ y: 0 }}
+          transition={{ delay: 2.3, duration: 0.5 }}
+        />
 
-            {/* Video Preview */}
-            <div className="relative aspect-video bg-black overflow-hidden">
-              {allProjects[0]?.image_url ? (
-                <motion.img
-                  src={allProjects[0].image_url}
-                  alt="Preview"
-                  className="w-full h-full object-cover"
-                  animate={{ scale: isPlaying ? [1, 1.02, 1] : 1 }}
-                  transition={{ duration: 10, repeat: Infinity }}
-                />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-purple-900/30 via-pink-900/20 to-red-900/30">
-                  <Video className="w-24 h-24 text-white/10" />
-                </div>
-              )}
-              
-              {/* Overlay Content */}
-              <div className="absolute inset-0 flex items-center justify-center bg-black/50">
-                <div className="text-center px-4">
-                  <motion.div 
-                    initial={{ opacity: 0, scale: 0.9 }} 
-                    animate={{ opacity: 1, scale: 1 }} 
-                    transition={{ delay: 2.4 }}
-                  >
-                    <Badge className="mb-6 bg-gradient-to-r from-purple-600 to-pink-600 border-0 text-white">
-                      <Film className="w-3 h-3 mr-2" />
-                      Video Editor & Motion Designer
-                    </Badge>
-                  </motion.div>
-                  
-                  <motion.h1 
-                    className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black mb-4 bg-gradient-to-r from-purple-400 via-pink-400 to-red-400 bg-clip-text text-transparent"
-                    initial={{ opacity: 0, y: 30 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 2.6 }}
-                  >
-                    {profile?.display_name || "Creative Editor"}
-                  </motion.h1>
-                  
-                  {portfolio?.headline && (
-                    <motion.p 
-                      className="text-lg sm:text-xl text-white/60 max-w-2xl mx-auto"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      transition={{ delay: 2.8 }}
-                    >
-                      {portfolio.headline}
-                    </motion.p>
-                  )}
-                </div>
-              </div>
-
-              {/* Safe Area Guides */}
-              <div className="absolute inset-[5%] border border-purple-500/20 pointer-events-none hidden sm:block" />
-            </div>
-
-            {/* Playback Controls */}
-            <div className="px-4 py-3 flex items-center gap-4 border-t border-white/10 bg-[#12121f]">
-              <div className="flex items-center gap-2">
-                <button 
-                  onClick={() => setIsPlaying(!isPlaying)}
-                  className="w-10 h-10 rounded-xl bg-gradient-to-r from-purple-600 to-pink-600 flex items-center justify-center hover:shadow-lg hover:shadow-purple-500/20 transition-all"
-                >
-                  {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4 ml-0.5" />}
-                </button>
-                <button className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center hover:bg-white/10 transition-colors">
-                  <SkipForward className="w-4 h-4" />
-                </button>
-              </div>
-
-              <div className="flex-1 h-2 bg-white/10 rounded-full overflow-hidden">
-                <motion.div 
-                  className="h-full bg-gradient-to-r from-purple-500 via-pink-500 to-red-500" 
-                  style={{ width: `${progress}%` }} 
-                />
-              </div>
-
-              <div className="flex items-center gap-3">
-                <Volume2 className="w-4 h-4 text-white/40" />
-                <Maximize className="w-4 h-4 text-white/40" />
-              </div>
-            </div>
-          </div>
-
-          {/* Action Buttons */}
-          <motion.div 
-            className="flex flex-wrap justify-center gap-4 mt-8"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 3 }}
-          >
-            <Button 
-              size="lg" 
-              className="rounded-full bg-gradient-to-r from-purple-600 to-pink-600 hover:shadow-lg hover:shadow-purple-500/30 px-8"
-              onClick={() => scrollTo('works')}
+        <div className="w-full max-w-7xl relative z-10">
+          <div className="grid lg:grid-cols-5 gap-6 items-center">
+            {/* Left: Effects Panel */}
+            <motion.div 
+              className="hidden lg:block lg:col-span-1"
+              initial={{ opacity: 0, x: -30 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 2.5 }}
             >
-              <Play className="w-4 h-4 mr-2" />
-              Watch My Reel
-            </Button>
-            {profile?.email && (
-              <Button 
-                size="lg" 
-                variant="outline" 
-                className="rounded-full border-purple-500/30 text-purple-400 hover:bg-purple-500/10 px-8" 
-                asChild
+              <div className="bg-[#0d0d18]/90 rounded-xl border border-white/5 p-3 space-y-3">
+                <div className="text-xs text-white/40 uppercase tracking-wider mb-3">Effects</div>
+                {["Color Grade", "Sharpen", "Vignette", "Glow"].map((effect, i) => (
+                  <motion.div 
+                    key={effect}
+                    className="flex items-center justify-between px-3 py-2 rounded-lg bg-white/5 text-xs"
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 2.6 + i * 0.1 }}
+                  >
+                    <span className="text-white/60">{effect}</span>
+                    <div className="w-8 h-1 rounded-full bg-gradient-to-r from-purple-500 to-pink-500" />
+                  </motion.div>
+                ))}
+                
+                {/* RGB Parade Mini */}
+                <div className="mt-4 pt-3 border-t border-white/5">
+                  <div className="text-xs text-white/40 mb-2">Scopes</div>
+                  <div className="flex gap-1 h-12">
+                    {["red", "green", "blue"].map((color, i) => (
+                      <div key={color} className="flex-1 relative overflow-hidden rounded">
+                        {[...Array(8)].map((_, j) => (
+                          <motion.div 
+                            key={j}
+                            className="absolute bottom-0 w-full"
+                            style={{ 
+                              backgroundColor: color,
+                              opacity: 0.3 + j * 0.08,
+                            }}
+                            animate={{ height: [`${20 + Math.random() * 30}%`, `${40 + Math.random() * 40}%`] }}
+                            transition={{ duration: 0.5 + Math.random() * 0.5, repeat: Infinity, repeatType: "reverse" }}
+                          />
+                        ))}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Center: Main Preview */}
+            <motion.div 
+              className="lg:col-span-3"
+              initial={{ opacity: 0, y: 50 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 2.2 }}
+            >
+              {/* Monitor Frame */}
+              <div className="rounded-2xl overflow-hidden bg-[#0d0d18]/90 border border-white/10 shadow-2xl shadow-purple-500/20">
+                {/* Top Bar */}
+                <div className="flex items-center justify-between px-4 py-2 border-b border-white/5 bg-black/50">
+                  <div className="flex items-center gap-3">
+                    <div className="flex gap-1.5">
+                      <div className="w-3 h-3 rounded-full bg-red-500/80" />
+                      <div className="w-3 h-3 rounded-full bg-yellow-500/80" />
+                      <div className="w-3 h-3 rounded-full bg-green-500/80" />
+                    </div>
+                    <span className="text-xs text-white/30">Program Monitor</span>
+                  </div>
+                  <div className="flex items-center gap-4">
+                    <span className="text-xs font-mono text-purple-400">{formatTime(progress)}</span>
+                    <span className="text-xs text-white/30">24fps</span>
+                  </div>
+                </div>
+
+                {/* Video Preview */}
+                <div className="relative aspect-video bg-black">
+                  {/* Background Visual */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-purple-900/50 via-pink-900/30 to-red-900/40">
+                    {allProjects[0]?.image_url && (
+                      <motion.img
+                        src={allProjects[0].image_url}
+                        alt="Preview"
+                        className="w-full h-full object-cover opacity-40"
+                        animate={{ scale: isPlaying ? [1, 1.02, 1] : 1 }}
+                        transition={{ duration: 8, repeat: Infinity }}
+                      />
+                    )}
+                  </div>
+
+                  {/* Scanlines Effect */}
+                  <div className="absolute inset-0 opacity-10 pointer-events-none" style={{
+                    backgroundImage: "repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.3) 2px, rgba(0,0,0,0.3) 4px)",
+                  }} />
+
+                  {/* Center Content */}
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="text-center px-6">
+                      <motion.div
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: 2.4 }}
+                      >
+                        {/* Film Reel Icon */}
+                        <motion.div 
+                          className="w-20 h-20 mx-auto mb-6 relative"
+                          animate={{ rotate: isPlaying ? 360 : 0 }}
+                          transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
+                        >
+                          <div className="absolute inset-0 rounded-full border-4 border-purple-500/30" />
+                          <div className="absolute inset-2 rounded-full border-2 border-pink-500/30" />
+                          <div className="absolute inset-0 flex items-center justify-center">
+                            <Clapperboard className="w-8 h-8 text-white/80" />
+                          </div>
+                          {/* Reel Holes */}
+                          {[...Array(8)].map((_, i) => (
+                            <div 
+                              key={i}
+                              className="absolute w-2 h-2 bg-purple-400/60 rounded-full"
+                              style={{
+                                top: `${50 + 35 * Math.sin(i * Math.PI / 4)}%`,
+                                left: `${50 + 35 * Math.cos(i * Math.PI / 4)}%`,
+                                transform: "translate(-50%, -50%)"
+                              }}
+                            />
+                          ))}
+                        </motion.div>
+
+                        <Badge className="mb-4 bg-gradient-to-r from-purple-600/80 to-pink-600/80 border-0 backdrop-blur-sm">
+                          <Film className="w-3 h-3 mr-2" />
+                          Video Editor & Colorist
+                        </Badge>
+                      </motion.div>
+
+                      <motion.h1 
+                        className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black mb-4"
+                        initial={{ opacity: 0, y: 30 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 2.6 }}
+                      >
+                        <span className="bg-gradient-to-r from-purple-400 via-pink-400 to-red-400 bg-clip-text text-transparent">
+                          {profile?.display_name || "Creative Editor"}
+                        </span>
+                      </motion.h1>
+
+                      {portfolio?.headline && (
+                        <motion.p 
+                          className="text-base sm:text-lg text-white/50 max-w-xl mx-auto"
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          transition={{ delay: 2.8 }}
+                        >
+                          {portfolio.headline}
+                        </motion.p>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Corner Info */}
+                  <div className="absolute top-4 left-4 flex items-center gap-2">
+                    <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+                    <span className="text-xs text-white/50">REC</span>
+                  </div>
+                  <div className="absolute top-4 right-4 text-xs font-mono text-white/30">
+                    4K UHD • 23.976
+                  </div>
+
+                  {/* Safe Area Guides */}
+                  <div className="absolute inset-[5%] border border-dashed border-white/10 pointer-events-none hidden sm:block" />
+                </div>
+
+                {/* Playback Controls */}
+                <div className="px-4 py-3 flex items-center gap-4 border-t border-white/5 bg-black/50">
+                  <div className="flex items-center gap-2">
+                    <motion.button 
+                      onClick={() => setIsPlaying(!isPlaying)}
+                      className="w-10 h-10 rounded-full bg-gradient-to-r from-purple-600 to-pink-600 flex items-center justify-center shadow-lg shadow-purple-500/20"
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.95 }}
+                    >
+                      {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4 ml-0.5" />}
+                    </motion.button>
+                    <button className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center hover:bg-white/10">
+                      <SkipForward className="w-4 h-4 text-white/60" />
+                    </button>
+                  </div>
+
+                  {/* Progress Bar */}
+                  <div className="flex-1 h-2 bg-white/5 rounded-full overflow-hidden relative">
+                    <motion.div 
+                      className="h-full bg-gradient-to-r from-purple-500 via-pink-500 to-red-500" 
+                      style={{ width: `${progress}%` }} 
+                    />
+                    {/* Keyframes */}
+                    {[20, 45, 70, 90].map((pos) => (
+                      <div 
+                        key={pos}
+                        className="absolute top-1/2 -translate-y-1/2 w-2 h-2 bg-yellow-400 rounded-sm rotate-45"
+                        style={{ left: `${pos}%` }}
+                      />
+                    ))}
+                  </div>
+
+                  <div className="flex items-center gap-3 text-white/40">
+                    <Volume2 className="w-4 h-4" />
+                    <Maximize className="w-4 h-4" />
+                  </div>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <motion.div 
+                className="flex flex-wrap justify-center gap-4 mt-8"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 3 }}
               >
-                <a href={`mailto:${profile.email}`}>
-                  <Mail className="w-4 h-4 mr-2" />
-                  Hire Me
-                </a>
-              </Button>
-            )}
-          </motion.div>
+                <Button 
+                  size="lg" 
+                  className="rounded-full bg-gradient-to-r from-purple-600 to-pink-600 hover:shadow-lg hover:shadow-purple-500/30 px-8"
+                  onClick={() => scrollTo('works')}
+                >
+                  <Play className="w-4 h-4 mr-2" />
+                  Watch My Reel
+                </Button>
+                {profile?.email && (
+                  <Button 
+                    size="lg" 
+                    variant="outline" 
+                    className="rounded-full border-purple-500/30 text-purple-400 hover:bg-purple-500/10 px-8" 
+                    asChild
+                  >
+                    <a href={`mailto:${profile.email}`}>
+                      <Mail className="w-4 h-4 mr-2" />
+                      Hire Me
+                    </a>
+                  </Button>
+                )}
+              </motion.div>
+            </motion.div>
+
+            {/* Right: Audio & Metadata Panel */}
+            <motion.div 
+              className="hidden lg:block lg:col-span-1"
+              initial={{ opacity: 0, x: 30 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 2.5 }}
+            >
+              <div className="bg-[#0d0d18]/90 rounded-xl border border-white/5 p-3 space-y-4">
+                {/* Audio Meters */}
+                <div>
+                  <div className="text-xs text-white/40 uppercase tracking-wider mb-3">Audio</div>
+                  <div className="flex gap-2 h-32">
+                    {["L", "R"].map((channel) => (
+                      <div key={channel} className="flex-1 flex flex-col gap-1">
+                        <div className="flex-1 bg-black/50 rounded relative overflow-hidden flex flex-col-reverse">
+                          {[...Array(20)].map((_, i) => (
+                            <motion.div 
+                              key={i}
+                              className="h-1 mx-0.5 rounded-sm"
+                              style={{ 
+                                backgroundColor: i < 14 ? "#22c55e" : i < 18 ? "#eab308" : "#ef4444"
+                              }}
+                              animate={{ 
+                                opacity: isPlaying ? [0.3, i < 12 + Math.random() * 8 ? 1 : 0.3, 0.3] : 0.3
+                              }}
+                              transition={{ duration: 0.2, repeat: Infinity, repeatDelay: Math.random() * 0.3 }}
+                            />
+                          ))}
+                        </div>
+                        <span className="text-[10px] text-white/30 text-center">{channel}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Metadata */}
+                <div className="pt-3 border-t border-white/5">
+                  <div className="text-xs text-white/40 uppercase tracking-wider mb-3">Metadata</div>
+                  <div className="space-y-2 text-xs">
+                    {[
+                      ["Resolution", "3840×2160"],
+                      ["Codec", "H.264"],
+                      ["Bitrate", "50 Mbps"],
+                      ["Duration", "02:00:00"],
+                    ].map(([label, value]) => (
+                      <div key={label} className="flex justify-between text-white/50">
+                        <span className="text-white/30">{label}</span>
+                        <span>{value}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Waveform Mini */}
+                <div className="pt-3 border-t border-white/5">
+                  <div className="text-xs text-white/40 uppercase tracking-wider mb-2">Waveform</div>
+                  <div className="flex items-center justify-center gap-px h-8">
+                    {[...Array(30)].map((_, i) => (
+                      <motion.div 
+                        key={i}
+                        className="w-1 bg-gradient-to-t from-purple-500 to-pink-500 rounded-sm"
+                        animate={{ 
+                          height: isPlaying 
+                            ? [`${10 + Math.random() * 20}px`, `${5 + Math.random() * 25}px`]
+                            : "8px"
+                        }}
+                        transition={{ duration: 0.3, repeat: Infinity, repeatType: "reverse" }}
+                      />
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          </div>
 
           {/* Timeline Preview */}
           <motion.div 
-            className="hidden lg:block mt-8 rounded-xl overflow-hidden bg-[#1a1a2e]/60 border border-white/5"
+            className="hidden lg:block mt-8 rounded-xl overflow-hidden bg-[#0d0d18]/80 border border-white/5"
             initial={{ y: 50, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 3.2 }}
           >
-            <div className="flex items-center px-4 py-2 border-b border-white/5 bg-[#12121f]/80">
+            <div className="flex items-center justify-between px-4 py-2 border-b border-white/5 bg-black/50">
               <span className="text-xs text-white/40">Timeline: Main Sequence</span>
+              <div className="flex gap-3 text-xs text-white/30">
+                <span>V1-V3</span>
+                <span>A1-A2</span>
+              </div>
             </div>
-            <div className="h-20 relative overflow-hidden p-2">
-              {/* Playhead */}
-              <motion.div 
-                className="absolute top-0 bottom-0 w-0.5 z-10 bg-gradient-to-b from-purple-500 to-pink-500"
-                style={{ left: `${progress}%` }}
-              >
-                <div className="w-4 h-4 -ml-1.5 -mt-1 bg-gradient-to-r from-purple-500 to-pink-500" style={{ clipPath: "polygon(50% 100%, 0 0, 100% 0)" }} />
-              </motion.div>
-
-              {/* Video Tracks */}
-              <div className="flex gap-1 h-7 mb-1">
-                {[...Array(8)].map((_, i) => (
-                  <motion.div 
-                    key={i}
-                    className="flex-1 rounded bg-gradient-to-r from-purple-600 to-pink-600 opacity-80"
-                    initial={{ scaleX: 0 }}
-                    animate={{ scaleX: 1 }}
-                    transition={{ delay: 3.4 + i * 0.05 }}
-                  />
+            <div className="h-24 relative overflow-hidden p-2">
+              {/* Time Ruler */}
+              <div className="flex justify-between mb-2 text-[10px] text-white/20 px-2">
+                {["00:00", "00:30", "01:00", "01:30", "02:00"].map((time) => (
+                  <span key={time}>{time}</span>
                 ))}
               </div>
 
-              {/* Audio Track */}
-              <div className="flex gap-1 h-5">
+              {/* Playhead */}
+              <motion.div 
+                className="absolute top-0 bottom-0 w-0.5 z-10 bg-red-500"
+                style={{ left: `${progress}%` }}
+              >
+                <div className="w-3 h-3 -ml-1 bg-red-500 rounded-sm" />
+              </motion.div>
+
+              {/* Video Tracks */}
+              <div className="space-y-1">
+                <div className="flex gap-1 h-6">
+                  {[...Array(6)].map((_, i) => (
+                    <motion.div 
+                      key={i}
+                      className="rounded bg-gradient-to-r from-purple-600/80 to-pink-600/80"
+                      style={{ flex: 1 + Math.random() * 2 }}
+                      initial={{ scaleX: 0 }}
+                      animate={{ scaleX: 1 }}
+                      transition={{ delay: 3.4 + i * 0.05 }}
+                    />
+                  ))}
+                </div>
+                <div className="flex gap-1 h-5">
+                  {[...Array(4)].map((_, i) => (
+                    <motion.div 
+                      key={i}
+                      className="rounded bg-gradient-to-r from-blue-500/60 to-cyan-500/60"
+                      style={{ flex: 1 + Math.random() * 3 }}
+                      initial={{ scaleX: 0 }}
+                      animate={{ scaleX: 1 }}
+                      transition={{ delay: 3.5 + i * 0.05 }}
+                    />
+                  ))}
+                </div>
+              </div>
+
+              {/* Audio Waveform Track */}
+              <div className="flex gap-1 h-5 mt-1">
                 {[...Array(10)].map((_, i) => (
                   <motion.div 
                     key={i}
-                    className="flex-1 rounded bg-gradient-to-r from-green-500 to-emerald-500 opacity-60 flex items-center justify-center"
+                    className="flex-1 rounded bg-green-500/50 flex items-center justify-center overflow-hidden"
                     initial={{ scaleX: 0 }}
                     animate={{ scaleX: 1 }}
                     transition={{ delay: 3.6 + i * 0.03 }}
                   >
                     <div className="flex items-center gap-px">
-                      {[...Array(6)].map((_, j) => (
-                        <div key={j} className="w-0.5 bg-white/40" style={{ height: `${Math.random() * 8 + 4}px` }} />
+                      {[...Array(8)].map((_, j) => (
+                        <div key={j} className="w-0.5 bg-green-400/60" style={{ height: `${Math.random() * 12 + 4}px` }} />
                       ))}
                     </div>
                   </motion.div>
@@ -376,7 +602,7 @@ export default function VideoEditorTheme({ profile, portfolio, skills, projects,
               </div>
             </div>
           </motion.div>
-        </motion.div>
+        </div>
       </section>
 
       {/* Bio Section */}

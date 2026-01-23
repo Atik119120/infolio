@@ -164,94 +164,357 @@ export default function GraphicDesignerTheme({ profile, portfolio, skills, proje
         </AnimatePresence>
       </nav>
 
-      {/* Hero Section */}
-      <section id="hero" className="min-h-screen pt-14 relative flex items-center">
-        {/* Grid Background */}
-        <div className="absolute inset-0 opacity-30" style={{
-          backgroundImage: `linear-gradient(rgba(255,154,0,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,154,0,0.05) 1px, transparent 1px)`,
-          backgroundSize: "40px 40px",
-        }} />
+      {/* Hero Section - Creative Design Canvas */}
+      <section id="hero" className="min-h-screen pt-14 relative flex items-center overflow-hidden">
+        {/* Animated Canvas Grid */}
+        <div className="absolute inset-0">
+          <div className="absolute inset-0 opacity-20" style={{
+            backgroundImage: `
+              linear-gradient(rgba(255,154,0,0.3) 1px, transparent 1px),
+              linear-gradient(90deg, rgba(255,51,102,0.3) 1px, transparent 1px)
+            `,
+            backgroundSize: "60px 60px",
+          }} />
+          {/* Animated grid lines */}
+          <motion.div 
+            className="absolute inset-0"
+            animate={{ 
+              backgroundPosition: ["0px 0px", "60px 60px"] 
+            }}
+            transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+            style={{
+              backgroundImage: `
+                linear-gradient(rgba(162,89,255,0.2) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(162,89,255,0.2) 1px, transparent 1px)
+              `,
+              backgroundSize: "60px 60px",
+            }}
+          />
+        </div>
 
-        {/* Floating Software Icons */}
+        {/* Floating Color Palettes & Shapes */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          {adobeApps.map((app, i) => (
+          {/* Paint Splatters */}
+          {[...Array(6)].map((_, i) => (
             <motion.div
-              key={app.icon}
-              className="absolute hidden lg:flex w-12 h-12 rounded-xl items-center justify-center font-bold shadow-lg"
-              style={{ 
-                backgroundColor: app.color,
-                right: `${10 + (i % 3) * 8}%`,
-                top: `${20 + i * 12}%`,
+              key={`splat-${i}`}
+              className="absolute rounded-full blur-xl"
+              style={{
+                width: `${100 + i * 30}px`,
+                height: `${100 + i * 30}px`,
+                background: `radial-gradient(circle, ${adobeApps[i % adobeApps.length].color}40, transparent)`,
+                left: `${15 + i * 15}%`,
+                top: `${20 + (i % 3) * 25}%`,
               }}
-              animate={{ y: [0, -15, 0] }}
-              transition={{ duration: 3 + i * 0.5, repeat: Infinity }}
-            >
-              {app.icon}
-            </motion.div>
+              animate={{ 
+                scale: [1, 1.2, 1],
+                opacity: [0.3, 0.6, 0.3],
+              }}
+              transition={{ duration: 4 + i, repeat: Infinity, ease: "easeInOut" }}
+            />
           ))}
         </div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
-          <div className="max-w-3xl">
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }}>
-              <Badge className="mb-6 bg-gradient-to-r from-[#FF9A00] to-[#FF3366] text-white border-0">
-                <PenTool className="w-3 h-3 mr-2" />
-                Graphic Designer
-              </Badge>
-            </motion.div>
-
-            <motion.h1 
-              className="text-4xl sm:text-5xl md:text-6xl lg:text-8xl font-black leading-tight mb-6"
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.7 }}
-            >
-              <span className="text-white/30">I'm a</span>
-              <span className="block bg-gradient-to-r from-[#FF9A00] via-[#FF3366] to-[#A259FF] bg-clip-text text-transparent">Creative</span>
-              <span className="block">Designer</span>
-            </motion.h1>
-
-            {portfolio?.headline && (
-              <motion.p 
-                className="text-lg sm:text-xl text-white/50 mb-8 max-w-xl"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.9 }}
+          <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+            {/* Left: Text Content */}
+            <div className="order-2 lg:order-1">
+              <motion.div 
+                initial={{ opacity: 0, x: -30 }} 
+                animate={{ opacity: 1, x: 0 }} 
+                transition={{ delay: 0.5 }}
               >
-                {portfolio.headline}
-              </motion.p>
-            )}
+                <Badge className="mb-6 bg-gradient-to-r from-[#FF9A00] via-[#FF3366] to-[#A259FF] text-white border-0 px-4 py-1.5">
+                  <Sparkles className="w-3 h-3 mr-2" />
+                  Creative Designer
+                </Badge>
+              </motion.div>
 
-            <motion.div 
-              className="flex flex-wrap gap-4"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 1.1 }}
-            >
-              {profile?.email && (
+              <motion.div 
+                className="mb-2"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.6 }}
+              >
+                <span className="text-sm font-mono text-white/40 tracking-wider">{'<'}<span className="text-[#FF9A00]">Designer</span>{' '}name="</span>
+              </motion.div>
+
+              <motion.h1 
+                className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black leading-[0.9] mb-3"
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.7 }}
+              >
+                <span className="bg-gradient-to-r from-[#FF9A00] via-[#FF3366] to-[#A259FF] bg-clip-text text-transparent">
+                  {profile?.display_name || "Creative"}
+                </span>
+              </motion.h1>
+
+              <motion.div 
+                className="mb-6"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.8 }}
+              >
+                <span className="text-sm font-mono text-white/40">" <span className="text-[#A259FF]">/{'>'}</span></span>
+              </motion.div>
+
+              {portfolio?.headline && (
+                <motion.p 
+                  className="text-lg sm:text-xl text-white/50 mb-8 max-w-xl leading-relaxed"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.9 }}
+                >
+                  {portfolio.headline}
+                </motion.p>
+              )}
+
+              <motion.div 
+                className="flex flex-wrap gap-4"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 1.1 }}
+              >
+                {profile?.email && (
+                  <Button 
+                    size="lg" 
+                    className="rounded-xl bg-gradient-to-r from-[#FF9A00] via-[#FF3366] to-[#A259FF] hover:shadow-xl hover:shadow-[#FF3366]/30 px-8"
+                    asChild
+                  >
+                    <a href={`mailto:${profile.email}`}>
+                      <Mail className="w-4 h-4 mr-2" />
+                      Let's Create
+                    </a>
+                  </Button>
+                )}
                 <Button 
                   size="lg" 
-                  className="rounded-full bg-gradient-to-r from-[#FF9A00] to-[#FF3366] hover:shadow-lg hover:shadow-[#FF3366]/30"
-                  asChild
+                  variant="outline" 
+                  className="rounded-xl border-white/20 hover:bg-white/5 hover:border-[#A259FF]/50 px-8"
+                  onClick={() => scrollTo('works')}
                 >
-                  <a href={`mailto:${profile.email}`}>
-                    <Mail className="w-4 h-4 mr-2" />
-                    Hire Me
-                  </a>
+                  <Eye className="w-4 h-4 mr-2" />
+                  View Portfolio
                 </Button>
-              )}
-              <Button 
-                size="lg" 
-                variant="outline" 
-                className="rounded-full border-white/20 hover:bg-white/5"
-                onClick={() => scrollTo('works')}
+              </motion.div>
+
+              {/* Design Software Bar */}
+              <motion.div 
+                className="mt-10 flex items-center gap-3"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 1.3 }}
               >
-                <Layers className="w-4 h-4 mr-2" />
-                View Work
-              </Button>
+                <span className="text-xs text-white/30 uppercase tracking-widest">Tools:</span>
+                <div className="flex gap-2">
+                  {adobeApps.map((app, i) => (
+                    <motion.div
+                      key={app.icon}
+                      className="w-10 h-10 rounded-lg flex items-center justify-center text-xs font-bold cursor-pointer hover:scale-110 transition-transform"
+                      style={{ backgroundColor: app.color }}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 1.4 + i * 0.1 }}
+                      whileHover={{ y: -5, boxShadow: `0 10px 30px -5px ${app.color}60` }}
+                    >
+                      {app.icon}
+                    </motion.div>
+                  ))}
+                </div>
+              </motion.div>
+            </div>
+
+            {/* Right: Interactive Design Canvas */}
+            <motion.div 
+              className="order-1 lg:order-2 relative"
+              initial={{ opacity: 0, x: 30 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.8 }}
+            >
+              {/* Main Artboard */}
+              <div className="relative">
+                {/* Canvas Frame */}
+                <motion.div 
+                  className="relative bg-[#2d2d44] rounded-2xl overflow-hidden shadow-2xl shadow-purple-500/20 border border-white/10"
+                  whileHover={{ rotateY: 5, rotateX: -5 }}
+                  transition={{ type: "spring", stiffness: 300 }}
+                  style={{ perspective: 1000, transformStyle: "preserve-3d" }}
+                >
+                  {/* Artboard Header */}
+                  <div className="flex items-center justify-between px-4 py-2.5 bg-[#1a1a2e] border-b border-white/5">
+                    <div className="flex items-center gap-2">
+                      <div className="w-3 h-3 rounded-full bg-[#FF5F57]" />
+                      <div className="w-3 h-3 rounded-full bg-[#FFBD2E]" />
+                      <div className="w-3 h-3 rounded-full bg-[#28CA41]" />
+                    </div>
+                    <span className="text-xs text-white/40 font-mono">portfolio.psd @ 100%</span>
+                    <div className="flex gap-2">
+                      {["Ps", "Ai"].map((icon, i) => (
+                        <span key={icon} className="text-xs px-1.5 py-0.5 rounded" style={{ backgroundColor: adobeApps[i].color }}>
+                          {icon}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Canvas Content */}
+                  <div className="aspect-square relative bg-gradient-to-br from-[#1a1a2e] to-[#0d0d18] p-6">
+                    {/* Grid Pattern */}
+                    <div className="absolute inset-0 opacity-10" style={{
+                      backgroundImage: `linear-gradient(white 1px, transparent 1px), linear-gradient(90deg, white 1px, transparent 1px)`,
+                      backgroundSize: "20px 20px"
+                    }} />
+
+                    {/* Floating Design Elements */}
+                    <motion.div 
+                      className="absolute top-8 left-8 w-24 h-24 rounded-2xl bg-gradient-to-br from-[#FF9A00] to-[#FF3366] shadow-xl"
+                      animate={{ rotate: [0, 10, 0], y: [0, -10, 0] }}
+                      transition={{ duration: 4, repeat: Infinity }}
+                    />
+                    
+                    <motion.div 
+                      className="absolute top-16 right-12 w-20 h-20 rounded-full bg-gradient-to-br from-[#31A8FF] to-[#A259FF] shadow-xl"
+                      animate={{ rotate: [0, -10, 0], y: [0, 10, 0] }}
+                      transition={{ duration: 5, repeat: Infinity }}
+                    />
+
+                    <motion.div 
+                      className="absolute bottom-16 left-16 w-16 h-16 bg-gradient-to-br from-[#FF3366] to-[#A259FF] shadow-xl"
+                      style={{ clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)" }}
+                      animate={{ rotate: [0, 360] }}
+                      transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                    />
+
+                    {/* Center Profile Circle */}
+                    <motion.div 
+                      className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+                      animate={{ scale: [1, 1.05, 1] }}
+                      transition={{ duration: 3, repeat: Infinity }}
+                    >
+                      <div className="w-32 h-32 rounded-full border-4 border-white/20 bg-gradient-to-br from-[#FF9A00] via-[#FF3366] to-[#A259FF] flex items-center justify-center shadow-2xl shadow-purple-500/30">
+                        <Avatar className="w-28 h-28 border-4 border-[#1a1a2e]">
+                          <AvatarImage src={profile?.avatar_url || undefined} className="object-cover" />
+                          <AvatarFallback className="text-4xl bg-[#1a1a2e] text-white font-black">
+                            {profile?.display_name?.[0]?.toUpperCase() || "D"}
+                          </AvatarFallback>
+                        </Avatar>
+                      </div>
+                    </motion.div>
+
+                    {/* Decorative Lines */}
+                    <svg className="absolute inset-0 w-full h-full pointer-events-none">
+                      <motion.line 
+                        x1="10%" y1="30%" x2="40%" y2="50%" 
+                        stroke="url(#gradient1)" strokeWidth="1" strokeDasharray="5,5"
+                        initial={{ pathLength: 0 }}
+                        animate={{ pathLength: 1 }}
+                        transition={{ duration: 2, delay: 1.5 }}
+                      />
+                      <motion.line 
+                        x1="60%" y1="50%" x2="90%" y2="70%" 
+                        stroke="url(#gradient2)" strokeWidth="1" strokeDasharray="5,5"
+                        initial={{ pathLength: 0 }}
+                        animate={{ pathLength: 1 }}
+                        transition={{ duration: 2, delay: 1.7 }}
+                      />
+                      <defs>
+                        <linearGradient id="gradient1" x1="0%" y1="0%" x2="100%" y2="0%">
+                          <stop offset="0%" stopColor="#FF9A00" />
+                          <stop offset="100%" stopColor="#FF3366" />
+                        </linearGradient>
+                        <linearGradient id="gradient2" x1="0%" y1="0%" x2="100%" y2="0%">
+                          <stop offset="0%" stopColor="#FF3366" />
+                          <stop offset="100%" stopColor="#A259FF" />
+                        </linearGradient>
+                      </defs>
+                    </svg>
+                  </div>
+
+                  {/* Bottom Toolbar */}
+                  <div className="flex items-center justify-between px-4 py-2 bg-[#1a1a2e] border-t border-white/5">
+                    <div className="flex items-center gap-4">
+                      <span className="text-xs text-white/30">100%</span>
+                      <div className="w-20 h-1 bg-white/10 rounded-full">
+                        <div className="w-full h-full bg-gradient-to-r from-[#FF9A00] to-[#A259FF] rounded-full" />
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs text-white/30">RGB</span>
+                      <span className="text-xs text-white/30">•</span>
+                      <span className="text-xs text-white/30">8-bit</span>
+                    </div>
+                  </div>
+                </motion.div>
+
+                {/* Floating Color Palette */}
+                <motion.div 
+                  className="absolute -right-4 top-1/4 bg-[#2d2d44] rounded-xl p-2 shadow-xl border border-white/10 hidden lg:block"
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 1.2 }}
+                >
+                  <div className="space-y-2">
+                    {["#FF9A00", "#FF3366", "#A259FF", "#31A8FF", "#28CA41"].map((color, i) => (
+                      <motion.div 
+                        key={color}
+                        className="w-6 h-6 rounded cursor-pointer hover:scale-110 transition-transform"
+                        style={{ backgroundColor: color }}
+                        whileHover={{ x: 4 }}
+                      />
+                    ))}
+                  </div>
+                </motion.div>
+
+                {/* Floating Layers Panel */}
+                <motion.div 
+                  className="absolute -left-4 bottom-1/4 bg-[#2d2d44] rounded-xl p-3 shadow-xl border border-white/10 hidden lg:block"
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 1.4 }}
+                >
+                  <div className="text-xs text-white/40 mb-2">Layers</div>
+                  <div className="space-y-1.5">
+                    {["Text", "Shapes", "BG"].map((layer, i) => (
+                      <motion.div 
+                        key={layer}
+                        className="flex items-center gap-2 px-2 py-1 rounded bg-white/5 text-xs text-white/60"
+                        whileHover={{ backgroundColor: "rgba(255,255,255,0.1)" }}
+                      >
+                        <Eye className="w-3 h-3" />
+                        {layer}
+                      </motion.div>
+                    ))}
+                  </div>
+                </motion.div>
+              </div>
             </motion.div>
           </div>
         </div>
+
+        {/* Scroll Indicator */}
+        <motion.div 
+          className="absolute bottom-8 left-1/2 -translate-x-1/2"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1.5 }}
+        >
+          <motion.div 
+            className="flex flex-col items-center gap-2 cursor-pointer"
+            onClick={() => scrollTo('bio')}
+            animate={{ y: [0, 10, 0] }}
+            transition={{ duration: 2, repeat: Infinity }}
+          >
+            <span className="text-xs text-white/30 uppercase tracking-widest">Scroll</span>
+            <div className="w-6 h-10 rounded-full border-2 border-white/20 flex items-start justify-center p-1.5">
+              <motion.div 
+                className="w-1.5 h-1.5 rounded-full bg-gradient-to-b from-[#FF9A00] to-[#A259FF]"
+                animate={{ y: [0, 16, 0] }}
+                transition={{ duration: 1.5, repeat: Infinity }}
+              />
+            </div>
+          </motion.div>
+        </motion.div>
       </section>
 
       {/* Bio Section */}

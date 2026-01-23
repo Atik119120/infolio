@@ -14,6 +14,42 @@ export type Database = {
   }
   public: {
     Tables: {
+      cleanup_logs: {
+        Row: {
+          created_at: string
+          details: Json | null
+          error_message: string | null
+          files_deleted: number
+          id: string
+          orphan_files_found: number
+          space_freed_bytes: number
+          status: string
+          triggered_by: string
+        }
+        Insert: {
+          created_at?: string
+          details?: Json | null
+          error_message?: string | null
+          files_deleted?: number
+          id?: string
+          orphan_files_found?: number
+          space_freed_bytes?: number
+          status?: string
+          triggered_by?: string
+        }
+        Update: {
+          created_at?: string
+          details?: Json | null
+          error_message?: string | null
+          files_deleted?: number
+          id?: string
+          orphan_files_found?: number
+          space_freed_bytes?: number
+          status?: string
+          triggered_by?: string
+        }
+        Relationships: []
+      }
       contact_messages: {
         Row: {
           created_at: string

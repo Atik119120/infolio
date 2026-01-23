@@ -176,16 +176,38 @@ export function ProjectsForm({ projects, userId, onUpdate, onSuccess, onError }:
   const handleDelete = async (id: string) => {
     setDeletingId(id);
 
+    // Find the project to get its image URL
+    const project = projects.find((p) => p.id === id);
+    
+    // Delete from database first
     const { error } = await supabase.from("projects").delete().eq("id", id);
 
-    setDeletingId(null);
-
     if (error) {
+      setDeletingId(null);
       onError("Failed to delete project");
-    } else {
-      onSuccess("Project removed");
-      onUpdate();
+      return;
     }
+
+    // If project had an image, delete it from storage
+    if (project?.image_url) {
+      try {
+        // Extract file path from URL
+        const url = new URL(project.image_url);
+        const pathMatch = url.pathname.match(/\/projects\/(.+)$/);
+        if (pathMatch) {
+          const filePath = decodeURIComponent(pathMatch[1]);
+          await supabase.storage.from("projects").remove([filePath]);
+          console.log("Deleted image from storage:", filePath);
+        }
+      } catch (err) {
+        console.error("Failed to delete image from storage:", err);
+        // Don't fail the operation if storage delete fails
+      }
+    }
+
+    setDeletingId(null);
+    onSuccess("Project and image removed");
+    onUpdate();
   };
 
   return (

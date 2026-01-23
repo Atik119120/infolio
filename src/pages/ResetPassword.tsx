@@ -1,13 +1,14 @@
-import { useState, useEffect } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useState, useRef, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Sparkles, ArrowLeft, KeyRound, CheckCircle } from "lucide-react";
+import { Loader2, ArrowLeft, KeyRound, CheckCircle, Mail, Lock, ShieldCheck } from "lucide-react";
 import { z } from "zod";
+import alphaLogo from "@/assets/alpha-portfolio-logo.png";
 
 const emailSchema = z.object({
   email: z.string().trim().email({ message: "Invalid email address" }),
@@ -21,37 +22,37 @@ const passwordSchema = z.object({
   path: ["confirmPassword"],
 });
 
+type ResetStep = "email" | "otp" | "new-password" | "success";
+
 export default function ResetPassword() {
-  const [searchParams] = useSearchParams();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [otp, setOtp] = useState(["", "", "", "", "", ""]);
+  const [verifiedCode, setVerifiedCode] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [emailSent, setEmailSent] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const [isResetMode, setIsResetMode] = useState(false);
+  const [step, setStep] = useState<ResetStep>("email");
+  const [countdown, setCountdown] = useState(0);
+  const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   const navigate = useNavigate();
   const { toast } = useToast();
 
   useEffect(() => {
-    // Check if we have a recovery token in the URL (user clicked email link)
-    const accessToken = searchParams.get("access_token");
-    const type = searchParams.get("type");
-    
-    if (type === "recovery" || accessToken) {
-      setIsResetMode(true);
+    if (countdown > 0) {
+      const timer = setTimeout(() => setCountdown(countdown - 1), 1000);
+      return () => clearTimeout(timer);
     }
+  }, [countdown]);
 
-    // Handle the hash fragment from Supabase redirect
-    const hashParams = new URLSearchParams(window.location.hash.substring(1));
-    const hashType = hashParams.get("type");
-    if (hashType === "recovery") {
-      setIsResetMode(true);
+  useEffect(() => {
+    if (step === "otp") {
+      inputRefs.current[0]?.focus();
     }
-  }, [searchParams]);
+  }, [step]);
 
-  const handleSendResetEmail = async (e: React.FormEvent) => {
+  const handleSendResetCode = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrors({});
 
@@ -69,24 +70,124 @@ export default function ResetPassword() {
 
     setIsLoading(true);
     
-    const { error } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: `${window.location.origin}/reset-password`,
-    });
+    try {
+      const { data, error } = await supabase.functions.invoke("otp-verification", {
+        body: { action: "send_reset", email },
+      });
 
-    setIsLoading(false);
+      if (error) throw error;
 
-    if (error) {
+      toast({
+        title: "Reset Code Sent! 📧",
+        description: "Check your email for the 6-digit code.",
+      });
+      setStep("otp");
+      setCountdown(60);
+    } catch (error: any) {
       toast({
         variant: "destructive",
         title: "Error",
-        description: error.message,
+        description: error.message || "Failed to send reset code",
       });
-    } else {
-      setEmailSent(true);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleOtpChange = (index: number, value: string) => {
+    if (value && !/^\d$/.test(value)) return;
+
+    const newOtp = [...otp];
+    newOtp[index] = value;
+    setOtp(newOtp);
+
+    if (value && index < 5) {
+      inputRefs.current[index + 1]?.focus();
+    }
+
+    if (newOtp.every((digit) => digit !== "") && newOtp.join("").length === 6) {
+      verifyOTP(newOtp.join(""));
+    }
+  };
+
+  const handleKeyDown = (index: number, e: React.KeyboardEvent) => {
+    if (e.key === "Backspace" && !otp[index] && index > 0) {
+      inputRefs.current[index - 1]?.focus();
+    }
+  };
+
+  const handlePaste = (e: React.ClipboardEvent) => {
+    e.preventDefault();
+    const pastedData = e.clipboardData.getData("text").replace(/\D/g, "").slice(0, 6);
+    if (pastedData.length === 6) {
+      const newOtp = pastedData.split("");
+      setOtp(newOtp);
+      verifyOTP(pastedData);
+    }
+  };
+
+  const verifyOTP = async (code: string) => {
+    setIsLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("otp-verification", {
+        body: { action: "verify_reset", email, code },
+      });
+
+      if (error) throw error;
+
+      if (data.success) {
+        setVerifiedCode(code);
+        toast({
+          title: "Code Verified! ✅",
+          description: "Now set your new password.",
+        });
+        setStep("new-password");
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Invalid Code",
+          description: data.error || "Please check your code and try again.",
+        });
+        setOtp(["", "", "", "", "", ""]);
+        inputRefs.current[0]?.focus();
+      }
+    } catch (error: any) {
       toast({
-        title: "Email sent!",
-        description: "Check your inbox for the password reset link.",
+        variant: "destructive",
+        title: "Verification Failed",
+        description: error.message || "Something went wrong.",
       });
+      setOtp(["", "", "", "", "", ""]);
+      inputRefs.current[0]?.focus();
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const resendCode = async () => {
+    setIsLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("otp-verification", {
+        body: { action: "send_reset", email },
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Code Resent! 📧",
+        description: "A new code has been sent to your email.",
+      });
+      setCountdown(60);
+      setOtp(["", "", "", "", "", ""]);
+      inputRefs.current[0]?.focus();
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Failed to Resend",
+        description: error.message || "Could not resend code.",
+      });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -108,26 +209,67 @@ export default function ResetPassword() {
 
     setIsLoading(true);
 
-    const { error } = await supabase.auth.updateUser({
-      password: password,
-    });
+    try {
+      const { data, error } = await supabase.functions.invoke("otp-verification", {
+        body: { action: "reset_password", email, code: verifiedCode, newPassword: password },
+      });
 
-    setIsLoading(false);
+      if (error) throw error;
 
-    if (error) {
+      if (data.success) {
+        setStep("success");
+        toast({
+          title: "Password Updated! 🎉",
+          description: "Your password has been successfully reset.",
+        });
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: data.error || "Failed to update password",
+        });
+      }
+    } catch (error: any) {
       toast({
         variant: "destructive",
         title: "Error",
-        description: error.message,
+        description: error.message || "Failed to update password",
       });
-    } else {
-      toast({
-        title: "Password updated!",
-        description: "Your password has been successfully reset.",
-      });
-      navigate("/auth");
+    } finally {
+      setIsLoading(false);
     }
   };
+
+  const getStepContent = () => {
+    switch (step) {
+      case "email":
+        return {
+          title: "Forgot Password?",
+          description: "Enter your email and we'll send you a reset code",
+          icon: <Mail className="w-6 h-6 text-primary" />,
+        };
+      case "otp":
+        return {
+          title: "Enter Reset Code",
+          description: `We sent a 6-digit code to ${email}`,
+          icon: <ShieldCheck className="w-6 h-6 text-primary" />,
+        };
+      case "new-password":
+        return {
+          title: "Set New Password",
+          description: "Create a strong password for your account",
+          icon: <Lock className="w-6 h-6 text-primary" />,
+        };
+      case "success":
+        return {
+          title: "Password Reset!",
+          description: "Your password has been updated successfully",
+          icon: <CheckCircle className="w-6 h-6 text-primary" />,
+        };
+    }
+  };
+
+  const stepContent = getStepContent();
 
   return (
     <div className="min-h-screen flex">
@@ -136,24 +278,20 @@ export default function ResetPassword() {
         <div className="absolute inset-0 bg-black/20" />
         <div className="relative z-10 flex flex-col justify-center px-16 text-white">
           <div className="flex items-center gap-3 mb-8">
-            <div className="w-12 h-12 rounded-xl bg-white/20 backdrop-blur flex items-center justify-center">
-              <Sparkles className="w-7 h-7" />
-            </div>
-            <span className="text-3xl font-bold">PortfolioHub</span>
+            <img src={alphaLogo} alt="Alpha Portfolio" className="w-12 h-12 object-contain invert" />
+            <span className="text-3xl font-bold">Alpha Portfolio</span>
           </div>
           <h1 className="text-5xl font-bold leading-tight mb-6">
-            {isResetMode ? "Create New Password" : "Reset Your Password"}
+            Reset Your Password
           </h1>
           <p className="text-xl text-white/80 mb-8 max-w-md">
-            {isResetMode 
-              ? "Enter your new password to regain access to your account."
-              : "Don't worry! It happens to the best of us. Enter your email and we'll send you a reset link."}
+            Don't worry! It happens to the best of us. We'll help you regain access to your account securely.
           </p>
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
               <KeyRound className="w-4 h-4" />
             </div>
-            <span>Secure password reset</span>
+            <span>Secure OTP verification</span>
           </div>
         </div>
         <div className="absolute -bottom-20 -right-20 w-80 h-80 rounded-full bg-white/10 blur-3xl" />
@@ -164,52 +302,132 @@ export default function ResetPassword() {
       <div className="flex-1 flex items-center justify-center p-8 bg-background">
         <div className="w-full max-w-md">
           {/* Back Button */}
-          <Button
-            variant="ghost"
-            className="mb-6"
-            onClick={() => navigate("/auth")}
-          >
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to Login
-          </Button>
+          {step !== "success" && (
+            <Button
+              variant="ghost"
+              className="mb-6"
+              onClick={() => {
+                if (step === "email") {
+                  navigate("/auth");
+                } else if (step === "otp") {
+                  setStep("email");
+                  setOtp(["", "", "", "", "", ""]);
+                } else if (step === "new-password") {
+                  setStep("otp");
+                }
+              }}
+            >
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              {step === "email" ? "Back to Login" : "Back"}
+            </Button>
+          )}
 
           {/* Mobile Logo */}
           <div className="lg:hidden flex items-center justify-center gap-3 mb-8">
-            <div className="w-10 h-10 rounded-xl gradient-primary flex items-center justify-center">
-              <Sparkles className="w-6 h-6 text-white" />
-            </div>
-            <span className="text-2xl font-bold gradient-text">PortfolioHub</span>
+            <img src={alphaLogo} alt="Alpha Portfolio" className="w-10 h-10 object-contain dark:invert" />
+            <span className="text-2xl font-bold gradient-text">Alpha Portfolio</span>
           </div>
 
           <Card className="border-0 shadow-xl">
             <CardHeader className="space-y-1 pb-6">
               <div className="flex items-center justify-center mb-2">
                 <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
-                  {emailSent ? (
-                    <CheckCircle className="w-6 h-6 text-primary" />
-                  ) : (
-                    <KeyRound className="w-6 h-6 text-primary" />
-                  )}
+                  {stepContent.icon}
                 </div>
               </div>
               <CardTitle className="text-2xl font-bold text-center">
-                {isResetMode 
-                  ? "Set New Password" 
-                  : emailSent 
-                    ? "Check Your Email" 
-                    : "Forgot Password?"}
+                {stepContent.title}
               </CardTitle>
               <CardDescription className="text-center">
-                {isResetMode 
-                  ? "Enter your new password below"
-                  : emailSent 
-                    ? "We've sent a password reset link to your email"
-                    : "Enter your email and we'll send you a reset link"}
+                {stepContent.description}
               </CardDescription>
             </CardHeader>
             <CardContent>
-              {isResetMode ? (
-                // New Password Form
+              {/* Step 1: Enter Email */}
+              {step === "email" && (
+                <form onSubmit={handleSendResetCode} className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="reset-email">Email</Label>
+                    <Input
+                      id="reset-email"
+                      type="email"
+                      placeholder="you@gmail.com"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      className={errors.email ? "border-destructive" : ""}
+                      disabled={isLoading}
+                    />
+                    {errors.email && (
+                      <p className="text-sm text-destructive">{errors.email}</p>
+                    )}
+                  </div>
+                  <Button 
+                    type="submit" 
+                    className="w-full gradient-primary hover:opacity-90 transition-opacity"
+                    disabled={isLoading}
+                  >
+                    {isLoading ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Sending...
+                      </>
+                    ) : (
+                      "Send Reset Code"
+                    )}
+                  </Button>
+                </form>
+              )}
+
+              {/* Step 2: Enter OTP */}
+              {step === "otp" && (
+                <div className="space-y-6">
+                  <div className="flex justify-center gap-2 sm:gap-3">
+                    {otp.map((digit, index) => (
+                      <Input
+                        key={index}
+                        ref={(el) => (inputRefs.current[index] = el)}
+                        type="text"
+                        inputMode="numeric"
+                        maxLength={1}
+                        value={digit}
+                        onChange={(e) => handleOtpChange(index, e.target.value)}
+                        onKeyDown={(e) => handleKeyDown(index, e)}
+                        onPaste={handlePaste}
+                        disabled={isLoading}
+                        className="w-12 h-14 text-center text-2xl font-bold border-2 focus:border-primary transition-all"
+                      />
+                    ))}
+                  </div>
+
+                  {isLoading && (
+                    <div className="flex items-center justify-center gap-2 text-primary">
+                      <Loader2 className="w-5 h-5 animate-spin" />
+                      <span>Verifying...</span>
+                    </div>
+                  )}
+
+                  <div className="text-center space-y-2">
+                    <p className="text-sm text-muted-foreground">
+                      Didn't receive the code?
+                    </p>
+                    <Button
+                      variant="link"
+                      onClick={resendCode}
+                      disabled={countdown > 0 || isLoading}
+                      className="text-primary"
+                    >
+                      {countdown > 0 ? `Resend in ${countdown}s` : "Resend Code"}
+                    </Button>
+                  </div>
+
+                  <p className="text-xs text-center text-muted-foreground">
+                    Check your spam folder if you don't see the email
+                  </p>
+                </div>
+              )}
+
+              {/* Step 3: New Password */}
+              {step === "new-password" && (
                 <form onSubmit={handleUpdatePassword} className="space-y-4">
                   <div className="space-y-2">
                     <Label htmlFor="new-password">New Password</Label>
@@ -256,66 +474,36 @@ export default function ResetPassword() {
                     )}
                   </Button>
                 </form>
-              ) : emailSent ? (
-                // Email Sent Confirmation
-                <div className="text-center space-y-4">
+              )}
+
+              {/* Step 4: Success */}
+              {step === "success" && (
+                <div className="text-center space-y-6">
+                  <div className="w-20 h-20 rounded-full bg-primary/20 flex items-center justify-center mx-auto">
+                    <CheckCircle className="w-10 h-10 text-primary" />
+                  </div>
                   <p className="text-muted-foreground">
-                    If an account exists for <strong>{email}</strong>, you'll receive an email with instructions to reset your password.
+                    Your password has been reset successfully. You can now login with your new password.
                   </p>
-                  <Button
-                    variant="outline"
-                    className="w-full"
-                    onClick={() => {
-                      setEmailSent(false);
-                      setEmail("");
-                    }}
+                  <Button 
+                    className="w-full gradient-primary hover:opacity-90 transition-opacity"
+                    onClick={() => navigate("/auth")}
                   >
-                    Send Again
+                    Go to Login
                   </Button>
                 </div>
-              ) : (
-                // Request Reset Email Form
-                <form onSubmit={handleSendResetEmail} className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="reset-email">Email</Label>
-                    <Input
-                      id="reset-email"
-                      type="email"
-                      placeholder="you@example.com"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      className={errors.email ? "border-destructive" : ""}
-                      disabled={isLoading}
-                    />
-                    {errors.email && (
-                      <p className="text-sm text-destructive">{errors.email}</p>
-                    )}
-                  </div>
-                  <Button 
-                    type="submit" 
-                    className="w-full gradient-primary hover:opacity-90 transition-opacity"
-                    disabled={isLoading}
-                  >
-                    {isLoading ? (
-                      <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Sending...
-                      </>
-                    ) : (
-                      "Send Reset Link"
-                    )}
-                  </Button>
-                </form>
               )}
             </CardContent>
           </Card>
 
-          <p className="text-center text-sm text-muted-foreground mt-6">
-            Remember your password?{" "}
-            <Button variant="link" className="p-0 h-auto" onClick={() => navigate("/auth")}>
-              Back to login
-            </Button>
-          </p>
+          {step === "email" && (
+            <p className="text-center text-sm text-muted-foreground mt-6">
+              Remember your password?{" "}
+              <Button variant="link" className="p-0 h-auto" onClick={() => navigate("/auth")}>
+                Back to login
+              </Button>
+            </p>
+          )}
         </div>
       </div>
     </div>

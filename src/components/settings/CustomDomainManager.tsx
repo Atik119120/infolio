@@ -28,7 +28,8 @@ import {
   AlertCircle,
   Copy,
   ExternalLink,
-  Info
+  Info,
+  RefreshCw
 } from "lucide-react";
 import { z } from "zod";
 
@@ -56,6 +57,7 @@ export default function CustomDomainManager() {
   const [loading, setLoading] = useState(true);
   const [adding, setAdding] = useState(false);
   const [deleting, setDeleting] = useState<string | null>(null);
+  const [verifying, setVerifying] = useState(false);
   const [error, setError] = useState("");
   const [copiedToken, setCopiedToken] = useState<string | null>(null);
 
@@ -67,6 +69,33 @@ export default function CustomDomainManager() {
       fetchDomains();
     }
   }, [user]);
+
+  const triggerVerification = async () => {
+    setVerifying(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("verify-domains");
+      
+      if (error) {
+        console.error("Verification error:", error);
+        toast({
+          variant: "destructive",
+          title: "Verification Failed",
+          description: "Could not verify domains. Try again later.",
+        });
+      } else {
+        toast({
+          title: "Verification Complete",
+          description: data?.message || "Domain verification check completed",
+        });
+        // Refresh domains list
+        fetchDomains();
+      }
+    } catch (err) {
+      console.error("Error triggering verification:", err);
+    } finally {
+      setVerifying(false);
+    }
+  };
 
   const fetchDomains = async () => {
     if (!user) return;
@@ -196,13 +225,32 @@ export default function CustomDomainManager() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Globe2 className="w-5 h-5" />
-          Custom Domains
-        </CardTitle>
-        <CardDescription>
-          Connect your own domain to your portfolio for a professional presence
-        </CardDescription>
+        <div className="flex items-start justify-between">
+          <div>
+            <CardTitle className="flex items-center gap-2">
+              <Globe2 className="w-5 h-5" />
+              Custom Domains
+            </CardTitle>
+            <CardDescription>
+              Connect your own domain to your portfolio for a professional presence
+            </CardDescription>
+          </div>
+          {domains.some(d => !d.is_verified) && (
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={triggerVerification}
+              disabled={verifying}
+            >
+              {verifying ? (
+                <Loader2 className="w-4 h-4 animate-spin mr-1" />
+              ) : (
+                <RefreshCw className="w-4 h-4 mr-1" />
+              )}
+              Verify Now
+            </Button>
+          )}
+        </div>
       </CardHeader>
       <CardContent className="space-y-6">
         {/* Add New Domain Form */}

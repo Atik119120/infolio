@@ -9,7 +9,7 @@ import {
   MapPin, Mail, Phone, ExternalLink, Heart, Sparkles, BookOpen,
   Briefcase, GraduationCap, Menu, X, Quote, Star, Feather, Flower2
 } from "lucide-react";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence, useInView, useScroll, useTransform } from "framer-motion";
 
 // Scroll Animation Wrapper
@@ -48,6 +48,11 @@ export default function PersonalTheme({ profile, portfolio, skills, projects, ex
   const { scrollYProgress } = useScroll();
   const heroY = useTransform(scrollYProgress, [0, 0.3], [0, -100]);
   const heroOpacity = useTransform(scrollYProgress, [0, 0.2], [1, 0]);
+
+  // Scroll to top on mount
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   const scrollTo = (id: string) => {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
@@ -401,7 +406,7 @@ export default function PersonalTheme({ profile, portfolio, skills, projects, ex
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             {/* Photo - Enhanced Polaroid Style */}
             <ScrollReveal direction="left">
-              <div className="relative mx-auto lg:mx-0 max-w-md">
+              <div className="relative mx-auto lg:mx-0 max-w-sm">
                 {/* Stacked Polaroid Effect */}
                 <motion.div 
                   className="absolute -inset-4 bg-white dark:bg-slate-800 rounded-lg shadow-xl rotate-6 opacity-60"
@@ -414,20 +419,27 @@ export default function PersonalTheme({ profile, portfolio, skills, projects, ex
                 
                 {/* Main Polaroid */}
                 <motion.div 
-                  className="relative bg-white dark:bg-slate-800 p-3 pb-16 rounded-lg shadow-2xl"
+                  className="relative bg-white dark:bg-slate-800 p-4 pb-16 rounded-lg shadow-2xl"
                   whileHover={{ rotate: 0, scale: 1.02 }}
                   transition={{ type: "spring", stiffness: 300 }}
                 >
-                  <Avatar className="w-full aspect-square rounded-sm overflow-hidden">
-                    <AvatarImage src={profile?.avatar_url || undefined} className="object-cover" />
-                    <AvatarFallback className="text-6xl sm:text-8xl bg-gradient-to-br from-rose-400 via-pink-500 to-purple-500 text-white rounded-sm font-serif">
-                      {profile?.display_name?.[0]?.toUpperCase() || "?"}
-                    </AvatarFallback>
-                  </Avatar>
+                  <div className="aspect-square w-full overflow-hidden rounded-sm">
+                    {profile?.avatar_url ? (
+                      <img 
+                        src={profile.avatar_url} 
+                        alt={profile?.display_name || "Profile"} 
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-rose-400 via-pink-500 to-purple-500 text-white text-6xl sm:text-8xl font-serif">
+                        {profile?.display_name?.[0]?.toUpperCase() || "?"}
+                      </div>
+                    )}
+                  </div>
                   
                   {/* Polaroid Caption */}
                   <div className="absolute bottom-4 left-0 right-0 text-center">
-                    <p className="font-handwriting text-slate-600 dark:text-slate-300 text-lg italic">About Me ✨</p>
+                    <p className="text-slate-600 dark:text-slate-300 text-lg italic">About Me ✨</p>
                   </div>
                 </motion.div>
 

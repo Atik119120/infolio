@@ -1,6 +1,7 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
+import { useEffect } from "react";
 
 // Theme imports
 import {
@@ -127,6 +128,11 @@ const demoData: ThemeProps = {
 export default function ThemeDemo() {
   const { themeName } = useParams<{ themeName: string }>();
   const navigate = useNavigate();
+
+  // Scroll to top on mount
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [themeName]);
 
   const renderTheme = () => {
     switch (themeName) {

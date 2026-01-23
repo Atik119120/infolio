@@ -28,6 +28,11 @@ export default function GraphicDesignerTheme({ profile, portfolio, skills, proje
     { icon: "Fg", name: "Figma", color: "#A259FF" },
   ];
 
+  // Scroll to top on mount
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   useEffect(() => {
     const timer = setTimeout(() => setIsLoading(false), 2500);
     return () => clearTimeout(timer);

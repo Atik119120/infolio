@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { motion } from "framer-motion";
 import { ThemeProps } from "./types";
 import { 
@@ -7,6 +8,7 @@ import {
 } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { getSocialIcon } from "./utils";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 // Cosmic color palette
 const cosmicColors = {
@@ -188,6 +190,11 @@ export default function CosmicTheme({
   education,
   socialLinks,
 }: ThemeProps) {
+  // Scroll to top on mount
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   // Group skills by category
   const skillsByCategory = skills.reduce((acc, skill) => {
     const category = skill.category || "Other";

@@ -93,6 +93,11 @@ const getSocialIcon = (platform: string) => {
   return icons[platform.toLowerCase()] || Globe;
 };
 
+const formatDate = (dateString: string | null) => {
+  if (!dateString) return "";
+  return new Date(dateString).toLocaleDateString("en-US", { year: "numeric", month: "short" });
+};
+
 export default function PublicPortfolio() {
   const { username } = useParams<{ username: string }>();
   const [loading, setLoading] = useState(true);
@@ -112,7 +117,6 @@ export default function PublicPortfolio() {
   }, [username]);
 
   const fetchPortfolio = async () => {
-    // First get the profile by username
     const { data: profileData, error: profileError } = await supabase
       .from("profiles")
       .select("user_id, display_name, avatar_url, email")
@@ -127,7 +131,6 @@ export default function PublicPortfolio() {
 
     const userId = profileData.user_id;
 
-    // Check if portfolio is published
     const { data: portfolioData } = await supabase
       .from("portfolios")
       .select("*")
@@ -140,7 +143,6 @@ export default function PublicPortfolio() {
       return;
     }
 
-    // Fetch all data
     const [skillsRes, projectsRes, experiencesRes, educationRes, socialRes] = await Promise.all([
       supabase.from("skills").select("*").eq("user_id", userId).order("created_at"),
       supabase.from("projects").select("*").eq("user_id", userId).order("display_order"),
@@ -243,7 +245,6 @@ export default function PublicPortfolio() {
               )}
             </div>
 
-            {/* Social Links */}
             {socialLinks.length > 0 && (
               <div className="flex gap-3 mb-8">
                 {socialLinks.map((link) => {
@@ -298,11 +299,11 @@ export default function PublicPortfolio() {
                             />
                           </div>
                         </div>
-                    )}
+                      ))}
                     </div>
                   </CardContent>
                 </Card>
-                )}
+              ))}
             </div>
           </div>
         </section>
@@ -314,7 +315,6 @@ export default function PublicPortfolio() {
           <div className="container mx-auto">
             <h2 className="text-3xl font-bold text-center mb-12">Featured Projects</h2>
 
-            {/* Featured Projects */}
             {featuredProjects.length > 0 && (
               <div className="grid gap-8 md:grid-cols-2 mb-12">
                 {featuredProjects.map((project) => (
@@ -343,7 +343,7 @@ export default function PublicPortfolio() {
                             <Badge key={tech} variant="secondary">
                               {tech}
                             </Badge>
-                )}
+                          ))}
                         </div>
                       )}
                       <div className="flex gap-3">
@@ -366,11 +366,10 @@ export default function PublicPortfolio() {
                       </div>
                     </CardContent>
                   </Card>
-                )))}
+                ))}
               </div>
             )}
 
-            {/* Other Projects */}
             {otherProjects.length > 0 && (
               <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                 {otherProjects.map((project) => (
@@ -409,7 +408,7 @@ export default function PublicPortfolio() {
                       </div>
                     </CardContent>
                   </Card>
-                )))}
+                ))}
               </div>
             )}
           </div>
@@ -421,7 +420,6 @@ export default function PublicPortfolio() {
         <section className="py-20 px-6 bg-muted/50">
           <div className="container mx-auto">
             <div className="grid gap-12 lg:grid-cols-2">
-              {/* Experience */}
               {experiences.length > 0 && (
                 <div>
                   <h2 className="text-2xl font-bold mb-8 flex items-center gap-3">
@@ -435,20 +433,17 @@ export default function PublicPortfolio() {
                         <h3 className="font-semibold">{exp.position}</h3>
                         <p className="text-muted-foreground">{exp.company}</p>
                         <p className="text-sm text-muted-foreground">
-                          {exp.start_date && new Date(exp.start_date).toLocaleDateString("en-US", { year: "numeric", month: "short" })}
-                          {" - "}
-                          {exp.is_current ? "Present" : exp.end_date && new Date(exp.end_date).toLocaleDateString("en-US", { year: "numeric", month: "short" })}
+                          {formatDate(exp.start_date)} - {exp.is_current ? "Present" : formatDate(exp.end_date)}
                         </p>
                         {exp.description && (
                           <p className="text-sm mt-2">{exp.description}</p>
                         )}
                       </div>
-                    )))}
+                    ))}
                   </div>
                 </div>
               )}
 
-              {/* Education */}
               {education.length > 0 && (
                 <div>
                   <h2 className="text-2xl font-bold mb-8 flex items-center gap-3">
@@ -465,12 +460,10 @@ export default function PublicPortfolio() {
                           <p className="text-sm text-muted-foreground">{edu.field_of_study}</p>
                         )}
                         <p className="text-sm text-muted-foreground">
-                          {edu.start_date && new Date(edu.start_date).toLocaleDateString("en-US", { year: "numeric", month: "short" })}
-                          {" - "}
-                          {edu.is_current ? "Present" : edu.end_date && new Date(edu.end_date).toLocaleDateString("en-US", { year: "numeric", month: "short" })}
+                          {formatDate(edu.start_date)} - {edu.is_current ? "Present" : formatDate(edu.end_date)}
                         </p>
                       </div>
-                    )))}
+                    ))}
                   </div>
                 </div>
               )}

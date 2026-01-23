@@ -14,18 +14,23 @@ import {
   ArrowRight,
   CheckCircle2,
   Circle,
+  Clock,
+  Shield,
+  AlertCircle,
 } from "lucide-react";
 
 interface Portfolio {
   is_published: boolean;
   headline: string | null;
   bio: string | null;
+  pending_publish: boolean | null;
 }
 
 interface Profile {
   username: string;
   display_name: string | null;
   avatar_url: string | null;
+  is_approved: boolean | null;
 }
 
 interface Stats {
@@ -52,8 +57,8 @@ export default function DashboardOverview() {
     if (!user) return;
 
     const [portfolioRes, profileRes, skillsRes, projectsRes, experiencesRes] = await Promise.all([
-      supabase.from("portfolios").select("is_published, headline, bio").eq("user_id", user.id).single(),
-      supabase.from("profiles").select("username, display_name, avatar_url").eq("user_id", user.id).single(),
+      supabase.from("portfolios").select("is_published, headline, bio, pending_publish").eq("user_id", user.id).single(),
+      supabase.from("profiles").select("username, display_name, avatar_url, is_approved").eq("user_id", user.id).single(),
       supabase.from("skills").select("id").eq("user_id", user.id),
       supabase.from("projects").select("id").eq("user_id", user.id),
       supabase.from("experiences").select("id").eq("user_id", user.id),
@@ -94,7 +99,10 @@ export default function DashboardOverview() {
   ];
 
   const togglePublish = async () => {
-    if (!user) return;
+    if (!user || !profile?.is_approved) {
+      navigate("/dashboard/settings");
+      return;
+    }
     
     await supabase
       .from("portfolios")
@@ -119,6 +127,31 @@ export default function DashboardOverview() {
 
   return (
     <div className="space-y-6 animate-fade-in">
+      {/* Account Status Alert */}
+      {!profile?.is_approved && (
+        <Card className="border-amber-500/50 bg-amber-50 dark:bg-amber-900/10">
+          <CardContent className="p-4">
+            <div className="flex items-center gap-3">
+              <Clock className="w-6 h-6 text-amber-600" />
+              <div className="flex-1">
+                <p className="font-medium text-amber-800 dark:text-amber-200">Account Pending Approval</p>
+                <p className="text-sm text-amber-700 dark:text-amber-300">
+                  Your account is being reviewed by admin. You can build your portfolio now, but publishing requires approval.
+                </p>
+              </div>
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => navigate("/dashboard/settings")}
+                className="border-amber-500 text-amber-700 dark:text-amber-300"
+              >
+                View Status
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       {/* Welcome Banner */}
       <Card className="gradient-hero text-white overflow-hidden relative">
         <div className="absolute inset-0 bg-black/10" />
@@ -129,9 +162,11 @@ export default function DashboardOverview() {
                 Welcome back, {profile?.display_name || "there"}! 👋
               </h1>
               <p className="text-white/80">
-                {portfolio?.is_published 
-                  ? "Your portfolio is live and looking great!"
-                  : "Let's complete your portfolio and publish it to the world!"}
+                {!profile?.is_approved 
+                  ? "Build your portfolio while we review your account!"
+                  : portfolio?.is_published 
+                    ? "Your portfolio is live and looking great!"
+                    : "Let's complete your portfolio and publish it to the world!"}
               </p>
             </div>
             <div className="flex gap-3">
@@ -149,7 +184,7 @@ export default function DashboardOverview() {
                   onClick={() => window.open(`/u/${profile.username}`, "_blank")}
                 >
                   <Eye className="w-4 h-4 mr-2" />
-                  View Live
+                  Preview
                 </Button>
               )}
             </div>
@@ -158,7 +193,35 @@ export default function DashboardOverview() {
       </Card>
 
       {/* Stats Grid */}
-      <div className="grid md:grid-cols-3 gap-6">
+      <div className="grid md:grid-cols-4 gap-6">
+        {/* Account Status */}
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between pb-2">
+            <CardTitle className="text-sm font-medium text-muted-foreground">
+              Account Status
+            </CardTitle>
+            <Shield className="w-5 h-5 text-primary" />
+          </CardHeader>
+          <CardContent>
+            <div className="flex items-center gap-2">
+              {profile?.is_approved ? (
+                <Badge variant="default" className="bg-green-500">
+                  <CheckCircle2 className="w-3 h-3 mr-1" />
+                  Approved
+                </Badge>
+              ) : (
+                <Badge variant="secondary" className="bg-amber-500/20 text-amber-700 dark:text-amber-400">
+                  <Clock className="w-3 h-3 mr-1" />
+                  Pending
+                </Badge>
+              )}
+            </div>
+            <p className="text-xs text-muted-foreground mt-2">
+              {profile?.is_approved ? "You can publish" : "Awaiting approval"}
+            </p>
+          </CardContent>
+        </Card>
+
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">
@@ -198,19 +261,28 @@ export default function DashboardOverview() {
           </CardHeader>
           <CardContent>
             <div className="flex items-center gap-2">
-              <Badge 
-                variant={portfolio?.is_published ? "default" : "secondary"}
-                className={portfolio?.is_published ? "bg-success" : ""}
-              >
-                {portfolio?.is_published ? "Published" : "Draft"}
-              </Badge>
+              {portfolio?.is_published ? (
+                <Badge variant="default" className="bg-green-500">
+                  Published
+                </Badge>
+              ) : portfolio?.pending_publish ? (
+                <Badge variant="secondary" className="bg-blue-500/20 text-blue-700">
+                  Pending
+                </Badge>
+              ) : (
+                <Badge variant="secondary">Draft</Badge>
+              )}
             </div>
             <Button 
               variant="link" 
               className="px-0 mt-2 h-auto text-sm"
               onClick={togglePublish}
             >
-              {portfolio?.is_published ? "Unpublish" : "Publish Now"}
+              {!profile?.is_approved 
+                ? "Request Approval" 
+                : portfolio?.is_published 
+                  ? "Unpublish" 
+                  : "Publish Now"}
               <ArrowRight className="w-3 h-3 ml-1" />
             </Button>
           </CardContent>
@@ -234,7 +306,7 @@ export default function DashboardOverview() {
                 className="flex items-center gap-2 text-sm"
               >
                 {item.done ? (
-                  <CheckCircle2 className="w-4 h-4 text-success" />
+                  <CheckCircle2 className="w-4 h-4 text-green-500" />
                 ) : (
                   <Circle className="w-4 h-4 text-muted-foreground" />
                 )}

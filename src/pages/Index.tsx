@@ -2,6 +2,8 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Sparkles, ArrowRight, Zap, Globe, Palette, Users } from "lucide-react";
+import ThemeDemoSection from "@/components/home/ThemeDemoSection";
+import Footer from "@/components/home/Footer";
 
 export default function Index() {
   const navigate = useNavigate();
@@ -70,7 +72,7 @@ export default function Index() {
               size="lg" 
               variant="outline" 
               className="text-lg px-8 py-6"
-              onClick={() => navigate("/u/demo")}
+              onClick={() => navigate("/demo/web-developer")}
             >
               View Demo Portfolio
             </Button>
@@ -145,6 +147,9 @@ export default function Index() {
         </div>
       </section>
 
+      {/* Theme Demo Section */}
+      <ThemeDemoSection />
+
       {/* CTA Section */}
       <section className="py-20 px-6">
         <div className="container mx-auto">
@@ -173,22 +178,8 @@ export default function Index() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="py-12 px-6 border-t">
-        <div className="container mx-auto">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg gradient-primary flex items-center justify-center">
-                <Sparkles className="w-5 h-5 text-white" />
-              </div>
-              <span className="font-bold">PortfolioHub</span>
-            </div>
-            <p className="text-muted-foreground text-sm">
-              © 2024 PortfolioHub. All rights reserved.
-            </p>
-          </div>
-        </div>
-      </footer>
+      {/* Professional Footer */}
+      <Footer />
     </div>
   );
 }

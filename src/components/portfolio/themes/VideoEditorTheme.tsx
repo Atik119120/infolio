@@ -3,11 +3,10 @@ import { getSocialIcon, formatDate } from "./utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import {
   MapPin, Mail, Phone, ExternalLink, Film, Play, Pause, SkipForward,
-  Briefcase, GraduationCap, Menu, X, Video, MonitorPlay, Volume2, Maximize
+  Briefcase, GraduationCap, Menu, X, Video, Volume2, Maximize
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -17,30 +16,29 @@ export default function VideoEditorTheme({ profile, portfolio, skills, projects,
   const [isPlaying, setIsPlaying] = useState(true);
   const [progress, setProgress] = useState(0);
   const [showTimeline, setShowTimeline] = useState(false);
+  const [hoveredProject, setHoveredProject] = useState<string | null>(null);
   const featuredProjects = projects.filter((p) => p.featured);
-  const otherProjects = projects.filter((p) => !p.featured);
+  const allProjects = [...featuredProjects, ...projects.filter((p) => !p.featured)];
 
-  // Premiere Pro colors
-  const premiereColors = {
+  const colors = {
     primary: "#9999FF",
     accent: "#00D8FF", 
     purple: "#EA77FF",
-    pink: "#FF2D95",
     dark: "#1E1E1E",
     panel: "#232323",
     timeline: "#2D2D2D",
   };
 
   useEffect(() => {
-    const timer = setTimeout(() => setShowTimeline(true), 1500);
+    const timer = setTimeout(() => setShowTimeline(true), 2000);
     return () => clearTimeout(timer);
   }, []);
 
   useEffect(() => {
     if (isPlaying) {
       const interval = setInterval(() => {
-        setProgress(p => (p >= 100 ? 0 : p + 0.5));
-      }, 100);
+        setProgress(p => (p >= 100 ? 0 : p + 0.3));
+      }, 50);
       return () => clearInterval(interval);
     }
   }, [isPlaying]);
@@ -50,37 +48,36 @@ export default function VideoEditorTheme({ profile, portfolio, skills, projects,
     setMenuOpen(false);
   };
 
-  const formatTime = (seconds: number) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = Math.floor(seconds % 60);
-    const frames = Math.floor((seconds % 1) * 24);
+  const formatTime = (p: number) => {
+    const totalSecs = (p / 100) * 120;
+    const mins = Math.floor(totalSecs / 60);
+    const secs = Math.floor(totalSecs % 60);
+    const frames = Math.floor((totalSecs % 1) * 24);
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}:${frames.toString().padStart(2, '0')}`;
   };
 
   return (
-    <div className="min-h-screen text-white overflow-hidden" style={{ backgroundColor: premiereColors.dark }}>
-      {/* Premiere Pro Style Loading */}
+    <div className="min-h-screen text-white" style={{ backgroundColor: colors.dark }}>
+      {/* Loading Animation */}
       <AnimatePresence>
         {!showTimeline && (
           <motion.div 
             className="fixed inset-0 z-[100] flex items-center justify-center"
-            style={{ backgroundColor: premiereColors.dark }}
+            style={{ backgroundColor: colors.dark }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.5 }}
           >
             <div className="text-center">
-              {/* Premiere Pro Logo Animation */}
               <motion.div 
-                className="w-24 h-24 rounded-xl mx-auto mb-6 flex items-center justify-center"
-                style={{ backgroundColor: premiereColors.purple }}
+                className="w-20 h-20 rounded-xl mx-auto mb-6 flex items-center justify-center"
+                style={{ backgroundColor: colors.purple }}
                 initial={{ scale: 0, rotate: -180 }}
                 animate={{ scale: 1, rotate: 0 }}
-                transition={{ type: "spring", duration: 1 }}
+                transition={{ type: "spring" }}
               >
-                <span className="text-4xl font-black">Pr</span>
+                <span className="text-3xl font-black">Pr</span>
               </motion.div>
               <motion.p 
-                className="text-white/60 text-sm tracking-widest"
+                className="text-white/50 text-sm tracking-widest"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.5 }}
@@ -88,14 +85,14 @@ export default function VideoEditorTheme({ profile, portfolio, skills, projects,
                 PREMIERE PRO
               </motion.p>
               <motion.div 
-                className="w-48 h-1 bg-white/10 rounded-full mt-4 overflow-hidden"
+                className="w-40 h-1 bg-white/10 rounded-full mt-4 overflow-hidden mx-auto"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.7 }}
               >
                 <motion.div 
                   className="h-full"
-                  style={{ backgroundColor: premiereColors.purple }}
+                  style={{ backgroundColor: colors.purple }}
                   initial={{ width: 0 }}
                   animate={{ width: "100%" }}
                   transition={{ duration: 1, delay: 0.8 }}
@@ -106,30 +103,19 @@ export default function VideoEditorTheme({ profile, portfolio, skills, projects,
         )}
       </AnimatePresence>
 
-      {/* Navigation - Premiere Menu Bar Style */}
-      <nav className="fixed top-0 left-0 right-0 z-50" style={{ backgroundColor: premiereColors.panel }}>
+      {/* Navigation */}
+      <nav className="fixed top-0 left-0 right-0 z-50" style={{ backgroundColor: colors.panel }}>
         <div className="flex items-center px-4 py-2 border-b border-white/10">
-          <motion.div 
-            className="flex items-center gap-2"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-          >
-            <div 
-              className="w-8 h-8 rounded flex items-center justify-center font-bold text-sm"
-              style={{ backgroundColor: premiereColors.purple }}
-            >
+          <motion.div className="flex items-center gap-2" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+            <div className="w-8 h-8 rounded flex items-center justify-center font-bold text-sm" style={{ backgroundColor: colors.purple }}>
               Pr
             </div>
-            <span className="font-semibold text-sm hidden md:block">{profile?.display_name || "Editor"}</span>
+            <span className="font-semibold text-sm hidden sm:block">{profile?.display_name || "Editor"}</span>
           </motion.div>
 
-          {/* Menu Items - Premiere Style */}
           <div className="hidden md:flex items-center ml-8 gap-1">
-            {["File", "Edit", "Project", "Sequence", "Window", "Help"].map((item, i) => (
-              <button
-                key={item}
-                className="px-3 py-1 text-xs text-white/70 hover:bg-white/10 rounded transition-colors"
-              >
+            {["File", "Edit", "Sequence", "Window"].map((item) => (
+              <button key={item} className="px-3 py-1 text-xs text-white/60 hover:bg-white/5 rounded">
                 {item}
               </button>
             ))}
@@ -141,7 +127,7 @@ export default function VideoEditorTheme({ profile, portfolio, skills, projects,
                 <button 
                   key={item}
                   onClick={() => scrollTo(item)} 
-                  className="text-xs text-white/60 hover:text-white transition-colors uppercase tracking-wider"
+                  className="text-xs text-white/50 hover:text-white transition-colors uppercase tracking-wider"
                 >
                   {item === "hero" ? "Home" : item}
                 </button>
@@ -157,8 +143,8 @@ export default function VideoEditorTheme({ profile, portfolio, skills, projects,
         <AnimatePresence>
           {menuOpen && (
             <motion.div 
-              className="md:hidden border-b border-white/10 px-6 py-4 space-y-3"
-              style={{ backgroundColor: premiereColors.panel }}
+              className="md:hidden border-b border-white/10 px-6 py-4"
+              style={{ backgroundColor: colors.panel }}
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: "auto", opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
@@ -167,7 +153,7 @@ export default function VideoEditorTheme({ profile, portfolio, skills, projects,
                 <button 
                   key={item}
                   onClick={() => scrollTo(item.toLowerCase() === "home" ? "hero" : item.toLowerCase() === "about" ? "bio" : item.toLowerCase())} 
-                  className="block w-full text-left py-2 text-white/80"
+                  className="block w-full text-left py-3 text-white/70"
                 >
                   {item}
                 </button>
@@ -177,74 +163,63 @@ export default function VideoEditorTheme({ profile, portfolio, skills, projects,
         </AnimatePresence>
       </nav>
 
-      {/* Hero Section - Preview Window Style */}
-      <section id="hero" className="min-h-screen pt-12 relative flex flex-col">
-        {/* Program Monitor */}
+      {/* Hero Section - Program Monitor */}
+      <section id="hero" className="min-h-screen pt-12 flex flex-col">
         <div className="flex-1 flex items-center justify-center p-4">
           <motion.div 
             className="relative w-full max-w-5xl"
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 1.5 }}
+            transition={{ delay: 2 }}
           >
             {/* Monitor Frame */}
-            <div className="rounded-lg overflow-hidden" style={{ backgroundColor: premiereColors.panel }}>
-              {/* Monitor Header */}
+            <div className="rounded-lg overflow-hidden" style={{ backgroundColor: colors.panel }}>
               <div className="flex items-center justify-between px-4 py-2 border-b border-white/10">
-                <span className="text-xs text-white/60">Program: {profile?.display_name || "Sequence 01"}</span>
-                <div className="flex items-center gap-2">
-                  <span className="text-xs text-[#00D8FF] font-mono">{formatTime(progress * 0.6)}</span>
-                </div>
+                <span className="text-xs text-white/50">Program: {profile?.display_name || "Sequence 01"}</span>
+                <span className="text-xs font-mono" style={{ color: colors.accent }}>{formatTime(progress)}</span>
               </div>
 
               {/* Video Preview */}
               <div className="relative aspect-video bg-black overflow-hidden">
-                {projects[0]?.image_url ? (
+                {allProjects[0]?.image_url ? (
                   <motion.img
-                    src={projects[0].image_url}
+                    src={allProjects[0].image_url}
                     alt="Preview"
                     className="w-full h-full object-cover"
-                    animate={{ scale: isPlaying ? [1, 1.02, 1] : 1 }}
-                    transition={{ duration: 10, repeat: Infinity }}
+                    animate={{ scale: isPlaying ? [1, 1.01, 1] : 1 }}
+                    transition={{ duration: 8, repeat: Infinity }}
                   />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-[#EA77FF]/20 to-[#00D8FF]/20">
-                    <Video className="w-24 h-24 text-white/20" />
+                    <Video className="w-20 h-20 text-white/20" />
                   </div>
                 )}
                 
-                {/* Overlay Text */}
-                <div className="absolute inset-0 flex items-center justify-center bg-black/30">
-                  <div className="text-center">
-                    <motion.div
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 2 }}
-                    >
-                      <Badge 
-                        className="mb-4 border-0"
-                        style={{ backgroundColor: premiereColors.purple }}
-                      >
+                {/* Overlay Content */}
+                <div className="absolute inset-0 flex items-center justify-center bg-black/40">
+                  <div className="text-center px-4">
+                    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 2.2 }}>
+                      <Badge className="mb-4 border-0" style={{ backgroundColor: colors.purple }}>
                         <Film className="w-3 h-3 mr-2" />
                         Video Editor & Motion Designer
                       </Badge>
                     </motion.div>
                     
                     <motion.h1 
-                      className="text-5xl md:text-7xl lg:text-8xl font-black mb-4"
+                      className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-black mb-4"
                       initial={{ opacity: 0, y: 30 }}
                       animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 2.2 }}
+                      transition={{ delay: 2.4 }}
                     >
                       {profile?.display_name || "Creative Editor"}
                     </motion.h1>
                     
                     {portfolio?.headline && (
                       <motion.p 
-                        className="text-xl md:text-2xl text-white/70 max-w-2xl mx-auto"
+                        className="text-base sm:text-lg md:text-xl text-white/70 max-w-2xl mx-auto"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
-                        transition={{ delay: 2.4 }}
+                        transition={{ delay: 2.6 }}
                       >
                         {portfolio.headline}
                       </motion.p>
@@ -253,8 +228,7 @@ export default function VideoEditorTheme({ profile, portfolio, skills, projects,
                 </div>
 
                 {/* Safe Area Guides */}
-                <div className="absolute inset-[5%] border border-white/10 pointer-events-none" />
-                <div className="absolute inset-[10%] border border-white/5 pointer-events-none" />
+                <div className="absolute inset-[5%] border border-white/10 pointer-events-none hidden sm:block" />
               </div>
 
               {/* Playback Controls */}
@@ -262,53 +236,39 @@ export default function VideoEditorTheme({ profile, portfolio, skills, projects,
                 <div className="flex items-center gap-2">
                   <button 
                     onClick={() => setIsPlaying(!isPlaying)}
-                    className="w-8 h-8 rounded flex items-center justify-center hover:bg-white/10 transition-colors"
+                    className="w-8 h-8 rounded flex items-center justify-center hover:bg-white/10"
                   >
                     {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
                   </button>
-                  <button className="w-8 h-8 rounded flex items-center justify-center hover:bg-white/10 transition-colors">
+                  <button className="w-8 h-8 rounded flex items-center justify-center hover:bg-white/10">
                     <SkipForward className="w-4 h-4" />
                   </button>
                 </div>
 
-                {/* Progress Bar */}
                 <div className="flex-1 h-1 bg-white/10 rounded-full overflow-hidden">
-                  <motion.div 
-                    className="h-full"
-                    style={{ backgroundColor: premiereColors.accent, width: `${progress}%` }}
-                  />
+                  <motion.div className="h-full" style={{ backgroundColor: colors.accent, width: `${progress}%` }} />
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <Volume2 className="w-4 h-4 text-white/60" />
-                  <Maximize className="w-4 h-4 text-white/60" />
+                  <Volume2 className="w-4 h-4 text-white/50" />
+                  <Maximize className="w-4 h-4 text-white/50" />
                 </div>
               </div>
             </div>
 
             {/* Action Buttons */}
             <motion.div 
-              className="flex justify-center gap-4 mt-8"
+              className="flex flex-wrap justify-center gap-4 mt-8"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 2.6 }}
+              transition={{ delay: 2.8 }}
             >
-              <Button 
-                size="lg" 
-                className="rounded-lg"
-                style={{ backgroundColor: premiereColors.purple }}
-                onClick={() => scrollTo('works')}
-              >
+              <Button size="lg" className="rounded-lg" style={{ backgroundColor: colors.purple }} onClick={() => scrollTo('works')}>
                 <Play className="w-4 h-4 mr-2" />
                 Watch My Reel
               </Button>
               {profile?.email && (
-                <Button 
-                  size="lg" 
-                  variant="outline" 
-                  className="rounded-lg border-white/20"
-                  asChild
-                >
+                <Button size="lg" variant="outline" className="rounded-lg border-white/20" asChild>
                   <a href={`mailto:${profile.email}`}>
                     <Mail className="w-4 h-4 mr-2" />
                     Hire Me
@@ -322,45 +282,39 @@ export default function VideoEditorTheme({ profile, portfolio, skills, projects,
         {/* Timeline Preview */}
         <motion.div 
           className="hidden lg:block border-t border-white/10"
-          style={{ backgroundColor: premiereColors.timeline }}
+          style={{ backgroundColor: colors.timeline }}
           initial={{ y: 100, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 2.5 }}
+          transition={{ delay: 2.8 }}
         >
           <div className="flex items-center px-4 py-2 border-b border-white/10">
-            <span className="text-xs text-white/60">Timeline: Main Sequence</span>
+            <span className="text-xs text-white/50">Timeline: Main Sequence</span>
           </div>
-          <div className="h-24 relative overflow-hidden">
+          <div className="h-20 relative overflow-hidden">
             {/* Playhead */}
             <motion.div 
               className="absolute top-0 bottom-0 w-0.5 z-10"
-              style={{ backgroundColor: premiereColors.accent, left: `${progress}%` }}
+              style={{ backgroundColor: colors.accent, left: `${progress}%` }}
             >
-              <div 
-                className="w-3 h-3 -ml-1.5 -mt-1"
-                style={{ backgroundColor: premiereColors.accent, clipPath: "polygon(50% 100%, 0 0, 100% 0)" }}
-              />
+              <div className="w-3 h-3 -ml-1.5 -mt-1" style={{ backgroundColor: colors.accent, clipPath: "polygon(50% 100%, 0 0, 100% 0)" }} />
             </motion.div>
 
             {/* Video Tracks */}
-            <div className="absolute left-0 right-0 top-2 h-8 flex gap-1 px-2">
-              {projects.slice(0, 6).map((_, i) => (
+            <div className="absolute left-0 right-0 top-2 h-6 flex gap-1 px-2">
+              {[...Array(6)].map((_, i) => (
                 <motion.div 
                   key={i}
                   className="flex-1 rounded"
-                  style={{ 
-                    backgroundColor: i % 2 === 0 ? premiereColors.purple : "#666699",
-                    opacity: 0.8
-                  }}
+                  style={{ backgroundColor: i % 2 === 0 ? colors.purple : "#666699" }}
                   initial={{ scaleX: 0 }}
                   animate={{ scaleX: 1 }}
-                  transition={{ delay: 2.7 + i * 0.1 }}
+                  transition={{ delay: 3 + i * 0.1 }}
                 />
               ))}
             </div>
 
             {/* Audio Track */}
-            <div className="absolute left-0 right-0 bottom-2 h-6 flex gap-1 px-2">
+            <div className="absolute left-0 right-0 bottom-2 h-5 flex gap-1 px-2">
               {[...Array(8)].map((_, i) => (
                 <motion.div 
                   key={i}
@@ -368,16 +322,11 @@ export default function VideoEditorTheme({ profile, portfolio, skills, projects,
                   style={{ backgroundColor: "#3D997A" }}
                   initial={{ scaleX: 0 }}
                   animate={{ scaleX: 1 }}
-                  transition={{ delay: 2.9 + i * 0.05 }}
+                  transition={{ delay: 3.2 + i * 0.05 }}
                 >
-                  {/* Waveform */}
                   <div className="flex items-center gap-px">
-                    {[...Array(10)].map((_, j) => (
-                      <div 
-                        key={j}
-                        className="w-0.5 bg-white/30"
-                        style={{ height: `${Math.random() * 12 + 4}px` }}
-                      />
+                    {[...Array(8)].map((_, j) => (
+                      <div key={j} className="w-0.5 bg-white/30" style={{ height: `${Math.random() * 10 + 4}px` }} />
                     ))}
                   </div>
                 </motion.div>
@@ -387,34 +336,30 @@ export default function VideoEditorTheme({ profile, portfolio, skills, projects,
         </motion.div>
       </section>
 
-      {/* Bio Section - Panel Style */}
-      <section id="bio" className="py-20 px-4">
-        <div className="container mx-auto">
-          <div className="grid lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
+      {/* Bio Section */}
+      <section id="bio" className="py-24 sm:py-32 px-4">
+        <div className="max-w-6xl mx-auto">
+          <div className="grid lg:grid-cols-2 gap-8 lg:gap-12">
             {/* Profile Panel */}
             <motion.div 
               className="rounded-lg overflow-hidden"
-              style={{ backgroundColor: premiereColors.panel }}
-              initial={{ opacity: 0, x: -50 }}
+              style={{ backgroundColor: colors.panel }}
+              initial={{ opacity: 0, x: -30 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
             >
-              <div className="flex items-center justify-between px-4 py-2 border-b border-white/10">
-                <span className="text-xs text-white/60">Source: profile.mp4</span>
+              <div className="flex items-center px-4 py-2 border-b border-white/10">
+                <span className="text-xs text-white/50">Source: profile.mp4</span>
               </div>
               <div className="aspect-square relative">
                 <Avatar className="w-full h-full rounded-none">
                   <AvatarImage src={profile?.avatar_url || undefined} className="object-cover" />
-                  <AvatarFallback 
-                    className="text-8xl rounded-none"
-                    style={{ backgroundColor: premiereColors.purple }}
-                  >
+                  <AvatarFallback className="text-6xl sm:text-8xl rounded-none" style={{ backgroundColor: colors.purple }}>
                     {profile?.display_name?.[0]?.toUpperCase() || "?"}
                   </AvatarFallback>
                 </Avatar>
-                {/* Overlay Info */}
                 <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/80 to-transparent">
-                  <p className="font-mono text-xs text-[#00D8FF]">00:00:00:00</p>
+                  <p className="font-mono text-xs" style={{ color: colors.accent }}>00:00:00:00</p>
                 </div>
               </div>
             </motion.div>
@@ -422,49 +367,53 @@ export default function VideoEditorTheme({ profile, portfolio, skills, projects,
             {/* Bio Content Panel */}
             <motion.div 
               className="rounded-lg overflow-hidden"
-              style={{ backgroundColor: premiereColors.panel }}
-              initial={{ opacity: 0, x: 50 }}
+              style={{ backgroundColor: colors.panel }}
+              initial={{ opacity: 0, x: 30 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
             >
-              <div className="flex items-center justify-between px-4 py-2 border-b border-white/10">
-                <span className="text-xs text-white/60">Effect Controls</span>
+              <div className="flex items-center px-4 py-2 border-b border-white/10">
+                <span className="text-xs text-white/50">Effect Controls</span>
               </div>
-              <div className="p-6">
-                <h2 className="text-sm uppercase tracking-widest mb-2" style={{ color: premiereColors.purple }}>About</h2>
-                <h3 className="text-3xl font-bold mb-4">{profile?.display_name}</h3>
+              <div className="p-6 sm:p-8">
+                <h2 className="text-sm font-bold uppercase tracking-widest mb-4" style={{ color: colors.purple }}>About Me</h2>
+                <h3 className="text-2xl sm:text-3xl font-black mb-6">{profile?.display_name}</h3>
                 
                 {portfolio?.bio && (
-                  <p className="text-white/60 leading-relaxed mb-6">
-                    {portfolio.bio}
-                  </p>
+                  <p className="text-white/60 leading-relaxed mb-6">{portfolio.bio}</p>
                 )}
 
-                <div className="space-y-3 mb-6">
+                <div className="flex flex-wrap items-center gap-4 text-sm text-white/40 mb-6">
                   {portfolio?.location && (
-                    <div className="flex items-center gap-3 text-sm text-white/60">
-                      <MapPin className="w-4 h-4" style={{ color: premiereColors.accent }} />
+                    <span className="flex items-center gap-2">
+                      <MapPin className="w-4 h-4" style={{ color: colors.accent }} />
                       {portfolio.location}
-                    </div>
+                    </span>
+                  )}
+                  {profile?.email && (
+                    <a href={`mailto:${profile.email}`} className="flex items-center gap-2 hover:text-white transition-colors">
+                      <Mail className="w-4 h-4" style={{ color: colors.accent }} />
+                      {profile.email}
+                    </a>
                   )}
                 </div>
 
-                {/* Social Links */}
                 {socialLinks.length > 0 && (
-                  <div className="flex gap-2">
+                  <div className="flex gap-3">
                     {socialLinks.map((link) => {
                       const Icon = getSocialIcon(link.platform);
                       return (
-                        <a
+                        <motion.a
                           key={link.id}
                           href={link.url}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="w-10 h-10 rounded flex items-center justify-center hover:bg-white/10 transition-colors"
-                          style={{ backgroundColor: premiereColors.timeline }}
+                          style={{ backgroundColor: colors.timeline }}
+                          whileHover={{ scale: 1.1 }}
                         >
                           <Icon className="w-4 h-4" />
-                        </a>
+                        </motion.a>
                       );
                     })}
                   </div>
@@ -475,286 +424,233 @@ export default function VideoEditorTheme({ profile, portfolio, skills, projects,
         </div>
       </section>
 
-      {/* Skills Section - Effects Panel */}
+      {/* Skills Section */}
       {skills.length > 0 && (
-        <section id="skills" className="py-20 px-4">
-          <div className="container mx-auto max-w-4xl">
-            <motion.div 
-              className="rounded-lg overflow-hidden"
-              style={{ backgroundColor: premiereColors.panel }}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-            >
-              <div className="flex items-center justify-between px-4 py-2 border-b border-white/10">
-                <span className="text-xs text-white/60">Effects</span>
-                <span className="text-xs text-white/40">{skills.length} items</span>
-              </div>
-              <div className="p-6">
-                <h3 className="text-2xl font-bold mb-6 text-center">Software & Skills</h3>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                  {skills.map((skill, i) => (
-                    <motion.div 
-                      key={skill.id}
-                      className="p-4 rounded text-center hover:bg-white/5 transition-colors cursor-default"
-                      style={{ backgroundColor: premiereColors.timeline }}
-                      initial={{ opacity: 0, scale: 0.9 }}
-                      whileInView={{ opacity: 1, scale: 1 }}
-                      viewport={{ once: true }}
-                      transition={{ delay: i * 0.05 }}
-                    >
-                      <Film className="w-5 h-5 mx-auto mb-2" style={{ color: premiereColors.purple }} />
-                      <p className="text-sm">{skill.name}</p>
-                    </motion.div>
-                  ))}
-                </div>
-              </div>
+        <section id="skills" className="py-24 sm:py-32 px-4" style={{ backgroundColor: colors.panel }}>
+          <div className="max-w-4xl mx-auto">
+            <motion.div className="text-center mb-12 sm:mb-16" initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>
+              <h2 className="text-sm font-bold uppercase tracking-widest mb-4" style={{ color: colors.purple }}>Expertise</h2>
+              <h3 className="text-3xl sm:text-4xl font-black">Editing Tools</h3>
             </motion.div>
+            
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+              {skills.map((skill, i) => (
+                <motion.div 
+                  key={skill.id}
+                  className="rounded-lg p-4 text-center border border-white/5 hover:border-white/10 transition-colors"
+                  style={{ backgroundColor: colors.timeline }}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.03 }}
+                >
+                  <Film className="w-5 h-5 mx-auto mb-2" style={{ color: colors.accent }} />
+                  <p className="text-xs sm:text-sm text-white/70">{skill.name}</p>
+                </motion.div>
+              ))}
+            </div>
           </div>
         </section>
       )}
 
-      {/* Education & Experience - Metadata Panel */}
+      {/* Education & Experience */}
       {(education.length > 0 || experiences.length > 0) && (
-        <section className="py-20 px-4">
-          <div className="container mx-auto max-w-4xl space-y-8">
+        <section className="py-24 sm:py-32 px-4">
+          <div className="max-w-4xl mx-auto">
             {education.length > 0 && (
-              <motion.div 
-                className="rounded-lg overflow-hidden"
-                style={{ backgroundColor: premiereColors.panel }}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-              >
-                <div className="flex items-center px-4 py-2 border-b border-white/10">
-                  <span className="text-xs text-white/60">Metadata: Education</span>
-                </div>
-                <div className="p-6 space-y-4">
-                  {education.map((edu) => (
-                    <div key={edu.id} className="p-4 rounded" style={{ backgroundColor: premiereColors.timeline }}>
-                      <div className="flex items-start gap-3">
-                        <GraduationCap className="w-5 h-5 mt-1" style={{ color: premiereColors.accent }} />
+              <div className="mb-16 sm:mb-20">
+                <motion.div className="text-center mb-8 sm:mb-12" initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>
+                  <h2 className="text-sm font-bold uppercase tracking-widest mb-4" style={{ color: colors.accent }}>Background</h2>
+                  <h3 className="text-3xl sm:text-4xl font-black">Education</h3>
+                </motion.div>
+                <div className="space-y-4">
+                  {education.map((edu, i) => (
+                    <motion.div 
+                      key={edu.id}
+                      className="rounded-lg p-6 border border-white/5"
+                      style={{ backgroundColor: colors.panel }}
+                      initial={{ opacity: 0, y: 20 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: i * 0.1 }}
+                    >
+                      <div className="flex items-start gap-4">
+                        <div className="w-10 h-10 rounded flex items-center justify-center flex-shrink-0" style={{ backgroundColor: colors.accent }}>
+                          <GraduationCap className="w-5 h-5" />
+                        </div>
                         <div>
-                          <h4 className="font-bold">{edu.degree}</h4>
-                          <p style={{ color: premiereColors.accent }}>{edu.institution}</p>
-                          {edu.field_of_study && <p className="text-sm text-white/40">{edu.field_of_study}</p>}
-                          <p className="text-xs text-white/30 mt-1">
-                            {formatDate(edu.start_date)} - {edu.is_current ? "Present" : formatDate(edu.end_date)}
-                          </p>
+                          <h4 className="font-bold text-lg">{edu.degree}</h4>
+                          <p style={{ color: colors.accent }}>{edu.institution}</p>
+                          {edu.field_of_study && <p className="text-white/40 text-sm mt-1">{edu.field_of_study}</p>}
+                          <p className="text-white/30 text-xs mt-2">{formatDate(edu.start_date)} - {edu.is_current ? "Present" : formatDate(edu.end_date)}</p>
                         </div>
                       </div>
-                    </div>
+                    </motion.div>
                   ))}
                 </div>
-              </motion.div>
+              </div>
             )}
 
             {experiences.length > 0 && (
-              <motion.div 
-                className="rounded-lg overflow-hidden"
-                style={{ backgroundColor: premiereColors.panel }}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-              >
-                <div className="flex items-center px-4 py-2 border-b border-white/10">
-                  <span className="text-xs text-white/60">Metadata: Experience</span>
-                </div>
-                <div className="p-6 space-y-4">
-                  {experiences.map((exp) => (
-                    <div key={exp.id} className="p-4 rounded" style={{ backgroundColor: premiereColors.timeline }}>
-                      <div className="flex items-start gap-3">
-                        <Briefcase className="w-5 h-5 mt-1" style={{ color: premiereColors.purple }} />
-                        <div>
-                          <h4 className="font-bold">{exp.position}</h4>
-                          <p style={{ color: premiereColors.purple }}>{exp.company}</p>
-                          <p className="text-xs text-white/30 mt-1">
-                            {formatDate(exp.start_date)} - {exp.is_current ? "Present" : formatDate(exp.end_date)}
-                          </p>
-                          {exp.description && <p className="text-white/60 mt-2 text-sm">{exp.description}</p>}
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </motion.div>
-            )}
-          </div>
-        </section>
-      )}
-
-      {/* Works Section - Media Browser */}
-      {projects.length > 0 && (
-        <section id="works" className="py-20 px-4">
-          <div className="container mx-auto">
-            <motion.div 
-              className="rounded-lg overflow-hidden max-w-6xl mx-auto"
-              style={{ backgroundColor: premiereColors.panel }}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-            >
-              <div className="flex items-center justify-between px-4 py-2 border-b border-white/10">
-                <span className="text-xs text-white/60">Project: Portfolio</span>
-                <span className="text-xs text-white/40">{projects.length} clips</span>
-              </div>
-              
-              <div className="p-6">
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {[...featuredProjects, ...otherProjects].map((project, i) => (
+              <div>
+                <motion.div className="text-center mb-8 sm:mb-12" initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>
+                  <h2 className="text-sm font-bold uppercase tracking-widest mb-4" style={{ color: colors.purple }}>Career</h2>
+                  <h3 className="text-3xl sm:text-4xl font-black">Experience</h3>
+                </motion.div>
+                <div className="space-y-4">
+                  {experiences.map((exp, i) => (
                     <motion.div 
-                      key={project.id}
-                      className="group rounded overflow-hidden cursor-pointer"
-                      style={{ backgroundColor: premiereColors.timeline }}
-                      initial={{ opacity: 0, scale: 0.95 }}
-                      whileInView={{ opacity: 1, scale: 1 }}
+                      key={exp.id}
+                      className="rounded-lg p-6 border border-white/5"
+                      style={{ backgroundColor: colors.panel }}
+                      initial={{ opacity: 0, y: 20 }}
+                      whileInView={{ opacity: 1, y: 0 }}
                       viewport={{ once: true }}
                       transition={{ delay: i * 0.1 }}
-                      whileHover={{ scale: 1.02 }}
                     >
-                      <div className="relative aspect-video overflow-hidden">
-                        {project.image_url ? (
-                          <img
-                            src={project.image_url}
-                            alt={project.title}
-                            className="w-full h-full object-cover"
-                          />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center">
-                            <Video className="w-12 h-12 text-white/20" />
-                          </div>
-                        )}
-                        {/* Hover Overlay */}
-                        <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                          <div 
-                            className="w-12 h-12 rounded-full flex items-center justify-center"
-                            style={{ backgroundColor: premiereColors.purple }}
-                          >
-                            <Play className="w-5 h-5 ml-0.5" />
-                          </div>
+                      <div className="flex items-start gap-4">
+                        <div className="w-10 h-10 rounded flex items-center justify-center flex-shrink-0" style={{ backgroundColor: colors.purple }}>
+                          <Briefcase className="w-5 h-5" />
                         </div>
-                        {project.featured && (
-                          <Badge 
-                            className="absolute top-2 left-2 border-0"
-                            style={{ backgroundColor: premiereColors.purple }}
-                          >
-                            Featured
-                          </Badge>
-                        )}
-                        {/* Duration */}
-                        <span className="absolute bottom-2 right-2 text-xs font-mono bg-black/60 px-2 py-0.5 rounded">
-                          00:{(i + 1).toString().padStart(2, '0')}:00
-                        </span>
-                      </div>
-                      <div className="p-3">
-                        <h4 className="font-semibold text-sm truncate">{project.title}</h4>
-                        {project.description && (
-                          <p className="text-xs text-white/40 mt-1 line-clamp-1">{project.description}</p>
-                        )}
-                        {project.live_url && (
-                          <a 
-                            href={project.live_url} 
-                            target="_blank" 
-                            rel="noopener noreferrer"
-                            className="inline-flex items-center gap-1 text-xs mt-2 hover:underline"
-                            style={{ color: premiereColors.accent }}
-                          >
-                            <ExternalLink className="w-3 h-3" />
-                            Watch
-                          </a>
-                        )}
+                        <div>
+                          <h4 className="font-bold text-lg">{exp.position}</h4>
+                          <p style={{ color: colors.purple }}>{exp.company}</p>
+                          <p className="text-white/30 text-xs mt-2">{formatDate(exp.start_date)} - {exp.is_current ? "Present" : formatDate(exp.end_date)}</p>
+                          {exp.description && <p className="text-white/50 text-sm mt-3">{exp.description}</p>}
+                        </div>
                       </div>
                     </motion.div>
                   ))}
                 </div>
               </div>
+            )}
+          </div>
+        </section>
+      )}
+
+      {/* Works Section */}
+      {allProjects.length > 0 && (
+        <section id="works" className="py-24 sm:py-32 px-4" style={{ backgroundColor: colors.panel }}>
+          <div className="max-w-6xl mx-auto">
+            <motion.div className="text-center mb-12 sm:mb-16" initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>
+              <h2 className="text-sm font-bold uppercase tracking-widest mb-4" style={{ color: colors.purple }}>Portfolio</h2>
+              <h3 className="text-3xl sm:text-4xl font-black">My Work</h3>
             </motion.div>
+
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {allProjects.map((project, i) => (
+                <motion.div 
+                  key={project.id}
+                  className="group relative rounded-lg overflow-hidden"
+                  style={{ backgroundColor: colors.timeline }}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.05 }}
+                  onMouseEnter={() => setHoveredProject(project.id)}
+                  onMouseLeave={() => setHoveredProject(null)}
+                >
+                  <div className="aspect-video overflow-hidden relative">
+                    {project.image_url ? (
+                      <img src={project.image_url} alt={project.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-[#EA77FF]/20 to-[#00D8FF]/20">
+                        <Film className="w-12 h-12 text-white/20" />
+                      </div>
+                    )}
+                    {/* Play Button Overlay */}
+                    <motion.div 
+                      className="absolute inset-0 flex items-center justify-center bg-black/50"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: hoveredProject === project.id ? 1 : 0 }}
+                    >
+                      <div className="w-14 h-14 rounded-full flex items-center justify-center" style={{ backgroundColor: colors.purple }}>
+                        <Play className="w-6 h-6 ml-1" />
+                      </div>
+                    </motion.div>
+                    {project.featured && (
+                      <Badge className="absolute top-3 left-3 border-0" style={{ backgroundColor: colors.purple }}>Featured</Badge>
+                    )}
+                  </div>
+                  <div className="p-4">
+                    <h4 className="font-bold mb-1">{project.title}</h4>
+                    {project.description && (
+                      <p className="text-sm text-white/50 line-clamp-2">{project.description}</p>
+                    )}
+                    {(project.live_url || project.github_url) && (
+                      <div className="flex gap-3 mt-3">
+                        {project.live_url && (
+                          <a href={project.live_url} target="_blank" rel="noopener noreferrer" className="text-white/50 hover:text-white">
+                            <ExternalLink className="w-4 h-4" />
+                          </a>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                </motion.div>
+              ))}
+            </div>
           </div>
         </section>
       )}
 
       {/* Contact Section */}
-      <section id="contact" className="py-20 px-4">
-        <div className="container mx-auto max-w-2xl">
-          <motion.div 
-            className="rounded-lg overflow-hidden text-center"
-            style={{ backgroundColor: premiereColors.panel }}
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-          >
-            <div className="px-4 py-2 border-b border-white/10">
-              <span className="text-xs text-white/60">Export Settings</span>
+      <section id="contact" className="py-24 sm:py-32 px-4">
+        <div className="max-w-3xl mx-auto text-center">
+          <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
+            <h2 className="text-sm font-bold uppercase tracking-widest mb-4" style={{ color: colors.purple }}>Get In Touch</h2>
+            <h3 className="text-3xl sm:text-4xl md:text-5xl font-black mb-6">Let's Create Together</h3>
+            <p className="text-base sm:text-lg text-white/50 mb-10 max-w-xl mx-auto">
+              Ready to bring your vision to life? Let's discuss your next video project.
+            </p>
+
+            <div className="flex flex-wrap justify-center gap-4 mb-12">
+              {profile?.email && (
+                <Button size="lg" className="rounded-lg" style={{ backgroundColor: colors.purple }} asChild>
+                  <a href={`mailto:${profile.email}`}>
+                    <Mail className="w-4 h-4 mr-2" />
+                    Get In Touch
+                  </a>
+                </Button>
+              )}
+              {portfolio?.phone && (
+                <Button size="lg" variant="outline" className="rounded-lg border-white/20" asChild>
+                  <a href={`tel:${portfolio.phone}`}>
+                    <Phone className="w-4 h-4 mr-2" />
+                    Call Me
+                  </a>
+                </Button>
+              )}
             </div>
-            <div className="p-8">
-              <div 
-                className="w-16 h-16 rounded-xl mx-auto mb-6 flex items-center justify-center"
-                style={{ backgroundColor: premiereColors.purple }}
-              >
-                <MonitorPlay className="w-8 h-8" />
-              </div>
-              <h2 className="text-3xl font-bold mb-4">Let's Create Together</h2>
-              <p className="text-white/60 mb-8">
-                Ready to bring your vision to life? Get in touch and let's make something amazing.
-              </p>
-              <div className="flex flex-wrap justify-center gap-4">
-                {profile?.email && (
-                  <Button 
-                    size="lg" 
-                    className="rounded-lg"
-                    style={{ backgroundColor: premiereColors.purple }}
-                    asChild
-                  >
-                    <a href={`mailto:${profile.email}`}>
-                      <Mail className="w-4 h-4 mr-2" />
-                      {profile.email}
-                    </a>
-                  </Button>
-                )}
-                {portfolio?.phone && (
-                  <Button 
-                    size="lg" 
-                    variant="outline" 
-                    className="rounded-lg border-white/20"
-                    asChild
-                  >
-                    <a href={`tel:${portfolio.phone}`}>
-                      <Phone className="w-4 h-4 mr-2" />
-                      {portfolio.phone}
-                    </a>
-                  </Button>
-                )}
-              </div>
+
+            <div className="flex flex-wrap justify-center items-center gap-6 text-sm text-white/40">
+              {portfolio?.location && (
+                <span className="flex items-center gap-2">
+                  <MapPin className="w-4 h-4" />
+                  {portfolio.location}
+                </span>
+              )}
+              {profile?.email && (
+                <a href={`mailto:${profile.email}`} className="flex items-center gap-2 hover:text-white transition-colors">
+                  <Mail className="w-4 h-4" />
+                  {profile.email}
+                </a>
+              )}
             </div>
           </motion.div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="py-6 px-4 border-t border-white/10" style={{ backgroundColor: premiereColors.panel }}>
-        <div className="container mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+      <footer className="py-8 px-4 border-t border-white/5" style={{ backgroundColor: colors.panel }}>
+        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div 
-              className="w-6 h-6 rounded flex items-center justify-center font-bold text-xs"
-              style={{ backgroundColor: premiereColors.purple }}
-            >
+            <div className="w-8 h-8 rounded flex items-center justify-center font-bold text-sm" style={{ backgroundColor: colors.purple }}>
               Pr
             </div>
-            <span className="font-semibold text-sm">{profile?.display_name || "Editor"}</span>
+            <span className="text-sm text-white/40">{profile?.display_name}</span>
           </div>
-          <p className="text-xs text-white/40">
-            © {new Date().getFullYear()} All Rights Reserved
-          </p>
-          <div className="flex gap-3">
-            {socialLinks.slice(0, 4).map((link) => {
-              const Icon = getSocialIcon(link.platform);
-              return (
-                <a key={link.id} href={link.url} target="_blank" rel="noopener noreferrer" className="text-white/40 hover:text-white transition-colors">
-                  <Icon className="w-4 h-4" />
-                </a>
-              );
-            })}
-          </div>
+          <p className="text-xs text-white/30">© {new Date().getFullYear()} All rights reserved.</p>
         </div>
       </footer>
     </div>

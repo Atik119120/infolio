@@ -24,10 +24,11 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { Search, Users, Eye, ExternalLink, Loader2, CheckCircle, XCircle, Clock, Phone } from "lucide-react";
+import { Search, Users, Eye, ExternalLink, Loader2, CheckCircle, XCircle, Clock, Phone, Trash2, ShieldPlus } from "lucide-react";
 import { format } from "date-fns";
 import { toast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
+import { AddAdminDialog } from "@/components/admin/AddAdminDialog";
 
 interface UserWithPortfolio {
   id: string;
@@ -52,6 +53,8 @@ export default function AdminUsers() {
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [actionLoading, setActionLoading] = useState<string | null>(null);
+  const [adminDialogOpen, setAdminDialogOpen] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState<UserWithPortfolio | null>(null);
   const { user: currentUser } = useAuth();
 
   useEffect(() => {
@@ -148,9 +151,20 @@ export default function AdminUsers() {
         },
       });
 
+      // Delete user and all their data
+      const { data, error } = await supabase.functions.invoke("admin-manage-user", {
+        body: { action: "delete_user", targetUserId: user.user_id },
+      });
+
+      if (error) throw error;
+
+      if (data.error) {
+        throw new Error(data.error);
+      }
+
       toast({
-        title: "User Rejected",
-        description: `${user.display_name || user.username} has been notified of the rejection.`,
+        title: "User Rejected & Deleted",
+        description: `${user.display_name || user.username} has been removed from the platform.`,
       });
 
       fetchUsers();
@@ -163,6 +177,40 @@ export default function AdminUsers() {
       });
     } finally {
       setActionLoading(null);
+    }
+  };
+
+  const handleDeleteUser = async () => {
+    if (!deleteTarget) return;
+
+    setActionLoading(deleteTarget.id);
+    try {
+      const { data, error } = await supabase.functions.invoke("admin-manage-user", {
+        body: { action: "delete_user", targetUserId: deleteTarget.user_id },
+      });
+
+      if (error) throw error;
+
+      if (data.error) {
+        throw new Error(data.error);
+      }
+
+      toast({
+        title: "User Deleted",
+        description: `${deleteTarget.display_name || deleteTarget.username} and all their data has been removed.`,
+      });
+
+      fetchUsers();
+    } catch (error) {
+      console.error("Error deleting user:", error);
+      toast({
+        title: "Error",
+        description: "Failed to delete user. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setActionLoading(null);
+      setDeleteTarget(null);
     }
   };
 
@@ -392,14 +440,24 @@ export default function AdminUsers() {
               </CardTitle>
               <CardDescription>View and manage user accounts</CardDescription>
             </div>
-            <div className="relative w-full sm:w-64">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-              <Input
-                placeholder="Search users..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-9"
-              />
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                onClick={() => setAdminDialogOpen(true)}
+                className="gap-2"
+              >
+                <ShieldPlus className="w-4 h-4" />
+                Manage Admins
+              </Button>
+              <div className="relative w-full sm:w-64">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <Input
+                  placeholder="Search users..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-9"
+                />
+              </div>
             </div>
           </div>
         </CardHeader>
@@ -511,6 +569,15 @@ export default function AdminUsers() {
                             >
                               <Eye className="w-4 h-4" />
                             </Button>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                              onClick={() => setDeleteTarget(user)}
+                              disabled={user.user_id === currentUser?.id}
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
                           </div>
                         </TableCell>
                       </TableRow>
@@ -522,6 +589,45 @@ export default function AdminUsers() {
           )}
         </CardContent>
       </Card>
+
+      {/* Admin Dialog */}
+      <AddAdminDialog open={adminDialogOpen} onOpenChange={setAdminDialogOpen} />
+
+      {/* Delete User Confirmation */}
+      <AlertDialog open={!!deleteTarget} onOpenChange={() => setDeleteTarget(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle className="flex items-center gap-2 text-destructive">
+              <Trash2 className="w-5 h-5" />
+              Delete User?
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              This will permanently delete <span className="font-medium">{deleteTarget?.display_name || deleteTarget?.username}</span> and all their data including:
+              <ul className="list-disc list-inside mt-2 space-y-1">
+                <li>Profile and portfolio</li>
+                <li>All projects, skills, and experiences</li>
+                <li>Uploaded images and files</li>
+                <li>Custom domains and settings</li>
+              </ul>
+              <p className="mt-3 font-medium text-destructive">This action cannot be undone!</p>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDeleteUser}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              {actionLoading === deleteTarget?.id ? (
+                <Loader2 className="w-4 h-4 animate-spin mr-2" />
+              ) : (
+                <Trash2 className="w-4 h-4 mr-2" />
+              )}
+              Delete User
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

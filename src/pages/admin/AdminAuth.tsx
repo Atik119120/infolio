@@ -178,7 +178,17 @@ export default function AdminAuth() {
                   )}
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="admin-password">Password</Label>
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="admin-password">Password</Label>
+                    <Button
+                      type="button"
+                      variant="link"
+                      className="px-0 h-auto text-xs text-muted-foreground hover:text-orange-500"
+                      onClick={() => navigate("/reset-password")}
+                    >
+                      Forgot password?
+                    </Button>
+                  </div>
                   <Input
                     id="admin-password"
                     type="password"

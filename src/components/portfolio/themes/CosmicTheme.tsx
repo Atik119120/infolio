@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { lazy, Suspense } from "react";
 import { ThemeProps } from "./types";
 import { 
   Mail, MapPin, Phone, Globe, ExternalLink, Github,
@@ -7,6 +8,9 @@ import {
 } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { getSocialIcon } from "./utils";
+
+// Lazy load 3D scene for performance
+const SpaceScene = lazy(() => import("./cosmic/SpaceScene"));
 
 // Cosmic color palette
 const cosmicColors = {
@@ -198,13 +202,18 @@ export default function CosmicTheme({
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-950 via-indigo-950 to-purple-950 text-white overflow-hidden">
+      {/* 3D Space Scene Background */}
+      <Suspense fallback={null}>
+        <SpaceScene />
+      </Suspense>
+      
       <FloatingStars />
       <ShootingStars />
       <NebulaEffect />
 
       {/* Hero Section - Solar System Style */}
       <section className="relative min-h-screen flex items-center justify-center">
-        <OrbitingPlanets />
+        {/* Remove old 2D orbiting planets since we have 3D now */}
         
         {/* Central Sun (Profile) */}
         <motion.div

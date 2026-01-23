@@ -14,6 +14,7 @@ import {
   OfficialTheme,
   PersonalTheme,
   CosmicTheme,
+  SimpleTheme,
   ThemeProfile,
   ThemePortfolio,
   ThemeSkill,
@@ -122,11 +123,13 @@ export default function PublicPortfolio() {
     userId: userId || undefined,
   };
 
-  // Get theme from portfolio or default to 'personal'
-  const selectedTheme = portfolio?.theme || 'personal';
+  // Get theme from portfolio or default to 'simple'
+  const selectedTheme = portfolio?.theme || 'simple';
 
   // Render the appropriate theme
   switch (selectedTheme) {
+    case 'simple':
+      return <SimpleTheme {...themeProps} />;
     case 'photographer':
       return <PhotographerTheme {...themeProps} />;
     case 'graphic-designer':

@@ -16,6 +16,7 @@ import PortfolioEdit from "./pages/PortfolioEdit";
 import DashboardSettings from "./pages/DashboardSettings";
 import PublicPortfolio from "./pages/PublicPortfolio";
 import ThemeDemo from "./pages/ThemeDemo";
+import ThemeCollection from "./pages/ThemeCollection";
 import NotFound from "./pages/NotFound";
 import ResetPassword from "./pages/ResetPassword";
 import AdminAuth from "./pages/admin/AdminAuth";
@@ -45,6 +46,7 @@ const App = () => (
                 <Route path="/" element={<Index />} />
                 <Route path="/auth" element={<Auth />} />
                 <Route path="/reset-password" element={<ResetPassword />} />
+                <Route path="/themes" element={<ThemeCollection />} />
                 <Route path="/admin/login" element={<AdminAuth />} />
                 <Route path="/u/:username" element={<PublicPortfolio />} />
                 <Route path="/demo/:themeName" element={<ThemeDemo />} />

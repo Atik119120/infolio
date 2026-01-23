@@ -71,7 +71,7 @@ export default function Index() {
               size="lg" 
               variant="outline" 
               className="text-lg px-8 py-6"
-              onClick={() => navigate("/demo/web-developer")}
+              onClick={() => navigate("/themes")}
             >
               View Demo Portfolio
             </Button>

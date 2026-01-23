@@ -7,8 +7,9 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Sparkles, ArrowRight } from "lucide-react";
+import { Loader2, ArrowRight } from "lucide-react";
 import { z } from "zod";
+import alphaLogo from "@/assets/alpha-portfolio-logo.png";
 
 const loginSchema = z.object({
   email: z.string().trim().email({ message: "Invalid email address" }),
@@ -119,7 +120,7 @@ export default function Auth() {
     } else {
       toast({
         title: "Account created!",
-        description: "Welcome to PortfolioHub. Let's build your portfolio!",
+        description: "Welcome to Alpha Portfolio. Let's build your portfolio!",
       });
     }
   };
@@ -131,10 +132,8 @@ export default function Auth() {
         <div className="absolute inset-0 bg-black/20" />
         <div className="relative z-10 flex flex-col justify-center px-16 text-white">
           <div className="flex items-center gap-3 mb-8">
-            <div className="w-12 h-12 rounded-xl bg-white/20 backdrop-blur flex items-center justify-center">
-              <Sparkles className="w-7 h-7" />
-            </div>
-            <span className="text-3xl font-bold">PortfolioHub</span>
+            <img src={alphaLogo} alt="Alpha Portfolio" className="w-12 h-12 object-contain invert" />
+            <span className="text-3xl font-bold">Alpha Portfolio</span>
           </div>
           <h1 className="text-5xl font-bold leading-tight mb-6">
             Build Your Professional Portfolio in Minutes
@@ -173,10 +172,8 @@ export default function Auth() {
         <div className="w-full max-w-md">
           {/* Mobile Logo */}
           <div className="lg:hidden flex items-center justify-center gap-3 mb-8">
-            <div className="w-10 h-10 rounded-xl gradient-primary flex items-center justify-center">
-              <Sparkles className="w-6 h-6 text-white" />
-            </div>
-            <span className="text-2xl font-bold gradient-text">PortfolioHub</span>
+            <img src={alphaLogo} alt="Alpha Portfolio" className="w-10 h-10 object-contain dark:invert" />
+            <span className="text-2xl font-bold gradient-text">Alpha Portfolio</span>
           </div>
 
           <Card className="border-0 shadow-xl">
@@ -273,7 +270,7 @@ export default function Auth() {
                         <p className="text-sm text-destructive">{errors.username}</p>
                       )}
                       <p className="text-xs text-muted-foreground">
-                        This will be your portfolio URL: yourname.portfoliohub.com
+                        This will be your portfolio URL: yourname.alphaportfolio.com
                       </p>
                     </div>
                     <div className="space-y-2">

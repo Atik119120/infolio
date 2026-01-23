@@ -14,7 +14,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
-  Sparkles,
   LayoutDashboard,
   FileEdit,
   Settings,
@@ -25,6 +24,7 @@ import {
   Eye,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import alphaLogo from "@/assets/alpha-portfolio-logo.png";
 
 interface Profile {
   username: string;
@@ -89,10 +89,8 @@ export default function Dashboard() {
           {/* Logo */}
           <div className="p-6 border-b flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl gradient-primary flex items-center justify-center">
-                <Sparkles className="w-6 h-6 text-white" />
-              </div>
-              <span className="text-xl font-bold">PortfolioHub</span>
+              <img src={alphaLogo} alt="Alpha Portfolio" className="w-10 h-10 object-contain dark:invert" />
+              <span className="text-xl font-bold">Alpha Portfolio</span>
             </div>
             <Button 
               variant="ghost" 

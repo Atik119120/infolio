@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
-import { Sparkles, Github, Twitter, Linkedin, Mail, Heart } from "lucide-react";
+import { Github, Twitter, Linkedin, Mail, Heart } from "lucide-react";
+import alphaLogo from "@/assets/alpha-portfolio-logo.png";
 
 export default function Footer() {
   const navigate = useNavigate();
@@ -46,10 +47,8 @@ export default function Footer() {
           {/* Brand Column */}
           <div className="col-span-2">
             <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 rounded-xl gradient-primary flex items-center justify-center">
-                <Sparkles className="w-6 h-6 text-white" />
-              </div>
-              <span className="text-xl font-bold">PortfolioHub</span>
+              <img src={alphaLogo} alt="Alpha Portfolio" className="w-10 h-10 object-contain dark:invert" />
+              <span className="text-xl font-bold">Alpha Portfolio</span>
             </div>
             <p className="text-muted-foreground mb-6 max-w-xs">
               Create stunning portfolio websites in minutes. Showcase your work and land your dream opportunities.
@@ -144,10 +143,10 @@ export default function Footer() {
         <div className="container mx-auto px-6 py-6">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <p className="text-muted-foreground text-sm">
-              © {currentYear} PortfolioHub. All rights reserved.
+              © {currentYear} Alpha Portfolio. All rights reserved.
             </p>
             <p className="text-muted-foreground text-sm flex items-center gap-1">
-              Made with <Heart className="w-4 h-4 text-red-500 fill-red-500" /> by PortfolioHub Team
+              Made with <Heart className="w-4 h-4 text-red-500 fill-red-500" /> by Alpha Portfolio Team
             </p>
           </div>
         </div>

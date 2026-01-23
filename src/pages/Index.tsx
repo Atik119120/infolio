@@ -1,9 +1,10 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ThemeToggle";
-import { Sparkles, ArrowRight, Zap, Globe, Palette, Users } from "lucide-react";
+import { ArrowRight, Zap, Globe, Palette, Users, Sparkles } from "lucide-react";
 import ThemeDemoSection from "@/components/home/ThemeDemoSection";
 import Footer from "@/components/home/Footer";
+import alphaLogo from "@/assets/alpha-portfolio-logo.png";
 
 export default function Index() {
   const navigate = useNavigate();
@@ -14,10 +15,8 @@ export default function Index() {
       <nav className="fixed top-0 left-0 right-0 z-50 glass border-b">
         <div className="container mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl gradient-primary flex items-center justify-center">
-              <Sparkles className="w-6 h-6 text-white" />
-            </div>
-            <span className="text-xl font-bold">PortfolioHub</span>
+            <img src={alphaLogo} alt="Alpha Portfolio" className="w-10 h-10 object-contain dark:invert" />
+            <span className="text-xl font-bold">Alpha Portfolio</span>
           </div>
           <div className="flex items-center gap-4">
             <ThemeToggle />
@@ -122,7 +121,7 @@ export default function Index() {
             <FeatureCard 
               icon={<Globe className="w-8 h-8" />}
               title="Custom URL"
-              description="Get your own subdomain like yourname.portfoliohub.com for free."
+              description="Get your own subdomain like yourname.alphaportfolio.com for free."
               gradient="gradient-accent"
             />
             <FeatureCard 

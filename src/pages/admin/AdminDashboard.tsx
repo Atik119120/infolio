@@ -95,7 +95,7 @@ export default function AdminDashboard() {
               </div>
               <div>
                 <span className="text-xl font-bold">Admin Panel</span>
-                <p className="text-xs text-muted-foreground">PortfolioHub</p>
+                <p className="text-xs text-muted-foreground">Alpha Portfolio</p>
               </div>
             </div>
             <Button 

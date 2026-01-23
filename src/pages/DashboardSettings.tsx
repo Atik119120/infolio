@@ -138,7 +138,7 @@ export default function DashboardSettings() {
 
   const portfolioUrl = `${window.location.origin}/u/${profile?.username}`;
   // Subdomain URL (will work when deployed with custom domain)
-  const subdomainUrl = `${profile?.username}.portfoliohub.com`;
+  const subdomainUrl = `${profile?.username}.alphaportfolio.com`;
 
   return (
     <div className="space-y-6 animate-fade-in">
@@ -198,7 +198,7 @@ export default function DashboardSettings() {
             </div>
             <p className="text-xs text-muted-foreground">
               এই URL টি লঞ্চের পর কাজ করবে। আপনার portfolio{' '}
-              <span className="font-medium text-primary">{profile?.username}.portfoliohub.com</span> এ অ্যাক্সেস করা যাবে।
+              <span className="font-medium text-primary">{profile?.username}.alphaportfolio.com</span> এ অ্যাক্সেস করা যাবে।
             </p>
           </div>
           

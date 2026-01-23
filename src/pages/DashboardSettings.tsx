@@ -137,6 +137,8 @@ export default function DashboardSettings() {
   }
 
   const portfolioUrl = `${window.location.origin}/u/${profile?.username}`;
+  // Subdomain URL (will work when deployed with custom domain)
+  const subdomainUrl = `${profile?.username}.portfoliohub.com`;
 
   return (
     <div className="space-y-6 animate-fade-in">
@@ -155,21 +157,51 @@ export default function DashboardSettings() {
           <CardDescription>Share this link with others to view your portfolio</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="flex gap-2">
-            <Input value={portfolioUrl} readOnly className="font-mono text-sm" />
-            <Button variant="outline" onClick={copyUrl}>
-              {copied ? (
-                <CheckCircle className="w-4 h-4 text-success" />
-              ) : (
-                <Copy className="w-4 h-4" />
-              )}
-            </Button>
-            <Button variant="outline" asChild>
-              <a href={portfolioUrl} target="_blank" rel="noopener noreferrer">
-                <ExternalLink className="w-4 h-4" />
-              </a>
-            </Button>
+          {/* Current URL (Path-based) */}
+          <div className="space-y-2">
+            <Label className="text-xs text-muted-foreground">Current URL</Label>
+            <div className="flex gap-2">
+              <Input value={portfolioUrl} readOnly className="font-mono text-sm" />
+              <Button variant="outline" onClick={copyUrl}>
+                {copied ? (
+                  <CheckCircle className="w-4 h-4 text-success" />
+                ) : (
+                  <Copy className="w-4 h-4" />
+                )}
+              </Button>
+              <Button variant="outline" asChild>
+                <a href={portfolioUrl} target="_blank" rel="noopener noreferrer">
+                  <ExternalLink className="w-4 h-4" />
+                </a>
+              </Button>
+            </div>
           </div>
+          
+          {/* Subdomain URL (After Launch) */}
+          <div className="space-y-2 pt-2 border-t">
+            <Label className="text-xs text-muted-foreground">Your Subdomain (After Launch)</Label>
+            <div className="flex items-center gap-2">
+              <Input 
+                value={subdomainUrl} 
+                readOnly 
+                className="font-mono text-sm bg-muted/50" 
+              />
+              <Button 
+                variant="outline" 
+                onClick={() => {
+                  navigator.clipboard.writeText(`https://${subdomainUrl}`);
+                  toast({ title: "Copied!", description: "Subdomain URL copied" });
+                }}
+              >
+                <Copy className="w-4 h-4" />
+              </Button>
+            </div>
+            <p className="text-xs text-muted-foreground">
+              এই URL টি লঞ্চের পর কাজ করবে। আপনার portfolio{' '}
+              <span className="font-medium text-primary">{profile?.username}.portfoliohub.com</span> এ অ্যাক্সেস করা যাবে।
+            </p>
+          </div>
+          
           <p className="text-sm text-muted-foreground">
             Your username: <span className="font-medium">{profile?.username}</span>
           </p>

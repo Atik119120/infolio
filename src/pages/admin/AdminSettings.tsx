@@ -6,6 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Settings, Shield, Bell, Database, Globe, HardDrive } from "lucide-react";
 import WildcardDomainInstructions from "@/components/settings/WildcardDomainInstructions";
 import StorageAnalytics from "@/components/admin/StorageAnalytics";
+import { CleanupHistory } from "@/components/admin/CleanupHistory";
 
 export default function AdminSettings() {
   return (
@@ -161,8 +162,9 @@ export default function AdminSettings() {
         </TabsContent>
 
         {/* Storage Tab */}
-        <TabsContent value="storage">
+        <TabsContent value="storage" className="space-y-6">
           <StorageAnalytics />
+          <CleanupHistory />
         </TabsContent>
 
         {/* Domains Tab */}

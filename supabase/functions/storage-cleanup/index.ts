@@ -174,6 +174,11 @@ Deno.serve(async (req) => {
       totalFreed: 0,
     };
 
+    // Determine trigger source
+    const triggeredBy = authHeader ? "manual" : "scheduled";
+    let cleanupStatus = "success";
+    let errorMessage: string | null = null;
+
     // If action is "delete", remove orphan files
     if (action === "delete" && orphanFiles.length > 0) {
       // Group by bucket
@@ -186,6 +191,8 @@ Deno.serve(async (req) => {
           result.deletedFiles.push(...projectOrphans);
         } else {
           console.error("Error deleting project orphans:", error);
+          cleanupStatus = "partial";
+          errorMessage = `Project bucket error: ${error.message}`;
         }
       }
 
@@ -195,6 +202,8 @@ Deno.serve(async (req) => {
           result.deletedFiles.push(...avatarOrphans);
         } else {
           console.error("Error deleting avatar orphans:", error);
+          cleanupStatus = cleanupStatus === "partial" ? "partial" : "partial";
+          errorMessage = errorMessage ? `${errorMessage}; Avatar bucket error: ${error.message}` : `Avatar bucket error: ${error.message}`;
         }
       }
 
@@ -203,6 +212,26 @@ Deno.serve(async (req) => {
         .reduce((sum, f) => sum + f.size, 0);
 
       console.log(`Cleanup completed: deleted ${result.deletedFiles.length} files, freed ${result.totalFreed} bytes`);
+
+      // Log the cleanup to database
+      const { error: logError } = await supabase
+        .from("cleanup_logs")
+        .insert({
+          orphan_files_found: orphanFiles.length,
+          files_deleted: result.deletedFiles.length,
+          space_freed_bytes: result.totalFreed,
+          triggered_by: triggeredBy,
+          status: cleanupStatus,
+          error_message: errorMessage,
+          details: {
+            orphan_files: orphanFiles.map(f => ({ name: f.name, bucket: f.bucket, size: f.size })),
+            deleted_files: result.deletedFiles,
+          },
+        });
+
+      if (logError) {
+        console.error("Error logging cleanup:", logError);
+      }
     }
 
     return new Response(
@@ -211,9 +240,30 @@ Deno.serve(async (req) => {
     );
   } catch (error) {
     console.error("Error in storage cleanup:", error);
-    const errorMessage = error instanceof Error ? error.message : "Unknown error";
+    const errMsg = error instanceof Error ? error.message : "Unknown error";
+    
+    // Log error to database
+    try {
+      const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+      const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+      const supabase = createClient(supabaseUrl, supabaseServiceKey);
+      
+      await supabase
+        .from("cleanup_logs")
+        .insert({
+          orphan_files_found: 0,
+          files_deleted: 0,
+          space_freed_bytes: 0,
+          triggered_by: "unknown",
+          status: "error",
+          error_message: errMsg,
+        });
+    } catch (logErr) {
+      console.error("Failed to log error:", logErr);
+    }
+    
     return new Response(
-      JSON.stringify({ error: errorMessage }),
+      JSON.stringify({ error: errMsg }),
       { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   }

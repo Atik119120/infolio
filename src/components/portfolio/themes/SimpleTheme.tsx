@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { motion } from "framer-motion";
 import { Star, Mail, MapPin, Phone, ExternalLink, Github, Linkedin, Twitter } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -5,6 +6,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { ThemeProps } from "./types";
 import { formatDate, getSocialIcon } from "./utils";
 
@@ -19,6 +21,11 @@ export default function SimpleTheme({
 }: ThemeProps) {
   const displayName = profile?.display_name || "Your Name";
   const initials = displayName.slice(0, 2).toUpperCase();
+
+  // Scroll to top on mount
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   return (
     <div className="min-h-screen bg-background">
@@ -37,6 +44,7 @@ export default function SimpleTheme({
               <a href="#experience" className="hover:text-primary transition-colors">Experience</a>
               <a href="#contact" className="hover:text-primary transition-colors">Contact</a>
             </nav>
+            <ThemeToggle />
           </div>
         </div>
       </header>

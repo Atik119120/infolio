@@ -47,6 +47,11 @@ export default function VideoEditorTheme({ profile, portfolio, skills, projects,
   const featuredProjects = projects.filter((p) => p.featured);
   const allProjects = [...featuredProjects, ...projects.filter((p) => !p.featured)];
 
+  // Scroll to top on mount
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   useEffect(() => {
     const timer = setTimeout(() => setShowTimeline(true), 2200);
     return () => clearTimeout(timer);

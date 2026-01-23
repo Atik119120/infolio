@@ -73,6 +73,11 @@ export default developer;`;
     return acc;
   }, {} as Record<string, typeof skills>);
 
+  // Scroll to top on mount
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   // Typing animation - starts immediately
   useEffect(() => {
     let i = 0;

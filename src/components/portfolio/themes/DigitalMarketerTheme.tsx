@@ -32,6 +32,11 @@ export default function DigitalMarketerTheme({ profile, portfolio, skills, proje
     { label: "Growth", value: "500%", color: "#F59E0B" },
   ];
 
+  // Scroll to top on mount
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   useEffect(() => {
     const interval = setInterval(() => {
       setActiveMetric((prev) => (prev + 1) % metrics.length);

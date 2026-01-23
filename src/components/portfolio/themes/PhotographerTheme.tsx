@@ -50,6 +50,11 @@ export default function PhotographerTheme({ profile, portfolio, skills, projects
   const heroOpacity = useTransform(scrollYProgress, [0, 0.2], [1, 0]);
   const heroScale = useTransform(scrollYProgress, [0, 0.2], [1, 0.95]);
 
+  // Scroll to top on mount
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   useEffect(() => {
     const timer = setTimeout(() => setShutterActive(false), 1800);
     return () => clearTimeout(timer);

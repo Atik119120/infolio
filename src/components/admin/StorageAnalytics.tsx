@@ -4,9 +4,21 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { HardDrive, FolderOpen, Image, RefreshCw, Loader2, TrendingUp, AlertTriangle } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { HardDrive, FolderOpen, Image, RefreshCw, Loader2, TrendingUp, AlertTriangle, Trash2, Sparkles } from "lucide-react";
 import { formatFileSize } from "@/lib/imageCompression";
 import { format } from "date-fns";
+import { toast } from "@/hooks/use-toast";
 
 interface BucketStats {
   name: string;
@@ -28,6 +40,19 @@ interface StorageAnalytics {
   recentUploads: RecentUpload[];
 }
 
+interface OrphanFile {
+  name: string;
+  bucket: string;
+  size: number;
+  created_at: string;
+}
+
+interface CleanupResult {
+  orphanFiles: OrphanFile[];
+  deletedFiles: string[];
+  totalFreed: number;
+}
+
 // Free tier limits
 const FREE_STORAGE_LIMIT = 1 * 1024 * 1024 * 1024; // 1 GB
 const WARNING_THRESHOLD = 0.8; // 80%
@@ -36,6 +61,9 @@ export default function StorageAnalytics() {
   const [analytics, setAnalytics] = useState<StorageAnalytics | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [orphanFiles, setOrphanFiles] = useState<OrphanFile[]>([]);
+  const [scanning, setScanning] = useState(false);
+  const [cleaning, setCleaning] = useState(false);
 
   const fetchAnalytics = async () => {
     setLoading(true);
@@ -54,6 +82,67 @@ export default function StorageAnalytics() {
     }
   };
 
+  const scanForOrphanFiles = async () => {
+    setScanning(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("storage-cleanup", {
+        body: { action: "scan" },
+      });
+
+      if (error) throw error;
+      setOrphanFiles(data.orphanFiles || []);
+      
+      if (data.orphanFiles?.length === 0) {
+        toast({
+          title: "No orphan files found",
+          description: "All files in storage are being used.",
+        });
+      } else {
+        toast({
+          title: `Found ${data.orphanFiles.length} orphan files`,
+          description: `${formatFileSize(data.orphanFiles.reduce((s: number, f: OrphanFile) => s + f.size, 0))} can be freed.`,
+        });
+      }
+    } catch (err) {
+      console.error("Error scanning for orphans:", err);
+      toast({
+        title: "Scan failed",
+        description: "Failed to scan for orphan files.",
+        variant: "destructive",
+      });
+    } finally {
+      setScanning(false);
+    }
+  };
+
+  const cleanupOrphanFiles = async () => {
+    setCleaning(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("storage-cleanup", {
+        body: { action: "delete" },
+      });
+
+      if (error) throw error;
+      
+      toast({
+        title: "Cleanup complete!",
+        description: `Deleted ${data.deletedFiles?.length || 0} files, freed ${formatFileSize(data.totalFreed || 0)}.`,
+      });
+      
+      setOrphanFiles([]);
+      fetchAnalytics(); // Refresh stats
+    } catch (err) {
+      console.error("Error cleaning up:", err);
+      toast({
+        title: "Cleanup failed",
+        description: "Failed to delete orphan files.",
+        variant: "destructive",
+      });
+    } finally {
+      setCleaning(false);
+    }
+  };
+
   useEffect(() => {
     fetchAnalytics();
   }, []);
@@ -61,6 +150,7 @@ export default function StorageAnalytics() {
   const usagePercentage = analytics ? (analytics.totalSize / FREE_STORAGE_LIMIT) * 100 : 0;
   const isWarning = usagePercentage >= WARNING_THRESHOLD * 100;
   const isCritical = usagePercentage >= 90;
+  const orphanTotalSize = orphanFiles.reduce((sum, f) => sum + f.size, 0);
 
   if (loading) {
     return (
@@ -162,6 +252,97 @@ export default function StorageAnalytics() {
               <p className="text-2xl font-bold mt-1">{analytics?.buckets.length || 0}</p>
             </div>
           </div>
+        </CardContent>
+      </Card>
+
+      {/* Storage Cleanup Card */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Sparkles className="w-5 h-5" />
+            Storage Cleanup
+          </CardTitle>
+          <CardDescription>
+            Find and delete unused files to free up space
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="flex flex-col sm:flex-row gap-3">
+            <Button
+              onClick={scanForOrphanFiles}
+              disabled={scanning}
+              variant="outline"
+              className="flex-1"
+            >
+              {scanning ? (
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+              ) : (
+                <RefreshCw className="w-4 h-4 mr-2" />
+              )}
+              Scan for Unused Files
+            </Button>
+
+            {orphanFiles.length > 0 && (
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button
+                    variant="destructive"
+                    disabled={cleaning}
+                    className="flex-1"
+                  >
+                    {cleaning ? (
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    ) : (
+                      <Trash2 className="w-4 h-4 mr-2" />
+                    )}
+                    Delete {orphanFiles.length} Files ({formatFileSize(orphanTotalSize)})
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Delete Unused Files?</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      This will permanently delete {orphanFiles.length} orphan files and free up {formatFileSize(orphanTotalSize)} of storage. This action cannot be undone.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction
+                      onClick={cleanupOrphanFiles}
+                      className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                    >
+                      Delete Files
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            )}
+          </div>
+
+          {/* Orphan Files List */}
+          {orphanFiles.length > 0 && (
+            <div className="rounded-lg border p-4 space-y-3 max-h-60 overflow-y-auto">
+              <p className="text-sm font-medium text-muted-foreground">
+                Found {orphanFiles.length} unused files:
+              </p>
+              {orphanFiles.map((file, index) => (
+                <div
+                  key={index}
+                  className="flex items-center justify-between p-2 rounded bg-muted/50 text-sm"
+                >
+                  <div className="flex items-center gap-2 min-w-0">
+                    <Badge variant="outline" className="shrink-0">
+                      {file.bucket}
+                    </Badge>
+                    <span className="truncate">{file.name}</span>
+                  </div>
+                  <span className="text-muted-foreground shrink-0">
+                    {formatFileSize(file.size)}
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
         </CardContent>
       </Card>
 

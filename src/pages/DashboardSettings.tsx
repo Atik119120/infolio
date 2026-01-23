@@ -7,8 +7,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Globe, Copy, ExternalLink, CheckCircle } from "lucide-react";
+import { Loader2, Globe, Copy, ExternalLink, CheckCircle, Palette, Camera, PenTool, Film, TrendingUp, Code2, Building2, Heart } from "lucide-react";
+import { THEME_OPTIONS } from "@/components/portfolio/themes/types";
 
 interface Profile {
   username: string;
@@ -16,7 +18,18 @@ interface Profile {
 
 interface Portfolio {
   is_published: boolean | null;
+  theme: string | null;
 }
+
+const themeIcons: Record<string, typeof Camera> = {
+  'photographer': Camera,
+  'graphic-designer': PenTool,
+  'video-editor': Film,
+  'digital-marketer': TrendingUp,
+  'web-developer': Code2,
+  'official': Building2,
+  'personal': Heart,
+};
 
 export default function DashboardSettings() {
   const [profile, setProfile] = useState<Profile | null>(null);
@@ -39,7 +52,7 @@ export default function DashboardSettings() {
 
     const [profileRes, portfolioRes] = await Promise.all([
       supabase.from("profiles").select("username").eq("user_id", user.id).maybeSingle(),
-      supabase.from("portfolios").select("is_published").eq("user_id", user.id).maybeSingle(),
+      supabase.from("portfolios").select("is_published, theme").eq("user_id", user.id).maybeSingle(),
     ]);
 
     if (profileRes.data) setProfile(profileRes.data);
@@ -72,6 +85,33 @@ export default function DashboardSettings() {
         description: portfolio?.is_published
           ? "Your portfolio is now private"
           : "Your portfolio is now live!",
+      });
+      fetchData();
+    }
+  };
+
+  const handleThemeChange = async (theme: string) => {
+    if (!user) return;
+
+    setSaving(true);
+
+    const { error } = await supabase
+      .from("portfolios")
+      .update({ theme })
+      .eq("user_id", user.id);
+
+    setSaving(false);
+
+    if (error) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to update theme",
+      });
+    } else {
+      toast({
+        title: "Theme Updated",
+        description: "Your portfolio theme has been changed",
       });
       fetchData();
     }
@@ -131,6 +171,49 @@ export default function DashboardSettings() {
           <p className="text-sm text-muted-foreground">
             Your username: <span className="font-medium">{profile?.username}</span>
           </p>
+        </CardContent>
+      </Card>
+
+      {/* Theme Selection */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Palette className="w-5 h-5" />
+            Portfolio Theme
+          </CardTitle>
+          <CardDescription>Choose a theme that matches your profession</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <RadioGroup
+            value={portfolio?.theme || 'personal'}
+            onValueChange={handleThemeChange}
+            className="grid gap-4 md:grid-cols-2"
+          >
+            {THEME_OPTIONS.map((theme) => {
+              const Icon = themeIcons[theme.value] || Heart;
+              return (
+                <div key={theme.value}>
+                  <RadioGroupItem
+                    value={theme.value}
+                    id={theme.value}
+                    className="peer sr-only"
+                  />
+                  <Label
+                    htmlFor={theme.value}
+                    className="flex items-start gap-4 rounded-lg border-2 border-muted bg-card p-4 hover:bg-muted/50 peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary/5 cursor-pointer transition-all"
+                  >
+                    <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                      <Icon className="w-5 h-5 text-primary" />
+                    </div>
+                    <div className="flex-1">
+                      <div className="font-medium">{theme.label}</div>
+                      <p className="text-sm text-muted-foreground">{theme.description}</p>
+                    </div>
+                  </Label>
+                </div>
+              );
+            })}
+          </RadioGroup>
         </CardContent>
       </Card>
 

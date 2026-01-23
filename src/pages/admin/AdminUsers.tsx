@@ -118,6 +118,17 @@ export default function AdminUsers() {
 
       if (error) throw error;
 
+      // Ensure the user can login by marking their email as confirmed in the backend
+      const { data: confirmData, error: confirmError } = await supabase.functions.invoke(
+        "admin-manage-user",
+        {
+          body: { action: "confirm_email", targetUserId: user.user_id },
+        }
+      );
+
+      if (confirmError) throw confirmError;
+      if (confirmData?.error) throw new Error(confirmData.error);
+
       // Send approval email
       await supabase.functions.invoke("send-notification", {
         body: {

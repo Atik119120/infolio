@@ -59,6 +59,40 @@ Deno.serve(async (req) => {
 
     const { action, targetUserId, email, role } = await req.json();
 
+		// Confirm user's email (so they can login without "Email not confirmed") - ADMIN ONLY
+		if (action === "confirm_email") {
+			if (!isAdmin) {
+				return new Response(
+					JSON.stringify({ error: "Admin access required" }),
+					{ status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+				);
+			}
+
+			if (!targetUserId) {
+				return new Response(
+					JSON.stringify({ error: "Target user ID required" }),
+					{ status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+				);
+			}
+
+			const { error: confirmError } = await supabase.auth.admin.updateUserById(targetUserId, {
+				email_confirm: true,
+			});
+
+			if (confirmError) {
+				console.error("Failed to confirm email:", confirmError);
+				return new Response(
+					JSON.stringify({ error: "Failed to confirm email", details: confirmError.message }),
+					{ status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+				);
+			}
+
+			return new Response(
+				JSON.stringify({ success: true }),
+				{ headers: { ...corsHeaders, "Content-Type": "application/json" } },
+			);
+		}
+
     // Delete user and all their data
     if (action === "delete_user") {
       if (!targetUserId) {

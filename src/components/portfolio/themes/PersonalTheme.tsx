@@ -148,123 +148,290 @@ export default function PersonalTheme({ profile, portfolio, skills, projects, ex
         </AnimatePresence>
       </motion.nav>
 
-      {/* Hero Section */}
+      {/* Hero Section - Elegant Story Opening */}
       <motion.section 
         id="hero" 
-        className="min-h-screen flex items-center pt-16 relative z-10"
+        className="min-h-screen flex items-center pt-16 relative z-10 overflow-hidden"
         style={{ y: heroY }}
       >
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center relative z-10">
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.9 }} 
-            animate={{ opacity: 1, scale: 1 }} 
-            transition={{ duration: 0.8 }}
-            style={{ opacity: heroOpacity }}
-          >
-            <Badge className="mb-8 bg-gradient-to-r from-rose-100 to-pink-100 text-rose-600 border-rose-200 rounded-full px-6 py-2 shadow-sm">
-              <Sparkles className="w-3 h-3 mr-2" />
-              Welcome to my world
-            </Badge>
-          </motion.div>
+        {/* Animated Gradient Background */}
+        <motion.div 
+          className="absolute inset-0 pointer-events-none"
+          animate={{ 
+            background: [
+              "radial-gradient(circle at 20% 30%, rgba(251, 113, 133, 0.15) 0%, transparent 50%)",
+              "radial-gradient(circle at 80% 70%, rgba(167, 139, 250, 0.15) 0%, transparent 50%)",
+              "radial-gradient(circle at 20% 30%, rgba(251, 113, 133, 0.15) 0%, transparent 50%)",
+            ]
+          }}
+          transition={{ duration: 8, repeat: Infinity }}
+        />
 
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 w-full relative z-10">
+          <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+            {/* Left: Elegant Photo Frame */}
+            <motion.div 
+              className="relative order-2 lg:order-1"
+              initial={{ opacity: 0, x: -50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8, delay: 0.3 }}
+            >
+              <div className="relative max-w-md mx-auto lg:mx-0">
+                {/* Decorative Frame Layers */}
+                <motion.div 
+                  className="absolute -inset-8 rounded-[3rem] bg-gradient-to-br from-rose-200/60 via-pink-200/40 to-purple-200/60"
+                  animate={{ rotate: [3, 5, 3] }}
+                  transition={{ duration: 6, repeat: Infinity }}
+                />
+                <motion.div 
+                  className="absolute -inset-6 rounded-[2.5rem] bg-gradient-to-tr from-yellow-100/50 via-orange-100/30 to-rose-100/50"
+                  animate={{ rotate: [-2, -4, -2] }}
+                  transition={{ duration: 8, repeat: Infinity }}
+                />
+                <motion.div 
+                  className="absolute -inset-4 rounded-[2rem] bg-white/80 shadow-2xl"
+                  animate={{ rotate: [1, 2, 1] }}
+                  transition={{ duration: 5, repeat: Infinity }}
+                />
+
+                {/* Main Photo Container */}
+                <motion.div 
+                  className="relative rounded-3xl overflow-hidden shadow-2xl border-4 border-white"
+                  whileHover={{ scale: 1.02, rotate: 0 }}
+                  transition={{ type: "spring", stiffness: 300 }}
+                >
+                  <div className="aspect-[4/5] relative">
+                    <Avatar className="w-full h-full rounded-none">
+                      <AvatarImage src={profile?.avatar_url || undefined} className="object-cover" />
+                      <AvatarFallback className="text-8xl bg-gradient-to-br from-rose-400 via-pink-500 to-purple-500 text-white rounded-none font-serif">
+                        {profile?.display_name?.[0]?.toUpperCase() || "?"}
+                      </AvatarFallback>
+                    </Avatar>
+
+                    {/* Gradient Overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
+                  </div>
+
+                  {/* Photo Label */}
+                  <motion.div 
+                    className="absolute bottom-4 left-4 right-4"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.8 }}
+                  >
+                    <div className="bg-white/90 backdrop-blur-sm rounded-xl px-4 py-3 shadow-lg">
+                      <p className="text-xs text-rose-500 uppercase tracking-widest mb-1">Hello, I'm</p>
+                      <p className="font-serif text-lg text-slate-800">{profile?.display_name || "Your Name"}</p>
+                    </div>
+                  </motion.div>
+                </motion.div>
+
+                {/* Floating Decorations */}
+                <motion.div 
+                  className="absolute -top-4 -right-4 w-16 h-16 bg-gradient-to-br from-rose-400 to-pink-500 rounded-2xl shadow-lg flex items-center justify-center"
+                  animate={{ y: [0, -10, 0], rotate: [0, 10, 0] }}
+                  transition={{ duration: 4, repeat: Infinity }}
+                >
+                  <Heart className="w-8 h-8 text-white" />
+                </motion.div>
+                <motion.div 
+                  className="absolute -bottom-4 -left-4 w-12 h-12 bg-gradient-to-br from-purple-400 to-violet-500 rounded-xl shadow-lg flex items-center justify-center"
+                  animate={{ y: [0, 10, 0], rotate: [0, -10, 0] }}
+                  transition={{ duration: 5, repeat: Infinity }}
+                >
+                  <Sparkles className="w-6 h-6 text-white" />
+                </motion.div>
+              </div>
+            </motion.div>
+
+            {/* Right: Text Content */}
+            <motion.div 
+              className="order-1 lg:order-2 text-center lg:text-left"
+              initial={{ opacity: 0, x: 50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8, delay: 0.5 }}
+            >
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }} 
+                animate={{ opacity: 1, y: 0 }} 
+                transition={{ delay: 0.6 }}
+              >
+                <Badge className="mb-6 bg-gradient-to-r from-rose-100 to-pink-100 text-rose-600 border-rose-200 rounded-full px-6 py-2 shadow-sm">
+                  <Sparkles className="w-3 h-3 mr-2" />
+                  Welcome to my world
+                </Badge>
+              </motion.div>
+
+              <motion.h1 
+                className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-serif mb-6 leading-[1.1]"
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.7 }}
+              >
+                <span className="text-slate-300 block text-2xl sm:text-3xl font-light mb-2">I'm</span>
+                <span className="bg-gradient-to-r from-rose-500 via-pink-500 to-purple-500 bg-clip-text text-transparent">
+                  {profile?.display_name || "Creative Soul"}
+                </span>
+              </motion.h1>
+
+              {portfolio?.headline && (
+                <motion.p 
+                  className="text-lg sm:text-xl text-slate-500 font-light mb-8 max-w-lg mx-auto lg:mx-0 italic leading-relaxed"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.9 }}
+                >
+                  "{portfolio.headline}"
+                </motion.p>
+              )}
+
+              <motion.div 
+                className="flex flex-wrap items-center justify-center lg:justify-start gap-4 text-sm text-slate-500 mb-8"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 1 }}
+              >
+                {portfolio?.location && (
+                  <span className="flex items-center gap-2 bg-white/80 px-4 py-2 rounded-full border border-rose-100 shadow-sm">
+                    <MapPin className="w-4 h-4 text-rose-500" />
+                    {portfolio.location}
+                  </span>
+                )}
+                {profile?.email && (
+                  <a 
+                    href={`mailto:${profile.email}`}
+                    className="flex items-center gap-2 bg-white/80 px-4 py-2 rounded-full border border-purple-100 shadow-sm hover:border-purple-300 transition-colors"
+                  >
+                    <Mail className="w-4 h-4 text-purple-500" />
+                    {profile.email}
+                  </a>
+                )}
+              </motion.div>
+
+              <motion.div 
+                className="flex flex-wrap justify-center lg:justify-start gap-4"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 1.1 }}
+              >
+                <Button 
+                  size="lg" 
+                  className="rounded-full bg-gradient-to-r from-rose-500 via-pink-500 to-purple-500 hover:from-rose-600 hover:via-pink-600 hover:to-purple-600 shadow-lg shadow-rose-300/30 px-8"
+                  onClick={() => scrollTo('bio')}
+                >
+                  <BookOpen className="w-4 h-4 mr-2" />
+                  Read My Story
+                </Button>
+                {profile?.email && (
+                  <Button 
+                    size="lg" 
+                    variant="outline" 
+                    className="rounded-full border-rose-200 text-rose-600 hover:bg-rose-50 px-8" 
+                    asChild
+                  >
+                    <a href={`mailto:${profile.email}`}>
+                      <Mail className="w-4 h-4 mr-2" />
+                      Say Hello
+                    </a>
+                  </Button>
+                )}
+              </motion.div>
+
+              {/* Social Links */}
+              {socialLinks.length > 0 && (
+                <motion.div 
+                  className="flex justify-center lg:justify-start gap-3 mt-8"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 1.3 }}
+                >
+                  {socialLinks.slice(0, 4).map((link, i) => {
+                    const Icon = getSocialIcon(link.platform);
+                    return (
+                      <motion.a
+                        key={link.id}
+                        href={link.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="w-11 h-11 rounded-full bg-white border-2 border-rose-100 flex items-center justify-center text-slate-400 hover:text-rose-500 hover:border-rose-300 hover:shadow-lg hover:shadow-rose-200/50 transition-all"
+                        whileHover={{ scale: 1.1, y: -3 }}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 1.4 + i * 0.1 }}
+                      >
+                        <Icon className="w-5 h-5" />
+                      </motion.a>
+                    );
+                  })}
+                </motion.div>
+              )}
+            </motion.div>
+          </div>
+        </div>
+
+        {/* Scroll Indicator */}
+        <motion.div 
+          className="absolute bottom-8 left-1/2 -translate-x-1/2"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1.5 }}
+        >
           <motion.div 
-            initial={{ opacity: 0, y: 30 }} 
-            animate={{ opacity: 1, y: 0 }} 
-            transition={{ delay: 0.3 }}
+            className="flex flex-col items-center gap-2 cursor-pointer"
+            onClick={() => scrollTo('bio')}
+            animate={{ y: [0, 10, 0] }}
+            transition={{ duration: 2, repeat: Infinity }}
           >
-            <div className="relative inline-block mb-8">
-              <div className="absolute -inset-4 bg-gradient-to-br from-rose-300 via-pink-300 to-purple-300 rounded-full blur-xl opacity-50" />
-              <Avatar className="relative w-36 h-36 sm:w-44 sm:h-44 border-4 border-white shadow-2xl ring-4 ring-rose-200/50">
-                <AvatarImage src={profile?.avatar_url || undefined} />
-                <AvatarFallback className="text-4xl sm:text-5xl bg-gradient-to-br from-rose-400 via-pink-500 to-purple-500 text-white font-serif">
-                  {profile?.display_name?.[0]?.toUpperCase() || "?"}
-                </AvatarFallback>
-              </Avatar>
+            <span className="text-xs text-slate-400 uppercase tracking-widest">Discover More</span>
+            <div className="w-6 h-10 rounded-full border-2 border-rose-200 flex items-start justify-center p-1.5">
+              <motion.div 
+                className="w-1.5 h-1.5 rounded-full bg-gradient-to-b from-rose-400 to-purple-400"
+                animate={{ y: [0, 16, 0] }}
+                transition={{ duration: 1.5, repeat: Infinity }}
+              />
             </div>
           </motion.div>
-
-          <motion.h1 
-            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-serif mb-6"
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5 }}
-          >
-            <span className="bg-gradient-to-r from-rose-500 via-pink-500 to-purple-500 bg-clip-text text-transparent">
-              {profile?.display_name || "Hello, I'm Here"}
-            </span>
-          </motion.h1>
-
-          {portfolio?.headline && (
-            <motion.p 
-              className="text-lg sm:text-xl text-slate-500 font-light mb-8 max-w-2xl mx-auto italic"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.7 }}
-            >
-              "{portfolio.headline}"
-            </motion.p>
-          )}
-
-          <motion.div 
-            className="flex flex-wrap items-center justify-center gap-4 text-sm text-slate-500 mb-10"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.9 }}
-          >
-            {portfolio?.location && (
-              <span className="flex items-center gap-2 bg-white/60 px-4 py-2 rounded-full border border-rose-100">
-                <MapPin className="w-4 h-4 text-rose-500" />
-                {portfolio.location}
-              </span>
-            )}
-          </motion.div>
-
-          <motion.div 
-            className="flex flex-wrap justify-center gap-4"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.1 }}
-          >
-            <Button 
-              size="lg" 
-              className="rounded-full bg-gradient-to-r from-rose-500 via-pink-500 to-purple-500 hover:from-rose-600 hover:via-pink-600 hover:to-purple-600 shadow-lg shadow-rose-300/30 px-8"
-              onClick={() => scrollTo('bio')}
-            >
-              <BookOpen className="w-4 h-4 mr-2" />
-              Read My Story
-            </Button>
-            {profile?.email && (
-              <Button 
-                size="lg" 
-                variant="outline" 
-                className="rounded-full border-rose-200 text-rose-600 hover:bg-rose-50 px-8" 
-                asChild
-              >
-                <a href={`mailto:${profile.email}`}>
-                  <Mail className="w-4 h-4 mr-2" />
-                  Say Hello
-                </a>
-              </Button>
-            )}
-          </motion.div>
-        </div>
+        </motion.div>
       </motion.section>
 
       {/* Bio Section */}
       <section id="bio" className="py-24 sm:py-32 px-4 sm:px-6 relative z-10">
         <div className="max-w-6xl mx-auto">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-            {/* Photo */}
+            {/* Photo - Enhanced Polaroid Style */}
             <ScrollReveal direction="left">
               <div className="relative mx-auto lg:mx-0 max-w-md">
-                <div className="absolute -inset-6 bg-gradient-to-br from-rose-200 via-pink-200 to-purple-200 rounded-3xl rotate-3 opacity-70" />
-                <div className="absolute -inset-6 bg-gradient-to-tl from-yellow-100 to-orange-100 rounded-3xl -rotate-3 opacity-50" />
-                <Avatar className="relative w-full aspect-square rounded-3xl shadow-2xl border-0 rotate-[-1deg] hover:rotate-0 transition-transform duration-500">
-                  <AvatarImage src={profile?.avatar_url || undefined} className="rounded-3xl object-cover" />
-                  <AvatarFallback className="text-6xl sm:text-8xl bg-gradient-to-br from-rose-400 via-pink-500 to-purple-500 text-white rounded-3xl font-serif">
-                    {profile?.display_name?.[0]?.toUpperCase() || "?"}
-                  </AvatarFallback>
-                </Avatar>
+                {/* Stacked Polaroid Effect */}
+                <motion.div 
+                  className="absolute -inset-4 bg-white rounded-lg shadow-xl rotate-6 opacity-60"
+                  whileHover={{ rotate: 8 }}
+                />
+                <motion.div 
+                  className="absolute -inset-4 bg-white rounded-lg shadow-xl -rotate-3 opacity-80"
+                  whileHover={{ rotate: -5 }}
+                />
+                
+                {/* Main Polaroid */}
+                <motion.div 
+                  className="relative bg-white p-3 pb-16 rounded-lg shadow-2xl"
+                  whileHover={{ rotate: 0, scale: 1.02 }}
+                  transition={{ type: "spring", stiffness: 300 }}
+                >
+                  <Avatar className="w-full aspect-square rounded-sm overflow-hidden">
+                    <AvatarImage src={profile?.avatar_url || undefined} className="object-cover" />
+                    <AvatarFallback className="text-6xl sm:text-8xl bg-gradient-to-br from-rose-400 via-pink-500 to-purple-500 text-white rounded-sm font-serif">
+                      {profile?.display_name?.[0]?.toUpperCase() || "?"}
+                    </AvatarFallback>
+                  </Avatar>
+                  
+                  {/* Polaroid Caption */}
+                  <div className="absolute bottom-4 left-0 right-0 text-center">
+                    <p className="font-handwriting text-slate-600 text-lg italic">About Me ✨</p>
+                  </div>
+                </motion.div>
+
+                {/* Decorative Tape */}
+                <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-16 h-6 bg-yellow-200/80 rotate-2 shadow-sm" />
               </div>
             </ScrollReveal>
 
@@ -273,19 +440,19 @@ export default function PersonalTheme({ profile, portfolio, skills, projects, ex
               <div className="space-y-6">
                 <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-rose-100 to-pink-100 border border-rose-200">
                   <Heart className="w-4 h-4 text-rose-500" />
-                  <span className="text-xs tracking-widest uppercase text-rose-600">About Me</span>
+                  <span className="text-xs tracking-widest uppercase text-rose-600">My Story</span>
                 </div>
                 
                 <h2 className="text-3xl sm:text-4xl font-serif">
                   <span className="bg-gradient-to-r from-rose-500 via-pink-500 to-purple-500 bg-clip-text text-transparent">
-                    {profile?.display_name}
+                    A little about me
                   </span>
                 </h2>
                 
                 {portfolio?.bio && (
                   <div className="relative bg-white/80 backdrop-blur-sm rounded-3xl p-6 sm:p-8 shadow-lg border border-rose-100">
                     <Quote className="w-8 h-8 text-rose-300 mb-4" />
-                    <p className="text-lg text-slate-600 font-light leading-relaxed italic">
+                    <p className="text-lg text-slate-600 font-light leading-relaxed">
                       {portfolio.bio}
                     </p>
                   </div>

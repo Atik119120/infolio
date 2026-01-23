@@ -63,6 +63,14 @@ export default function AdminUsers() {
 
   const fetchUsers = async () => {
     try {
+      // First get all admin user IDs to exclude them
+      const { data: adminRoles } = await supabase
+        .from("user_roles")
+        .select("user_id")
+        .eq("role", "admin");
+
+      const adminUserIds = new Set((adminRoles || []).map(r => r.user_id));
+
       const { data: profiles, error } = await supabase
         .from("profiles")
         .select("*")
@@ -70,8 +78,11 @@ export default function AdminUsers() {
 
       if (error) throw error;
 
+      // Filter out admin users - admins should not appear in users list
+      const nonAdminProfiles = (profiles || []).filter(p => !adminUserIds.has(p.user_id));
+
       const usersWithPortfolios = await Promise.all(
-        (profiles || []).map(async (profile) => {
+        nonAdminProfiles.map(async (profile) => {
           const { data: portfolio } = await supabase
             .from("portfolios")
             .select("is_published, pending_publish, theme")

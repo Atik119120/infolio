@@ -55,13 +55,7 @@ Deno.serve(async (req) => {
       .eq("role", "admin")
       .single();
 
-    if (!roleData) {
-      console.error("User is not an admin:", userId);
-      return new Response(
-        JSON.stringify({ error: "Admin access required" }),
-        { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
+    const isAdmin = !!roleData;
 
     const { action, targetUserId, email, role } = await req.json();
 
@@ -71,6 +65,16 @@ Deno.serve(async (req) => {
         return new Response(
           JSON.stringify({ error: "Target user ID required" }),
           { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+
+      // Allow if admin OR if user is deleting their own account
+      const isDeletingSelf = targetUserId === userId;
+      if (!isAdmin && !isDeletingSelf) {
+        console.error("User is not authorized to delete this account");
+        return new Response(
+          JSON.stringify({ error: "Not authorized to delete this account" }),
+          { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } }
         );
       }
 
@@ -168,8 +172,15 @@ Deno.serve(async (req) => {
       );
     }
 
-    // Add admin role
+    // Add admin role - ADMIN ONLY
     if (action === "add_admin") {
+      if (!isAdmin) {
+        return new Response(
+          JSON.stringify({ error: "Admin access required" }),
+          { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+
       if (!email) {
         return new Response(
           JSON.stringify({ error: "Email required" }),
@@ -227,8 +238,15 @@ Deno.serve(async (req) => {
       );
     }
 
-    // Remove admin role
+    // Remove admin role - ADMIN ONLY
     if (action === "remove_admin") {
+      if (!isAdmin) {
+        return new Response(
+          JSON.stringify({ error: "Admin access required" }),
+          { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+
       if (!targetUserId) {
         return new Response(
           JSON.stringify({ error: "Target user ID required" }),
@@ -264,8 +282,15 @@ Deno.serve(async (req) => {
       );
     }
 
-    // List admins
+    // List admins - ADMIN ONLY
     if (action === "list_admins") {
+      if (!isAdmin) {
+        return new Response(
+          JSON.stringify({ error: "Admin access required" }),
+          { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+
       const { data: admins, error } = await supabase
         .from("user_roles")
         .select(`

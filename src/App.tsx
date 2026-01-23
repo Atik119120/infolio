@@ -7,6 +7,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { AdminRoute } from "@/components/AdminRoute";
+import SubdomainRouter from "@/components/SubdomainRouter";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
@@ -26,6 +27,11 @@ import AdminSettings from "./pages/admin/AdminSettings";
 
 const queryClient = new QueryClient();
 
+// Configure your main domain here when you deploy
+// Example: "portfoliohub.com" or "yoursite.com"
+// Users will get subdomains like: username.portfoliohub.com
+const MAIN_DOMAIN = "portfoliohub.com";
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
@@ -34,35 +40,37 @@ const App = () => (
           <Toaster />
           <Sonner />
           <BrowserRouter>
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/auth" element={<Auth />} />
-              <Route path="/reset-password" element={<ResetPassword />} />
-              <Route path="/admin/login" element={<AdminAuth />} />
-              <Route path="/u/:username" element={<PublicPortfolio />} />
-              <Route path="/demo/:themeName" element={<ThemeDemo />} />
-              <Route path="/dashboard" element={
-                <ProtectedRoute>
-                  <Dashboard />
-                </ProtectedRoute>
-              }>
-                <Route index element={<DashboardOverview />} />
-                <Route path="edit" element={<PortfolioEdit />} />
-                <Route path="settings" element={<DashboardSettings />} />
-              </Route>
-              {/* Admin Routes */}
-              <Route path="/admin" element={
-                <AdminRoute>
-                  <AdminDashboard />
-                </AdminRoute>
-              }>
-                <Route index element={<AdminOverview />} />
-                <Route path="users" element={<AdminUsers />} />
-                <Route path="themes" element={<AdminThemes />} />
-                <Route path="settings" element={<AdminSettings />} />
-              </Route>
-              <Route path="*" element={<NotFound />} />
-            </Routes>
+            <SubdomainRouter mainDomain={MAIN_DOMAIN}>
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="/auth" element={<Auth />} />
+                <Route path="/reset-password" element={<ResetPassword />} />
+                <Route path="/admin/login" element={<AdminAuth />} />
+                <Route path="/u/:username" element={<PublicPortfolio />} />
+                <Route path="/demo/:themeName" element={<ThemeDemo />} />
+                <Route path="/dashboard" element={
+                  <ProtectedRoute>
+                    <Dashboard />
+                  </ProtectedRoute>
+                }>
+                  <Route index element={<DashboardOverview />} />
+                  <Route path="edit" element={<PortfolioEdit />} />
+                  <Route path="settings" element={<DashboardSettings />} />
+                </Route>
+                {/* Admin Routes */}
+                <Route path="/admin" element={
+                  <AdminRoute>
+                    <AdminDashboard />
+                  </AdminRoute>
+                }>
+                  <Route index element={<AdminOverview />} />
+                  <Route path="users" element={<AdminUsers />} />
+                  <Route path="themes" element={<AdminThemes />} />
+                  <Route path="settings" element={<AdminSettings />} />
+                </Route>
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </SubdomainRouter>
           </BrowserRouter>
         </TooltipProvider>
       </AuthProvider>

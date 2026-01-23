@@ -264,97 +264,346 @@ export default developer;`;
 
         {/* Main Content Area */}
         <div className="flex-1 min-h-screen overflow-x-hidden">
-          {/* Hero Section - Code Editor */}
-          <section id="hero" className="min-h-screen flex items-center p-4 sm:p-6 md:p-12">
-            <div className="w-full max-w-4xl mx-auto">
-              <ScrollReveal>
-                {/* Code Editor Window */}
-                <div className="rounded-lg overflow-hidden shadow-2xl border" style={{ backgroundColor: vsColors.active, borderColor: vsColors.border }}>
-                  {/* Editor Tab */}
-                  <div className="flex items-center px-4 py-2 border-b" style={{ borderColor: vsColors.border }}>
-                    <div className="flex items-center gap-2 px-3 py-1 rounded-t border-t-2" style={{ borderColor: vsColors.function, backgroundColor: vsColors.bg }}>
-                      <FileCode className="w-4 h-4" style={{ color: vsColors.function }} />
-                      <span className="text-xs">developer.ts</span>
-                      <span className="text-xs ml-2" style={{ color: vsColors.comment }}>×</span>
-                    </div>
-                  </div>
+          {/* Hero Section - Unique 3D Developer Workspace */}
+          <section id="hero" className="min-h-screen flex items-center p-4 sm:p-6 md:p-12 relative overflow-hidden">
+            {/* Animated Background Grid */}
+            <div className="absolute inset-0 overflow-hidden pointer-events-none">
+              <div 
+                className="absolute inset-0 opacity-10"
+                style={{
+                  backgroundImage: `
+                    linear-gradient(${vsColors.function}40 1px, transparent 1px),
+                    linear-gradient(90deg, ${vsColors.function}40 1px, transparent 1px)
+                  `,
+                  backgroundSize: '50px 50px',
+                }}
+              />
+              {/* Floating Code Particles */}
+              {[...Array(15)].map((_, i) => (
+                <motion.div
+                  key={i}
+                  className="absolute text-xs font-mono"
+                  style={{ 
+                    color: [vsColors.keyword, vsColors.string, vsColors.function, vsColors.variable, vsColors.number][i % 5],
+                    left: `${Math.random() * 100}%`,
+                    top: `${Math.random() * 100}%`,
+                  }}
+                  animate={{
+                    y: [0, -30, 0],
+                    opacity: [0.2, 0.8, 0.2],
+                    rotate: [0, 10, -10, 0],
+                  }}
+                  transition={{
+                    duration: 4 + Math.random() * 2,
+                    repeat: Infinity,
+                    delay: Math.random() * 2,
+                  }}
+                >
+                  {["</>", "{}", "=>", "[]", "//", "&&", "||", "++", "==", "!=", "const", "let", "async", "await", "import"][i]}
+                </motion.div>
+              ))}
+            </div>
 
-                  {/* Code Content */}
-                  <div className="p-4 sm:p-6 flex overflow-x-auto" style={{ backgroundColor: vsColors.bg }}>
-                    {/* Line Numbers */}
-                    <div className="pr-4 sm:pr-6 text-right select-none hidden sm:block" style={{ color: vsColors.comment }}>
-                      {fullText.split('\n').map((_, i) => (
-                        <div key={i} className="text-sm leading-7">{i + 1}</div>
+            <div className="w-full max-w-6xl mx-auto relative z-10">
+              {/* Split Hero Layout */}
+              <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+                {/* Left Side - Developer Identity */}
+                <ScrollReveal>
+                  <div className="space-y-6">
+                    {/* ASCII Art Style Name */}
+                    <motion.div
+                      initial={{ opacity: 0, x: -50 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ duration: 0.8 }}
+                      className="space-y-2"
+                    >
+                      <div className="flex items-center gap-3 mb-4">
+                        <motion.div 
+                          className="w-3 h-3 rounded-full"
+                          style={{ backgroundColor: vsColors.string }}
+                          animate={{ scale: [1, 1.2, 1] }}
+                          transition={{ duration: 2, repeat: Infinity }}
+                        />
+                        <span className="text-xs uppercase tracking-widest" style={{ color: vsColors.comment }}>
+                          Status: Available for hire
+                        </span>
+                      </div>
+                      
+                      <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight">
+                        <span style={{ color: vsColors.keyword }}>const </span>
+                        <motion.span 
+                          style={{ color: vsColors.function }}
+                          animate={{ textShadow: [`0 0 20px ${vsColors.function}60`, `0 0 40px ${vsColors.function}80`, `0 0 20px ${vsColors.function}60`] }}
+                          transition={{ duration: 2, repeat: Infinity }}
+                        >
+                          {profile?.display_name?.split(' ')[0] || "Dev"}
+                        </motion.span>
+                        <span style={{ color: vsColors.operator }}> = </span>
+                        <span style={{ color: vsColors.string }}>"</span>
+                        <span className="text-2xl sm:text-3xl lg:text-4xl" style={{ color: vsColors.string }}>
+                          {profile?.display_name?.split(' ').slice(1).join(' ') || "Developer"}
+                        </span>
+                        <span style={{ color: vsColors.string }}>"</span>
+                        <span style={{ color: vsColors.operator }}>;</span>
+                      </h1>
+                      
+                      <motion.p 
+                        className="text-lg sm:text-xl mt-4 max-w-md"
+                        style={{ color: vsColors.comment }}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 0.5 }}
+                      >
+                        <span style={{ color: vsColors.comment }}>// </span>
+                        {portfolio?.headline || "Crafting digital experiences"}
+                      </motion.p>
+                    </motion.div>
+
+                    {/* Tech Stack Pills */}
+                    <motion.div 
+                      className="flex flex-wrap gap-2"
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.6 }}
+                    >
+                      {skills.slice(0, 6).map((skill, i) => (
+                        <motion.span
+                          key={skill.id}
+                          className="px-3 py-1.5 rounded-md text-xs font-semibold border"
+                          style={{ 
+                            backgroundColor: `${[vsColors.keyword, vsColors.string, vsColors.function, vsColors.variable, vsColors.number, vsColors.operator][i % 6]}15`,
+                            borderColor: [vsColors.keyword, vsColors.string, vsColors.function, vsColors.variable, vsColors.number, vsColors.operator][i % 6],
+                            color: [vsColors.keyword, vsColors.string, vsColors.function, vsColors.variable, vsColors.number, vsColors.operator][i % 6],
+                          }}
+                          initial={{ opacity: 0, scale: 0.8 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          transition={{ delay: 0.7 + i * 0.1 }}
+                          whileHover={{ scale: 1.1, y: -2 }}
+                        >
+                          {skill.name}
+                        </motion.span>
                       ))}
-                    </div>
-                    
-                    {/* Code */}
-                    <pre className="text-sm leading-7 whitespace-pre-wrap break-all sm:break-normal">
-                      <code 
-                        dangerouslySetInnerHTML={{ 
-                          __html: highlightCode(typedText) + 
-                            (showCursor ? `<span style="color: ${vsColors.function}; animation: blink 1s infinite">|</span>` : '<span class="opacity-0">|</span>') 
-                        }} 
-                      />
-                    </pre>
-                  </div>
-                </div>
-              </ScrollReveal>
+                    </motion.div>
 
-              {/* Terminal */}
-              <ScrollReveal delay={0.2}>
-                <div className="mt-4 rounded-lg overflow-hidden border" style={{ backgroundColor: vsColors.sidebar, borderColor: vsColors.border }}>
-                  <div className="flex items-center px-4 py-2 border-b" style={{ borderColor: vsColors.border }}>
-                    <Terminal className="w-4 h-4 mr-2" style={{ color: vsColors.string }} />
-                    <span className="text-xs font-semibold">TERMINAL</span>
-                    <span className="text-xs ml-2" style={{ color: vsColors.comment }}>zsh</span>
+                    {/* CTA Buttons */}
+                    <motion.div 
+                      className="flex flex-wrap gap-4 pt-4"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: 1 }}
+                    >
+                      {profile?.email && (
+                        <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                          <Button 
+                            size="lg" 
+                            className="rounded-lg font-mono text-sm px-6 relative overflow-hidden group"
+                            style={{ backgroundColor: vsColors.function }}
+                            asChild
+                          >
+                            <a href={`mailto:${profile.email}`}>
+                              <span className="relative z-10 flex items-center">
+                                <Mail className="w-4 h-4 mr-2" />
+                                hire.me()
+                              </span>
+                              <motion.div 
+                                className="absolute inset-0"
+                                style={{ backgroundColor: vsColors.keyword }}
+                                initial={{ x: '-100%' }}
+                                whileHover={{ x: 0 }}
+                                transition={{ duration: 0.3 }}
+                              />
+                            </a>
+                          </Button>
+                        </motion.div>
+                      )}
+                      {socialLinks.find(l => l.platform.toLowerCase() === 'github') && (
+                        <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                          <Button 
+                            size="lg" 
+                            variant="outline" 
+                            className="rounded-lg font-mono text-sm px-6"
+                            style={{ borderColor: vsColors.string, color: vsColors.string }}
+                            asChild
+                          >
+                            <a href={socialLinks.find(l => l.platform.toLowerCase() === 'github')?.url} target="_blank" rel="noopener noreferrer">
+                              <Github className="w-4 h-4 mr-2" />
+                              view.code()
+                            </a>
+                          </Button>
+                        </motion.div>
+                      )}
+                    </motion.div>
                   </div>
-                  <div className="p-4 text-sm font-mono" style={{ backgroundColor: vsColors.bg }}>
-                    <p style={{ color: vsColors.comment }}>
-                      <span style={{ color: vsColors.string }}>➜</span> ~/portfolio <span style={{ color: vsColors.function }}>git:(</span><span style={{ color: vsColors.variable }}>main</span><span style={{ color: vsColors.function }}>)</span> npm run dev
-                    </p>
-                    <p className="mt-2">
-                      <span style={{ color: vsColors.string }}>✓</span> <span style={{ color: vsColors.text }}>Ready in</span> <span style={{ color: vsColors.number }}>1.2s</span>
-                    </p>
-                    <p className="mt-1">
-                      <span style={{ color: vsColors.function }}>➜</span> Local: <span style={{ color: vsColors.operator }}>http://localhost:3000</span>
-                    </p>
-                  </div>
-                </div>
-              </ScrollReveal>
+                </ScrollReveal>
 
-              {/* Action Buttons */}
-              <ScrollReveal delay={0.4}>
-                <div className="flex flex-wrap gap-4 mt-8 justify-center">
-                  {profile?.email && (
-                    <Button 
-                      size="lg" 
-                      className="rounded-lg font-mono"
+                {/* Right Side - 3D Code Cards Stack */}
+                <ScrollReveal delay={0.2}>
+                  <div className="relative h-[400px] sm:h-[500px] perspective-1000">
+                    {/* Main Code Window */}
+                    <motion.div 
+                      className="absolute inset-0 rounded-xl overflow-hidden shadow-2xl border"
+                      style={{ 
+                        backgroundColor: vsColors.bg, 
+                        borderColor: vsColors.border,
+                        transformStyle: 'preserve-3d',
+                      }}
+                      initial={{ rotateY: 15, rotateX: -5 }}
+                      animate={{ 
+                        rotateY: [15, -5, 15],
+                        rotateX: [-5, 5, -5],
+                      }}
+                      transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+                      whileHover={{ rotateY: 0, rotateX: 0, scale: 1.02 }}
+                    >
+                      {/* Window Header */}
+                      <div className="flex items-center justify-between px-4 py-2 border-b" style={{ backgroundColor: vsColors.sidebar, borderColor: vsColors.border }}>
+                        <div className="flex items-center gap-2">
+                          <div className="w-3 h-3 rounded-full bg-[#FF5F57]" />
+                          <div className="w-3 h-3 rounded-full bg-[#FFBD2E]" />
+                          <div className="w-3 h-3 rounded-full bg-[#28CA41]" />
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <FileCode className="w-3 h-3" style={{ color: vsColors.function }} />
+                          <span className="text-xs" style={{ color: vsColors.text }}>developer.ts</span>
+                        </div>
+                        <div />
+                      </div>
+
+                      {/* Code Content with Typing Effect */}
+                      <div className="p-4 sm:p-6 flex overflow-hidden" style={{ backgroundColor: vsColors.bg }}>
+                        <div className="pr-4 text-right select-none hidden sm:block" style={{ color: vsColors.comment }}>
+                          {fullText.split('\n').map((_, i) => (
+                            <div key={i} className="text-sm leading-7">{i + 1}</div>
+                          ))}
+                        </div>
+                        <pre className="text-sm leading-7 whitespace-pre-wrap break-all sm:break-normal overflow-hidden">
+                          <code 
+                            dangerouslySetInnerHTML={{ 
+                              __html: highlightCode(typedText) + 
+                                (showCursor ? `<span style="color: ${vsColors.function}; animation: blink 1s infinite">|</span>` : '<span class="opacity-0">|</span>') 
+                            }} 
+                          />
+                        </pre>
+                      </div>
+                    </motion.div>
+
+                    {/* Floating Terminal */}
+                    <motion.div 
+                      className="absolute -bottom-4 -right-4 sm:bottom-4 sm:right-4 w-64 sm:w-72 rounded-lg overflow-hidden shadow-2xl border z-20"
+                      style={{ backgroundColor: vsColors.sidebar, borderColor: vsColors.border }}
+                      initial={{ opacity: 0, y: 50, x: 30 }}
+                      animate={{ opacity: 1, y: 0, x: 0 }}
+                      transition={{ delay: 1.5 }}
+                      whileHover={{ scale: 1.05, y: -10 }}
+                    >
+                      <div className="flex items-center px-3 py-1.5 border-b" style={{ borderColor: vsColors.border }}>
+                        <Terminal className="w-3 h-3 mr-2" style={{ color: vsColors.string }} />
+                        <span className="text-[10px] font-semibold" style={{ color: vsColors.text }}>TERMINAL</span>
+                      </div>
+                      <div className="p-3 text-xs font-mono" style={{ backgroundColor: `${vsColors.bg}ee` }}>
+                        <motion.div
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          transition={{ delay: 2 }}
+                        >
+                          <p style={{ color: vsColors.comment }}>
+                            <span style={{ color: vsColors.string }}>➜</span> ~ <span style={{ color: vsColors.function }}>npm run dev</span>
+                          </p>
+                          <motion.p 
+                            className="mt-1"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ delay: 2.5 }}
+                          >
+                            <span style={{ color: vsColors.string }}>✓</span> Ready in <span style={{ color: vsColors.number }}>1.2s</span>
+                          </motion.p>
+                          <motion.p 
+                            className="mt-1"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ delay: 3 }}
+                          >
+                            <span style={{ color: vsColors.keyword }}>→</span> <span style={{ color: vsColors.operator }}>localhost:3000</span>
+                          </motion.p>
+                        </motion.div>
+                      </div>
+                    </motion.div>
+
+                    {/* Floating Git Status */}
+                    <motion.div 
+                      className="absolute -top-4 -left-4 sm:top-8 sm:left-0 px-4 py-2 rounded-lg border shadow-lg z-10"
+                      style={{ backgroundColor: vsColors.sidebar, borderColor: vsColors.border }}
+                      initial={{ opacity: 0, x: -30 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 1.8 }}
+                      whileHover={{ scale: 1.1 }}
+                    >
+                      <div className="flex items-center gap-2">
+                        <motion.div 
+                          className="w-2 h-2 rounded-full"
+                          style={{ backgroundColor: vsColors.string }}
+                          animate={{ scale: [1, 1.3, 1] }}
+                          transition={{ duration: 1.5, repeat: Infinity }}
+                        />
+                        <span className="text-xs font-mono">
+                          <span style={{ color: vsColors.function }}>git:</span>
+                          <span style={{ color: vsColors.variable }}>(main)</span>
+                        </span>
+                        <span className="text-xs" style={{ color: vsColors.string }}>✓</span>
+                      </div>
+                    </motion.div>
+
+                    {/* Floating Stats */}
+                    <motion.div 
+                      className="absolute top-1/2 -right-8 sm:-right-4 -translate-y-1/2 space-y-2 z-10"
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 2.2 }}
+                    >
+                      {[
+                        { label: "projects", value: projects.length, color: vsColors.function },
+                        { label: "skills", value: skills.length, color: vsColors.string },
+                        { label: "years", value: experiences.length > 0 ? "5+" : "3+", color: vsColors.keyword },
+                      ].map((stat, i) => (
+                        <motion.div 
+                          key={stat.label}
+                          className="px-3 py-1.5 rounded-lg border text-center"
+                          style={{ backgroundColor: `${stat.color}15`, borderColor: stat.color }}
+                          initial={{ opacity: 0, x: 20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: 2.4 + i * 0.2 }}
+                          whileHover={{ scale: 1.1, x: -5 }}
+                        >
+                          <div className="text-lg font-bold" style={{ color: stat.color }}>{stat.value}</div>
+                          <div className="text-[9px] uppercase tracking-wider" style={{ color: vsColors.comment }}>{stat.label}</div>
+                        </motion.div>
+                      ))}
+                    </motion.div>
+                  </div>
+                </ScrollReveal>
+              </div>
+
+              {/* Scroll Indicator */}
+              <motion.div 
+                className="absolute bottom-8 left-1/2 -translate-x-1/2"
+                animate={{ y: [0, 10, 0] }}
+                transition={{ duration: 2, repeat: Infinity }}
+              >
+                <div className="flex flex-col items-center gap-2">
+                  <span className="text-xs font-mono" style={{ color: vsColors.comment }}>scroll.down()</span>
+                  <motion.div 
+                    className="w-6 h-10 rounded-full border-2 flex justify-center pt-2"
+                    style={{ borderColor: vsColors.function }}
+                  >
+                    <motion.div 
+                      className="w-1.5 h-1.5 rounded-full"
                       style={{ backgroundColor: vsColors.function }}
-                      asChild
-                    >
-                      <a href={`mailto:${profile.email}`}>
-                        <Mail className="w-4 h-4 mr-2" />
-                        contact.send()
-                      </a>
-                    </Button>
-                  )}
-                  {socialLinks.find(l => l.platform.toLowerCase() === 'github') && (
-                    <Button 
-                      size="lg" 
-                      variant="outline" 
-                      className="rounded-lg font-mono"
-                      style={{ borderColor: vsColors.border, color: vsColors.text }}
-                      asChild
-                    >
-                      <a href={socialLinks.find(l => l.platform.toLowerCase() === 'github')?.url} target="_blank" rel="noopener noreferrer">
-                        <Github className="w-4 h-4 mr-2" />
-                        git.clone()
-                      </a>
-                    </Button>
-                  )}
+                      animate={{ y: [0, 12, 0] }}
+                      transition={{ duration: 1.5, repeat: Infinity }}
+                    />
+                  </motion.div>
                 </div>
-              </ScrollReveal>
+              </motion.div>
             </div>
           </section>
 

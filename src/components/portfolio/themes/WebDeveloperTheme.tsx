@@ -52,7 +52,6 @@ export default function WebDeveloperTheme({ profile, portfolio, skills, projects
   const [menuOpen, setMenuOpen] = useState(false);
   const [typedText, setTypedText] = useState("");
   const [showCursor, setShowCursor] = useState(true);
-  const [isReady, setIsReady] = useState(false);
   const [hoveredProject, setHoveredProject] = useState<string | null>(null);
   const featuredProjects = projects.filter((p) => p.featured);
   const allProjects = [...featuredProjects, ...projects.filter((p) => !p.featured)];
@@ -74,15 +73,8 @@ export default developer;`;
     return acc;
   }, {} as Record<string, typeof skills>);
 
-  // Simple initialization
+  // Typing animation - starts immediately
   useEffect(() => {
-    const timer = setTimeout(() => setIsReady(true), 500);
-    return () => clearTimeout(timer);
-  }, []);
-
-  // Typing animation
-  useEffect(() => {
-    if (!isReady) return;
     let i = 0;
     const interval = setInterval(() => {
       if (i <= fullText.length) {
@@ -93,7 +85,7 @@ export default developer;`;
       }
     }, 20);
     return () => clearInterval(interval);
-  }, [isReady, fullText]);
+  }, [fullText]);
 
   // Cursor blink
   useEffect(() => {
@@ -128,36 +120,6 @@ export default developer;`;
 
   return (
     <div className="min-h-screen font-mono" style={{ backgroundColor: vsColors.bg, color: vsColors.text }}>
-      {/* Loading Screen */}
-      <AnimatePresence>
-        {!isReady && (
-          <motion.div 
-            className="fixed inset-0 z-[100] flex items-center justify-center"
-            style={{ backgroundColor: vsColors.bg }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            <motion.div
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              className="text-center"
-            >
-              <div className="relative w-20 h-20 mx-auto mb-4">
-                <motion.div
-                  className="absolute inset-0 rounded-xl"
-                  style={{ backgroundColor: vsColors.function }}
-                  animate={{ rotate: 360 }}
-                  transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-                />
-                <div className="absolute inset-1 rounded-lg flex items-center justify-center" style={{ backgroundColor: vsColors.bg }}>
-                  <Code2 className="w-8 h-8" style={{ color: vsColors.function }} />
-                </div>
-              </div>
-              <p className="text-sm" style={{ color: vsColors.comment }}>Loading workspace...</p>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
 
       {/* Navigation - VS Code Title Bar */}
       <nav className="fixed top-0 left-0 right-0 z-50" style={{ backgroundColor: vsColors.sidebar }}>

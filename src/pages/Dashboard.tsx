@@ -4,6 +4,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -206,6 +207,7 @@ export default function Dashboard() {
           </div>
 
           <div className="flex items-center gap-4">
+            <ThemeToggle />
             {profile && (
               <Button
                 variant="outline"

@@ -132,13 +132,21 @@ export default function Auth() {
     setIsLoading(false);
 
     if (error) {
-      if (error.message.includes("already registered")) {
+      const errorMsg = error.message.toLowerCase();
+      if (errorMsg.includes("already registered")) {
         toast({
           variant: "destructive",
           title: "Account exists",
           description: "This email is already registered. Please login instead.",
         });
         setActiveTab("login");
+      } else if (errorMsg.includes("username") || errorMsg.includes("duplicate key") || errorMsg.includes("profiles_username_key")) {
+        toast({
+          variant: "destructive",
+          title: "Username taken",
+          description: "This username is already in use. Please choose a different one.",
+        });
+        setErrors({ username: "This username is already taken" });
       } else {
         toast({
           variant: "destructive",

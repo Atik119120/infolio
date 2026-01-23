@@ -68,6 +68,7 @@ export interface ThemeProps {
   experiences: ThemeExperience[];
   education: ThemeEducation[];
   socialLinks: ThemeSocialLink[];
+  userId?: string;
 }
 
 export const THEME_OPTIONS = [

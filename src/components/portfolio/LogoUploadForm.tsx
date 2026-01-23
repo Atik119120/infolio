@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Loader2, Upload, Image, Trash2 } from "lucide-react";
+import { compressImage } from "@/lib/imageCompression";
 
 interface LogoUploadFormProps {
   logoUrl: string | null;
@@ -27,40 +28,51 @@ export function LogoUploadForm({ logoUrl, userId, onUpdate, onSuccess, onError }
       return;
     }
 
-    if (file.size > 2 * 1024 * 1024) {
-      onError("Logo must be less than 2MB");
+    // 1MB limit
+    if (file.size > 1 * 1024 * 1024) {
+      onError("Logo must be less than 1MB");
       return;
     }
 
     setUploading(true);
 
-    const fileExt = file.name.split(".").pop();
-    const fileName = `${userId}/logo.${fileExt}`;
+    try {
+      // Compress logo image
+      const compressedFile = await compressImage(file, {
+        maxWidth: 500,
+        maxHeight: 500,
+        quality: 0.85,
+        maxSizeKB: 150,
+      });
 
-    const { error: uploadError } = await supabase.storage
-      .from("avatars")
-      .upload(fileName, file, { upsert: true });
+      const fileName = `${userId}/logo.jpg`;
 
-    if (uploadError) {
-      setUploading(false);
-      onError("Failed to upload logo");
-      return;
-    }
+      const { error: uploadError } = await supabase.storage
+        .from("avatars")
+        .upload(fileName, compressedFile, { upsert: true });
 
-    const { data: urlData } = supabase.storage.from("avatars").getPublicUrl(fileName);
+      if (uploadError) {
+        throw uploadError;
+      }
 
-    const { error: updateError } = await supabase
-      .from("portfolios")
-      .update({ logo_url: urlData.publicUrl })
-      .eq("user_id", userId);
+      const { data: urlData } = supabase.storage.from("avatars").getPublicUrl(fileName);
 
-    setUploading(false);
+      const { error: updateError } = await supabase
+        .from("portfolios")
+        .update({ logo_url: urlData.publicUrl + "?t=" + Date.now() })
+        .eq("user_id", userId);
 
-    if (updateError) {
-      onError("Failed to update portfolio");
-    } else {
-      onSuccess("Logo uploaded successfully");
+      if (updateError) {
+        throw updateError;
+      }
+
+      onSuccess("Logo compressed and uploaded!");
       onUpdate();
+    } catch (err) {
+      console.error("Upload error:", err);
+      onError("Failed to upload logo");
+    } finally {
+      setUploading(false);
     }
   };
 

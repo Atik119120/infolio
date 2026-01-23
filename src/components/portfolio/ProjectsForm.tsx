@@ -79,8 +79,9 @@ export function ProjectsForm({ projects, userId, onUpdate, onSuccess, onError }:
       return;
     }
 
-    if (file.size > 10 * 1024 * 1024) {
-      onError("Image must be less than 10MB");
+    // 1MB limit
+    if (file.size > 1 * 1024 * 1024) {
+      onError("Image must be less than 1MB");
       return;
     }
 

@@ -76,8 +76,9 @@ export function BasicInfoForm({ profile, portfolio, userId, onUpdate, onSuccess,
       return;
     }
 
-    if (file.size > 5 * 1024 * 1024) {
-      onError("Image must be less than 5MB");
+    // 1MB limit
+    if (file.size > 1 * 1024 * 1024) {
+      onError("Image must be less than 1MB");
       return;
     }
 

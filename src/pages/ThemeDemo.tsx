@@ -11,6 +11,7 @@ import {
   WebDeveloperTheme,
   OfficialTheme,
   PersonalTheme,
+  CosmicTheme,
   ThemeProps,
 } from "@/components/portfolio/themes";
 
@@ -139,6 +140,8 @@ export default function ThemeDemo() {
         return <WebDeveloperTheme {...demoData} />;
       case 'official':
         return <OfficialTheme {...demoData} />;
+      case 'cosmic':
+        return <CosmicTheme {...demoData} />;
       case 'personal':
       default:
         return <PersonalTheme {...demoData} />;

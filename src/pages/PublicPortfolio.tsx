@@ -13,6 +13,7 @@ import {
   WebDeveloperTheme,
   OfficialTheme,
   PersonalTheme,
+  CosmicTheme,
   ThemeProfile,
   ThemePortfolio,
   ThemeSkill,
@@ -135,6 +136,8 @@ export default function PublicPortfolio() {
       return <WebDeveloperTheme {...themeProps} />;
     case 'official':
       return <OfficialTheme {...themeProps} />;
+    case 'cosmic':
+      return <CosmicTheme {...themeProps} />;
     case 'personal':
     default:
       return <PersonalTheme {...themeProps} />;

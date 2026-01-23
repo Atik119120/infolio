@@ -25,6 +25,7 @@ const themeIcons: Record<string, typeof Camera> = {
   'web-developer': Code2,
   'official': Building2,
   'personal': Heart,
+  'cosmic': Eye,
 };
 
 const themeColors: Record<string, string> = {
@@ -35,6 +36,7 @@ const themeColors: Record<string, string> = {
   'web-developer': 'from-blue-500 to-cyan-500',
   'official': 'from-slate-600 to-slate-800',
   'personal': 'from-rose-400 to-pink-500',
+  'cosmic': 'from-indigo-600 via-purple-600 to-pink-500',
 };
 
 const themePreviews: Record<string, { hero: string; features: string[] }> = {
@@ -65,6 +67,10 @@ const themePreviews: Record<string, { hero: string; features: string[] }> = {
   'personal': {
     hero: 'Elegant biography style for personal branding',
     features: ['Story-focused', 'Warm aesthetics', 'Personal touch', 'Blog-like feel'],
+  },
+  'cosmic': {
+    hero: 'Premium space-inspired luxury universe theme',
+    features: ['Solar system hero', 'Floating stars', 'Nebula effects', 'Premium animations'],
   },
 };
 

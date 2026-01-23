@@ -27,15 +27,20 @@ export default function AdminAuth() {
   const { toast } = useToast();
 
   useEffect(() => {
-    if (user && !roleLoading) {
+    // Only check admin status after role loading is complete
+    if (roleLoading) return;
+    
+    if (user) {
       if (isAdmin) {
         navigate("/admin", { replace: true });
       } else {
+        // Only show error if we have a user and they're definitely not admin
         toast({
           variant: "destructive",
           title: "Access Denied",
           description: "You don't have admin privileges.",
         });
+        navigate("/", { replace: true });
       }
     }
   }, [user, isAdmin, roleLoading, navigate, toast]);

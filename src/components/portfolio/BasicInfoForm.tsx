@@ -1,0 +1,250 @@
+import { useState, useRef } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Loader2, Upload, Camera } from "lucide-react";
+import type { Profile, Portfolio } from "@/pages/PortfolioEdit";
+
+interface BasicInfoFormProps {
+  profile: Profile | null;
+  portfolio: Portfolio | null;
+  userId: string;
+  onUpdate: () => void;
+  onSuccess: (message: string) => void;
+  onError: (message: string) => void;
+}
+
+export function BasicInfoForm({ profile, portfolio, userId, onUpdate, onSuccess, onError }: BasicInfoFormProps) {
+  const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const [formData, setFormData] = useState({
+    display_name: profile?.display_name || "",
+    headline: portfolio?.headline || "",
+    bio: portfolio?.bio || "",
+    location: portfolio?.location || "",
+    phone: portfolio?.phone || "",
+    website: portfolio?.website || "",
+  });
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSave = async () => {
+    setSaving(true);
+
+    const [profileRes, portfolioRes] = await Promise.all([
+      supabase
+        .from("profiles")
+        .update({ display_name: formData.display_name })
+        .eq("user_id", userId),
+      supabase
+        .from("portfolios")
+        .update({
+          headline: formData.headline,
+          bio: formData.bio,
+          location: formData.location,
+          phone: formData.phone,
+          website: formData.website,
+        })
+        .eq("user_id", userId),
+    ]);
+
+    setSaving(false);
+
+    if (profileRes.error || portfolioRes.error) {
+      onError("Failed to save changes");
+    } else {
+      onSuccess("Profile updated successfully");
+      onUpdate();
+    }
+  };
+
+  const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      onError("Please upload an image file");
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      onError("Image must be less than 5MB");
+      return;
+    }
+
+    setUploading(true);
+
+    const fileExt = file.name.split(".").pop();
+    const fileName = `${userId}/avatar.${fileExt}`;
+
+    const { error: uploadError } = await supabase.storage
+      .from("avatars")
+      .upload(fileName, file, { upsert: true });
+
+    if (uploadError) {
+      setUploading(false);
+      onError("Failed to upload image");
+      return;
+    }
+
+    const { data: urlData } = supabase.storage.from("avatars").getPublicUrl(fileName);
+
+    const { error: updateError } = await supabase
+      .from("profiles")
+      .update({ avatar_url: urlData.publicUrl })
+      .eq("user_id", userId);
+
+    setUploading(false);
+
+    if (updateError) {
+      onError("Failed to update profile");
+    } else {
+      onSuccess("Avatar uploaded successfully");
+      onUpdate();
+    }
+  };
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>Basic Information</CardTitle>
+        <CardDescription>Your personal details and introduction</CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-6">
+        {/* Avatar Upload */}
+        <div className="flex items-center gap-6">
+          <div className="relative group">
+            <Avatar className="w-24 h-24 border-4 border-background shadow-lg">
+              <AvatarImage src={profile?.avatar_url || undefined} />
+              <AvatarFallback className="text-2xl gradient-primary text-white">
+                {formData.display_name?.[0]?.toUpperCase() || "?"}
+              </AvatarFallback>
+            </Avatar>
+            <button
+              onClick={() => fileInputRef.current?.click()}
+              disabled={uploading}
+              className="absolute inset-0 flex items-center justify-center bg-black/50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+            >
+              {uploading ? (
+                <Loader2 className="w-6 h-6 text-white animate-spin" />
+              ) : (
+                <Camera className="w-6 h-6 text-white" />
+              )}
+            </button>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              onChange={handleAvatarUpload}
+              className="hidden"
+            />
+          </div>
+          <div>
+            <h3 className="font-medium">Profile Photo</h3>
+            <p className="text-sm text-muted-foreground">
+              Click to upload a new photo (max 5MB)
+            </p>
+            <Button
+              variant="outline"
+              size="sm"
+              className="mt-2"
+              onClick={() => fileInputRef.current?.click()}
+              disabled={uploading}
+            >
+              <Upload className="w-4 h-4 mr-2" />
+              Upload
+            </Button>
+          </div>
+        </div>
+
+        <div className="grid gap-4 md:grid-cols-2">
+          <div className="space-y-2">
+            <Label htmlFor="display_name">Display Name</Label>
+            <Input
+              id="display_name"
+              name="display_name"
+              value={formData.display_name}
+              onChange={handleChange}
+              placeholder="John Doe"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="headline">Headline</Label>
+            <Input
+              id="headline"
+              name="headline"
+              value={formData.headline}
+              onChange={handleChange}
+              placeholder="Full Stack Developer"
+            />
+          </div>
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="bio">Bio</Label>
+          <Textarea
+            id="bio"
+            name="bio"
+            value={formData.bio}
+            onChange={handleChange}
+            placeholder="Tell visitors about yourself..."
+            rows={4}
+          />
+        </div>
+
+        <div className="grid gap-4 md:grid-cols-2">
+          <div className="space-y-2">
+            <Label htmlFor="location">Location</Label>
+            <Input
+              id="location"
+              name="location"
+              value={formData.location}
+              onChange={handleChange}
+              placeholder="San Francisco, CA"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="phone">Phone</Label>
+            <Input
+              id="phone"
+              name="phone"
+              value={formData.phone}
+              onChange={handleChange}
+              placeholder="+1 (555) 123-4567"
+            />
+          </div>
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="website">Personal Website</Label>
+          <Input
+            id="website"
+            name="website"
+            value={formData.website}
+            onChange={handleChange}
+            placeholder="https://yourwebsite.com"
+          />
+        </div>
+
+        <Button onClick={handleSave} disabled={saving} className="gradient-primary">
+          {saving ? (
+            <>
+              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+              Saving...
+            </>
+          ) : (
+            "Save Changes"
+          )}
+        </Button>
+      </CardContent>
+    </Card>
+  );
+}

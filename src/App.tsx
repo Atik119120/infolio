@@ -16,6 +16,7 @@ import DashboardSettings from "./pages/DashboardSettings";
 import PublicPortfolio from "./pages/PublicPortfolio";
 import ThemeDemo from "./pages/ThemeDemo";
 import NotFound from "./pages/NotFound";
+import AdminAuth from "./pages/admin/AdminAuth";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminOverview from "./pages/admin/AdminOverview";
 import AdminUsers from "./pages/admin/AdminUsers";
@@ -35,6 +36,7 @@ const App = () => (
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/auth" element={<Auth />} />
+              <Route path="/admin/login" element={<AdminAuth />} />
               <Route path="/u/:username" element={<PublicPortfolio />} />
               <Route path="/demo/:themeName" element={<ThemeDemo />} />
               <Route path="/dashboard" element={

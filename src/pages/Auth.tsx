@@ -11,6 +11,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Loader2, ArrowRight, Phone, Mail, User, Lock } from "lucide-react";
 import { z } from "zod";
 import alphaLogo from "@/assets/alpha-portfolio-logo.png";
+import { OTPVerification } from "@/components/auth/OTPVerification";
 
 const loginSchema = z.object({
   email: z.string().trim().email({ message: "Invalid email address" }),
@@ -34,6 +35,8 @@ const signupSchema = z.object({
     .regex(/^[+]?[0-9]+$/, { message: "Phone number can only contain numbers and optional + prefix" }),
 });
 
+type AuthStep = "form" | "otp-verification";
+
 export default function Auth() {
   const [activeTab, setActiveTab] = useState("login");
   const [email, setEmail] = useState("");
@@ -42,6 +45,13 @@ export default function Auth() {
   const [phone, setPhone] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [authStep, setAuthStep] = useState<AuthStep>("form");
+  const [pendingSignupData, setPendingSignupData] = useState<{
+    email: string;
+    password: string;
+    username: string;
+    phone: string;
+  } | null>(null);
 
   const { signIn, signUp, user } = useAuth();
   const navigate = useNavigate();
@@ -127,7 +137,44 @@ export default function Auth() {
     }
 
     setIsLoading(true);
-    const { error } = await signUp(email, password, username, phone);
+    
+    try {
+      // Send OTP first
+      const { data, error: otpError } = await supabase.functions.invoke("otp-verification", {
+        body: { action: "send", email, userName: username },
+      });
+
+      if (otpError) throw otpError;
+
+      // Store signup data for after verification
+      setPendingSignupData({ email, password, username, phone });
+      setAuthStep("otp-verification");
+      
+      toast({
+        title: "Verification Code Sent! 📧",
+        description: "Check your email for the 6-digit code.",
+      });
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Failed to send code",
+        description: error.message || "Could not send verification code.",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleOTPVerified = async () => {
+    if (!pendingSignupData) return;
+
+    setIsLoading(true);
+    const { error } = await signUp(
+      pendingSignupData.email,
+      pendingSignupData.password,
+      pendingSignupData.username,
+      pendingSignupData.phone
+    );
     setIsLoading(false);
 
     if (error) {
@@ -138,20 +185,29 @@ export default function Auth() {
           description: "This email is already registered. Please login instead.",
         });
         setActiveTab("login");
+        setAuthStep("form");
       } else {
         toast({
           variant: "destructive",
           title: "Signup failed",
           description: error.message,
         });
+        setAuthStep("form");
       }
     } else {
       toast({
-        title: "Verification email sent!",
-        description: "Please check your Gmail inbox to verify your email address before logging in.",
+        title: "Account Created! 🎉",
+        description: "Your account is pending admin approval. You can login and start building your portfolio.",
       });
       setActiveTab("login");
+      setAuthStep("form");
+      setPendingSignupData(null);
     }
+  };
+
+  const handleBackFromOTP = () => {
+    setAuthStep("form");
+    setPendingSignupData(null);
   };
 
   return (
@@ -205,6 +261,18 @@ export default function Auth() {
             <span className="text-2xl font-bold gradient-text">Alpha Portfolio</span>
           </div>
 
+          {/* OTP Verification Step */}
+          {authStep === "otp-verification" && pendingSignupData && (
+            <OTPVerification
+              email={pendingSignupData.email}
+              userName={pendingSignupData.username}
+              onVerified={handleOTPVerified}
+              onBack={handleBackFromOTP}
+            />
+          )}
+
+          {/* Main Auth Form */}
+          {authStep === "form" && (
           <Card className="border-0 shadow-xl">
             <CardHeader className="space-y-1 pb-6">
               <CardTitle className="text-2xl font-bold text-center">
@@ -390,10 +458,13 @@ export default function Auth() {
               </Tabs>
             </CardContent>
           </Card>
+          )}
 
+          {authStep === "form" && (
           <p className="text-center text-sm text-muted-foreground mt-6">
             By continuing, you agree to our Terms of Service and Privacy Policy.
           </p>
+          )}
         </div>
       </div>
     </div>

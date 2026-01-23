@@ -55,7 +55,7 @@ export default function PersonalTheme({ profile, portfolio, skills, projects, ex
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-rose-50 via-pink-50 to-purple-50 text-slate-800 overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-rose-50 via-pink-50 to-purple-50 dark:from-slate-950 dark:via-slate-900 dark:to-purple-950 text-slate-800 dark:text-slate-100 overflow-hidden transition-colors duration-300">
       {/* Floating Decorations */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
         {[...Array(8)].map((_, i) => (
@@ -77,22 +77,22 @@ export default function PersonalTheme({ profile, portfolio, skills, projects, ex
               ease: "easeInOut"
             }}
           >
-            {i % 4 === 0 && <Star className="w-4 h-4 text-yellow-400/40" />}
-            {i % 4 === 1 && <Heart className="w-4 h-4 text-rose-400/40" />}
-            {i % 4 === 2 && <Sparkles className="w-4 h-4 text-purple-400/40" />}
-            {i % 4 === 3 && <Flower2 className="w-4 h-4 text-pink-400/40" />}
+            {i % 4 === 0 && <Star className="w-4 h-4 text-yellow-400/40 dark:text-yellow-300/30" />}
+            {i % 4 === 1 && <Heart className="w-4 h-4 text-rose-400/40 dark:text-rose-300/30" />}
+            {i % 4 === 2 && <Sparkles className="w-4 h-4 text-purple-400/40 dark:text-purple-300/30" />}
+            {i % 4 === 3 && <Flower2 className="w-4 h-4 text-pink-400/40 dark:text-pink-300/30" />}
           </motion.div>
         ))}
         
         {/* Gradient Orbs */}
-        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-gradient-to-br from-rose-200/50 to-pink-200/30 rounded-full blur-[100px]" />
-        <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-gradient-to-tr from-purple-200/50 to-violet-200/30 rounded-full blur-[100px]" />
-        <div className="absolute top-1/2 left-1/2 w-[400px] h-[400px] bg-gradient-to-r from-yellow-200/30 to-orange-200/20 rounded-full blur-[100px]" />
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-gradient-to-br from-rose-200/50 to-pink-200/30 dark:from-rose-900/30 dark:to-pink-900/20 rounded-full blur-[100px]" />
+        <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-gradient-to-tr from-purple-200/50 to-violet-200/30 dark:from-purple-900/30 dark:to-violet-900/20 rounded-full blur-[100px]" />
+        <div className="absolute top-1/2 left-1/2 w-[400px] h-[400px] bg-gradient-to-r from-yellow-200/30 to-orange-200/20 dark:from-yellow-900/20 dark:to-orange-900/10 rounded-full blur-[100px]" />
       </div>
 
       {/* Navigation */}
       <motion.nav 
-        className="fixed top-0 left-0 right-0 z-50 bg-white/70 backdrop-blur-xl border-b border-rose-100"
+        className="fixed top-0 left-0 right-0 z-50 bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl border-b border-rose-100 dark:border-slate-800"
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         transition={{ delay: 0.5 }}
@@ -100,10 +100,10 @@ export default function PersonalTheme({ profile, portfolio, skills, projects, ex
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-rose-400 via-pink-500 to-purple-500 flex items-center justify-center shadow-lg shadow-rose-300/30">
+              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-rose-400 via-pink-500 to-purple-500 flex items-center justify-center shadow-lg shadow-rose-300/30 dark:shadow-rose-500/20">
                 <Feather className="w-5 h-5 text-white" />
               </div>
-              <span className="font-serif text-xl italic text-slate-700">{profile?.display_name || "My Story"}</span>
+              <span className="font-serif text-xl italic text-slate-700 dark:text-slate-200">{profile?.display_name || "My Story"}</span>
             </div>
             
             <div className="hidden md:flex items-center gap-8">
@@ -111,7 +111,7 @@ export default function PersonalTheme({ profile, portfolio, skills, projects, ex
                 <motion.button 
                   key={item}
                   onClick={() => scrollTo(item.toLowerCase() === "home" ? "hero" : item.toLowerCase() === "about" ? "bio" : item.toLowerCase() === "connect" ? "contact" : item.toLowerCase())} 
-                  className="text-sm text-slate-500 hover:text-rose-500 transition-colors font-light"
+                  className="text-sm text-slate-500 dark:text-slate-400 hover:text-rose-500 dark:hover:text-rose-400 transition-colors font-light"
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.7 + i * 0.1 }}
@@ -124,7 +124,7 @@ export default function PersonalTheme({ profile, portfolio, skills, projects, ex
 
             <div className="flex md:hidden items-center gap-2">
               <ThemeToggle />
-              <button onClick={() => setMenuOpen(!menuOpen)} className="p-2 text-slate-600">
+              <button onClick={() => setMenuOpen(!menuOpen)} className="p-2 text-slate-600 dark:text-slate-300">
                 {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
               </button>
             </div>
@@ -134,13 +134,13 @@ export default function PersonalTheme({ profile, portfolio, skills, projects, ex
         <AnimatePresence>
           {menuOpen && (
             <motion.div 
-              className="md:hidden bg-white/95 backdrop-blur-xl border-t border-rose-100 px-6 py-4"
+              className="md:hidden bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border-t border-rose-100 dark:border-slate-800 px-6 py-4"
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: "auto", opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
             >
               {["Home", "About", "Skills", "Works", "Connect"].map((item) => (
-                <button key={item} onClick={() => scrollTo(item.toLowerCase() === "home" ? "hero" : item.toLowerCase() === "about" ? "bio" : item.toLowerCase() === "connect" ? "contact" : item.toLowerCase())} className="block w-full text-left py-3 text-slate-600 font-light">
+                <button key={item} onClick={() => scrollTo(item.toLowerCase() === "home" ? "hero" : item.toLowerCase() === "about" ? "bio" : item.toLowerCase() === "connect" ? "contact" : item.toLowerCase())} className="block w-full text-left py-3 text-slate-600 dark:text-slate-300 font-light">
                   {item}
                 </button>
               ))}
@@ -180,24 +180,24 @@ export default function PersonalTheme({ profile, portfolio, skills, projects, ex
               <div className="relative max-w-md mx-auto lg:mx-0">
                 {/* Decorative Frame Layers */}
                 <motion.div 
-                  className="absolute -inset-8 rounded-[3rem] bg-gradient-to-br from-rose-200/60 via-pink-200/40 to-purple-200/60"
+                  className="absolute -inset-8 rounded-[3rem] bg-gradient-to-br from-rose-200/60 via-pink-200/40 to-purple-200/60 dark:from-rose-800/40 dark:via-pink-800/30 dark:to-purple-800/40"
                   animate={{ rotate: [3, 5, 3] }}
                   transition={{ duration: 6, repeat: Infinity }}
                 />
                 <motion.div 
-                  className="absolute -inset-6 rounded-[2.5rem] bg-gradient-to-tr from-yellow-100/50 via-orange-100/30 to-rose-100/50"
+                  className="absolute -inset-6 rounded-[2.5rem] bg-gradient-to-tr from-yellow-100/50 via-orange-100/30 to-rose-100/50 dark:from-yellow-900/30 dark:via-orange-900/20 dark:to-rose-900/30"
                   animate={{ rotate: [-2, -4, -2] }}
                   transition={{ duration: 8, repeat: Infinity }}
                 />
                 <motion.div 
-                  className="absolute -inset-4 rounded-[2rem] bg-white/80 shadow-2xl"
+                  className="absolute -inset-4 rounded-[2rem] bg-white/80 dark:bg-slate-800/80 shadow-2xl"
                   animate={{ rotate: [1, 2, 1] }}
                   transition={{ duration: 5, repeat: Infinity }}
                 />
 
                 {/* Main Photo Container */}
                 <motion.div 
-                  className="relative rounded-3xl overflow-hidden shadow-2xl border-4 border-white"
+                  className="relative rounded-3xl overflow-hidden shadow-2xl border-4 border-white dark:border-slate-700"
                   whileHover={{ scale: 1.02, rotate: 0 }}
                   transition={{ type: "spring", stiffness: 300 }}
                 >
@@ -220,9 +220,9 @@ export default function PersonalTheme({ profile, portfolio, skills, projects, ex
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.8 }}
                   >
-                    <div className="bg-white/90 backdrop-blur-sm rounded-xl px-4 py-3 shadow-lg">
-                      <p className="text-xs text-rose-500 uppercase tracking-widest mb-1">Hello, I'm</p>
-                      <p className="font-serif text-lg text-slate-800">{profile?.display_name || "Your Name"}</p>
+                    <div className="bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm rounded-xl px-4 py-3 shadow-lg">
+                      <p className="text-xs text-rose-500 dark:text-rose-400 uppercase tracking-widest mb-1">Hello, I'm</p>
+                      <p className="font-serif text-lg text-slate-800 dark:text-slate-100">{profile?.display_name || "Your Name"}</p>
                     </div>
                   </motion.div>
                 </motion.div>
@@ -257,7 +257,7 @@ export default function PersonalTheme({ profile, portfolio, skills, projects, ex
                 animate={{ opacity: 1, y: 0 }} 
                 transition={{ delay: 0.6 }}
               >
-                <Badge className="mb-6 bg-gradient-to-r from-rose-100 to-pink-100 text-rose-600 border-rose-200 rounded-full px-6 py-2 shadow-sm">
+                <Badge className="mb-6 bg-gradient-to-r from-rose-100 to-pink-100 dark:from-rose-900/50 dark:to-pink-900/50 text-rose-600 dark:text-rose-300 border-rose-200 dark:border-rose-700 rounded-full px-6 py-2 shadow-sm">
                   <Sparkles className="w-3 h-3 mr-2" />
                   Welcome to my world
                 </Badge>
@@ -269,7 +269,7 @@ export default function PersonalTheme({ profile, portfolio, skills, projects, ex
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.7 }}
               >
-                <span className="text-slate-300 block text-2xl sm:text-3xl font-light mb-2">I'm</span>
+                <span className="text-slate-300 dark:text-slate-600 block text-2xl sm:text-3xl font-light mb-2">I'm</span>
                 <span className="bg-gradient-to-r from-rose-500 via-pink-500 to-purple-500 bg-clip-text text-transparent">
                   {profile?.display_name || "Creative Soul"}
                 </span>
@@ -277,7 +277,7 @@ export default function PersonalTheme({ profile, portfolio, skills, projects, ex
 
               {portfolio?.headline && (
                 <motion.p 
-                  className="text-lg sm:text-xl text-slate-500 font-light mb-8 max-w-lg mx-auto lg:mx-0 italic leading-relaxed"
+                  className="text-lg sm:text-xl text-slate-500 dark:text-slate-400 font-light mb-8 max-w-lg mx-auto lg:mx-0 italic leading-relaxed"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.9 }}
@@ -287,23 +287,23 @@ export default function PersonalTheme({ profile, portfolio, skills, projects, ex
               )}
 
               <motion.div 
-                className="flex flex-wrap items-center justify-center lg:justify-start gap-4 text-sm text-slate-500 mb-8"
+                className="flex flex-wrap items-center justify-center lg:justify-start gap-4 text-sm text-slate-500 dark:text-slate-400 mb-8"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 1 }}
               >
                 {portfolio?.location && (
-                  <span className="flex items-center gap-2 bg-white/80 px-4 py-2 rounded-full border border-rose-100 shadow-sm">
-                    <MapPin className="w-4 h-4 text-rose-500" />
+                  <span className="flex items-center gap-2 bg-white/80 dark:bg-slate-800/80 px-4 py-2 rounded-full border border-rose-100 dark:border-slate-700 shadow-sm">
+                    <MapPin className="w-4 h-4 text-rose-500 dark:text-rose-400" />
                     {portfolio.location}
                   </span>
                 )}
                 {profile?.email && (
                   <a 
                     href={`mailto:${profile.email}`}
-                    className="flex items-center gap-2 bg-white/80 px-4 py-2 rounded-full border border-purple-100 shadow-sm hover:border-purple-300 transition-colors"
+                    className="flex items-center gap-2 bg-white/80 dark:bg-slate-800/80 px-4 py-2 rounded-full border border-purple-100 dark:border-slate-700 shadow-sm hover:border-purple-300 dark:hover:border-purple-600 transition-colors"
                   >
-                    <Mail className="w-4 h-4 text-purple-500" />
+                    <Mail className="w-4 h-4 text-purple-500 dark:text-purple-400" />
                     {profile.email}
                   </a>
                 )}
@@ -317,7 +317,7 @@ export default function PersonalTheme({ profile, portfolio, skills, projects, ex
               >
                 <Button 
                   size="lg" 
-                  className="rounded-full bg-gradient-to-r from-rose-500 via-pink-500 to-purple-500 hover:from-rose-600 hover:via-pink-600 hover:to-purple-600 shadow-lg shadow-rose-300/30 px-8"
+                  className="rounded-full bg-gradient-to-r from-rose-500 via-pink-500 to-purple-500 hover:from-rose-600 hover:via-pink-600 hover:to-purple-600 shadow-lg shadow-rose-300/30 dark:shadow-rose-500/20 px-8"
                   onClick={() => scrollTo('bio')}
                 >
                   <BookOpen className="w-4 h-4 mr-2" />
@@ -327,7 +327,7 @@ export default function PersonalTheme({ profile, portfolio, skills, projects, ex
                   <Button 
                     size="lg" 
                     variant="outline" 
-                    className="rounded-full border-rose-200 text-rose-600 hover:bg-rose-50 px-8" 
+                    className="rounded-full border-rose-200 dark:border-rose-700 text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-900/30 px-8" 
                     asChild
                   >
                     <a href={`mailto:${profile.email}`}>
@@ -354,7 +354,7 @@ export default function PersonalTheme({ profile, portfolio, skills, projects, ex
                         href={link.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="w-11 h-11 rounded-full bg-white border-2 border-rose-100 flex items-center justify-center text-slate-400 hover:text-rose-500 hover:border-rose-300 hover:shadow-lg hover:shadow-rose-200/50 transition-all"
+                        className="w-11 h-11 rounded-full bg-white dark:bg-slate-800 border-2 border-rose-100 dark:border-slate-700 flex items-center justify-center text-slate-400 dark:text-slate-500 hover:text-rose-500 dark:hover:text-rose-400 hover:border-rose-300 dark:hover:border-rose-600 hover:shadow-lg hover:shadow-rose-200/50 dark:hover:shadow-rose-500/20 transition-all"
                         whileHover={{ scale: 1.1, y: -3 }}
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -383,8 +383,8 @@ export default function PersonalTheme({ profile, portfolio, skills, projects, ex
             animate={{ y: [0, 10, 0] }}
             transition={{ duration: 2, repeat: Infinity }}
           >
-            <span className="text-xs text-slate-400 uppercase tracking-widest">Discover More</span>
-            <div className="w-6 h-10 rounded-full border-2 border-rose-200 flex items-start justify-center p-1.5">
+            <span className="text-xs text-slate-400 dark:text-slate-500 uppercase tracking-widest">Discover More</span>
+            <div className="w-6 h-10 rounded-full border-2 border-rose-200 dark:border-rose-700 flex items-start justify-center p-1.5">
               <motion.div 
                 className="w-1.5 h-1.5 rounded-full bg-gradient-to-b from-rose-400 to-purple-400"
                 animate={{ y: [0, 16, 0] }}
@@ -404,17 +404,17 @@ export default function PersonalTheme({ profile, portfolio, skills, projects, ex
               <div className="relative mx-auto lg:mx-0 max-w-md">
                 {/* Stacked Polaroid Effect */}
                 <motion.div 
-                  className="absolute -inset-4 bg-white rounded-lg shadow-xl rotate-6 opacity-60"
+                  className="absolute -inset-4 bg-white dark:bg-slate-800 rounded-lg shadow-xl rotate-6 opacity-60"
                   whileHover={{ rotate: 8 }}
                 />
                 <motion.div 
-                  className="absolute -inset-4 bg-white rounded-lg shadow-xl -rotate-3 opacity-80"
+                  className="absolute -inset-4 bg-white dark:bg-slate-800 rounded-lg shadow-xl -rotate-3 opacity-80"
                   whileHover={{ rotate: -5 }}
                 />
                 
                 {/* Main Polaroid */}
                 <motion.div 
-                  className="relative bg-white p-3 pb-16 rounded-lg shadow-2xl"
+                  className="relative bg-white dark:bg-slate-800 p-3 pb-16 rounded-lg shadow-2xl"
                   whileHover={{ rotate: 0, scale: 1.02 }}
                   transition={{ type: "spring", stiffness: 300 }}
                 >
@@ -427,21 +427,21 @@ export default function PersonalTheme({ profile, portfolio, skills, projects, ex
                   
                   {/* Polaroid Caption */}
                   <div className="absolute bottom-4 left-0 right-0 text-center">
-                    <p className="font-handwriting text-slate-600 text-lg italic">About Me ✨</p>
+                    <p className="font-handwriting text-slate-600 dark:text-slate-300 text-lg italic">About Me ✨</p>
                   </div>
                 </motion.div>
 
                 {/* Decorative Tape */}
-                <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-16 h-6 bg-yellow-200/80 rotate-2 shadow-sm" />
+                <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-16 h-6 bg-yellow-200/80 dark:bg-yellow-600/50 rotate-2 shadow-sm" />
               </div>
             </ScrollReveal>
 
             {/* Content */}
             <ScrollReveal direction="right" delay={0.2}>
               <div className="space-y-6">
-                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-rose-100 to-pink-100 border border-rose-200">
-                  <Heart className="w-4 h-4 text-rose-500" />
-                  <span className="text-xs tracking-widest uppercase text-rose-600">My Story</span>
+                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-rose-100 to-pink-100 dark:from-rose-900/50 dark:to-pink-900/50 border border-rose-200 dark:border-rose-700">
+                  <Heart className="w-4 h-4 text-rose-500 dark:text-rose-400" />
+                  <span className="text-xs tracking-widest uppercase text-rose-600 dark:text-rose-300">My Story</span>
                 </div>
                 
                 <h2 className="text-3xl sm:text-4xl font-serif">
@@ -451,9 +451,9 @@ export default function PersonalTheme({ profile, portfolio, skills, projects, ex
                 </h2>
                 
                 {portfolio?.bio && (
-                  <div className="relative bg-white/80 backdrop-blur-sm rounded-3xl p-6 sm:p-8 shadow-lg border border-rose-100">
-                    <Quote className="w-8 h-8 text-rose-300 mb-4" />
-                    <p className="text-lg text-slate-600 font-light leading-relaxed">
+                  <div className="relative bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-3xl p-6 sm:p-8 shadow-lg border border-rose-100 dark:border-slate-700">
+                    <Quote className="w-8 h-8 text-rose-300 dark:text-rose-600 mb-4" />
+                    <p className="text-lg text-slate-600 dark:text-slate-300 font-light leading-relaxed">
                       {portfolio.bio}
                     </p>
                   </div>
@@ -469,7 +469,7 @@ export default function PersonalTheme({ profile, portfolio, skills, projects, ex
                           href={link.url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="w-12 h-12 rounded-full bg-white border-2 border-rose-100 flex items-center justify-center text-slate-400 hover:text-rose-500 hover:border-rose-300 hover:shadow-lg hover:shadow-rose-200/50 transition-all"
+                          className="w-12 h-12 rounded-full bg-white dark:bg-slate-800 border-2 border-rose-100 dark:border-slate-700 flex items-center justify-center text-slate-400 dark:text-slate-500 hover:text-rose-500 dark:hover:text-rose-400 hover:border-rose-300 dark:hover:border-rose-600 hover:shadow-lg hover:shadow-rose-200/50 dark:hover:shadow-rose-500/20 transition-all"
                           whileHover={{ scale: 1.1, y: -3 }}
                         >
                           <Icon className="w-5 h-5" />
@@ -489,9 +489,9 @@ export default function PersonalTheme({ profile, portfolio, skills, projects, ex
         <section id="skills" className="py-24 sm:py-32 px-4 sm:px-6 relative z-10">
           <div className="max-w-4xl mx-auto text-center">
             <ScrollReveal>
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-purple-100 to-violet-100 border border-purple-200 mb-4">
-                <Sparkles className="w-4 h-4 text-purple-500" />
-                <span className="text-xs tracking-widest uppercase text-purple-600">Expertise</span>
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-purple-100 to-violet-100 dark:from-purple-900/50 dark:to-violet-900/50 border border-purple-200 dark:border-purple-700 mb-4">
+                <Sparkles className="w-4 h-4 text-purple-500 dark:text-purple-400" />
+                <span className="text-xs tracking-widest uppercase text-purple-600 dark:text-purple-300">Expertise</span>
               </div>
               <h2 className="text-3xl sm:text-4xl font-serif mb-12">
                 <span className="bg-gradient-to-r from-purple-500 via-pink-500 to-rose-500 bg-clip-text text-transparent">
@@ -506,7 +506,7 @@ export default function PersonalTheme({ profile, portfolio, skills, projects, ex
                   <motion.div whileHover={{ scale: 1.05, y: -3 }}>
                     <Badge 
                       variant="outline" 
-                      className="px-5 py-2.5 text-sm font-light rounded-full bg-white/80 border-rose-200 hover:border-rose-300 hover:bg-rose-50 transition-all shadow-sm"
+                      className="px-5 py-2.5 text-sm font-light rounded-full bg-white/80 dark:bg-slate-800/80 border-rose-200 dark:border-slate-600 hover:border-rose-300 dark:hover:border-rose-500 hover:bg-rose-50 dark:hover:bg-rose-900/30 transition-all shadow-sm text-slate-700 dark:text-slate-200"
                     >
                       {skill.name}
                     </Badge>
@@ -522,15 +522,15 @@ export default function PersonalTheme({ profile, portfolio, skills, projects, ex
       {(education.length > 0 || experiences.length > 0) && (
         <>
           {education.length > 0 && (
-            <section id="education" className="py-24 sm:py-32 px-4 sm:px-6 bg-white/50 relative z-10">
+            <section id="education" className="py-24 sm:py-32 px-4 sm:px-6 bg-white/50 dark:bg-slate-900/50 relative z-10">
               <div className="max-w-4xl mx-auto">
                 <ScrollReveal>
                   <div className="text-center mb-12">
-                    <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-violet-100 to-purple-100 border border-violet-200 mb-4">
-                      <GraduationCap className="w-4 h-4 text-violet-500" />
-                      <span className="text-xs tracking-widest uppercase text-violet-600">Background</span>
+                    <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-violet-100 to-purple-100 dark:from-violet-900/50 dark:to-purple-900/50 border border-violet-200 dark:border-violet-700 mb-4">
+                      <GraduationCap className="w-4 h-4 text-violet-500 dark:text-violet-400" />
+                      <span className="text-xs tracking-widest uppercase text-violet-600 dark:text-violet-300">Background</span>
                     </div>
-                    <h2 className="text-3xl sm:text-4xl font-serif text-slate-800">Education</h2>
+                    <h2 className="text-3xl sm:text-4xl font-serif text-slate-800 dark:text-slate-100">Education</h2>
                   </div>
                 </ScrollReveal>
                 
@@ -538,16 +538,16 @@ export default function PersonalTheme({ profile, portfolio, skills, projects, ex
                   {education.map((edu, i) => (
                     <ScrollReveal key={edu.id} delay={i * 0.1}>
                       <motion.div 
-                        className="bg-white/90 backdrop-blur-sm rounded-3xl p-6 sm:p-8 shadow-lg border border-violet-100 text-center hover:shadow-xl hover:border-violet-200 transition-all"
+                        className="bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm rounded-3xl p-6 sm:p-8 shadow-lg border border-violet-100 dark:border-slate-700 text-center hover:shadow-xl hover:border-violet-200 dark:hover:border-violet-600 transition-all"
                         whileHover={{ y: -5 }}
                       >
-                        <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-violet-400 to-purple-500 flex items-center justify-center mx-auto mb-6 shadow-lg shadow-violet-300/30">
+                        <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-violet-400 to-purple-500 flex items-center justify-center mx-auto mb-6 shadow-lg shadow-violet-300/30 dark:shadow-violet-500/20">
                           <GraduationCap className="w-7 h-7 text-white" />
                         </div>
-                        <h4 className="text-xl font-semibold font-serif mb-2 text-slate-800">{edu.degree}</h4>
-                        <p className="text-violet-600 font-medium">{edu.institution}</p>
-                        {edu.field_of_study && <p className="text-sm text-slate-400 mt-1">{edu.field_of_study}</p>}
-                        <p className="text-xs text-slate-400 mt-3">{formatDate(edu.start_date)} - {edu.is_current ? "Present" : formatDate(edu.end_date)}</p>
+                        <h4 className="text-xl font-semibold font-serif mb-2 text-slate-800 dark:text-slate-100">{edu.degree}</h4>
+                        <p className="text-violet-600 dark:text-violet-400 font-medium">{edu.institution}</p>
+                        {edu.field_of_study && <p className="text-sm text-slate-400 dark:text-slate-500 mt-1">{edu.field_of_study}</p>}
+                        <p className="text-xs text-slate-400 dark:text-slate-500 mt-3">{formatDate(edu.start_date)} - {edu.is_current ? "Present" : formatDate(edu.end_date)}</p>
                       </motion.div>
                     </ScrollReveal>
                   ))}
@@ -561,11 +561,11 @@ export default function PersonalTheme({ profile, portfolio, skills, projects, ex
               <div className="max-w-4xl mx-auto">
                 <ScrollReveal>
                   <div className="text-center mb-12">
-                    <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-rose-100 to-pink-100 border border-rose-200 mb-4">
-                      <Briefcase className="w-4 h-4 text-rose-500" />
-                      <span className="text-xs tracking-widest uppercase text-rose-600">Journey</span>
+                    <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-rose-100 to-pink-100 dark:from-rose-900/50 dark:to-pink-900/50 border border-rose-200 dark:border-rose-700 mb-4">
+                      <Briefcase className="w-4 h-4 text-rose-500 dark:text-rose-400" />
+                      <span className="text-xs tracking-widest uppercase text-rose-600 dark:text-rose-300">Journey</span>
                     </div>
-                    <h2 className="text-3xl sm:text-4xl font-serif text-slate-800">Career Path</h2>
+                    <h2 className="text-3xl sm:text-4xl font-serif text-slate-800 dark:text-slate-100">Career Path</h2>
                   </div>
                 </ScrollReveal>
                 
@@ -575,21 +575,21 @@ export default function PersonalTheme({ profile, portfolio, skills, projects, ex
                       <div className="relative flex gap-6">
                         <div className="flex flex-col items-center">
                           <motion.div 
-                            className="w-12 h-12 rounded-2xl bg-gradient-to-br from-rose-400 via-pink-500 to-purple-500 flex items-center justify-center text-white shadow-lg shadow-rose-300/30 flex-shrink-0"
+                            className="w-12 h-12 rounded-2xl bg-gradient-to-br from-rose-400 via-pink-500 to-purple-500 flex items-center justify-center text-white shadow-lg shadow-rose-300/30 dark:shadow-rose-500/20 flex-shrink-0"
                             whileHover={{ scale: 1.1 }}
                           >
                             <Briefcase className="w-5 h-5" />
                           </motion.div>
                           {i < experiences.length - 1 && (
-                            <div className="flex-1 w-0.5 bg-gradient-to-b from-rose-300 to-purple-300 mt-4" />
+                            <div className="flex-1 w-0.5 bg-gradient-to-b from-rose-300 to-purple-300 dark:from-rose-600 dark:to-purple-600 mt-4" />
                           )}
                         </div>
                         <div className="flex-1 pb-8">
-                          <div className="bg-white/90 backdrop-blur-sm rounded-3xl p-6 shadow-lg border border-rose-100 hover:shadow-xl hover:border-rose-200 transition-all">
-                            <h4 className="text-xl font-semibold font-serif text-slate-800">{exp.position}</h4>
-                            <p className="text-rose-500 font-medium">{exp.company}</p>
-                            <p className="text-xs text-slate-400 mt-2">{formatDate(exp.start_date)} - {exp.is_current ? "Present" : formatDate(exp.end_date)}</p>
-                            {exp.description && <p className="text-slate-500 mt-4 text-sm leading-relaxed">{exp.description}</p>}
+                          <div className="bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm rounded-3xl p-6 shadow-lg border border-rose-100 dark:border-slate-700 hover:shadow-xl hover:border-rose-200 dark:hover:border-rose-600 transition-all">
+                            <h4 className="text-xl font-semibold font-serif text-slate-800 dark:text-slate-100">{exp.position}</h4>
+                            <p className="text-rose-500 dark:text-rose-400 font-medium">{exp.company}</p>
+                            <p className="text-xs text-slate-400 dark:text-slate-500 mt-2">{formatDate(exp.start_date)} - {exp.is_current ? "Present" : formatDate(exp.end_date)}</p>
+                            {exp.description && <p className="text-slate-500 dark:text-slate-400 mt-4 text-sm leading-relaxed">{exp.description}</p>}
                           </div>
                         </div>
                       </div>
@@ -604,13 +604,13 @@ export default function PersonalTheme({ profile, portfolio, skills, projects, ex
 
       {/* Works Section */}
       {allProjects.length > 0 && (
-        <section id="works" className="py-24 sm:py-32 px-4 sm:px-6 bg-white/50 relative z-10">
+        <section id="works" className="py-24 sm:py-32 px-4 sm:px-6 bg-white/50 dark:bg-slate-900/50 relative z-10">
           <div className="max-w-5xl mx-auto">
             <ScrollReveal>
               <div className="text-center mb-16">
-                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-pink-100 to-rose-100 border border-pink-200 mb-4">
-                  <Star className="w-4 h-4 text-pink-500" />
-                  <span className="text-xs tracking-widest uppercase text-pink-600">Portfolio</span>
+                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-pink-100 to-rose-100 dark:from-pink-900/50 dark:to-rose-900/50 border border-pink-200 dark:border-pink-700 mb-4">
+                  <Star className="w-4 h-4 text-pink-500 dark:text-pink-400" />
+                  <span className="text-xs tracking-widest uppercase text-pink-600 dark:text-pink-300">Portfolio</span>
                 </div>
                 <h2 className="text-3xl sm:text-4xl font-serif">
                   <span className="bg-gradient-to-r from-pink-500 via-rose-500 to-purple-500 bg-clip-text text-transparent">
@@ -624,7 +624,7 @@ export default function PersonalTheme({ profile, portfolio, skills, projects, ex
               {allProjects.map((project, i) => (
                 <ScrollReveal key={project.id} delay={i * 0.05}>
                   <motion.div 
-                    className="group bg-white/90 backdrop-blur-sm rounded-3xl overflow-hidden shadow-lg hover:shadow-xl transition-all border border-rose-100 hover:border-rose-200"
+                    className="group bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm rounded-3xl overflow-hidden shadow-lg hover:shadow-xl transition-all border border-rose-100 dark:border-slate-700 hover:border-rose-200 dark:hover:border-rose-600"
                     onMouseEnter={() => setHoveredProject(project.id)}
                     onMouseLeave={() => setHoveredProject(null)}
                     whileHover={{ y: -8 }}
@@ -633,8 +633,8 @@ export default function PersonalTheme({ profile, portfolio, skills, projects, ex
                       {project.image_url ? (
                         <img src={project.image_url} alt={project.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
                       ) : (
-                        <div className="w-full h-full bg-gradient-to-br from-rose-100 via-pink-100 to-purple-100 flex items-center justify-center">
-                          <Heart className="w-12 h-12 text-rose-300" />
+                        <div className="w-full h-full bg-gradient-to-br from-rose-100 via-pink-100 to-purple-100 dark:from-rose-900/50 dark:via-pink-900/50 dark:to-purple-900/50 flex items-center justify-center">
+                          <Heart className="w-12 h-12 text-rose-300 dark:text-rose-600" />
                         </div>
                       )}
                       <motion.div 
@@ -653,8 +653,8 @@ export default function PersonalTheme({ profile, portfolio, skills, projects, ex
                       )}
                     </div>
                     <div className="p-6">
-                      <h4 className="font-semibold text-lg font-serif mb-2 text-slate-800">{project.title}</h4>
-                      {project.description && <p className="text-slate-500 text-sm line-clamp-2">{project.description}</p>}
+                      <h4 className="font-semibold text-lg font-serif mb-2 text-slate-800 dark:text-slate-100">{project.title}</h4>
+                      {project.description && <p className="text-slate-500 dark:text-slate-400 text-sm line-clamp-2">{project.description}</p>}
                     </div>
                   </motion.div>
                 </ScrollReveal>
@@ -669,23 +669,23 @@ export default function PersonalTheme({ profile, portfolio, skills, projects, ex
         <div className="max-w-4xl mx-auto">
           <ScrollReveal>
             <div className="text-center mb-12">
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-rose-100 to-pink-100 border border-rose-200 mb-6">
-                <Mail className="w-4 h-4 text-rose-500" />
-                <span className="text-xs tracking-widest uppercase text-rose-600">Get In Touch</span>
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-rose-100 to-pink-100 dark:from-rose-900/50 dark:to-pink-900/50 border border-rose-200 dark:border-rose-700 mb-6">
+                <Mail className="w-4 h-4 text-rose-500 dark:text-rose-400" />
+                <span className="text-xs tracking-widest uppercase text-rose-600 dark:text-rose-300">Get In Touch</span>
               </div>
               <h2 className="text-3xl sm:text-4xl md:text-5xl font-serif mb-6">
                 <span className="bg-gradient-to-r from-rose-500 via-pink-500 to-purple-500 bg-clip-text text-transparent">
                   Let's Connect
                 </span>
               </h2>
-              <p className="text-lg text-slate-500 max-w-xl mx-auto">
+              <p className="text-lg text-slate-500 dark:text-slate-400 max-w-xl mx-auto">
                 I'd love to hear from you. Whether you have a question or just want to say hi, feel free to reach out.
               </p>
             </div>
 
             {/* Contact Form */}
             {userId && (
-              <div className="bg-white/80 backdrop-blur-sm rounded-3xl p-6 sm:p-8 shadow-xl border border-rose-100 mb-12">
+              <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-3xl p-6 sm:p-8 shadow-xl border border-rose-100 dark:border-slate-700 mb-12">
                 <ContactForm 
                   portfolioOwnerId={userId} 
                   variant="personal"
@@ -699,7 +699,7 @@ export default function PersonalTheme({ profile, portfolio, skills, projects, ex
                 <Button 
                   size="lg" 
                   variant="outline"
-                  className="rounded-full border-rose-200 text-rose-600 hover:bg-rose-50 px-8" 
+                  className="rounded-full border-rose-200 dark:border-rose-700 text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-900/30 px-8" 
                   asChild
                 >
                   <a href={`mailto:${profile.email}`}>
@@ -712,7 +712,7 @@ export default function PersonalTheme({ profile, portfolio, skills, projects, ex
                 <Button 
                   size="lg" 
                   variant="outline" 
-                  className="rounded-full border-purple-200 text-purple-600 hover:bg-purple-50 px-8" 
+                  className="rounded-full border-purple-200 dark:border-purple-700 text-purple-600 dark:text-purple-400 hover:bg-purple-50 dark:hover:bg-purple-900/30 px-8" 
                   asChild
                 >
                   <a href={`tel:${portfolio.phone}`}>
@@ -723,15 +723,15 @@ export default function PersonalTheme({ profile, portfolio, skills, projects, ex
               )}
             </div>
 
-            <div className="flex flex-wrap justify-center items-center gap-6 text-sm text-slate-500">
+            <div className="flex flex-wrap justify-center items-center gap-6 text-sm text-slate-500 dark:text-slate-400">
               {portfolio?.location && (
                 <span className="flex items-center gap-2">
-                  <MapPin className="w-4 h-4 text-rose-500" />
+                  <MapPin className="w-4 h-4 text-rose-500 dark:text-rose-400" />
                   {portfolio.location}
                 </span>
               )}
               {profile?.email && (
-                <a href={`mailto:${profile.email}`} className="flex items-center gap-2 hover:text-rose-500 transition-colors">
+                <a href={`mailto:${profile.email}`} className="flex items-center gap-2 hover:text-rose-500 dark:hover:text-rose-400 transition-colors">
                   <Mail className="w-4 h-4" />
                   {profile.email}
                 </a>
@@ -742,19 +742,19 @@ export default function PersonalTheme({ profile, portfolio, skills, projects, ex
       </section>
 
       {/* Footer */}
-      <footer className="py-8 px-4 sm:px-6 bg-white/50 border-t border-rose-100 relative z-10">
+      <footer className="py-8 px-4 sm:px-6 bg-white/50 dark:bg-slate-900/50 border-t border-rose-100 dark:border-slate-800 relative z-10">
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
             {/* Logo */}
             <div className="flex items-center gap-3">
               {portfolio?.logo_url ? (
-                <img src={portfolio.logo_url} alt="Logo" className="h-8 w-auto object-contain" />
+                <img src={portfolio.logo_url} alt="Logo" className="h-8 w-auto object-contain dark:invert" />
               ) : (
-                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-rose-400 via-pink-500 to-purple-500 flex items-center justify-center shadow-lg shadow-rose-300/20">
+                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-rose-400 via-pink-500 to-purple-500 flex items-center justify-center shadow-lg shadow-rose-300/20 dark:shadow-rose-500/10">
                   <Feather className="w-4 h-4 text-white" />
                 </div>
               )}
-              <span className="text-sm text-slate-500 font-serif italic">{profile?.display_name}</span>
+              <span className="text-sm text-slate-500 dark:text-slate-400 font-serif italic">{profile?.display_name}</span>
             </div>
 
             {/* Footer Nav */}
@@ -763,7 +763,7 @@ export default function PersonalTheme({ profile, portfolio, skills, projects, ex
                 <button
                   key={item}
                   onClick={() => scrollTo(item.toLowerCase() === "home" ? "hero" : item.toLowerCase() === "about" ? "bio" : item.toLowerCase())}
-                  className="text-sm text-slate-400 hover:text-rose-500 transition-colors"
+                  className="text-sm text-slate-400 dark:text-slate-500 hover:text-rose-500 dark:hover:text-rose-400 transition-colors"
                 >
                   {item}
                 </button>
@@ -771,7 +771,7 @@ export default function PersonalTheme({ profile, portfolio, skills, projects, ex
             </div>
 
             {/* Copyright */}
-            <p className="text-xs text-slate-400">© {new Date().getFullYear()} All rights reserved.</p>
+            <p className="text-xs text-slate-400 dark:text-slate-500">© {new Date().getFullYear()} All rights reserved.</p>
           </div>
         </div>
       </footer>

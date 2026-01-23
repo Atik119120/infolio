@@ -39,10 +39,10 @@ export default function OfficialTheme({ profile, portfolio, skills, projects, ex
           </div>
           
           <div className="hidden md:flex items-center gap-8">
-            <button onClick={() => scrollTo('about')} className="text-sm hover:text-primary transition-colors">About</button>
-            <button onClick={() => scrollTo('services')} className="text-sm hover:text-primary transition-colors">Services</button>
-            <button onClick={() => scrollTo('portfolio')} className="text-sm hover:text-primary transition-colors">Portfolio</button>
-            <button onClick={() => scrollTo('experience')} className="text-sm hover:text-primary transition-colors">Experience</button>
+            <button onClick={() => scrollTo('hero')} className="text-sm hover:text-primary transition-colors">Home</button>
+            <button onClick={() => scrollTo('bio')} className="text-sm hover:text-primary transition-colors">About</button>
+            <button onClick={() => scrollTo('skills')} className="text-sm hover:text-primary transition-colors">Services</button>
+            <button onClick={() => scrollTo('works')} className="text-sm hover:text-primary transition-colors">Portfolio</button>
             <button onClick={() => scrollTo('contact')} className="text-sm hover:text-primary transition-colors">Contact</button>
             <ThemeToggle />
           </div>
@@ -57,18 +57,29 @@ export default function OfficialTheme({ profile, portfolio, skills, projects, ex
 
         {menuOpen && (
           <div className="md:hidden bg-background border-b border-border px-6 py-4 space-y-3">
-            <button onClick={() => scrollTo('about')} className="block w-full text-left py-2">About</button>
-            <button onClick={() => scrollTo('services')} className="block w-full text-left py-2">Services</button>
-            <button onClick={() => scrollTo('portfolio')} className="block w-full text-left py-2">Portfolio</button>
-            <button onClick={() => scrollTo('experience')} className="block w-full text-left py-2">Experience</button>
+            <button onClick={() => scrollTo('hero')} className="block w-full text-left py-2">Home</button>
+            <button onClick={() => scrollTo('bio')} className="block w-full text-left py-2">About</button>
+            <button onClick={() => scrollTo('skills')} className="block w-full text-left py-2">Services</button>
+            <button onClick={() => scrollTo('works')} className="block w-full text-left py-2">Portfolio</button>
             <button onClick={() => scrollTo('contact')} className="block w-full text-left py-2">Contact</button>
           </div>
         )}
       </nav>
 
-      {/* Hero - Clean Corporate */}
-      <section id="about" className="min-h-screen flex items-center pt-20 bg-gradient-to-b from-muted/50 to-background">
-        <div className="container mx-auto px-6">
+      {/* Hero - Clean Corporate with Cover */}
+      <section id="hero" className="min-h-screen flex items-center pt-20 relative">
+        {/* Cover Background */}
+        <div className="absolute inset-0 bg-gradient-to-b from-muted/50 to-background">
+          {projects[0]?.image_url && (
+            <img 
+              src={projects[0].image_url} 
+              alt="Cover" 
+              className="w-full h-full object-cover opacity-10"
+            />
+          )}
+        </div>
+
+        <div className="container mx-auto px-6 relative z-10">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             <div>
               <Badge className="mb-6 bg-primary/10 text-primary border-0">
@@ -81,14 +92,8 @@ export default function OfficialTheme({ profile, portfolio, skills, projects, ex
               </h1>
 
               {portfolio?.headline && (
-                <p className="text-xl text-primary font-medium mb-4">
+                <p className="text-xl text-primary font-medium mb-6">
                   {portfolio.headline}
-                </p>
-              )}
-
-              {portfolio?.bio && (
-                <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
-                  {portfolio.bio}
                 </p>
               )}
 
@@ -122,7 +127,7 @@ export default function OfficialTheme({ profile, portfolio, skills, projects, ex
                     </a>
                   </Button>
                 )}
-                <Button size="lg" variant="outline" onClick={() => scrollTo('portfolio')}>
+                <Button size="lg" variant="outline" onClick={() => scrollTo('works')}>
                   View Work
                 </Button>
               </div>
@@ -141,48 +146,93 @@ export default function OfficialTheme({ profile, portfolio, skills, projects, ex
               </div>
             </div>
           </div>
+        </div>
+      </section>
 
-          {/* Stats Row */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mt-20 pt-12 border-t border-border">
-            <div className="text-center">
-              <div className="text-4xl font-bold text-primary">{experiences.length}+</div>
-              <div className="text-sm text-muted-foreground mt-1">Years Experience</div>
+      {/* Bio Section */}
+      <section id="bio" className="py-24 px-6">
+        <div className="container mx-auto">
+          <div className="grid lg:grid-cols-2 gap-16 items-center max-w-6xl mx-auto">
+            {/* Stats */}
+            <div className="grid grid-cols-2 gap-6">
+              <Card className="text-center">
+                <CardContent className="p-8">
+                  <div className="text-4xl font-bold text-primary mb-2">{experiences.length}+</div>
+                  <div className="text-sm text-muted-foreground">Years Experience</div>
+                </CardContent>
+              </Card>
+              <Card className="text-center">
+                <CardContent className="p-8">
+                  <div className="text-4xl font-bold text-primary mb-2">{projects.length}+</div>
+                  <div className="text-sm text-muted-foreground">Projects</div>
+                </CardContent>
+              </Card>
+              <Card className="text-center">
+                <CardContent className="p-8">
+                  <div className="text-4xl font-bold text-primary mb-2">{skills.length}+</div>
+                  <div className="text-sm text-muted-foreground">Skills</div>
+                </CardContent>
+              </Card>
+              <Card className="text-center">
+                <CardContent className="p-8">
+                  <div className="text-4xl font-bold text-primary mb-2">100%</div>
+                  <div className="text-sm text-muted-foreground">Satisfaction</div>
+                </CardContent>
+              </Card>
             </div>
-            <div className="text-center">
-              <div className="text-4xl font-bold text-primary">{projects.length}+</div>
-              <div className="text-sm text-muted-foreground mt-1">Projects Completed</div>
-            </div>
-            <div className="text-center">
-              <div className="text-4xl font-bold text-primary">{skills.length}+</div>
-              <div className="text-sm text-muted-foreground mt-1">Skills</div>
-            </div>
-            <div className="text-center">
-              <div className="text-4xl font-bold text-primary">100%</div>
-              <div className="text-sm text-muted-foreground mt-1">Client Satisfaction</div>
+
+            {/* Bio Content */}
+            <div>
+              <h2 className="text-sm font-semibold uppercase tracking-widest text-primary mb-4">About Me</h2>
+              <h3 className="text-4xl font-bold mb-6">Professional Background</h3>
+              
+              {portfolio?.bio && (
+                <p className="text-lg text-muted-foreground leading-relaxed mb-8">
+                  {portfolio.bio}
+                </p>
+              )}
+
+              {/* Social Links */}
+              {socialLinks.length > 0 && (
+                <div className="flex gap-3">
+                  {socialLinks.map((link) => {
+                    const Icon = getSocialIcon(link.platform);
+                    return (
+                      <a
+                        key={link.id}
+                        href={link.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="w-12 h-12 rounded-lg border border-border flex items-center justify-center hover:border-primary hover:text-primary transition-all"
+                      >
+                        <Icon className="w-5 h-5" />
+                      </a>
+                    );
+                  })}
+                </div>
+              )}
             </div>
           </div>
         </div>
       </section>
 
-      {/* Services/Skills Section */}
+      {/* Skills/Services Section */}
       {skills.length > 0 && (
-        <section id="services" className="py-24 px-6">
+        <section id="skills" className="py-24 px-6 bg-muted/30">
           <div className="container mx-auto">
             <div className="text-center mb-16">
-              <h2 className="text-3xl font-bold mb-4">Services & Expertise</h2>
-              <p className="text-muted-foreground max-w-xl mx-auto">
-                Professional services and areas of expertise
-              </p>
+              <h2 className="text-sm font-semibold uppercase tracking-widest text-primary mb-4">Expertise</h2>
+              <h3 className="text-4xl font-bold">Services & Skills</h3>
             </div>
 
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-5xl mx-auto">
               {Object.entries(groupedSkills).map(([category, categorySkills]) => (
                 <Card key={category} className="hover:shadow-lg transition-shadow">
                   <CardContent className="p-6">
                     <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
                       <CheckCircle className="w-6 h-6 text-primary" />
                     </div>
-                    <h3 className="text-xl font-semibold mb-4">{category}</h3>
+                    <h4 className="text-xl font-semibold mb-4">{category}</h4>
                     <ul className="space-y-2">
                       {categorySkills.map((skill) => (
                         <li key={skill.id} className="flex items-center gap-2 text-muted-foreground">
@@ -199,18 +249,81 @@ export default function OfficialTheme({ profile, portfolio, skills, projects, ex
         </section>
       )}
 
-      {/* Portfolio/Projects */}
+      {/* Education Section */}
+      {education.length > 0 && (
+        <section id="education" className="py-24 px-6">
+          <div className="container mx-auto max-w-5xl">
+            <div className="text-center mb-16">
+              <h2 className="text-sm font-semibold uppercase tracking-widest text-secondary mb-4">Background</h2>
+              <h3 className="text-4xl font-bold">Education</h3>
+            </div>
+            <div className="space-y-8">
+              {education.map((edu) => (
+                <div key={edu.id} className="relative pl-8 border-l-2 border-secondary/20">
+                  <div className="absolute -left-2 top-0 w-4 h-4 rounded-full bg-secondary" />
+                  <Card>
+                    <CardContent className="p-6">
+                      <h4 className="text-xl font-semibold">{edu.degree}</h4>
+                      <p className="text-secondary font-medium">{edu.institution}</p>
+                      {edu.field_of_study && <p className="text-sm text-muted-foreground mt-1">{edu.field_of_study}</p>}
+                      <p className="text-sm text-muted-foreground mt-2">
+                        {formatDate(edu.start_date)} - {edu.is_current ? "Present" : formatDate(edu.end_date)}
+                      </p>
+                    </CardContent>
+                  </Card>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Experience Section */}
+      {experiences.length > 0 && (
+        <section className="py-24 px-6 bg-muted/30">
+          <div className="container mx-auto max-w-5xl">
+            <div className="text-center mb-16">
+              <h2 className="text-sm font-semibold uppercase tracking-widest text-primary mb-4">Career</h2>
+              <h3 className="text-4xl font-bold">Work Experience</h3>
+            </div>
+            <div className="space-y-8">
+              {experiences.map((exp) => (
+                <div key={exp.id} className="relative pl-8 border-l-2 border-primary/20">
+                  <div className="absolute -left-2 top-0 w-4 h-4 rounded-full bg-primary" />
+                  <Card>
+                    <CardContent className="p-6">
+                      <div className="flex items-start gap-4">
+                        <div className="hidden md:flex w-12 h-12 rounded-lg bg-primary/10 items-center justify-center flex-shrink-0">
+                          <Briefcase className="w-6 h-6 text-primary" />
+                        </div>
+                        <div className="flex-1">
+                          <h4 className="text-xl font-semibold">{exp.position}</h4>
+                          <p className="text-primary font-medium">{exp.company}</p>
+                          <p className="text-sm text-muted-foreground mt-1">
+                            {formatDate(exp.start_date)} - {exp.is_current ? "Present" : formatDate(exp.end_date)}
+                          </p>
+                          {exp.description && <p className="text-muted-foreground mt-3">{exp.description}</p>}
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Works/Portfolio Section */}
       {projects.length > 0 && (
-        <section id="portfolio" className="py-24 px-6 bg-muted/30">
+        <section id="works" className="py-24 px-6">
           <div className="container mx-auto">
             <div className="text-center mb-16">
-              <h2 className="text-3xl font-bold mb-4">Portfolio</h2>
-              <p className="text-muted-foreground max-w-xl mx-auto">
-                A selection of recent projects and work
-              </p>
+              <h2 className="text-sm font-semibold uppercase tracking-widest text-primary mb-4">Portfolio</h2>
+              <h3 className="text-4xl font-bold">Recent Work</h3>
             </div>
 
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
               {[...featuredProjects, ...otherProjects].map((project) => (
                 <Card key={project.id} className="group overflow-hidden">
                   <div className="relative aspect-[4/3] bg-muted overflow-hidden">
@@ -230,7 +343,7 @@ export default function OfficialTheme({ profile, portfolio, skills, projects, ex
                     )}
                   </div>
                   <CardContent className="p-6">
-                    <h3 className="text-xl font-semibold mb-2">{project.title}</h3>
+                    <h4 className="text-xl font-semibold mb-2">{project.title}</h4>
                     {project.description && (
                       <p className="text-muted-foreground text-sm mb-4 line-clamp-2">{project.description}</p>
                     )}
@@ -268,65 +381,7 @@ export default function OfficialTheme({ profile, portfolio, skills, projects, ex
         </section>
       )}
 
-      {/* Experience & Education */}
-      {(experiences.length > 0 || education.length > 0) && (
-        <section id="experience" className="py-24 px-6">
-          <div className="container mx-auto max-w-5xl">
-            <div className="text-center mb-16">
-              <h2 className="text-3xl font-bold mb-4">Experience & Education</h2>
-              <p className="text-muted-foreground">Professional background and qualifications</p>
-            </div>
-
-            <div className="grid md:grid-cols-2 gap-16">
-              {experiences.length > 0 && (
-                <div>
-                  <h3 className="text-xl font-semibold mb-8 flex items-center gap-3">
-                    <Briefcase className="w-5 h-5 text-primary" />
-                    Work Experience
-                  </h3>
-                  <div className="space-y-8">
-                    {experiences.map((exp) => (
-                      <div key={exp.id} className="relative pl-8 border-l-2 border-primary/20">
-                        <div className="absolute -left-2 top-0 w-4 h-4 rounded-full bg-primary" />
-                        <h4 className="font-semibold">{exp.position}</h4>
-                        <p className="text-primary">{exp.company}</p>
-                        <p className="text-sm text-muted-foreground">
-                          {formatDate(exp.start_date)} - {exp.is_current ? "Present" : formatDate(exp.end_date)}
-                        </p>
-                        {exp.description && <p className="text-sm mt-2 text-muted-foreground">{exp.description}</p>}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {education.length > 0 && (
-                <div>
-                  <h3 className="text-xl font-semibold mb-8 flex items-center gap-3">
-                    <GraduationCap className="w-5 h-5 text-secondary" />
-                    Education
-                  </h3>
-                  <div className="space-y-8">
-                    {education.map((edu) => (
-                      <div key={edu.id} className="relative pl-8 border-l-2 border-secondary/20">
-                        <div className="absolute -left-2 top-0 w-4 h-4 rounded-full bg-secondary" />
-                        <h4 className="font-semibold">{edu.degree}</h4>
-                        <p className="text-secondary">{edu.institution}</p>
-                        {edu.field_of_study && <p className="text-sm text-muted-foreground">{edu.field_of_study}</p>}
-                        <p className="text-sm text-muted-foreground">
-                          {formatDate(edu.start_date)} - {edu.is_current ? "Present" : formatDate(edu.end_date)}
-                        </p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* Contact */}
+      {/* Contact Section */}
       <section id="contact" className="py-24 px-6 bg-primary text-primary-foreground">
         <div className="container mx-auto max-w-3xl text-center">
           <Users className="w-12 h-12 mx-auto mb-6 opacity-80" />
@@ -381,12 +436,14 @@ export default function OfficialTheme({ profile, portfolio, skills, projects, ex
             <Building2 className="w-5 h-5 text-primary" />
             <span className="font-semibold">{profile?.display_name}</span>
           </div>
-          <p className="text-sm text-muted-foreground">© {new Date().getFullYear()} All Rights Reserved</p>
+          <p className="text-sm text-muted-foreground">
+            © {new Date().getFullYear()} All Rights Reserved
+          </p>
           <div className="flex gap-3">
             {socialLinks.slice(0, 4).map((link) => {
               const Icon = getSocialIcon(link.platform);
               return (
-                <a key={link.id} href={link.url} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary">
+                <a key={link.id} href={link.url} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
                   <Icon className="w-4 h-4" />
                 </a>
               );

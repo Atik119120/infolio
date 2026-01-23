@@ -77,6 +77,7 @@ export const THEME_OPTIONS = [
   { value: 'web-developer', label: 'Web Developer', description: 'Tech-focused theme with code aesthetics' },
   { value: 'official', label: 'Official/Corporate', description: 'Professional business-oriented theme' },
   { value: 'personal', label: 'Personal/Biography', description: 'Elegant personal portfolio theme' },
+  { value: 'cosmic', label: 'Cosmic/Universe', description: 'Premium space-inspired luxury theme' },
 ] as const;
 
 export type ThemeType = typeof THEME_OPTIONS[number]['value'];

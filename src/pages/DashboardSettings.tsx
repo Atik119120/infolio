@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -9,6 +10,17 @@ import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { useToast } from "@/hooks/use-toast";
 import { 
   Loader2, 
@@ -29,7 +41,9 @@ import {
   Send,
   MessageSquare,
   AlertCircle,
-  Shield
+  Shield,
+  LogOut,
+  Trash2
 } from "lucide-react";
 import { THEME_OPTIONS } from "@/components/portfolio/themes/types";
 import CustomDomainManager from "@/components/settings/CustomDomainManager";
@@ -68,9 +82,11 @@ export default function DashboardSettings() {
   const [supportMessage, setSupportMessage] = useState("");
   const [sendingSupport, setSendingSupport] = useState(false);
   const [requestingPublish, setRequestingPublish] = useState(false);
+  const [deletingAccount, setDeletingAccount] = useState(false);
 
-  const { user } = useAuth();
+  const { user, signOut } = useAuth();
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (user) {
@@ -241,6 +257,48 @@ export default function DashboardSettings() {
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
     toast({ title: "Copied!", description: "Portfolio URL copied to clipboard" });
+  };
+
+  const handleLogout = async () => {
+    await signOut();
+    navigate("/");
+  };
+
+  const handleDeleteAccount = async () => {
+    if (!user) return;
+
+    setDeletingAccount(true);
+    try {
+      // Delete all user data via edge function
+      const { data, error } = await supabase.functions.invoke("admin-manage-user", {
+        body: { action: "delete_user", targetUserId: user.id },
+      });
+
+      if (error) throw error;
+
+      if (data.error) {
+        throw new Error(data.error);
+      }
+
+      // Sign out after deletion
+      await signOut();
+
+      toast({
+        title: "Account Deleted",
+        description: "Your account and all data has been permanently deleted.",
+      });
+
+      navigate("/");
+    } catch (error) {
+      console.error("Error deleting account:", error);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to delete account. Please contact support.",
+      });
+    } finally {
+      setDeletingAccount(false);
+    }
   };
 
   if (loading) {
@@ -547,6 +605,77 @@ export default function DashboardSettings() {
           </div>
           <p className="text-sm text-muted-foreground">
             Contact support if you need to change your account details.
+          </p>
+        </CardContent>
+      </Card>
+
+      {/* Logout & Account Actions */}
+      <Card className="border-destructive/50">
+        <CardHeader>
+          <CardTitle className="text-destructive">Danger Zone</CardTitle>
+          <CardDescription>
+            Irreversible actions for your account
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="flex flex-col sm:flex-row gap-4">
+            <Button
+              variant="outline"
+              onClick={handleLogout}
+              className="flex-1"
+            >
+              <LogOut className="w-4 h-4 mr-2" />
+              Logout
+            </Button>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button variant="destructive" className="flex-1">
+                  <Trash2 className="w-4 h-4 mr-2" />
+                  Delete Account
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle className="flex items-center gap-2 text-destructive">
+                    <Trash2 className="w-5 h-5" />
+                    Delete Your Account?
+                  </AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This will permanently delete your account and all associated data:
+                    <ul className="list-disc list-inside mt-2 space-y-1">
+                      <li>Your profile and portfolio</li>
+                      <li>All projects, skills, and experiences</li>
+                      <li>Uploaded images and files</li>
+                      <li>Custom domains and settings</li>
+                    </ul>
+                    <p className="mt-3 font-medium text-destructive">This action cannot be undone!</p>
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={handleDeleteAccount}
+                    disabled={deletingAccount}
+                    className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                  >
+                    {deletingAccount ? (
+                      <>
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                        Deleting...
+                      </>
+                    ) : (
+                      <>
+                        <Trash2 className="w-4 h-4 mr-2" />
+                        Delete My Account
+                      </>
+                    )}
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </div>
+          <p className="text-xs text-muted-foreground">
+            Deleting your account will remove all your data from our servers permanently.
           </p>
         </CardContent>
       </Card>

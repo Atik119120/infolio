@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -50,9 +51,27 @@ export default function Auth() {
   const from = location.state?.from?.pathname || "/dashboard";
 
   useEffect(() => {
-    if (user) {
-      navigate(from, { replace: true });
-    }
+    const checkAdminAndRedirect = async () => {
+      if (user) {
+        // Check if user is admin
+        const { data: adminRole } = await supabase
+          .from("user_roles")
+          .select("role")
+          .eq("user_id", user.id)
+          .eq("role", "admin")
+          .maybeSingle();
+
+        if (adminRole) {
+          // Admin goes to admin panel
+          navigate("/admin", { replace: true });
+        } else {
+          // Regular user goes to dashboard
+          navigate(from, { replace: true });
+        }
+      }
+    };
+
+    checkAdminAndRedirect();
   }, [user, navigate, from]);
 
   const handleLogin = async (e: React.FormEvent) => {

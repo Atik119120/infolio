@@ -981,14 +981,37 @@ export default developer;`;
 
           {/* Footer */}
           <footer className="py-6 px-4 sm:px-6 border-t" style={{ backgroundColor: vsColors.bg, borderColor: vsColors.border }}>
-            <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-              <div className="flex items-center gap-3">
-                <Code2 className="w-5 h-5" style={{ color: vsColors.function }} />
-                <span className="text-sm font-mono" style={{ color: vsColors.comment }}>{profile?.display_name}</span>
+            <div className="max-w-7xl mx-auto">
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
+                {/* Logo */}
+                <div className="flex items-center gap-3">
+                  {portfolio?.logo_url ? (
+                    <img src={portfolio.logo_url} alt="Logo" className="h-8 w-auto object-contain" />
+                  ) : (
+                    <Code2 className="w-5 h-5" style={{ color: vsColors.function }} />
+                  )}
+                  <span className="text-sm font-mono" style={{ color: vsColors.comment }}>{profile?.display_name}</span>
+                </div>
+
+                {/* Footer Nav */}
+                <div className="flex flex-wrap justify-center gap-6">
+                  {["Home", "About", "Skills", "Works", "Contact"].map((item) => (
+                    <button
+                      key={item}
+                      onClick={() => scrollTo(item.toLowerCase() === "home" ? "hero" : item.toLowerCase() === "about" ? "bio" : item.toLowerCase())}
+                      className="text-sm font-mono hover:opacity-80 transition-opacity"
+                      style={{ color: vsColors.comment }}
+                    >
+                      {item}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Copyright */}
+                <p className="text-xs font-mono" style={{ color: vsColors.comment }}>
+                  {"// "} © {new Date().getFullYear()} All rights reserved.
+                </p>
               </div>
-              <p className="text-xs font-mono" style={{ color: vsColors.comment }}>
-                {"// "} © {new Date().getFullYear()} All rights reserved.
-              </p>
             </div>
           </footer>
         </div>

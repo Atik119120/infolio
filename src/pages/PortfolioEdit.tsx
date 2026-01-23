@@ -3,7 +3,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { User, Sparkles, Briefcase, GraduationCap, Link2, FolderOpen, Palette } from "lucide-react";
+import { User, Sparkles, Briefcase, GraduationCap, Link2, FolderOpen, Palette, Image } from "lucide-react";
 import { BasicInfoForm } from "@/components/portfolio/BasicInfoForm";
 import { SkillsForm } from "@/components/portfolio/SkillsForm";
 import { ProjectsForm } from "@/components/portfolio/ProjectsForm";
@@ -11,6 +11,7 @@ import { ExperienceForm } from "@/components/portfolio/ExperienceForm";
 import { EducationForm } from "@/components/portfolio/EducationForm";
 import { SocialLinksForm } from "@/components/portfolio/SocialLinksForm";
 import { ThemeSelector } from "@/components/portfolio/ThemeSelector";
+import { LogoUploadForm } from "@/components/portfolio/LogoUploadForm";
 
 export interface Profile {
   username: string;
@@ -27,6 +28,7 @@ export interface Portfolio {
   website: string | null;
   is_published: boolean | null;
   theme: string | null;
+  logo_url: string | null;
 }
 
 export interface Skill {
@@ -142,6 +144,7 @@ export default function PortfolioEdit() {
   const tabs = [
     { value: "theme", label: "Theme", icon: Palette },
     { value: "basic", label: "Basic Info", icon: User },
+    { value: "branding", label: "Branding", icon: Image },
     { value: "skills", label: "Skills", icon: Sparkles },
     { value: "projects", label: "Projects", icon: FolderOpen },
     { value: "experience", label: "Experience", icon: Briefcase },
@@ -157,7 +160,7 @@ export default function PortfolioEdit() {
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-        <TabsList className="grid grid-cols-4 lg:grid-cols-7 h-auto gap-2 bg-transparent p-0">
+        <TabsList className="grid grid-cols-4 lg:grid-cols-8 h-auto gap-2 bg-transparent p-0">
           {tabs.map((tab) => (
             <TabsTrigger
               key={tab.value}
@@ -186,6 +189,16 @@ export default function PortfolioEdit() {
           <BasicInfoForm
             profile={profile}
             portfolio={portfolio}
+            userId={user?.id || ""}
+            onUpdate={fetchAllData}
+            onSuccess={showSuccess}
+            onError={showError}
+          />
+        </TabsContent>
+
+        <TabsContent value="branding" className="mt-6">
+          <LogoUploadForm
+            logoUrl={portfolio?.logo_url || null}
             userId={user?.id || ""}
             onUpdate={fetchAllData}
             onSuccess={showSuccess}

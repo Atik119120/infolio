@@ -111,7 +111,39 @@ export default function OfficialTheme({ profile, portfolio, skills, projects, ex
 
       <section id="contact" className="py-24 sm:py-32 px-4 sm:px-6 bg-slate-900 text-white"><div className="max-w-3xl mx-auto text-center"><ScrollReveal><div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 mb-6"><Mail className="w-4 h-4" /><span className="text-xs tracking-widest uppercase font-medium">Get In Touch</span></div><h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6">Let's Work Together</h2><p className="text-lg text-slate-400 mb-10 max-w-xl mx-auto">Have a project in mind? I'd love to hear about it. Let's discuss how we can work together.</p><div className="flex flex-wrap justify-center gap-4 mb-12">{profile?.email && <Button size="lg" className="rounded-full bg-white text-slate-900 hover:bg-slate-100 px-8 shadow-lg" asChild><a href={`mailto:${profile.email}`}><Mail className="w-4 h-4 mr-2" />Get In Touch</a></Button>}{portfolio?.phone && <Button size="lg" variant="outline" className="rounded-full border-white/20 text-white hover:bg-white/10 px-8" asChild><a href={`tel:${portfolio.phone}`}><Phone className="w-4 h-4 mr-2" />Call Me</a></Button>}</div><div className="flex flex-wrap justify-center items-center gap-6 text-sm text-slate-400">{portfolio?.location && <span className="flex items-center gap-2"><MapPin className="w-4 h-4" />{portfolio.location}</span>}{profile?.email && <a href={`mailto:${profile.email}`} className="flex items-center gap-2 hover:text-white transition-colors"><Mail className="w-4 h-4" />{profile.email}</a>}</div></ScrollReveal></div></section>
 
-      <footer className="py-8 px-4 sm:px-6 bg-slate-950 text-white"><div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4"><div className="flex items-center gap-3"><div className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center"><Shield className="w-4 h-4" /></div><span className="text-sm text-white/50">{profile?.display_name}</span></div><p className="text-xs text-white/30">© {new Date().getFullYear()} All rights reserved.</p></div></footer>
+      <footer className="py-8 px-4 sm:px-6 bg-slate-950 text-white">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
+            {/* Logo */}
+            <div className="flex items-center gap-3">
+              {portfolio?.logo_url ? (
+                <img src={portfolio.logo_url} alt="Logo" className="h-8 w-auto object-contain" />
+              ) : (
+                <div className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center">
+                  <Shield className="w-4 h-4" />
+                </div>
+              )}
+              <span className="text-sm text-white/50">{profile?.display_name}</span>
+            </div>
+
+            {/* Footer Nav */}
+            <div className="flex flex-wrap justify-center gap-6">
+              {["Home", "About", "Skills", "Works", "Contact"].map((item) => (
+                <button
+                  key={item}
+                  onClick={() => scrollTo(item.toLowerCase() === "home" ? "hero" : item.toLowerCase() === "about" ? "bio" : item.toLowerCase())}
+                  className="text-sm text-white/30 hover:text-white transition-colors"
+                >
+                  {item}
+                </button>
+              ))}
+            </div>
+
+            {/* Copyright */}
+            <p className="text-xs text-white/30">© {new Date().getFullYear()} All rights reserved.</p>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }

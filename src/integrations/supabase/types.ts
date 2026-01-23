@@ -130,6 +130,7 @@ export type Database = {
           id: string
           is_published: boolean | null
           location: string | null
+          logo_url: string | null
           phone: string | null
           theme: string | null
           updated_at: string
@@ -143,6 +144,7 @@ export type Database = {
           id?: string
           is_published?: boolean | null
           location?: string | null
+          logo_url?: string | null
           phone?: string | null
           theme?: string | null
           updated_at?: string
@@ -156,6 +158,7 @@ export type Database = {
           id?: string
           is_published?: boolean | null
           location?: string | null
+          logo_url?: string | null
           phone?: string | null
           theme?: string | null
           updated_at?: string

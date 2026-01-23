@@ -13,6 +13,7 @@ export interface ThemePortfolio {
   phone: string | null;
   website: string | null;
   theme: string | null;
+  logo_url: string | null;
 }
 
 export interface ThemeSkill {

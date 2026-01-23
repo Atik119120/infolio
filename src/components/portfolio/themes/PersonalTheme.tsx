@@ -728,14 +728,36 @@ export default function PersonalTheme({ profile, portfolio, skills, projects, ex
 
       {/* Footer */}
       <footer className="py-8 px-4 sm:px-6 bg-white/50 border-t border-rose-100 relative z-10">
-        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-rose-400 via-pink-500 to-purple-500 flex items-center justify-center shadow-lg shadow-rose-300/20">
-              <Feather className="w-4 h-4 text-white" />
+        <div className="max-w-7xl mx-auto">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
+            {/* Logo */}
+            <div className="flex items-center gap-3">
+              {portfolio?.logo_url ? (
+                <img src={portfolio.logo_url} alt="Logo" className="h-8 w-auto object-contain" />
+              ) : (
+                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-rose-400 via-pink-500 to-purple-500 flex items-center justify-center shadow-lg shadow-rose-300/20">
+                  <Feather className="w-4 h-4 text-white" />
+                </div>
+              )}
+              <span className="text-sm text-slate-500 font-serif italic">{profile?.display_name}</span>
             </div>
-            <span className="text-sm text-slate-500 font-serif italic">{profile?.display_name}</span>
+
+            {/* Footer Nav */}
+            <div className="flex flex-wrap justify-center gap-6">
+              {["Home", "About", "Skills", "Works", "Contact"].map((item) => (
+                <button
+                  key={item}
+                  onClick={() => scrollTo(item.toLowerCase() === "home" ? "hero" : item.toLowerCase() === "about" ? "bio" : item.toLowerCase())}
+                  className="text-sm text-slate-400 hover:text-rose-500 transition-colors"
+                >
+                  {item}
+                </button>
+              ))}
+            </div>
+
+            {/* Copyright */}
+            <p className="text-xs text-slate-400">© {new Date().getFullYear()} All rights reserved.</p>
           </div>
-          <p className="text-xs text-slate-400">© {new Date().getFullYear()} All rights reserved.</p>
         </div>
       </footer>
     </div>

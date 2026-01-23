@@ -196,6 +196,10 @@ export default function CosmicTheme({
     return acc;
   }, {} as Record<string, typeof skills>);
 
+  const scrollTo = (id: string) => {
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-950 via-indigo-950 to-purple-950 text-white overflow-hidden">
       <FloatingStars />
@@ -692,39 +696,55 @@ export default function CosmicTheme({
       )}
 
       {/* Footer - Space Station */}
-      <footer className="relative py-20 px-6 border-t border-white/5">
-        <div className="max-w-4xl mx-auto text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="flex items-center justify-center gap-3 mb-6"
-          >
-            <Moon className="w-5 h-5 text-purple-400" />
-            <span className="text-purple-300/80 text-sm">
-              Crafted in the cosmos • {new Date().getFullYear()}
-            </span>
-            <Sun className="w-5 h-5 text-amber-400" />
-          </motion.div>
-          
-          {/* Social links */}
-          <div className="flex justify-center gap-4">
-            {socialLinks.map((link) => {
-              const Icon = getSocialIcon(link.platform);
-              return (
-                <motion.a
-                  key={link.id}
-                  href={link.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  whileHover={{ scale: 1.1, y: -2 }}
-                  className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center hover:border-purple-400/50 transition-colors"
+      <footer className="relative py-12 px-6 border-t border-white/5">
+        <div className="max-w-6xl mx-auto">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-8">
+            {/* Logo */}
+            <div className="flex items-center gap-3">
+              {portfolio?.logo_url ? (
+                <img src={portfolio.logo_url} alt="Logo" className="h-8 w-auto object-contain" />
+              ) : (
+                <>
+                  <Moon className="w-5 h-5 text-purple-400" />
+                  <Sun className="w-5 h-5 text-amber-400" />
+                </>
+              )}
+              <span className="text-purple-300/80 text-sm ml-2">{profile?.display_name}</span>
+            </div>
+
+            {/* Footer Nav */}
+            <div className="flex flex-wrap justify-center gap-6">
+              {["Home", "About", "Skills", "Works", "Contact"].map((item) => (
+                <button
+                  key={item}
+                  onClick={() => scrollTo(item.toLowerCase() === "home" ? "hero" : item.toLowerCase() === "about" ? "bio" : item.toLowerCase())}
+                  className="text-sm text-white/40 hover:text-purple-400 transition-colors"
                 >
-                  <Icon className="w-4 h-4 text-white/70" />
-                </motion.a>
-              );
-            })}
+                  {item}
+                </button>
+              ))}
+            </div>
+
+            {/* Copyright & Social */}
+            <div className="flex items-center gap-4">
+              {socialLinks.slice(0, 4).map((link) => {
+                const Icon = getSocialIcon(link.platform);
+                return (
+                  <motion.a
+                    key={link.id}
+                    href={link.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    whileHover={{ scale: 1.1, y: -2 }}
+                    className="w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center hover:border-purple-400/50 transition-colors"
+                  >
+                    <Icon className="w-3 h-3 text-white/70" />
+                  </motion.a>
+                );
+              })}
+            </div>
           </div>
+          <p className="text-center text-xs text-white/30 mt-6">© {new Date().getFullYear()} All rights reserved.</p>
         </div>
       </footer>
     </div>

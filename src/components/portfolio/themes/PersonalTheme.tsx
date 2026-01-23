@@ -402,97 +402,51 @@ export default function PersonalTheme({ profile, portfolio, skills, projects, ex
 
       {/* Bio Section */}
       <section id="bio" className="py-24 sm:py-32 px-4 sm:px-6 relative z-10">
-        <div className="max-w-6xl mx-auto">
-          <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-            {/* Photo - Enhanced Polaroid Style */}
-            <ScrollReveal direction="left">
-              <div className="relative mx-auto lg:mx-0 max-w-sm">
-                {/* Stacked Polaroid Effect */}
-                <motion.div 
-                  className="absolute -inset-4 bg-white dark:bg-slate-800 rounded-lg shadow-xl rotate-6 opacity-60"
-                  whileHover={{ rotate: 8 }}
-                />
-                <motion.div 
-                  className="absolute -inset-4 bg-white dark:bg-slate-800 rounded-lg shadow-xl -rotate-3 opacity-80"
-                  whileHover={{ rotate: -5 }}
-                />
-                
-                {/* Main Polaroid */}
-                <motion.div 
-                  className="relative bg-white dark:bg-slate-800 p-4 pb-16 rounded-lg shadow-2xl"
-                  whileHover={{ rotate: 0, scale: 1.02 }}
-                  transition={{ type: "spring", stiffness: 300 }}
-                >
-                  <div className="aspect-square w-full overflow-hidden rounded-sm">
-                    {profile?.avatar_url ? (
-                      <img 
-                        src={profile.avatar_url} 
-                        alt={profile?.display_name || "Profile"} 
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-rose-400 via-pink-500 to-purple-500 text-white text-6xl sm:text-8xl font-serif">
-                        {profile?.display_name?.[0]?.toUpperCase() || "?"}
-                      </div>
-                    )}
-                  </div>
-                  
-                  {/* Polaroid Caption */}
-                  <div className="absolute bottom-4 left-0 right-0 text-center">
-                    <p className="text-slate-600 dark:text-slate-300 text-lg italic">About Me ✨</p>
-                  </div>
-                </motion.div>
-
-                {/* Decorative Tape */}
-                <div className="absolute -top-2 left-1/2 -translate-x-1/2 w-16 h-6 bg-yellow-200/80 dark:bg-yellow-600/50 rotate-2 shadow-sm" />
+        <div className="max-w-4xl mx-auto">
+          {/* Content */}
+          <ScrollReveal>
+            <div className="space-y-6 text-center">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-rose-100 to-pink-100 dark:from-rose-900/50 dark:to-pink-900/50 border border-rose-200 dark:border-rose-700">
+                <Heart className="w-4 h-4 text-rose-500 dark:text-rose-400" />
+                <span className="text-xs tracking-widest uppercase text-rose-600 dark:text-rose-300">My Story</span>
               </div>
-            </ScrollReveal>
-
-            {/* Content */}
-            <ScrollReveal direction="right" delay={0.2}>
-              <div className="space-y-6">
-                <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-rose-100 to-pink-100 dark:from-rose-900/50 dark:to-pink-900/50 border border-rose-200 dark:border-rose-700">
-                  <Heart className="w-4 h-4 text-rose-500 dark:text-rose-400" />
-                  <span className="text-xs tracking-widest uppercase text-rose-600 dark:text-rose-300">My Story</span>
+              
+              <h2 className="text-3xl sm:text-4xl font-serif">
+                <span className="bg-gradient-to-r from-rose-500 via-pink-500 to-purple-500 bg-clip-text text-transparent">
+                  A little about me
+                </span>
+              </h2>
+              
+              {portfolio?.bio && (
+                <div className="relative bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-3xl p-6 sm:p-8 shadow-lg border border-rose-100 dark:border-slate-700 max-w-2xl mx-auto">
+                  <Quote className="w-8 h-8 text-rose-300 dark:text-rose-600 mb-4 mx-auto" />
+                  <p className="text-lg text-slate-600 dark:text-slate-300 font-light leading-relaxed">
+                    {portfolio.bio}
+                  </p>
                 </div>
-                
-                <h2 className="text-3xl sm:text-4xl font-serif">
-                  <span className="bg-gradient-to-r from-rose-500 via-pink-500 to-purple-500 bg-clip-text text-transparent">
-                    A little about me
-                  </span>
-                </h2>
-                
-                {portfolio?.bio && (
-                  <div className="relative bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm rounded-3xl p-6 sm:p-8 shadow-lg border border-rose-100 dark:border-slate-700">
-                    <Quote className="w-8 h-8 text-rose-300 dark:text-rose-600 mb-4" />
-                    <p className="text-lg text-slate-600 dark:text-slate-300 font-light leading-relaxed">
-                      {portfolio.bio}
-                    </p>
-                  </div>
-                )}
+              )}
 
-                {socialLinks.length > 0 && (
-                  <div className="flex gap-3 pt-4">
-                    {socialLinks.map((link) => {
-                      const Icon = getSocialIcon(link.platform);
-                      return (
-                        <motion.a
-                          key={link.id}
-                          href={link.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="w-12 h-12 rounded-full bg-white dark:bg-slate-800 border-2 border-rose-100 dark:border-slate-700 flex items-center justify-center text-slate-400 dark:text-slate-500 hover:text-rose-500 dark:hover:text-rose-400 hover:border-rose-300 dark:hover:border-rose-600 hover:shadow-lg hover:shadow-rose-200/50 dark:hover:shadow-rose-500/20 transition-all"
-                          whileHover={{ scale: 1.1, y: -3 }}
-                        >
-                          <Icon className="w-5 h-5" />
-                        </motion.a>
-                      );
-                    })}
-                  </div>
-                )}
-              </div>
-            </ScrollReveal>
-          </div>
+              {socialLinks.length > 0 && (
+                <div className="flex justify-center gap-3 pt-4">
+                  {socialLinks.map((link) => {
+                    const Icon = getSocialIcon(link.platform);
+                    return (
+                      <motion.a
+                        key={link.id}
+                        href={link.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="w-12 h-12 rounded-full bg-white dark:bg-slate-800 border-2 border-rose-100 dark:border-slate-700 flex items-center justify-center text-slate-400 dark:text-slate-500 hover:text-rose-500 dark:hover:text-rose-400 hover:border-rose-300 dark:hover:border-rose-600 hover:shadow-lg hover:shadow-rose-200/50 dark:hover:shadow-rose-500/20 transition-all"
+                        whileHover={{ scale: 1.1, y: -3 }}
+                      >
+                        <Icon className="w-5 h-5" />
+                      </motion.a>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          </ScrollReveal>
         </div>
       </section>
 

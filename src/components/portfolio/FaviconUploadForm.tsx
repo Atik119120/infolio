@@ -55,9 +55,10 @@ export function FaviconUploadForm({ faviconUrl, userId, onUpdate, onSuccess, onE
 
       const { data: urlData } = supabase.storage.from("avatars").getPublicUrl(fileName);
 
+      // Use type assertion since favicon_url was just added to the schema
       const { error: updateError } = await supabase
         .from("portfolios")
-        .update({ favicon_url: urlData.publicUrl + "?t=" + Date.now() })
+        .update({ favicon_url: urlData.publicUrl + "?t=" + Date.now() } as any)
         .eq("user_id", userId);
 
       if (updateError) {
@@ -77,9 +78,10 @@ export function FaviconUploadForm({ faviconUrl, userId, onUpdate, onSuccess, onE
   const handleRemoveFavicon = async () => {
     setRemoving(true);
 
+    // Use type assertion since favicon_url was just added to the schema
     const { error } = await supabase
       .from("portfolios")
-      .update({ favicon_url: null })
+      .update({ favicon_url: null } as any)
       .eq("user_id", userId);
 
     setRemoving(false);

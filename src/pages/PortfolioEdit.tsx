@@ -12,6 +12,7 @@ import { EducationForm } from "@/components/portfolio/EducationForm";
 import { SocialLinksForm } from "@/components/portfolio/SocialLinksForm";
 import { ThemeSelector } from "@/components/portfolio/ThemeSelector";
 import { LogoUploadForm } from "@/components/portfolio/LogoUploadForm";
+import { FaviconUploadForm } from "@/components/portfolio/FaviconUploadForm";
 
 export interface Profile {
   username: string;
@@ -29,6 +30,7 @@ export interface Portfolio {
   is_published: boolean | null;
   theme: string | null;
   logo_url: string | null;
+  favicon_url?: string | null;
 }
 
 export interface Skill {
@@ -97,6 +99,14 @@ export default function PortfolioEdit() {
     if (user) {
       fetchAllData();
     }
+    
+    // Listen for tab switch events from sidebar
+    const handleTabSwitch = (e: CustomEvent) => {
+      setActiveTab(e.detail);
+    };
+    
+    window.addEventListener('switchTab', handleTabSwitch as EventListener);
+    return () => window.removeEventListener('switchTab', handleTabSwitch as EventListener);
   }, [user]);
 
   const fetchAllData = async () => {
@@ -134,9 +144,9 @@ export default function PortfolioEdit() {
 
   if (loading) {
     return (
-      <div className="space-y-6 animate-pulse">
-        <div className="h-12 bg-muted rounded-lg w-full max-w-md" />
-        <div className="h-96 bg-muted rounded-lg" />
+      <div className="space-y-4 animate-pulse">
+        <div className="h-10 bg-muted rounded-lg w-full max-w-md" />
+        <div className="h-80 bg-muted rounded-lg" />
       </div>
     );
   }
@@ -153,31 +163,31 @@ export default function PortfolioEdit() {
   ];
 
   return (
-    <div className="space-y-6 animate-fade-in">
+    <div className="space-y-4 animate-fade-in">
       <div>
-        <h1 className="text-2xl font-bold">Edit Portfolio</h1>
-        <p className="text-muted-foreground">Choose your theme and customize your portfolio content</p>
+        <h1 className="text-xl font-bold">Edit Portfolio</h1>
+        <p className="text-sm text-muted-foreground">Choose theme and customize content</p>
       </div>
 
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-        <TabsList className="grid grid-cols-4 lg:grid-cols-8 h-auto gap-2 bg-transparent p-0">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
+        <TabsList className="grid grid-cols-4 lg:grid-cols-8 h-auto gap-1.5 bg-transparent p-0">
           {tabs.map((tab) => (
             <TabsTrigger
               key={tab.value}
               value={tab.value}
-              className={`flex items-center gap-2 px-4 py-3 rounded-lg border ${
+              className={`flex items-center gap-1.5 px-3 py-2 rounded-lg border text-xs font-medium transition-all ${
                 tab.value === 'theme' 
-                  ? 'data-[state=active]:bg-primary data-[state=active]:text-primary-foreground border-primary/50' 
+                  ? 'data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-accent data-[state=active]:text-white border-primary/30' 
                   : 'data-[state=active]:bg-primary data-[state=active]:text-primary-foreground'
               }`}
             >
-              <tab.icon className="w-4 h-4" />
+              <tab.icon className="w-3.5 h-3.5" />
               <span className="hidden sm:inline">{tab.label}</span>
             </TabsTrigger>
           ))}
         </TabsList>
 
-        <TabsContent value="theme" className="mt-6">
+        <TabsContent value="theme" className="mt-4">
           <ThemeSelector
             currentTheme={portfolio?.theme || null}
             userId={user?.id || ""}
@@ -185,7 +195,7 @@ export default function PortfolioEdit() {
           />
         </TabsContent>
 
-        <TabsContent value="basic" className="mt-6">
+        <TabsContent value="basic" className="mt-4">
           <BasicInfoForm
             profile={profile}
             portfolio={portfolio}
@@ -196,7 +206,7 @@ export default function PortfolioEdit() {
           />
         </TabsContent>
 
-        <TabsContent value="branding" className="mt-6">
+        <TabsContent value="branding" className="mt-4 space-y-4">
           <LogoUploadForm
             logoUrl={portfolio?.logo_url || null}
             userId={user?.id || ""}
@@ -204,9 +214,16 @@ export default function PortfolioEdit() {
             onSuccess={showSuccess}
             onError={showError}
           />
+          <FaviconUploadForm
+            faviconUrl={(portfolio as any)?.favicon_url || null}
+            userId={user?.id || ""}
+            onUpdate={fetchAllData}
+            onSuccess={showSuccess}
+            onError={showError}
+          />
         </TabsContent>
 
-        <TabsContent value="skills" className="mt-6">
+        <TabsContent value="skills" className="mt-4">
           <SkillsForm
             skills={skills}
             userId={user?.id || ""}
@@ -216,7 +233,7 @@ export default function PortfolioEdit() {
           />
         </TabsContent>
 
-        <TabsContent value="projects" className="mt-6">
+        <TabsContent value="projects" className="mt-4">
           <ProjectsForm
             projects={projects}
             userId={user?.id || ""}
@@ -226,7 +243,7 @@ export default function PortfolioEdit() {
           />
         </TabsContent>
 
-        <TabsContent value="experience" className="mt-6">
+        <TabsContent value="experience" className="mt-4">
           <ExperienceForm
             experiences={experiences}
             userId={user?.id || ""}
@@ -236,7 +253,7 @@ export default function PortfolioEdit() {
           />
         </TabsContent>
 
-        <TabsContent value="education" className="mt-6">
+        <TabsContent value="education" className="mt-4">
           <EducationForm
             education={education}
             userId={user?.id || ""}
@@ -246,7 +263,7 @@ export default function PortfolioEdit() {
           />
         </TabsContent>
 
-        <TabsContent value="social" className="mt-6">
+        <TabsContent value="social" className="mt-4">
           <SocialLinksForm
             socialLinks={socialLinks}
             userId={user?.id || ""}

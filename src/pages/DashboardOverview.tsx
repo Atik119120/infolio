@@ -114,76 +114,81 @@ export default function DashboardOverview() {
 
   if (loading) {
     return (
-      <div className="space-y-6 animate-pulse">
-        <div className="h-32 bg-muted rounded-lg" />
-        <div className="grid md:grid-cols-3 gap-6">
-          <div className="h-40 bg-muted rounded-lg" />
-          <div className="h-40 bg-muted rounded-lg" />
-          <div className="h-40 bg-muted rounded-lg" />
+      <div className="space-y-4 animate-pulse">
+        <div className="h-28 bg-muted rounded-lg" />
+        <div className="grid md:grid-cols-4 gap-4">
+          <div className="h-32 bg-muted rounded-lg" />
+          <div className="h-32 bg-muted rounded-lg" />
+          <div className="h-32 bg-muted rounded-lg" />
+          <div className="h-32 bg-muted rounded-lg" />
         </div>
       </div>
     );
   }
 
   return (
-    <div className="space-y-6 animate-fade-in">
-      {/* Account Status Alert */}
+    <div className="space-y-4 animate-fade-in">
+      {/* Account Status Alert - Compact */}
       {!profile?.is_approved && (
-        <Card className="border-amber-500/50 bg-amber-50 dark:bg-amber-900/10">
-          <CardContent className="p-4">
-            <div className="flex items-center gap-3">
-              <Clock className="w-6 h-6 text-amber-600" />
-              <div className="flex-1">
-                <p className="font-medium text-amber-800 dark:text-amber-200">Account Pending Approval</p>
-                <p className="text-sm text-amber-700 dark:text-amber-300">
-                  Your account is being reviewed by admin. You can build your portfolio now, but publishing requires approval.
+        <Card className="border-amber-500/50 bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/10 dark:to-orange-900/10">
+          <CardContent className="p-3">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center flex-shrink-0">
+                <Clock className="w-4 h-4 text-amber-600" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="font-medium text-sm text-amber-800 dark:text-amber-200">Pending Approval</p>
+                <p className="text-xs text-amber-700 dark:text-amber-300 truncate">
+                  Build your portfolio while we review your account
                 </p>
               </div>
               <Button 
                 variant="outline" 
                 size="sm"
                 onClick={() => navigate("/dashboard/settings")}
-                className="border-amber-500 text-amber-700 dark:text-amber-300"
+                className="border-amber-500 text-amber-700 dark:text-amber-300 h-8 text-xs"
               >
-                View Status
+                Status
               </Button>
             </div>
           </CardContent>
         </Card>
       )}
 
-      {/* Welcome Banner */}
-      <Card className="gradient-hero text-white overflow-hidden relative">
-        <div className="absolute inset-0 bg-black/10" />
-        <CardContent className="p-8 relative z-10">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+      {/* Welcome Banner - Compact & Bold */}
+      <Card className="gradient-hero text-white overflow-hidden relative shadow-glow">
+        <div className="absolute inset-0 bg-gradient-to-r from-black/10 to-transparent" />
+        <CardContent className="p-5 relative z-10">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div>
-              <h1 className="text-3xl font-bold mb-2">
-                Welcome back, {profile?.display_name || "there"}! 👋
+              <h1 className="text-2xl font-bold mb-1">
+                Welcome, {profile?.display_name || "there"}! 👋
               </h1>
-              <p className="text-white/80">
+              <p className="text-white/80 text-sm">
                 {!profile?.is_approved 
-                  ? "Build your portfolio while we review your account!"
+                  ? "Build your portfolio while we review your account"
                   : portfolio?.is_published 
-                    ? "Your portfolio is live and looking great!"
-                    : "Let's complete your portfolio and publish it to the world!"}
+                    ? "Your portfolio is live!"
+                    : "Complete and publish your portfolio"}
               </p>
             </div>
-            <div className="flex gap-3">
+            <div className="flex gap-2">
               <Button
                 variant="secondary"
-                className="bg-white/20 hover:bg-white/30 text-white border-0"
+                size="sm"
+                className="bg-white/20 hover:bg-white/30 text-white border-0 h-9"
                 onClick={() => navigate("/dashboard/edit")}
               >
-                <FileEdit className="w-4 h-4 mr-2" />
-                Edit Portfolio
+                <FileEdit className="w-4 h-4 mr-1.5" />
+                Edit
               </Button>
               {profile && (
                 <Button
-                  className="bg-white text-primary hover:bg-white/90"
+                  size="sm"
+                  className="bg-white text-primary hover:bg-white/90 h-9"
                   onClick={() => window.open(`/u/${profile.username}`, "_blank")}
                 >
-                  <Eye className="w-4 h-4 mr-2" />
+                  <Eye className="w-4 h-4 mr-1.5" />
                   Preview
                 </Button>
               )}
@@ -192,123 +197,114 @@ export default function DashboardOverview() {
         </CardContent>
       </Card>
 
-      {/* Stats Grid */}
-      <div className="grid md:grid-cols-4 gap-6">
+      {/* Stats Grid - Compact */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {/* Account Status */}
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              Account Status
+        <Card className="bg-gradient-to-br from-card to-primary/5 border-primary/10">
+          <CardHeader className="flex flex-row items-center justify-between pb-1 pt-3 px-3">
+            <CardTitle className="text-xs font-medium text-muted-foreground">
+              Status
             </CardTitle>
-            <Shield className="w-5 h-5 text-primary" />
+            <Shield className="w-4 h-4 text-primary" />
           </CardHeader>
-          <CardContent>
-            <div className="flex items-center gap-2">
+          <CardContent className="px-3 pb-3">
+            <div className="flex items-center gap-1.5">
               {profile?.is_approved ? (
-                <Badge variant="default" className="bg-green-500">
+                <Badge variant="default" className="bg-green-500 text-xs h-5">
                   <CheckCircle2 className="w-3 h-3 mr-1" />
                   Approved
                 </Badge>
               ) : (
-                <Badge variant="secondary" className="bg-amber-500/20 text-amber-700 dark:text-amber-400">
+                <Badge variant="secondary" className="bg-amber-500/20 text-amber-700 dark:text-amber-400 text-xs h-5">
                   <Clock className="w-3 h-3 mr-1" />
                   Pending
                 </Badge>
               )}
             </div>
-            <p className="text-xs text-muted-foreground mt-2">
-              {profile?.is_approved ? "You can publish" : "Awaiting approval"}
-            </p>
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              Skills Added
+        <Card className="bg-gradient-to-br from-card to-secondary/5 border-secondary/10">
+          <CardHeader className="flex flex-row items-center justify-between pb-1 pt-3 px-3">
+            <CardTitle className="text-xs font-medium text-muted-foreground">
+              Skills
             </CardTitle>
-            <Sparkles className="w-5 h-5 text-primary" />
+            <Sparkles className="w-4 h-4 text-secondary" />
           </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold">{stats.skills}</div>
-            <p className="text-xs text-muted-foreground mt-1">
-              Showcase your expertise
-            </p>
+          <CardContent className="px-3 pb-3">
+            <div className="text-2xl font-bold">{stats.skills}</div>
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              Projects Added
+        <Card className="bg-gradient-to-br from-card to-accent/5 border-accent/10">
+          <CardHeader className="flex flex-row items-center justify-between pb-1 pt-3 px-3">
+            <CardTitle className="text-xs font-medium text-muted-foreground">
+              Projects
             </CardTitle>
-            <FileEdit className="w-5 h-5 text-secondary" />
+            <FileEdit className="w-4 h-4 text-accent" />
           </CardHeader>
-          <CardContent>
-            <div className="text-3xl font-bold">{stats.projects}</div>
-            <p className="text-xs text-muted-foreground mt-1">
-              Display your best work
-            </p>
+          <CardContent className="px-3 pb-3">
+            <div className="text-2xl font-bold">{stats.projects}</div>
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              Portfolio Status
+        <Card className="bg-gradient-to-br from-card to-success/5 border-success/10">
+          <CardHeader className="flex flex-row items-center justify-between pb-1 pt-3 px-3">
+            <CardTitle className="text-xs font-medium text-muted-foreground">
+              Portfolio
             </CardTitle>
-            <Globe className="w-5 h-5 text-accent" />
+            <Globe className="w-4 h-4 text-green-600" />
           </CardHeader>
-          <CardContent>
-            <div className="flex items-center gap-2">
+          <CardContent className="px-3 pb-3">
+            <div className="flex items-center gap-1.5">
               {portfolio?.is_published ? (
-                <Badge variant="default" className="bg-green-500">
-                  Published
+                <Badge variant="default" className="bg-green-500 text-xs h-5">
+                  Live
                 </Badge>
               ) : portfolio?.pending_publish ? (
-                <Badge variant="secondary" className="bg-blue-500/20 text-blue-700">
+                <Badge variant="secondary" className="bg-blue-500/20 text-blue-700 text-xs h-5">
                   Pending
                 </Badge>
               ) : (
-                <Badge variant="secondary">Draft</Badge>
+                <Badge variant="secondary" className="text-xs h-5">Draft</Badge>
               )}
             </div>
             <Button 
               variant="link" 
-              className="px-0 mt-2 h-auto text-sm"
+              className="px-0 mt-1 h-auto text-xs"
               onClick={togglePublish}
             >
               {!profile?.is_approved 
-                ? "Request Approval" 
+                ? "Request" 
                 : portfolio?.is_published 
                   ? "Unpublish" 
-                  : "Publish Now"}
-              <ArrowRight className="w-3 h-3 ml-1" />
+                  : "Publish"}
+              <ArrowRight className="w-3 h-3 ml-0.5" />
             </Button>
           </CardContent>
         </Card>
       </div>
 
-      {/* Completion Progress */}
+      {/* Completion Progress - Compact */}
       <Card>
-        <CardHeader>
+        <CardHeader className="pb-2 pt-4 px-4">
           <div className="flex items-center justify-between">
-            <CardTitle>Portfolio Completion</CardTitle>
-            <span className="text-2xl font-bold text-primary">{getCompletionScore()}%</span>
+            <CardTitle className="text-base">Completion</CardTitle>
+            <span className="text-xl font-bold gradient-text">{getCompletionScore()}%</span>
           </div>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <Progress value={getCompletionScore()} className="h-3" />
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <CardContent className="space-y-3 px-4 pb-4">
+          <Progress value={getCompletionScore()} className="h-2" />
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
             {completionItems.map((item) => (
               <div 
                 key={item.label} 
-                className="flex items-center gap-2 text-sm"
+                className="flex items-center gap-1.5 text-xs"
               >
                 {item.done ? (
-                  <CheckCircle2 className="w-4 h-4 text-green-500" />
+                  <CheckCircle2 className="w-3.5 h-3.5 text-green-500 flex-shrink-0" />
                 ) : (
-                  <Circle className="w-4 h-4 text-muted-foreground" />
+                  <Circle className="w-3.5 h-3.5 text-muted-foreground flex-shrink-0" />
                 )}
                 <span className={item.done ? "text-foreground" : "text-muted-foreground"}>
                   {item.label}
@@ -318,38 +314,40 @@ export default function DashboardOverview() {
           </div>
           {getCompletionScore() < 100 && (
             <Button 
-              className="w-full mt-4 gradient-primary"
+              className="w-full mt-2 gradient-primary h-9 text-sm"
               onClick={() => navigate("/dashboard/edit")}
             >
-              Complete Your Portfolio
-              <ArrowRight className="w-4 h-4 ml-2" />
+              Complete Portfolio
+              <ArrowRight className="w-4 h-4 ml-1.5" />
             </Button>
           )}
         </CardContent>
       </Card>
 
-      {/* Quick Link */}
+      {/* Quick Link - Compact */}
       {profile && (
-        <Card className="border-dashed">
-          <CardContent className="p-6 flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
-                <Globe className="w-6 h-6 text-primary" />
+        <Card className="border-dashed border-primary/30 bg-gradient-to-r from-primary/5 to-secondary/5">
+          <CardContent className="p-4 flex items-center justify-between gap-3">
+            <div className="flex items-center gap-3 min-w-0">
+              <div className="w-10 h-10 rounded-lg gradient-primary flex items-center justify-center flex-shrink-0">
+                <Globe className="w-5 h-5 text-white" />
               </div>
-              <div>
-                <p className="font-medium">Your Portfolio URL</p>
-                <p className="text-sm text-muted-foreground">
+              <div className="min-w-0">
+                <p className="font-medium text-sm">Your Portfolio</p>
+                <p className="text-xs text-muted-foreground truncate">
                   {window.location.origin}/u/{profile.username}
                 </p>
               </div>
             </div>
             <Button 
               variant="outline"
+              size="sm"
+              className="h-8 text-xs"
               onClick={() => {
                 navigator.clipboard.writeText(`${window.location.origin}/u/${profile.username}`);
               }}
             >
-              Copy Link
+              Copy
             </Button>
           </CardContent>
         </Card>

@@ -26,6 +26,7 @@ import {
   Sparkles,
   ChevronRight,
   Zap,
+  ShoppingBag,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import alphaLogo from "@/assets/alpha-portfolio-logo.png";
@@ -72,6 +73,7 @@ export default function Dashboard() {
     { icon: LayoutDashboard, label: "Overview", path: "/dashboard" },
     { icon: User, label: "Profile", path: "/dashboard/edit", hash: "basic" },
     { icon: FileEdit, label: "Edit Portfolio", path: "/dashboard/edit" },
+    { icon: ShoppingBag, label: "My Purchases", path: "/dashboard/purchases" },
     { icon: Settings, label: "Settings", path: "/dashboard/settings" },
   ];
 

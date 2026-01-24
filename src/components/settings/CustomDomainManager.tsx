@@ -33,10 +33,40 @@ import {
   Search
 } from "lucide-react";
 
-// Popular domain extensions for suggestions
-const DOMAIN_EXTENSIONS = [
-  ".com", ".net", ".org", ".io", ".dev", ".app", ".co", ".xyz", 
-  ".tech", ".online", ".site", ".me", ".info", ".biz", ".in", ".bd"
+// Popular domain extensions with estimated pricing (USD/year)
+const DOMAIN_EXTENSIONS_DATA: { ext: string; price: string; priceNum: number }[] = [
+  { ext: ".com", price: "$10-15", priceNum: 12 },
+  { ext: ".net", price: "$12-15", priceNum: 13 },
+  { ext: ".org", price: "$10-15", priceNum: 12 },
+  { ext: ".io", price: "$40-60", priceNum: 50 },
+  { ext: ".dev", price: "$12-20", priceNum: 15 },
+  { ext: ".app", price: "$12-20", priceNum: 15 },
+  { ext: ".co", price: "$25-35", priceNum: 30 },
+  { ext: ".xyz", price: "$1-10", priceNum: 5 },
+  { ext: ".tech", price: "$5-15", priceNum: 10 },
+  { ext: ".online", price: "$3-10", priceNum: 6 },
+  { ext: ".site", price: "$3-10", priceNum: 6 },
+  { ext: ".me", price: "$15-25", priceNum: 20 },
+  { ext: ".info", price: "$5-15", priceNum: 10 },
+  { ext: ".biz", price: "$15-20", priceNum: 17 },
+  { ext: ".in", price: "$8-15", priceNum: 10 },
+  { ext: ".bd", price: "$50-100", priceNum: 75 },
+];
+
+const DOMAIN_EXTENSIONS = DOMAIN_EXTENSIONS_DATA.map(d => d.ext);
+
+// Get price for a TLD
+const getDomainPrice = (domain: string): string => {
+  const ext = "." + domain.split(".").pop()?.toLowerCase();
+  return DOMAIN_EXTENSIONS_DATA.find(d => d.ext === ext)?.price || "$10-50";
+};
+
+// Popular registrars with affiliate-free links
+const REGISTRARS = [
+  { name: "Namecheap", url: (domain: string) => `https://www.namecheap.com/domains/registration/results/?domain=${domain}`, icon: "🏷️" },
+  { name: "GoDaddy", url: (domain: string) => `https://www.godaddy.com/domainsearch/find?domainToCheck=${domain}`, icon: "🌐" },
+  { name: "Porkbun", url: (domain: string) => `https://porkbun.com/checkout/search?q=${domain}`, icon: "🐷" },
+  { name: "Google Domains", url: (domain: string) => `https://domains.google.com/registrar/search?searchTerm=${domain}`, icon: "🔍" },
 ];
 
 import { z } from "zod";
@@ -393,48 +423,72 @@ export default function CustomDomainManager() {
                   <div className="p-1">
                     {suggestions.map((suggestion) => {
                       const result = availabilityResults[suggestion];
+                      const price = getDomainPrice(suggestion);
                       return (
-                        <button
-                          key={suggestion}
-                          type="button"
-                          onClick={() => {
-                            setNewDomain(suggestion);
-                            setShowSuggestions(false);
-                            setSearchFilter("");
-                          }}
-                          onMouseEnter={() => checkAvailability(suggestion)}
-                          className="w-full px-3 py-2 text-left text-sm rounded-md hover:bg-accent flex items-center justify-between gap-2 transition-colors"
-                        >
-                          <div className="flex items-center gap-2">
-                            <Badge variant="outline" className="text-xs font-mono">
-                              {suggestion.split(".").pop()}
-                            </Badge>
-                            <span className="font-mono">{suggestion}</span>
-                          </div>
-                          {/* Availability Status */}
-                          <div className="flex items-center gap-1 text-xs">
-                            {result?.checking ? (
-                              <span className="flex items-center gap-1 text-muted-foreground">
-                                <Loader2 className="w-3 h-3 animate-spin" />
-                                Checking...
+                        <div key={suggestion} className="border-b last:border-b-0">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setNewDomain(suggestion);
+                              setShowSuggestions(false);
+                              setSearchFilter("");
+                            }}
+                            onMouseEnter={() => checkAvailability(suggestion)}
+                            className="w-full px-3 py-2 text-left text-sm hover:bg-accent flex items-center justify-between gap-2 transition-colors"
+                          >
+                            <div className="flex items-center gap-2">
+                              <Badge variant="outline" className="text-xs font-mono">
+                                {suggestion.split(".").pop()}
+                              </Badge>
+                              <span className="font-mono text-sm">{suggestion}</span>
+                              <span className="text-xs text-muted-foreground bg-muted px-1.5 py-0.5 rounded">
+                                ~{price}/yr
                               </span>
-                            ) : result ? (
-                              result.available ? (
-                                <span className="flex items-center gap-1 text-green-600">
-                                  <CheckCircle2 className="w-3 h-3" />
-                                  Available
+                            </div>
+                            {/* Availability Status */}
+                            <div className="flex items-center gap-1 text-xs">
+                              {result?.checking ? (
+                                <span className="flex items-center gap-1 text-muted-foreground">
+                                  <Loader2 className="w-3 h-3 animate-spin" />
                                 </span>
+                              ) : result ? (
+                                result.available ? (
+                                  <span className="flex items-center gap-1 text-green-600 font-medium">
+                                    <CheckCircle2 className="w-3 h-3" />
+                                    Available
+                                  </span>
+                                ) : (
+                                  <span className="flex items-center gap-1 text-destructive">
+                                    <AlertCircle className="w-3 h-3" />
+                                    Taken
+                                  </span>
+                                )
                               ) : (
-                                <span className="flex items-center gap-1 text-destructive">
-                                  <AlertCircle className="w-3 h-3" />
-                                  Taken
-                                </span>
-                              )
-                            ) : (
-                              <span className="text-muted-foreground">Hover to check</span>
-                            )}
-                          </div>
-                        </button>
+                                <span className="text-muted-foreground text-xs">Hover to check</span>
+                              )}
+                            </div>
+                          </button>
+                          {/* Registrar Links - Show only for available domains */}
+                          {result?.available && (
+                            <div className="px-3 pb-2 flex flex-wrap gap-1.5">
+                              <span className="text-xs text-muted-foreground">Buy at:</span>
+                              {REGISTRARS.map((registrar) => (
+                                <a
+                                  key={registrar.name}
+                                  href={registrar.url(suggestion)}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  onClick={(e) => e.stopPropagation()}
+                                  className="inline-flex items-center gap-1 text-xs bg-primary/10 text-primary hover:bg-primary/20 px-2 py-0.5 rounded-full transition-colors"
+                                >
+                                  <span>{registrar.icon}</span>
+                                  {registrar.name}
+                                  <ExternalLink className="w-2.5 h-2.5" />
+                                </a>
+                              ))}
+                            </div>
+                          )}
+                        </div>
                       );
                     })}
                   </div>

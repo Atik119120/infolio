@@ -394,30 +394,6 @@ export default function DashboardSettings() {
             </div>
           </div>
           
-          <div className="space-y-2 pt-2 border-t">
-            <Label className="text-xs text-muted-foreground">Your Subdomain (After Launch)</Label>
-            <div className="flex items-center gap-2">
-              <Input 
-                value={subdomainUrl} 
-                readOnly 
-                className="font-mono text-sm bg-muted/50" 
-              />
-              <Button 
-                variant="outline" 
-                onClick={() => {
-                  navigator.clipboard.writeText(`https://${subdomainUrl}`);
-                  toast({ title: "Copied!", description: "Subdomain URL copied" });
-                }}
-              >
-                <Copy className="w-4 h-4" />
-              </Button>
-            </div>
-            <p className="text-xs text-muted-foreground">
-              এই URL টি লঞ্চের পর কাজ করবে। আপনার portfolio{' '}
-              <span className="font-medium text-primary">{profile?.username}.alphaportfolio.com</span> এ অ্যাক্সেস করা যাবে।
-            </p>
-          </div>
-          
           <p className="text-sm text-muted-foreground">
             Your username: <span className="font-medium">{profile?.username}</span>
           </p>

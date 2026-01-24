@@ -105,9 +105,13 @@ export default function PersonalTheme({ profile, portfolio, skills, projects, ex
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-rose-400 via-pink-500 to-purple-500 flex items-center justify-center shadow-lg shadow-rose-300/30 dark:shadow-rose-500/20">
-                <Feather className="w-5 h-5 text-white" />
-              </div>
+              {portfolio?.logo_url ? (
+                <img src={portfolio.logo_url} alt="Logo" className="h-10 w-auto object-contain" />
+              ) : (
+                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-rose-400 via-pink-500 to-purple-500 flex items-center justify-center shadow-lg shadow-rose-300/30 dark:shadow-rose-500/20">
+                  <Feather className="w-5 h-5 text-white" />
+                </div>
+              )}
               <span className="font-serif text-xl italic text-slate-700 dark:text-slate-200">{profile?.display_name || "My Story"}</span>
             </div>
             

@@ -74,9 +74,13 @@ export default function DigitalMarketerTheme({ profile, portfolio, skills, proje
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <motion.div className="flex items-center gap-3" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center shadow-lg shadow-blue-500/20">
-                <TrendingUp className="w-5 h-5" />
-              </div>
+              {portfolio?.logo_url ? (
+                <img src={portfolio.logo_url} alt="Logo" className="h-10 w-auto object-contain" />
+              ) : (
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center shadow-lg shadow-blue-500/20">
+                  <TrendingUp className="w-5 h-5" />
+                </div>
+              )}
               <span className="font-bold text-lg hidden sm:block">{profile?.display_name || "Marketer"}</span>
             </motion.div>
             

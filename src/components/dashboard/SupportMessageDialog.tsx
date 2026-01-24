@@ -55,22 +55,37 @@ export default function SupportMessageDialog() {
     setLoading(true);
 
     try {
-      // Get user profile
-      const { data: profile } = await supabase
-        .from("profiles")
-        .select("display_name, email, username")
-        .eq("user_id", user.id)
-        .single();
+      const [{ data: profile }, { data: supportMsg, error: insertError }] = await Promise.all([
+        supabase
+          .from("profiles")
+          .select("display_name, email, username")
+          .eq("user_id", user.id)
+          .maybeSingle(),
+        supabase
+          .from("support_messages")
+          .insert({
+            user_id: user.id,
+            issue_type: issueType,
+            subject: subject.trim(),
+            message: message.trim(),
+            status: "open",
+          })
+          .select("id")
+          .single(),
+      ]);
 
-      // Send notification to admin
+      if (insertError) throw insertError;
+
+      // Send notification to admin (include real support_messages.id so Telegram buttons work)
       const { error } = await supabase.functions.invoke("send-notification", {
         body: {
           type: "support_message",
+          messageId: supportMsg?.id,
           userId: user.id,
-          userName: profile?.display_name || "User",
+          userName: profile?.display_name || profile?.username || "User",
           userEmail: profile?.email || user.email,
           username: profile?.username,
-          issueType: ISSUE_TYPES.find(t => t.value === issueType)?.label || issueType,
+          issueType: ISSUE_TYPES.find((t) => t.value === issueType)?.label || issueType,
           subject: subject.trim(),
           message: message.trim(),
         },

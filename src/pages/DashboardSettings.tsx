@@ -168,8 +168,10 @@ export default function DashboardSettings() {
       await supabase.functions.invoke("send-notification", {
         body: {
           type: "publish_request",
+          userId: user.id,
           userEmail: user.email,
           userName: profile.username,
+          username: profile.username,
         },
       });
 

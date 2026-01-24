@@ -32,7 +32,11 @@ interface NotificationRequest {
   type: "welcome" | "publish_request" | "support" | "account_approved" | "account_rejected" | "publish_approved" | "theme_purchase" | "support_message" | "support_reply";
   userId?: string;
   userEmail?: string;
+  // Allow alternate field names (some callers/bots may send these)
+  email?: string;
   userName?: string;
+  displayName?: string;
+  phone?: string;
   message?: string;
   subject?: string;
   username?: string;
@@ -42,8 +46,10 @@ interface NotificationRequest {
   transactionId?: string;
   paymentMethod?: string;
   amount?: number;
+  purchaseId?: string;
   // Support message fields
   issueType?: string;
+  messageId?: string;
 }
 
 const handler = async (req: Request): Promise<Response> => {
@@ -59,7 +65,8 @@ const handler = async (req: Request): Promise<Response> => {
 
     const { 
       type, userId, userEmail, userName, message, subject, username,
-      themeId, themeName, transactionId, paymentMethod, amount, issueType 
+      themeId, themeName, transactionId, paymentMethod, amount, issueType,
+      purchaseId, messageId, email, displayName, phone,
     }: NotificationRequest = await req.json();
 
     console.log(`Processing notification: ${type} for user: ${userEmail || userId}`);
@@ -467,9 +474,29 @@ const handler = async (req: Request): Promise<Response> => {
     // Also send to Telegram for important notifications
     const telegramTypes = ['new_user', 'publish_request', 'theme_purchase', 'support_message'];
     if (type && telegramTypes.includes(type)) {
+      const resolvedEmail = userEmail || email;
+      const resolvedName = userName || displayName;
       await sendToTelegram(type, {
-        userId, userEmail, userName, message, subject, username,
-        themeId, themeName, transactionId, paymentMethod, amount, issueType
+        // Canonical fields used by the app
+        userId,
+        userEmail: resolvedEmail,
+        userName: resolvedName,
+        username,
+        message,
+        subject,
+        themeId,
+        themeName,
+        transactionId,
+        paymentMethod,
+        amount,
+        issueType,
+        purchaseId,
+        messageId,
+
+        // Aliases expected by telegram-bot notification templates
+        email: resolvedEmail,
+        displayName: resolvedName,
+        phone,
       });
     }
 

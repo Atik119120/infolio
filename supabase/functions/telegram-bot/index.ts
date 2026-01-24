@@ -77,83 +77,118 @@ async function handleNotification(type: string, data: Record<string, unknown>) {
   
   switch (type) {
     case 'new_user':
-      message = `🆕 <b>নতুন ইউজার রেজিস্ট্রেশন!</b>\n\n` +
-        `👤 নাম: ${data.displayName || 'N/A'}\n` +
-        `📧 ইমেইল: ${data.email}\n` +
-        `📱 ফোন: ${data.phone || 'N/A'}\n` +
-        `🔗 Username: @${data.username}\n` +
-        `🆔 User ID: <code>${data.userId}</code>`;
-      
-      inlineKeyboard = {
-        inline_keyboard: [
-          [
-            { text: '✅ Approve', callback_data: `approve_user:${data.userId}` },
-            { text: '❌ Reject', callback_data: `reject_user:${data.userId}` }
+      {
+        const displayName = (data.displayName ?? data.userName ?? 'N/A') as string;
+        const email = (data.email ?? data.userEmail ?? 'N/A') as string;
+        const phone = (data.phone ?? 'N/A') as string;
+        const username = (data.username ?? 'N/A') as string;
+        const userId = (data.userId ?? data.user_id ?? 'N/A') as string;
+
+        message = `🆕 <b>নতুন ইউজার রেজিস্ট্রেশন!</b>\n\n` +
+          `👤 নাম: ${displayName}\n` +
+          `📧 ইমেইল: ${email}\n` +
+          `📱 ফোন: ${phone}\n` +
+          `🔗 Username: @${username}\n` +
+          `🆔 User ID: <code>${userId}</code>`;
+        
+        inlineKeyboard = {
+          inline_keyboard: [
+            [
+              { text: '✅ Approve', callback_data: `approve_user:${userId}` },
+              { text: '❌ Reject', callback_data: `reject_user:${userId}` }
+            ]
           ]
-        ]
-      };
+        };
+      }
+      
       break;
       
     case 'publish_request':
-      message = `📤 <b>Portfolio Publish Request!</b>\n\n` +
-        `👤 ইউজার: ${data.displayName || data.username}\n` +
-        `📧 ইমেইল: ${data.email}\n` +
-        `🔗 Username: @${data.username}\n` +
-        `🆔 User ID: <code>${data.userId}</code>`;
+      {
+        const displayName = (data.displayName ?? data.userName ?? data.username ?? 'N/A') as string;
+        const email = (data.email ?? data.userEmail ?? 'N/A') as string;
+        const username = (data.username ?? 'N/A') as string;
+        const userId = (data.userId ?? data.user_id ?? 'N/A') as string;
+
+        message = `📤 <b>Portfolio Publish Request!</b>\n\n` +
+          `👤 ইউজার: ${displayName}\n` +
+          `📧 ইমেইল: ${email}\n` +
+          `🔗 Username: @${username}\n` +
+          `🆔 User ID: <code>${userId}</code>`;
       
-      inlineKeyboard = {
-        inline_keyboard: [
-          [
-            { text: '✅ Approve Publish', callback_data: `approve_publish:${data.userId}` },
-            { text: '❌ Reject Publish', callback_data: `reject_publish:${data.userId}` }
-          ],
-          [
-            { text: '👁 View Portfolio', url: `https://alphaportfolio0.lovable.app/u/${data.username}` }
+        inlineKeyboard = {
+          inline_keyboard: [
+            [
+              { text: '✅ Approve Publish', callback_data: `approve_publish:${userId}` },
+              { text: '❌ Reject Publish', callback_data: `reject_publish:${userId}` }
+            ],
+            [
+              { text: '👁 View Portfolio', url: `https://alphaportfolio0.lovable.app/u/${username}` }
+            ]
           ]
-        ]
-      };
+        };
+      }
       break;
       
     case 'theme_purchase':
-      message = `💰 <b>নতুন Theme Purchase Request!</b>\n\n` +
-        `👤 ইউজার: ${data.displayName || data.username}\n` +
-        `📧 ইমেইল: ${data.email}\n` +
-        `🎨 Theme: ${data.themeName}\n` +
-        `💵 Amount: ৳${data.amount}\n` +
-        `💳 Payment Method: ${data.paymentMethod}\n` +
-        `🧾 Transaction ID: <code>${data.transactionId}</code>\n` +
-        `🆔 Purchase ID: <code>${data.purchaseId}</code>`;
+      {
+        const displayName = (data.displayName ?? data.userName ?? data.username ?? 'N/A') as string;
+        const email = (data.email ?? data.userEmail ?? 'N/A') as string;
+        const themeName = (data.themeName ?? 'N/A') as string;
+        const amount = (data.amount ?? 'N/A') as string;
+        const paymentMethod = (data.paymentMethod ?? 'N/A') as string;
+        const transactionId = (data.transactionId ?? 'N/A') as string;
+        const purchaseId = (data.purchaseId ?? data.id ?? 'N/A') as string;
+        
+        message = `💰 <b>নতুন Theme Purchase Request!</b>\n\n` +
+          `👤 ইউজার: ${displayName}\n` +
+          `📧 ইমেইল: ${email}\n` +
+          `🎨 Theme: ${themeName}\n` +
+          `💵 Amount: ৳${amount}\n` +
+          `💳 Payment Method: ${paymentMethod}\n` +
+          `🧾 Transaction ID: <code>${transactionId}</code>\n` +
+          `🆔 Purchase ID: <code>${purchaseId}</code>`;
       
-      inlineKeyboard = {
-        inline_keyboard: [
-          [
-            { text: '✅ Approve Purchase', callback_data: `approve_theme:${data.purchaseId}` },
-            { text: '❌ Reject Purchase', callback_data: `reject_theme:${data.purchaseId}` }
+        inlineKeyboard = {
+          inline_keyboard: [
+            [
+              { text: '✅ Approve Purchase', callback_data: `approve_theme:${purchaseId}` },
+              { text: '❌ Reject Purchase', callback_data: `reject_theme:${purchaseId}` }
+            ]
           ]
-        ]
-      };
+        };
+      }
       break;
       
     case 'support_message':
-      message = `📩 <b>নতুন Support Message!</b>\n\n` +
-        `👤 ইউজার: ${data.userName}\n` +
-        `📧 ইমেইল: ${data.userEmail}\n` +
-        `📌 Issue Type: ${data.issueType}\n` +
-        `📝 Subject: ${data.subject}\n\n` +
-        `💬 Message:\n${data.message}\n\n` +
-        `🆔 Message ID: <code>${data.messageId}</code>`;
+      {
+        const userName = (data.userName ?? data.displayName ?? 'N/A') as string;
+        const userEmail = (data.userEmail ?? data.email ?? 'N/A') as string;
+        const issueType = (data.issueType ?? 'N/A') as string;
+        const subject = (data.subject ?? 'N/A') as string;
+        const bodyMessage = (data.message ?? 'N/A') as string;
+        const messageId = (data.messageId ?? data.id ?? 'N/A') as string;
+
+        message = `📩 <b>নতুন Support Message!</b>\n\n` +
+          `👤 ইউজার: ${userName}\n` +
+          `📧 ইমেইল: ${userEmail}\n` +
+          `📌 Issue Type: ${issueType}\n` +
+          `📝 Subject: ${subject}\n\n` +
+          `💬 Message:\n${bodyMessage}\n\n` +
+          `🆔 Message ID: <code>${messageId}</code>`;
       
-      inlineKeyboard = {
-        inline_keyboard: [
-          [
-            { text: '💬 Reply', callback_data: `reply_support:${data.messageId}` },
-            { text: '✅ Resolve', callback_data: `resolve_support:${data.messageId}` }
-          ],
-          [
-            { text: '🔒 Close', callback_data: `close_support:${data.messageId}` }
+        inlineKeyboard = {
+          inline_keyboard: [
+            [
+              { text: '💬 Reply', callback_data: `reply_support:${messageId}` },
+              { text: '✅ Resolve', callback_data: `resolve_support:${messageId}` }
+            ],
+            [
+              { text: '🔒 Close', callback_data: `close_support:${messageId}` }
+            ]
           ]
-        ]
-      };
+        };
+      }
       break;
       
     case 'contact_message':
@@ -182,7 +217,12 @@ async function handleCallback(callbackQuery: Record<string, unknown>) {
   
   console.log('Callback data:', callbackData);
   
-  const [action, id] = callbackData.split(':');
+  const [action, rawId] = callbackData.split(':');
+  const id = rawId?.trim();
+  if (!id || id === 'undefined' || id === 'null') {
+    await answerCallbackQuery(callbackQuery.id as string, '❌ Invalid request (missing ID).');
+    return;
+  }
   let responseText = '';
   let updatedMessage = '';
   
@@ -213,8 +253,8 @@ async function handleCallback(callbackQuery: Record<string, unknown>) {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               type: 'account_approved',
-              email: profile.email,
-              userName: profile.display_name
+              userEmail: profile.email,
+              userName: profile.display_name || 'User'
             })
           });
         }
@@ -244,8 +284,8 @@ async function handleCallback(callbackQuery: Record<string, unknown>) {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               type: 'account_rejected',
-              email: profile.email,
-              userName: profile.display_name
+              userEmail: profile.email,
+              userName: profile.display_name || 'User'
             })
           });
         }
@@ -275,8 +315,8 @@ async function handleCallback(callbackQuery: Record<string, unknown>) {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               type: 'publish_approved',
-              email: profile.email,
-              userName: profile.display_name,
+              userEmail: profile.email,
+              userName: profile.display_name || profile.username || 'User',
               username: profile.username
             })
           });
@@ -460,68 +500,65 @@ async function handleTextMessage(message: Record<string, unknown>) {
       .select('*, profiles!support_messages_user_id_fkey(email, display_name)')
       .eq('id', supportId)
       .single();
-    
-    if (fetchError) {
-      console.error('Error fetching support message:', fetchError);
-      
+
+    let supportRecord: Record<string, unknown> | null = supportMsg as unknown as Record<string, unknown> | null;
+    let profileEmail: string | null = (supportMsg?.profiles as Record<string, unknown> | undefined)?.email as string | null;
+    let profileName: string | null = (supportMsg?.profiles as Record<string, unknown> | undefined)?.display_name as string | null;
+
+    if (fetchError || !supportRecord) {
+      console.error('Error fetching support message (join):', fetchError);
+
       // Try without foreign key
       const { data: supportOnly, error: error2 } = await supabase
         .from('support_messages')
         .select('*')
         .eq('id', supportId)
         .single();
-      
-      if (error2) {
+
+      if (error2 || !supportOnly) {
         await sendTelegramMessage(
           (message.chat as Record<string, unknown>).id as string,
           `❌ Support message not found: ${supportId}`
         );
         return;
       }
-      
-      // Update the reply
-      await supabase
-        .from('support_messages')
-        .update({
-          admin_reply: text,
-          replied_at: new Date().toISOString(),
-          status: 'resolved',
-          updated_at: new Date().toISOString()
-        })
-        .eq('id', supportId);
-      
-      await sendTelegramMessage(
-        (message.chat as Record<string, unknown>).id as string,
-        `✅ <b>Reply Sent!</b>\n\nYour reply has been saved to the support ticket.`
-      );
-      return;
+
+      supportRecord = supportOnly as unknown as Record<string, unknown>;
+
+      // Fetch profile separately
+      const userId = supportOnly.user_id as string;
+      const { data: p } = await supabase
+        .from('profiles')
+        .select('email, display_name, username')
+        .eq('user_id', userId)
+        .maybeSingle();
+      profileEmail = (p?.email as string | null) ?? null;
+      profileName = ((p?.display_name as string | null) ?? (p?.username as string | null)) ?? null;
     }
-    
-    // Update the reply
+
+    // Update the reply (this will trigger realtime updates for the user inbox)
     await supabase
       .from('support_messages')
       .update({
         admin_reply: text,
         replied_at: new Date().toISOString(),
         status: 'resolved',
-        updated_at: new Date().toISOString()
+        updated_at: new Date().toISOString(),
       })
       .eq('id', supportId);
-    
-    // Send email to user
-    const userEmail = (supportMsg?.profiles as Record<string, unknown>)?.email;
-    const userName = (supportMsg?.profiles as Record<string, unknown>)?.display_name;
-    
-    if (userEmail) {
+
+    // Notify user (email) via send-notification using canonical fields
+    const subject = (supportRecord?.subject as string | undefined) ?? 'Support Reply';
+    if (profileEmail) {
       await fetch(`${SUPABASE_URL}/functions/v1/send-notification`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           type: 'support_reply',
-          email: userEmail,
-          userName: userName,
-          subject: supportMsg?.subject,
-          adminReply: text
+          userEmail: profileEmail,
+          userName: profileName || 'User',
+          subject,
+          message: text,
         })
       });
     }

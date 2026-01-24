@@ -214,6 +214,7 @@ export default function DashboardSupport() {
       await supabase.functions.invoke("send-notification", {
         body: {
           type: "support_message",
+          messageId: newMsg?.id,
           userId: user.id,
           userName: profile?.display_name || "User",
           userEmail: profile?.email || user.email,

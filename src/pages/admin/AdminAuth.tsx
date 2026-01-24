@@ -20,21 +20,23 @@ export default function AdminAuth() {
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [hasAttemptedLogin, setHasAttemptedLogin] = useState(false);
 
-  const { signIn, user } = useAuth();
+  const { signIn, user, loading: authLoading } = useAuth();
   const { isAdmin, loading: roleLoading } = useAdminRole();
   const navigate = useNavigate();
   const { toast } = useToast();
 
   useEffect(() => {
-    // Only check admin status after role loading is complete
-    if (roleLoading) return;
+    // Wait for both auth and role loading to complete
+    if (authLoading || roleLoading) return;
     
+    // If user is logged in and we've completed loading
     if (user) {
       if (isAdmin) {
         navigate("/admin", { replace: true });
-      } else {
-        // Only show error if we have a user and they're definitely not admin
+      } else if (hasAttemptedLogin) {
+        // Only show error if user explicitly tried to login from this page
         toast({
           variant: "destructive",
           title: "Access Denied",
@@ -43,7 +45,7 @@ export default function AdminAuth() {
         navigate("/", { replace: true });
       }
     }
-  }, [user, isAdmin, roleLoading, navigate, toast]);
+  }, [user, isAdmin, authLoading, roleLoading, hasAttemptedLogin, navigate, toast]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -62,10 +64,12 @@ export default function AdminAuth() {
     }
 
     setIsLoading(true);
+    setHasAttemptedLogin(true);
     const { error } = await signIn(email, password);
     setIsLoading(false);
 
     if (error) {
+      setHasAttemptedLogin(false);
       toast({
         variant: "destructive",
         title: "Login failed",
@@ -74,6 +78,7 @@ export default function AdminAuth() {
           : error.message,
       });
     }
+    // Don't navigate here - let the useEffect handle it after role check completes
   };
 
   return (

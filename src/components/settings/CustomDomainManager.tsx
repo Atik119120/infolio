@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -29,8 +29,16 @@ import {
   Copy,
   ExternalLink,
   Info,
-  RefreshCw
+  RefreshCw,
+  Search
 } from "lucide-react";
+
+// Popular domain extensions for suggestions
+const DOMAIN_EXTENSIONS = [
+  ".com", ".net", ".org", ".io", ".dev", ".app", ".co", ".xyz", 
+  ".tech", ".online", ".site", ".me", ".info", ".biz", ".in", ".bd"
+];
+
 import { z } from "zod";
 
 const domainSchema = z.string()
@@ -60,9 +68,42 @@ export default function CustomDomainManager() {
   const [verifying, setVerifying] = useState(false);
   const [error, setError] = useState("");
   const [copiedToken, setCopiedToken] = useState<string | null>(null);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [searchFilter, setSearchFilter] = useState("");
+  const inputRef = useRef<HTMLInputElement>(null);
+  const suggestionsRef = useRef<HTMLDivElement>(null);
 
   const { user } = useAuth();
   const { toast } = useToast();
+
+  // Generate domain suggestions based on input
+  const getDomainSuggestions = () => {
+    const input = newDomain.trim().toLowerCase();
+    if (!input || input.includes(".")) return [];
+    
+    return DOMAIN_EXTENSIONS
+      .filter(ext => searchFilter ? ext.includes(searchFilter.toLowerCase()) : true)
+      .map(ext => `${input}${ext}`);
+  };
+
+  const suggestions = getDomainSuggestions();
+
+  // Close suggestions when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        suggestionsRef.current && 
+        !suggestionsRef.current.contains(event.target as Node) &&
+        inputRef.current &&
+        !inputRef.current.contains(event.target as Node)
+      ) {
+        setShowSuggestions(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   useEffect(() => {
     if (user) {
@@ -257,29 +298,77 @@ export default function CustomDomainManager() {
         <form onSubmit={handleAddDomain} className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="new-domain">Add a Domain</Label>
-            <div className="flex gap-2">
-              <Input
-                id="new-domain"
-                type="text"
-                placeholder="yourdomain.com"
-                value={newDomain}
-                onChange={(e) => {
-                  setNewDomain(e.target.value);
-                  setError("");
-                }}
-                className={error ? "border-destructive" : ""}
-                disabled={adding}
-              />
-              <Button type="submit" disabled={adding || !newDomain.trim()}>
-                {adding ? (
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                ) : (
-                  <>
-                    <Plus className="w-4 h-4 mr-1" />
-                    Add
-                  </>
-                )}
-              </Button>
+            <div className="relative">
+              <div className="flex gap-2">
+                <div className="relative flex-1">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                  <Input
+                    ref={inputRef}
+                    id="new-domain"
+                    type="text"
+                    placeholder="Search or enter domain (e.g., mysite)"
+                    value={newDomain}
+                    onChange={(e) => {
+                      setNewDomain(e.target.value);
+                      setError("");
+                      setShowSuggestions(true);
+                    }}
+                    onFocus={() => setShowSuggestions(true)}
+                    className={`pl-9 ${error ? "border-destructive" : ""}`}
+                    disabled={adding}
+                  />
+                </div>
+                <Button type="submit" disabled={adding || !newDomain.trim()}>
+                  {adding ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <>
+                      <Plus className="w-4 h-4 mr-1" />
+                      Add
+                    </>
+                  )}
+                </Button>
+              </div>
+
+              {/* Domain Suggestions Dropdown */}
+              {showSuggestions && suggestions.length > 0 && (
+                <div 
+                  ref={suggestionsRef}
+                  className="absolute z-50 w-full mt-1 bg-popover border rounded-lg shadow-lg max-h-64 overflow-y-auto"
+                >
+                  <div className="p-2 border-b">
+                    <div className="relative">
+                      <Search className="absolute left-2 top-1/2 -translate-y-1/2 w-3 h-3 text-muted-foreground" />
+                      <Input
+                        type="text"
+                        placeholder="Filter extensions..."
+                        value={searchFilter}
+                        onChange={(e) => setSearchFilter(e.target.value)}
+                        className="h-8 pl-7 text-xs"
+                      />
+                    </div>
+                  </div>
+                  <div className="p-1">
+                    {suggestions.map((suggestion) => (
+                      <button
+                        key={suggestion}
+                        type="button"
+                        onClick={() => {
+                          setNewDomain(suggestion);
+                          setShowSuggestions(false);
+                          setSearchFilter("");
+                        }}
+                        className="w-full px-3 py-2 text-left text-sm rounded-md hover:bg-accent flex items-center gap-2 transition-colors"
+                      >
+                        <Badge variant="outline" className="text-xs font-mono">
+                          {suggestion.split(".").pop()}
+                        </Badge>
+                        <span className="font-mono">{suggestion}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
             {error && (
               <p className="text-sm text-destructive flex items-center gap-1">
@@ -287,6 +376,9 @@ export default function CustomDomainManager() {
                 {error}
               </p>
             )}
+            <p className="text-xs text-muted-foreground">
+              Type your domain name and select an extension, or enter the full domain directly
+            </p>
           </div>
         </form>
 

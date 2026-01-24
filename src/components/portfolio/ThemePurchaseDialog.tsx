@@ -98,27 +98,39 @@ export function ThemePurchaseDialog({
     setIsSubmitting(true);
 
     try {
-      // Insert purchase request
-      const { error: purchaseError } = await supabase
-        .from("theme_purchases")
-        .insert({
-          user_id: userId,
-          theme_id: themeId,
-          transaction_id: transactionId.trim(),
-          payment_method: paymentMethod,
-          amount: themePrice,
-          status: 'pending',
-        });
+      // Insert purchase request (return id so Telegram buttons work)
+      const [{ data: purchase, error: purchaseError }, { data: profile }] = await Promise.all([
+        supabase
+          .from("theme_purchases")
+          .insert({
+            user_id: userId,
+            theme_id: themeId,
+            transaction_id: transactionId.trim(),
+            payment_method: paymentMethod,
+            amount: themePrice,
+            status: "pending",
+          })
+          .select("id")
+          .single(),
+        supabase
+          .from("profiles")
+          .select("display_name, email, username")
+          .eq("user_id", userId)
+          .maybeSingle(),
+      ]);
 
-      if (purchaseError) {
-        throw purchaseError;
-      }
+      if (purchaseError) throw purchaseError;
 
       // Send notification to admin
       try {
         await supabase.functions.invoke('send-notification', {
           body: {
             type: 'theme_purchase',
+            purchaseId: purchase?.id,
+            userId,
+            userEmail: profile?.email,
+            userName: profile?.display_name || profile?.username,
+            username: profile?.username,
             themeId,
             themeName,
             transactionId: transactionId.trim(),

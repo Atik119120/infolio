@@ -16,8 +16,9 @@ import {
   Circle,
   Clock,
   Shield,
-  AlertCircle,
 } from "lucide-react";
+import RecentPurchasesWidget from "@/components/dashboard/RecentPurchasesWidget";
+import SupportMessageDialog from "@/components/dashboard/SupportMessageDialog";
 
 interface Portfolio {
   is_published: boolean;
@@ -323,6 +324,15 @@ export default function DashboardOverview() {
           )}
         </CardContent>
       </Card>
+
+      {/* Recent Purchases & Support Section */}
+      <div className="grid md:grid-cols-2 gap-4">
+        {/* Recent Purchases Widget */}
+        <RecentPurchasesWidget />
+
+        {/* Support Message */}
+        <SupportMessageDialog />
+      </div>
 
       {/* Quick Link - Compact */}
       {profile && (

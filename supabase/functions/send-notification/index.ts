@@ -11,18 +11,21 @@ const corsHeaders = {
 };
 
 interface NotificationRequest {
-  type: "welcome" | "publish_request" | "support" | "account_approved" | "account_rejected" | "publish_approved" | "theme_purchase";
+  type: "welcome" | "publish_request" | "support" | "account_approved" | "account_rejected" | "publish_approved" | "theme_purchase" | "support_message";
   userId?: string;
   userEmail?: string;
   userName?: string;
   message?: string;
   subject?: string;
+  username?: string;
   // Theme purchase fields
   themeId?: string;
   themeName?: string;
   transactionId?: string;
   paymentMethod?: string;
   amount?: number;
+  // Support message fields
+  issueType?: string;
 }
 
 const handler = async (req: Request): Promise<Response> => {
@@ -37,8 +40,8 @@ const handler = async (req: Request): Promise<Response> => {
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
     const { 
-      type, userId, userEmail, userName, message, subject,
-      themeId, themeName, transactionId, paymentMethod, amount 
+      type, userId, userEmail, userName, message, subject, username,
+      themeId, themeName, transactionId, paymentMethod, amount, issueType 
     }: NotificationRequest = await req.json();
 
     console.log(`Processing notification: ${type} for user: ${userEmail || userId}`);
@@ -329,6 +332,68 @@ const handler = async (req: Request): Promise<Response> => {
           </body>
           </html>
         `;
+        break;
+
+      case "support_message":
+        // Send support message to admin from user dashboard
+        emailTo = ADMIN_EMAIL;
+        emailSubject = `📩 Support: ${issueType} - ${subject}`;
+        emailHtml = `
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <style>
+              body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; }
+              .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+              .header { background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%); color: white; padding: 30px; border-radius: 10px 10px 0 0; text-align: center; }
+              .content { background: #f9fafb; padding: 30px; border-radius: 0 0 10px 10px; }
+              .info-box { background: white; padding: 20px; border-radius: 8px; border-left: 4px solid #3b82f6; margin: 20px 0; }
+              .message-box { background: #f0f9ff; padding: 20px; border-radius: 8px; margin: 20px 0; white-space: pre-wrap; }
+              .button { display: inline-block; background: #3b82f6; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; margin-top: 20px; }
+            </style>
+          </head>
+          <body>
+            <div class="container">
+              <div class="header">
+                <h1>📩 Support Message</h1>
+              </div>
+              <div class="content">
+                <div class="info-box">
+                  <h3>User Details:</h3>
+                  <p><strong>Name:</strong> ${userName}</p>
+                  <p><strong>Email:</strong> ${userEmail}</p>
+                  <p><strong>Username:</strong> ${username || 'N/A'}</p>
+                  <p><strong>Issue Type:</strong> ${issueType}</p>
+                  <p><strong>Subject:</strong> ${subject}</p>
+                </div>
+                <div class="message-box">
+                  <h3>Message:</h3>
+                  <p>${message}</p>
+                </div>
+                <a href="https://alphaportfolio.com/admin/users" class="button">View User in Admin Panel</a>
+              </div>
+            </div>
+          </body>
+          </html>
+        `;
+
+        // Send confirmation to user
+        if (userEmail) {
+          await resend.emails.send({
+            from: "Alpha Portfolio <onboarding@resend.dev>",
+            to: [userEmail],
+            subject: "✅ আপনার মেসেজ পাঠানো হয়েছে - Alpha Portfolio",
+            html: `
+              <h2>আপনার মেসেজ পেয়েছি! ✅</h2>
+              <p>হাই ${userName},</p>
+              <p>আপনার সাপোর্ট মেসেজ সফলভাবে পাঠানো হয়েছে। আমাদের টিম শীঘ্রই আপনার সাথে যোগাযোগ করবে।</p>
+              <p><strong>বিষয়:</strong> ${subject}</p>
+              <p><strong>সমস্যার ধরন:</strong> ${issueType}</p>
+              <blockquote style="background: #f5f5f5; padding: 15px; border-left: 4px solid #3b82f6;">${message}</blockquote>
+              <p>ধন্যবাদ,<br>Alpha Portfolio Team</p>
+            `,
+          });
+        }
         break;
 
       default:

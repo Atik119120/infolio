@@ -32,6 +32,7 @@ const demoData: ThemeProps = {
     website: "https://example.com",
     theme: null,
     logo_url: null,
+    favicon_url: null,
   },
   skills: [
     { id: "1", name: "Adobe Photoshop", category: "Design", proficiency: 95 },

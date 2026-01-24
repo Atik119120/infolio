@@ -37,6 +37,35 @@ export default function PublicPortfolio() {
   const [education, setEducation] = useState<ThemeEducation[]>([]);
   const [socialLinks, setSocialLinks] = useState<ThemeSocialLink[]>([]);
 
+  // Set favicon when portfolio loads
+  useEffect(() => {
+    if (portfolio?.favicon_url) {
+      const link = document.querySelector("link[rel~='icon']") as HTMLLinkElement | null;
+      if (link) {
+        link.href = portfolio.favicon_url;
+      } else {
+        const newLink = document.createElement('link');
+        newLink.rel = 'icon';
+        newLink.href = portfolio.favicon_url;
+        document.head.appendChild(newLink);
+      }
+    }
+    
+    // Set page title
+    if (profile?.display_name) {
+      document.title = `${profile.display_name} | Portfolio`;
+    }
+
+    // Cleanup - restore default favicon on unmount
+    return () => {
+      const link = document.querySelector("link[rel~='icon']") as HTMLLinkElement | null;
+      if (link) {
+        link.href = '/favicon.ico';
+      }
+      document.title = 'Alpha Portfolio';
+    };
+  }, [portfolio?.favicon_url, profile?.display_name]);
+
   useEffect(() => {
     if (username) {
       fetchPortfolio();

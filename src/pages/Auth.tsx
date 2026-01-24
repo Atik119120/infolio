@@ -11,6 +11,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Loader2, ArrowRight, Phone, Mail, User, Lock } from "lucide-react";
 import { z } from "zod";
 import alphaLogo from "@/assets/alpha-portfolio-logo.png";
+import { isDisposableEmail, isAllowedEmailDomain } from "@/lib/tempEmailValidator";
 
 const loginSchema = z.object({
   email: z.string().trim().email({ message: "Invalid email address" }),
@@ -24,7 +25,10 @@ const signupSchema = z.object({
     .regex(/^[a-zA-Z0-9_]+$/, { message: "Username can only contain letters, numbers, and underscores" }),
   email: z.string().trim()
     .email({ message: "Invalid email address" })
-    .refine((email) => email.endsWith("@gmail.com"), {
+    .refine((email) => !isDisposableEmail(email), {
+      message: "Temporary/disposable email addresses are not allowed",
+    })
+    .refine((email) => isAllowedEmailDomain(email), {
       message: "Only Gmail addresses are allowed (e.g., yourname@gmail.com)",
     }),
   password: z.string().min(6, { message: "Password must be at least 6 characters" }),

@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import RecentPurchasesWidget from "@/components/dashboard/RecentPurchasesWidget";
 import SupportMessageDialog from "@/components/dashboard/SupportMessageDialog";
+import UserSupportMessages from "@/components/dashboard/UserSupportMessages";
 
 interface Portfolio {
   is_published: boolean;
@@ -333,6 +334,9 @@ export default function DashboardOverview() {
         {/* Support Message */}
         <SupportMessageDialog />
       </div>
+
+      {/* User Support Messages */}
+      <UserSupportMessages />
 
       {/* Quick Link - Compact */}
       {profile && (

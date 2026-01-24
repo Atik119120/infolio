@@ -3,7 +3,7 @@ import { getSocialIcon, formatDate } from "./utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ThemeToggle } from "@/components/ThemeToggle";
+
 import {
   MapPin, Mail, Phone, ExternalLink, Award, Zap,
   Briefcase, GraduationCap, Menu, X, CheckCircle, ArrowRight, Shield, Star
@@ -67,9 +67,8 @@ export default function OfficialTheme({ profile, portfolio, skills, projects, ex
               {["Home", "About", "Services", "Portfolio", "Contact"].map((item, i) => (
                 <motion.button key={item} onClick={() => scrollTo(item.toLowerCase() === "home" ? "hero" : item.toLowerCase() === "services" ? "skills" : item.toLowerCase() === "about" ? "bio" : item.toLowerCase() === "portfolio" ? "works" : item.toLowerCase())} className="text-sm text-slate-600 hover:text-slate-900 transition-colors font-medium" initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1 }}>{item}</motion.button>
               ))}
-              <ThemeToggle />
             </div>
-            <div className="flex md:hidden items-center gap-2"><ThemeToggle /><button onClick={() => setMenuOpen(!menuOpen)} className="p-2 text-slate-600">{menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}</button></div>
+            <div className="flex md:hidden items-center gap-2"><button onClick={() => setMenuOpen(!menuOpen)} className="p-2 text-slate-600">{menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}</button></div>
           </div>
         </div>
         <AnimatePresence>{menuOpen && (<motion.div className="md:hidden bg-white border-t border-slate-100 px-6 py-4" initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }}>{["Home", "About", "Services", "Portfolio", "Contact"].map((item) => (<button key={item} onClick={() => scrollTo(item.toLowerCase() === "home" ? "hero" : item.toLowerCase() === "services" ? "skills" : item.toLowerCase() === "about" ? "bio" : item.toLowerCase() === "portfolio" ? "works" : item.toLowerCase())} className="block w-full text-left py-3 text-slate-600">{item}</button>))}</motion.div>)}</AnimatePresence>

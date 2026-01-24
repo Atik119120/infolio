@@ -6,7 +6,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { ThemeToggle } from "@/components/ThemeToggle";
+
 import { ThemeProps } from "./types";
 import { formatDate, getSocialIcon } from "./utils";
 
@@ -48,7 +48,7 @@ export default function SimpleTheme({
               <a href="#experience" className="hover:text-primary transition-colors">Experience</a>
               <a href="#contact" className="hover:text-primary transition-colors">Contact</a>
             </nav>
-            <ThemeToggle />
+            
           </div>
         </div>
       </header>

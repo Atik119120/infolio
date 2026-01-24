@@ -8,7 +8,7 @@ import {
 } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { getSocialIcon } from "./utils";
-import { ThemeToggle } from "@/components/ThemeToggle";
+
 
 // Cosmic color palette
 const cosmicColors = {

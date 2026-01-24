@@ -3,7 +3,7 @@ import { getSocialIcon, formatDate } from "./utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ThemeToggle } from "@/components/ThemeToggle";
+
 import {
   MapPin, Mail, Phone, ExternalLink, Github, Code2, Terminal, Braces,
   Briefcase, GraduationCap, Menu, X, Globe, ChevronRight, Folder, FileCode, Cpu
@@ -177,7 +177,6 @@ export default developer;`;
           </div>
 
           <div className="ml-auto flex items-center gap-3">
-            <ThemeToggle />
             <button onClick={() => setMenuOpen(!menuOpen)} className="p-2 md:hidden">
               {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>

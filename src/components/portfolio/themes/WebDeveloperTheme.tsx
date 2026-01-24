@@ -138,7 +138,11 @@ export default developer;`;
 
           {/* VS Code Icon & Title */}
           <div className="hidden sm:flex items-center gap-2 mr-6">
-            <Code2 className="w-4 h-4" style={{ color: vsColors.function }} />
+            {portfolio?.logo_url ? (
+              <img src={portfolio.logo_url} alt="Logo" className="h-5 w-auto object-contain" />
+            ) : (
+              <Code2 className="w-4 h-4" style={{ color: vsColors.function }} />
+            )}
             <span className="text-xs" style={{ color: vsColors.comment }}>
               {profile?.display_name?.toLowerCase().replace(/\s/g, '-') || "portfolio"} - Visual Studio Code
             </span>

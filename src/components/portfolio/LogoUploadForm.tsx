@@ -99,10 +99,10 @@ export function LogoUploadForm({ logoUrl, userId, onUpdate, onSuccess, onError }
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Image className="w-5 h-5" />
-          Footer Logo
+          Portfolio Logo
         </CardTitle>
         <CardDescription>
-          Upload a custom logo for your portfolio footer. Leave empty to use the default theme logo.
+          Upload a custom logo for your portfolio header and footer. This single logo will appear in both places.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">

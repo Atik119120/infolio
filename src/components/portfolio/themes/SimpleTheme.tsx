@@ -34,7 +34,11 @@ export default function SimpleTheme({
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Star className="w-5 h-5 text-primary" />
+              {portfolio?.logo_url ? (
+                <img src={portfolio.logo_url} alt="Logo" className="h-8 w-auto object-contain" />
+              ) : (
+                <Star className="w-5 h-5 text-primary" />
+              )}
               <span className="font-semibold">{displayName}</span>
             </div>
             <nav className="hidden md:flex items-center gap-6 text-sm">
@@ -308,6 +312,14 @@ export default function SimpleTheme({
       {/* Footer */}
       <footer className="py-8 px-6 border-t">
         <div className="container mx-auto text-center text-sm text-muted-foreground">
+          <div className="flex items-center justify-center gap-2 mb-2">
+            {portfolio?.logo_url ? (
+              <img src={portfolio.logo_url} alt="Logo" className="h-6 w-auto object-contain" />
+            ) : (
+              <Star className="w-4 h-4 text-primary" />
+            )}
+            <span className="font-medium">{displayName}</span>
+          </div>
           <p>© {new Date().getFullYear()} {displayName}. All rights reserved.</p>
           <p className="mt-2">
             Built with <a href="https://alphaportfolio.com" className="text-primary hover:underline">Alpha Portfolio</a>

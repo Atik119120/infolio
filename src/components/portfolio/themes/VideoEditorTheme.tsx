@@ -140,9 +140,13 @@ export default function VideoEditorTheme({ profile, portfolio, skills, projects,
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-14">
             <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-purple-600 via-pink-500 to-red-500 flex items-center justify-center shadow-lg shadow-purple-500/20">
-                <Clapperboard className="w-5 h-5 text-white" />
-              </div>
+              {portfolio?.logo_url ? (
+                <img src={portfolio.logo_url} alt="Logo" className="h-9 w-auto object-contain" />
+              ) : (
+                <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-purple-600 via-pink-500 to-red-500 flex items-center justify-center shadow-lg shadow-purple-500/20">
+                  <Clapperboard className="w-5 h-5 text-white" />
+                </div>
+              )}
               <span className="font-semibold text-sm hidden sm:block">{profile?.display_name || "Editor"}</span>
             </div>
 

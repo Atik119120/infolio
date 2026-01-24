@@ -120,9 +120,13 @@ export default function GraphicDesignerTheme({ profile, portfolio, skills, proje
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-14">
             <motion.div className="flex items-center gap-3" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#FF9A00] via-[#FF3366] to-[#A259FF] flex items-center justify-center">
-                <span className="font-black text-sm">Ds</span>
-              </div>
+              {portfolio?.logo_url ? (
+                <img src={portfolio.logo_url} alt="Logo" className="h-9 w-auto object-contain" />
+              ) : (
+                <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#FF9A00] via-[#FF3366] to-[#A259FF] flex items-center justify-center">
+                  <span className="font-black text-sm">Ds</span>
+                </div>
+              )}
               <span className="font-bold hidden sm:block">{profile?.display_name || "Designer"}</span>
             </motion.div>
             

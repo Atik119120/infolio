@@ -59,6 +59,13 @@ interface Domain {
   verified_at: string | null;
 }
 
+interface AvailabilityResult {
+  domain: string;
+  available: boolean;
+  info: string;
+  checking: boolean;
+}
+
 export default function CustomDomainManager() {
   const [domains, setDomains] = useState<Domain[]>([]);
   const [newDomain, setNewDomain] = useState("");
@@ -70,11 +77,46 @@ export default function CustomDomainManager() {
   const [copiedToken, setCopiedToken] = useState<string | null>(null);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [searchFilter, setSearchFilter] = useState("");
+  const [availabilityResults, setAvailabilityResults] = useState<Record<string, AvailabilityResult>>({});
   const inputRef = useRef<HTMLInputElement>(null);
   const suggestionsRef = useRef<HTMLDivElement>(null);
 
   const { user } = useAuth();
   const { toast } = useToast();
+
+  // Check domain availability
+  const checkAvailability = async (domain: string) => {
+    if (!domain || availabilityResults[domain]?.checking) return;
+
+    setAvailabilityResults(prev => ({
+      ...prev,
+      [domain]: { domain, available: false, info: 'Checking...', checking: true }
+    }));
+
+    try {
+      const { data, error } = await supabase.functions.invoke('check-domain-availability', {
+        body: { domain }
+      });
+
+      if (error) throw error;
+
+      setAvailabilityResults(prev => ({
+        ...prev,
+        [domain]: { 
+          domain, 
+          available: data.available, 
+          info: data.info || (data.available ? 'Available!' : 'Taken'),
+          checking: false 
+        }
+      }));
+    } catch (err) {
+      console.error('Availability check error:', err);
+      setAvailabilityResults(prev => ({
+        ...prev,
+        [domain]: { domain, available: false, info: 'Check failed', checking: false }
+      }));
+    }
+  };
 
   // Generate domain suggestions based on input
   const getDomainSuggestions = () => {
@@ -334,7 +376,7 @@ export default function CustomDomainManager() {
               {showSuggestions && suggestions.length > 0 && (
                 <div 
                   ref={suggestionsRef}
-                  className="absolute z-50 w-full mt-1 bg-popover border rounded-lg shadow-lg max-h-64 overflow-y-auto"
+                  className="absolute z-50 w-full mt-1 bg-popover border rounded-lg shadow-lg max-h-80 overflow-y-auto"
                 >
                   <div className="p-2 border-b">
                     <div className="relative">
@@ -349,23 +391,52 @@ export default function CustomDomainManager() {
                     </div>
                   </div>
                   <div className="p-1">
-                    {suggestions.map((suggestion) => (
-                      <button
-                        key={suggestion}
-                        type="button"
-                        onClick={() => {
-                          setNewDomain(suggestion);
-                          setShowSuggestions(false);
-                          setSearchFilter("");
-                        }}
-                        className="w-full px-3 py-2 text-left text-sm rounded-md hover:bg-accent flex items-center gap-2 transition-colors"
-                      >
-                        <Badge variant="outline" className="text-xs font-mono">
-                          {suggestion.split(".").pop()}
-                        </Badge>
-                        <span className="font-mono">{suggestion}</span>
-                      </button>
-                    ))}
+                    {suggestions.map((suggestion) => {
+                      const result = availabilityResults[suggestion];
+                      return (
+                        <button
+                          key={suggestion}
+                          type="button"
+                          onClick={() => {
+                            setNewDomain(suggestion);
+                            setShowSuggestions(false);
+                            setSearchFilter("");
+                          }}
+                          onMouseEnter={() => checkAvailability(suggestion)}
+                          className="w-full px-3 py-2 text-left text-sm rounded-md hover:bg-accent flex items-center justify-between gap-2 transition-colors"
+                        >
+                          <div className="flex items-center gap-2">
+                            <Badge variant="outline" className="text-xs font-mono">
+                              {suggestion.split(".").pop()}
+                            </Badge>
+                            <span className="font-mono">{suggestion}</span>
+                          </div>
+                          {/* Availability Status */}
+                          <div className="flex items-center gap-1 text-xs">
+                            {result?.checking ? (
+                              <span className="flex items-center gap-1 text-muted-foreground">
+                                <Loader2 className="w-3 h-3 animate-spin" />
+                                Checking...
+                              </span>
+                            ) : result ? (
+                              result.available ? (
+                                <span className="flex items-center gap-1 text-green-600">
+                                  <CheckCircle2 className="w-3 h-3" />
+                                  Available
+                                </span>
+                              ) : (
+                                <span className="flex items-center gap-1 text-destructive">
+                                  <AlertCircle className="w-3 h-3" />
+                                  Taken
+                                </span>
+                              )
+                            ) : (
+                              <span className="text-muted-foreground">Hover to check</span>
+                            )}
+                          </div>
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
               )}

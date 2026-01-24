@@ -17,3 +17,6 @@ verify_jwt = false
 
 [functions.otp-verification]
 verify_jwt = false
+
+[functions.check-domain-availability]
+verify_jwt = false

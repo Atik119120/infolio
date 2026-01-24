@@ -26,6 +26,7 @@ import AdminOverview from "./pages/admin/AdminOverview";
 import AdminUsers from "./pages/admin/AdminUsers";
 import AdminThemes from "./pages/admin/AdminThemes";
 import AdminSettings from "./pages/admin/AdminSettings";
+import AdminSupport from "./pages/admin/AdminSupport";
 
 const queryClient = new QueryClient();
 
@@ -70,6 +71,7 @@ const App = () => (
                   <Route index element={<AdminOverview />} />
                   <Route path="users" element={<AdminUsers />} />
                   <Route path="themes" element={<AdminThemes />} />
+                  <Route path="support" element={<AdminSupport />} />
                   <Route path="settings" element={<AdminSettings />} />
                 </Route>
                 <Route path="*" element={<NotFound />} />

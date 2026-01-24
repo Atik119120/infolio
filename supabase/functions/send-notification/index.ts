@@ -4,14 +4,32 @@ import { Resend } from "https://esm.sh/resend@2.0.0";
 
 const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
 const ADMIN_EMAIL = "atik.magicbox@gmail.com";
+const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
+// Send notification to Telegram
+async function sendToTelegram(type: string, data: Record<string, unknown>) {
+  try {
+    const response = await fetch(`${SUPABASE_URL}/functions/v1/telegram-bot`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ type, data })
+    });
+    const result = await response.json();
+    console.log('Telegram notification sent:', result);
+    return result;
+  } catch (error) {
+    console.error('Failed to send Telegram notification:', error);
+    return null;
+  }
+}
+
 interface NotificationRequest {
-  type: "welcome" | "publish_request" | "support" | "account_approved" | "account_rejected" | "publish_approved" | "theme_purchase" | "support_message";
+  type: "welcome" | "publish_request" | "support" | "account_approved" | "account_rejected" | "publish_approved" | "theme_purchase" | "support_message" | "support_reply";
   userId?: string;
   userEmail?: string;
   userName?: string;
@@ -396,10 +414,47 @@ const handler = async (req: Request): Promise<Response> => {
         }
         break;
 
+      case "support_reply":
+        // Send admin reply to user
+        emailTo = userEmail!;
+        emailSubject = `💬 Reply: ${subject} - Alpha Portfolio`;
+        emailHtml = `
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <style>
+              body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; }
+              .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+              .header { background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; padding: 30px; border-radius: 10px 10px 0 0; text-align: center; }
+              .content { background: #f9fafb; padding: 30px; border-radius: 0 0 10px 10px; }
+              .reply-box { background: #ecfdf5; padding: 20px; border-radius: 8px; border-left: 4px solid #10b981; margin: 20px 0; }
+            </style>
+          </head>
+          <body>
+            <div class="container">
+              <div class="header">
+                <h1>💬 Admin Reply</h1>
+              </div>
+              <div class="content">
+                <h2>Hi ${userName}!</h2>
+                <p>Admin has replied to your support message:</p>
+                <div class="reply-box">
+                  <p>${message}</p>
+                </div>
+                <p>If you have any more questions, feel free to send another message.</p>
+                <p>Best regards,<br>Alpha Portfolio Team</p>
+              </div>
+            </div>
+          </body>
+          </html>
+        `;
+        break;
+
       default:
         throw new Error("Invalid notification type");
     }
 
+    // Send email
     const emailResponse = await resend.emails.send({
       from: "Alpha Portfolio <onboarding@resend.dev>",
       to: [emailTo],
@@ -408,6 +463,15 @@ const handler = async (req: Request): Promise<Response> => {
     });
 
     console.log("Email sent successfully:", emailResponse);
+
+    // Also send to Telegram for important notifications
+    const telegramTypes = ['new_user', 'publish_request', 'theme_purchase', 'support_message'];
+    if (type && telegramTypes.includes(type)) {
+      await sendToTelegram(type, {
+        userId, userEmail, userName, message, subject, username,
+        themeId, themeName, transactionId, paymentMethod, amount, issueType
+      });
+    }
 
     return new Response(JSON.stringify({ success: true, emailResponse }), {
       status: 200,

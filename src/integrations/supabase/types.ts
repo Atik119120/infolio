@@ -413,6 +413,51 @@ export type Database = {
         }
         Relationships: []
       }
+      theme_purchases: {
+        Row: {
+          amount: number
+          approved_at: string | null
+          approved_by: string | null
+          created_at: string
+          id: string
+          payment_method: string
+          rejected_reason: string | null
+          status: string
+          theme_id: string
+          transaction_id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          amount?: number
+          approved_at?: string | null
+          approved_by?: string | null
+          created_at?: string
+          id?: string
+          payment_method: string
+          rejected_reason?: string | null
+          status?: string
+          theme_id: string
+          transaction_id: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          approved_at?: string | null
+          approved_by?: string | null
+          created_at?: string
+          id?: string
+          payment_method?: string
+          rejected_reason?: string | null
+          status?: string
+          theme_id?: string
+          transaction_id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string

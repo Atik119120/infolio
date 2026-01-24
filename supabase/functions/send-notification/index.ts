@@ -11,12 +11,18 @@ const corsHeaders = {
 };
 
 interface NotificationRequest {
-  type: "welcome" | "publish_request" | "support" | "account_approved" | "account_rejected" | "publish_approved";
+  type: "welcome" | "publish_request" | "support" | "account_approved" | "account_rejected" | "publish_approved" | "theme_purchase";
   userId?: string;
   userEmail?: string;
   userName?: string;
   message?: string;
   subject?: string;
+  // Theme purchase fields
+  themeId?: string;
+  themeName?: string;
+  transactionId?: string;
+  paymentMethod?: string;
+  amount?: number;
 }
 
 const handler = async (req: Request): Promise<Response> => {
@@ -30,7 +36,10 @@ const handler = async (req: Request): Promise<Response> => {
     const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    const { type, userId, userEmail, userName, message, subject }: NotificationRequest = await req.json();
+    const { 
+      type, userId, userEmail, userName, message, subject,
+      themeId, themeName, transactionId, paymentMethod, amount 
+    }: NotificationRequest = await req.json();
 
     console.log(`Processing notification: ${type} for user: ${userEmail || userId}`);
 
@@ -280,6 +289,45 @@ const handler = async (req: Request): Promise<Response> => {
           <p>Hi ${userName},</p>
           <p>Unfortunately, your account approval request was not approved at this time.</p>
           <p>${message || 'Please contact support for more information.'}</p>
+        `;
+        break;
+
+      case "theme_purchase":
+        // Send to admin when user purchases a theme
+        emailTo = ADMIN_EMAIL;
+        emailSubject = `💰 New Theme Purchase: ${themeName}`;
+        emailHtml = `
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <style>
+              body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; }
+              .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+              .header { background: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%); color: white; padding: 30px; border-radius: 10px 10px 0 0; text-align: center; }
+              .content { background: #f9fafb; padding: 30px; border-radius: 0 0 10px 10px; }
+              .info-box { background: white; padding: 20px; border-radius: 8px; border-left: 4px solid #f59e0b; margin: 20px 0; }
+              .button { display: inline-block; background: #f59e0b; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; margin-top: 20px; }
+            </style>
+          </head>
+          <body>
+            <div class="container">
+              <div class="header">
+                <h1>💰 New Theme Purchase</h1>
+              </div>
+              <div class="content">
+                <div class="info-box">
+                  <h3>Purchase Details:</h3>
+                  <p><strong>Theme:</strong> ${themeName}</p>
+                  <p><strong>Amount:</strong> ৳${amount}</p>
+                  <p><strong>Payment Method:</strong> ${paymentMethod?.toUpperCase()}</p>
+                  <p><strong>Transaction ID:</strong> ${transactionId}</p>
+                </div>
+                <p>Please verify the payment and approve/reject the purchase request in the admin panel.</p>
+                <a href="https://alphaportfolio.com/admin/themes" class="button">Review in Admin Panel</a>
+              </div>
+            </div>
+          </body>
+          </html>
         `;
         break;
 

@@ -15,6 +15,7 @@ import DashboardOverview from "./pages/DashboardOverview";
 import PortfolioEdit from "./pages/PortfolioEdit";
 import DashboardSettings from "./pages/DashboardSettings";
 import DashboardPurchases from "./pages/DashboardPurchases";
+import DashboardSupport from "./pages/DashboardSupport";
 import PublicPortfolio from "./pages/PublicPortfolio";
 import ThemeDemo from "./pages/ThemeDemo";
 import ThemeCollection from "./pages/ThemeCollection";
@@ -59,6 +60,7 @@ const App = () => (
                 }>
                   <Route index element={<DashboardOverview />} />
                   <Route path="edit" element={<PortfolioEdit />} />
+                  <Route path="support" element={<DashboardSupport />} />
                   <Route path="purchases" element={<DashboardPurchases />} />
                   <Route path="settings" element={<DashboardSettings />} />
                 </Route>

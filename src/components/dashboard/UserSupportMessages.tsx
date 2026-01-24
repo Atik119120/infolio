@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
@@ -11,14 +11,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
 import { format } from "date-fns";
 import {
   MessageSquare,
@@ -28,14 +20,15 @@ import {
   AlertCircle,
   RefreshCw,
   MessageCircle,
-  Send,
   ChevronRight,
-  User,
   Headphones,
   ArrowLeft,
+  Bell,
+  Volume2,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 
 interface SupportMessage {
   id: string;
@@ -59,11 +52,84 @@ export default function UserSupportMessages() {
   const [messages, setMessages] = useState<SupportMessage[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedChat, setSelectedChat] = useState<SupportMessage | null>(null);
+  const [newReplyIds, setNewReplyIds] = useState<Set<string>>(new Set());
   const { user } = useAuth();
+  const previousMessagesRef = useRef<Map<string, SupportMessage>>(new Map());
 
   useEffect(() => {
     if (user) {
       fetchMessages();
+      
+      // Set up realtime subscription
+      const channel = supabase
+        .channel('support-messages-changes')
+        .on(
+          'postgres_changes',
+          {
+            event: 'UPDATE',
+            schema: 'public',
+            table: 'support_messages',
+            filter: `user_id=eq.${user.id}`
+          },
+          (payload) => {
+            console.log('Realtime update received:', payload);
+            const updatedMessage = payload.new as SupportMessage;
+            const oldMessage = previousMessagesRef.current.get(updatedMessage.id);
+            
+            // Check if this is a new reply
+            if (updatedMessage.admin_reply && (!oldMessage || !oldMessage.admin_reply)) {
+              // Show notification
+              toast.success(
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center flex-shrink-0">
+                    <Headphones className="w-5 h-5 text-white" />
+                  </div>
+                  <div>
+                    <p className="font-semibold">New Reply from Admin!</p>
+                    <p className="text-sm opacity-80 truncate max-w-[200px]">{updatedMessage.subject}</p>
+                  </div>
+                </div>,
+                {
+                  duration: 8000,
+                  action: {
+                    label: "View",
+                    onClick: () => setSelectedChat(updatedMessage)
+                  }
+                }
+              );
+              
+              // Mark as new reply
+              setNewReplyIds(prev => new Set([...prev, updatedMessage.id]));
+              
+              // Play notification sound (optional)
+              try {
+                const audio = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdH2Onp+ZjYF3cXN8iZWdoJyVi4F4cXR+i5aho5yTiX95c3Z/jJihn5qRh355dHd/jJeeoJqRh394c3Z+i5WcnZiPhn52c3V9ipOZmpaOhH10c3R8iJGWlZKLgnt1c3N6hY6Tk5CLgHp0c3J5hIyQkI2IfXdzcnV4goqNjYuGfHZzc3R2gIiKiomEent2dHNzdoGGiIiGgnt5dnNyc3eAhYaFgn15dnRyc3R4foOEg4B7eHV0cnJ0d3yBgoGAe3h2dHJyc3V5fX9/fnx5d3VzcnN0dnh7fX18enh2dHNyc3R2eHp7e3p5d3Z0c3Jyc3R2eHl5eXl4d3Z0c3JycnN1dnd4eHh3dnV0c3JycnN0dXZ3d3d3dnVzc3NycnJzdHV1dnZ2dnV0c3JycnJyc3R0dXV1dXV0c3JycnJyc3N0dHR0dHRzc3JycnJyc3NzdHR0dHNzc3JycnFxcnJyc3NzdHNzc3Jyc');
+                audio.volume = 0.3;
+                audio.play().catch(() => {});
+              } catch (e) {}
+            }
+            
+            // Update messages list
+            setMessages(prev => 
+              prev.map(msg => 
+                msg.id === updatedMessage.id ? updatedMessage : msg
+              )
+            );
+            
+            // Update selected chat if viewing the updated message
+            if (selectedChat?.id === updatedMessage.id) {
+              setSelectedChat(updatedMessage);
+            }
+            
+            // Update previous messages ref
+            previousMessagesRef.current.set(updatedMessage.id, updatedMessage);
+          }
+        )
+        .subscribe();
+
+      return () => {
+        supabase.removeChannel(channel);
+      };
     }
   }, [user]);
 
@@ -80,6 +146,11 @@ export default function UserSupportMessages() {
 
       if (error) throw error;
       setMessages(data || []);
+      
+      // Store messages for comparison
+      (data || []).forEach(msg => {
+        previousMessagesRef.current.set(msg.id, msg);
+      });
     } catch (error) {
       console.error("Error fetching messages:", error);
     } finally {
@@ -213,19 +284,34 @@ export default function UserSupportMessages() {
   );
 
   // Chat List Item
-  const ChatListItem = ({ msg, onClick }: { msg: SupportMessage; onClick: () => void }) => (
-    <motion.div
-      initial={{ opacity: 0, x: -10 }}
-      animate={{ opacity: 1, x: 0 }}
-      whileHover={{ scale: 1.01 }}
-      whileTap={{ scale: 0.99 }}
-      onClick={onClick}
-      className={cn(
-        "flex items-center gap-3 p-3 rounded-xl cursor-pointer transition-all",
-        "hover:bg-muted/50 border border-transparent hover:border-border/50",
-        msg.admin_reply && !msg.admin_reply ? "bg-primary/5" : ""
-      )}
-    >
+  const ChatListItem = ({ msg, onClick }: { msg: SupportMessage; onClick: () => void }) => {
+    const isNewReply = newReplyIds.has(msg.id);
+    
+    const handleClick = () => {
+      // Clear new reply indicator when viewed
+      if (isNewReply) {
+        setNewReplyIds(prev => {
+          const next = new Set(prev);
+          next.delete(msg.id);
+          return next;
+        });
+      }
+      onClick();
+    };
+    
+    return (
+      <motion.div
+        initial={{ opacity: 0, x: -10 }}
+        animate={{ opacity: 1, x: 0 }}
+        whileHover={{ scale: 1.01 }}
+        whileTap={{ scale: 0.99 }}
+        onClick={handleClick}
+        className={cn(
+          "flex items-center gap-3 p-3 rounded-xl cursor-pointer transition-all relative",
+          "hover:bg-muted/50 border border-transparent hover:border-border/50",
+          isNewReply && "bg-green-500/10 border-green-500/30 animate-pulse"
+        )}
+      >
       {/* Avatar */}
       <div className={cn(
         "w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0",
@@ -256,10 +342,16 @@ export default function UserSupportMessages() {
         </div>
       </div>
 
+      {/* New Reply Indicator */}
+      {isNewReply && (
+        <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full animate-ping" />
+      )}
+
       {/* Arrow */}
       <ChevronRight className="w-4 h-4 text-muted-foreground flex-shrink-0" />
     </motion.div>
   );
+  };
 
   return (
     <Card className="border-border/50 bg-card/50 backdrop-blur overflow-hidden">

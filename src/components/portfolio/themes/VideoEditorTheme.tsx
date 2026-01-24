@@ -3,7 +3,7 @@ import { getSocialIcon, formatDate } from "./utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ThemeToggle } from "@/components/ThemeToggle";
+
 import {
   MapPin, Mail, Phone, ExternalLink, Film, Play, Pause, SkipForward,
   Briefcase, GraduationCap, Menu, X, Video, Volume2, Maximize, Clapperboard, Sparkles
@@ -163,11 +163,9 @@ export default function VideoEditorTheme({ profile, portfolio, skills, projects,
                   {item}
                 </motion.button>
               ))}
-              <ThemeToggle />
             </div>
 
             <div className="flex md:hidden items-center gap-2">
-              <ThemeToggle />
               <button onClick={() => setMenuOpen(!menuOpen)} className="p-2">
                 {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
               </button>

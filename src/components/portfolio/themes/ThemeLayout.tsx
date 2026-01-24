@@ -1,6 +1,6 @@
 import { useState, useEffect, ReactNode } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ThemeToggle } from "@/components/ThemeToggle";
+
 import { Menu, X, ChevronUp } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -111,9 +111,8 @@ export function ThemeLayout({
               ))}
             </div>
 
-            {/* Right Side */}
+            {/* Right Side - Mobile Menu Button */}
             <div className="flex items-center gap-4">
-              <ThemeToggle />
               <button
                 onClick={() => setMenuOpen(!menuOpen)}
                 className="md:hidden p-2 rounded-lg hover:bg-muted transition-colors"

@@ -3,7 +3,7 @@ import { getSocialIcon, formatDate } from "./utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ThemeToggle } from "@/components/ThemeToggle";
+
 import {
   MapPin, Mail, Phone, ExternalLink, TrendingUp, Target, BarChart3,
   Briefcase, GraduationCap, Menu, X, Megaphone, Rocket, ArrowRight, LineChart, PieChart
@@ -98,11 +98,9 @@ export default function DigitalMarketerTheme({ profile, portfolio, skills, proje
                   <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-500 to-purple-600 group-hover:w-full transition-all" />
                 </motion.button>
               ))}
-              <ThemeToggle />
             </div>
 
             <div className="flex md:hidden items-center gap-2">
-              <ThemeToggle />
               <button onClick={() => setMenuOpen(!menuOpen)} className="p-2">
                 {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
               </button>

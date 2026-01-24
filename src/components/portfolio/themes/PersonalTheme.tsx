@@ -3,7 +3,7 @@ import { getSocialIcon, formatDate } from "./utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ThemeToggle } from "@/components/ThemeToggle";
+
 import { ContactForm } from "@/components/portfolio/ContactForm";
 import {
   MapPin, Mail, Phone, ExternalLink, Heart, Sparkles, BookOpen,
@@ -128,11 +128,9 @@ export default function PersonalTheme({ profile, portfolio, skills, projects, ex
                   {item}
                 </motion.button>
               ))}
-              <ThemeToggle />
             </div>
 
             <div className="flex md:hidden items-center gap-2">
-              <ThemeToggle />
               <button onClick={() => setMenuOpen(!menuOpen)} className="p-2 text-slate-600 dark:text-slate-300">
                 {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
               </button>

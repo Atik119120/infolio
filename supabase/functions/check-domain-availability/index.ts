@@ -28,7 +28,7 @@ async function checkDNS(domain: string): Promise<boolean> {
 }
 
 // Check domain via RDAP (Registration Data Access Protocol)
-async function checkRDAP(domain: string): Promise<{ registered: boolean; info?: string }> {
+async function checkRDAP(domain: string): Promise<{ registered: boolean; info?: string; expiryDate?: string }> {
   const tld = domain.split('.').pop()?.toLowerCase();
   
   // RDAP bootstrap URLs for common TLDs
@@ -65,10 +65,30 @@ async function checkRDAP(domain: string): Promise<{ registered: boolean; info?: 
 
     if (response.status === 200) {
       const data = await response.json();
+      
+      // Extract registrar info
       const registrar = data.entities?.find((e: any) => e.roles?.includes('registrar'))?.vcardArray?.[1]?.find((v: any) => v[0] === 'fn')?.[3];
+      
+      // Extract expiry date from events array
+      let expiryDate: string | undefined;
+      const expirationEvent = data.events?.find((e: any) => e.eventAction === 'expiration');
+      if (expirationEvent?.eventDate) {
+        try {
+          const date = new Date(expirationEvent.eventDate);
+          expiryDate = date.toLocaleDateString('en-US', { 
+            year: 'numeric', 
+            month: 'short', 
+            day: 'numeric' 
+          });
+        } catch {
+          // Ignore date parsing errors
+        }
+      }
+      
       return { 
         registered: true, 
-        info: registrar ? `Registered via ${registrar}` : 'Domain is registered' 
+        info: registrar ? `Registered via ${registrar}` : 'Domain is registered',
+        expiryDate
       };
     } else if (response.status === 404) {
       return { registered: false, info: 'Domain is available!' };
@@ -130,6 +150,7 @@ serve(async (req) => {
         domain: cleanDomain,
         available: !result.registered,
         info: result.info,
+        expiryDate: result.expiryDate,
       }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );

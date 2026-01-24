@@ -219,6 +219,7 @@ export type Database = {
         Row: {
           bio: string | null
           created_at: string
+          favicon_url: string | null
           headline: string | null
           id: string
           is_published: boolean | null
@@ -235,6 +236,7 @@ export type Database = {
         Insert: {
           bio?: string | null
           created_at?: string
+          favicon_url?: string | null
           headline?: string | null
           id?: string
           is_published?: boolean | null
@@ -251,6 +253,7 @@ export type Database = {
         Update: {
           bio?: string | null
           created_at?: string
+          favicon_url?: string | null
           headline?: string | null
           id?: string
           is_published?: boolean | null

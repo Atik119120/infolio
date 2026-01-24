@@ -94,6 +94,7 @@ interface AvailabilityResult {
   available: boolean;
   info: string;
   checking: boolean;
+  expiryDate?: string;
 }
 
 export default function CustomDomainManager() {
@@ -136,7 +137,8 @@ export default function CustomDomainManager() {
           domain, 
           available: data.available, 
           info: data.info || (data.available ? 'Available!' : 'Taken'),
-          checking: false 
+          checking: false,
+          expiryDate: data.expiryDate
         }
       }));
     } catch (err) {
@@ -458,10 +460,17 @@ export default function CustomDomainManager() {
                                     Available
                                   </span>
                                 ) : (
-                                  <span className="flex items-center gap-1 text-destructive">
-                                    <AlertCircle className="w-3 h-3" />
-                                    Taken
-                                  </span>
+                                  <div className="flex flex-col items-end">
+                                    <span className="flex items-center gap-1 text-destructive">
+                                      <AlertCircle className="w-3 h-3" />
+                                      Taken
+                                    </span>
+                                    {result.expiryDate && (
+                                      <span className="text-[10px] text-muted-foreground">
+                                        Expires: {result.expiryDate}
+                                      </span>
+                                    )}
+                                  </div>
                                 )
                               ) : (
                                 <span className="text-muted-foreground text-xs">Hover to check</span>

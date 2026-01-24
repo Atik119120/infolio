@@ -39,6 +39,11 @@ export default function SubdomainRouter({ children, mainDomain }: SubdomainRoute
   const [isChecking, setIsChecking] = useState(true);
 
   useEffect(() => {
+    // SUBDOMAIN ROUTING DISABLED FOR NOW
+    // Users access portfolios via /u/username instead
+    // To re-enable subdomain routing in the future, uncomment the code below
+    
+    /*
     const hostname = window.location.hostname;
     
     // Skip subdomain detection for localhost and preview URLs
@@ -65,6 +70,7 @@ export default function SubdomainRouter({ children, mainDomain }: SubdomainRoute
         setSubdomain(prefix);
       }
     }
+    */
     
     setIsChecking(false);
   }, [mainDomain]);

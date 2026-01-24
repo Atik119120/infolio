@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Card,
   CardContent,
@@ -11,11 +12,13 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import { format } from "date-fns";
 import {
   MessageSquare,
@@ -27,8 +30,12 @@ import {
   MessageCircle,
   Send,
   ChevronRight,
+  User,
+  Headphones,
+  ArrowLeft,
 } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
+import { cn } from "@/lib/utils";
 
 interface SupportMessage {
   id: string;
@@ -42,15 +49,16 @@ interface SupportMessage {
 }
 
 const STATUS_CONFIG = {
-  open: { label: "Pending", color: "bg-yellow-500", icon: AlertCircle, textColor: "text-yellow-500" },
-  in_progress: { label: "In Progress", color: "bg-blue-500", icon: Clock, textColor: "text-blue-500" },
-  resolved: { label: "Resolved", color: "bg-green-500", icon: CheckCircle, textColor: "text-green-500" },
-  closed: { label: "Closed", color: "bg-slate-500", icon: XCircle, textColor: "text-slate-500" },
+  open: { label: "Pending", color: "bg-yellow-500", icon: AlertCircle },
+  in_progress: { label: "In Progress", color: "bg-blue-500", icon: Clock },
+  resolved: { label: "Resolved", color: "bg-green-500", icon: CheckCircle },
+  closed: { label: "Closed", color: "bg-slate-500", icon: XCircle },
 };
 
 export default function UserSupportMessages() {
   const [messages, setMessages] = useState<SupportMessage[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedChat, setSelectedChat] = useState<SupportMessage | null>(null);
   const { user } = useAuth();
 
   useEffect(() => {
@@ -83,15 +91,14 @@ export default function UserSupportMessages() {
     const config = STATUS_CONFIG[status as keyof typeof STATUS_CONFIG] || STATUS_CONFIG.open;
     const Icon = config.icon;
     return (
-      <Badge className={`${config.color} text-white text-xs`}>
-        <Icon className="w-3 h-3 mr-1" />
+      <Badge className={`${config.color} text-white text-[10px] px-1.5 py-0`}>
+        <Icon className="w-2.5 h-2.5 mr-0.5" />
         {config.label}
       </Badge>
     );
   };
 
   const unrepliedCount = messages.filter(m => !m.admin_reply && m.status !== 'closed').length;
-  const repliedCount = messages.filter(m => m.admin_reply).length;
 
   if (loading) {
     return (
@@ -103,17 +110,175 @@ export default function UserSupportMessages() {
     );
   }
 
+  // Chat View Component
+  const ChatView = ({ chat, onBack }: { chat: SupportMessage; onBack: () => void }) => (
+    <div className="flex flex-col h-full">
+      {/* Chat Header */}
+      <div className="flex items-center gap-3 p-3 border-b border-border/50 bg-muted/30">
+        <Button variant="ghost" size="icon" className="h-8 w-8" onClick={onBack}>
+          <ArrowLeft className="w-4 h-4" />
+        </Button>
+        <div className="flex-1 min-w-0">
+          <p className="font-medium text-sm truncate">{chat.subject}</p>
+          <div className="flex items-center gap-2">
+            <Badge variant="outline" className="text-[10px] h-4">{chat.issue_type}</Badge>
+            {getStatusBadge(chat.status)}
+          </div>
+        </div>
+      </div>
+
+      {/* Chat Messages */}
+      <ScrollArea className="flex-1 p-4">
+        <div className="space-y-4">
+          {/* User's Message */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="flex justify-end"
+          >
+            <div className="max-w-[85%]">
+              <div className="bg-primary text-primary-foreground rounded-2xl rounded-tr-sm px-4 py-2.5 shadow-sm">
+                <p className="text-sm whitespace-pre-wrap">{chat.message}</p>
+              </div>
+              <div className="flex items-center justify-end gap-1 mt-1">
+                <span className="text-[10px] text-muted-foreground">
+                  {format(new Date(chat.created_at), "MMM dd, h:mm a")}
+                </span>
+                <CheckCircle className="w-3 h-3 text-primary" />
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Admin Reply or Waiting */}
+          {chat.admin_reply ? (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+              className="flex justify-start"
+            >
+              <div className="max-w-[85%]">
+                <div className="flex items-end gap-2">
+                  <div className="w-7 h-7 rounded-full bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center flex-shrink-0">
+                    <Headphones className="w-3.5 h-3.5 text-white" />
+                  </div>
+                  <div className="bg-muted rounded-2xl rounded-tl-sm px-4 py-2.5 shadow-sm">
+                    <p className="text-sm whitespace-pre-wrap">{chat.admin_reply}</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-1 mt-1 ml-9">
+                  <span className="text-[10px] text-muted-foreground">
+                    Admin • {chat.replied_at ? format(new Date(chat.replied_at), "MMM dd, h:mm a") : ""}
+                  </span>
+                </div>
+              </div>
+            </motion.div>
+          ) : (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="flex justify-center py-4"
+            >
+              <div className="flex items-center gap-2 text-muted-foreground bg-muted/50 px-4 py-2 rounded-full">
+                <Clock className="w-4 h-4 text-yellow-500 animate-pulse" />
+                <span className="text-xs">Waiting for admin reply...</span>
+              </div>
+            </motion.div>
+          )}
+        </div>
+      </ScrollArea>
+
+      {/* Status Footer */}
+      <div className="p-3 border-t border-border/50 bg-muted/20">
+        <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground">
+          {chat.status === 'resolved' ? (
+            <>
+              <CheckCircle className="w-4 h-4 text-green-500" />
+              <span>This conversation has been resolved</span>
+            </>
+          ) : chat.status === 'closed' ? (
+            <>
+              <XCircle className="w-4 h-4 text-slate-500" />
+              <span>This conversation is closed</span>
+            </>
+          ) : (
+            <>
+              <MessageCircle className="w-4 h-4 text-primary" />
+              <span>Send a new message to continue the conversation</span>
+            </>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+
+  // Chat List Item
+  const ChatListItem = ({ msg, onClick }: { msg: SupportMessage; onClick: () => void }) => (
+    <motion.div
+      initial={{ opacity: 0, x: -10 }}
+      animate={{ opacity: 1, x: 0 }}
+      whileHover={{ scale: 1.01 }}
+      whileTap={{ scale: 0.99 }}
+      onClick={onClick}
+      className={cn(
+        "flex items-center gap-3 p-3 rounded-xl cursor-pointer transition-all",
+        "hover:bg-muted/50 border border-transparent hover:border-border/50",
+        msg.admin_reply && !msg.admin_reply ? "bg-primary/5" : ""
+      )}
+    >
+      {/* Avatar */}
+      <div className={cn(
+        "w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0",
+        msg.admin_reply 
+          ? "bg-gradient-to-br from-green-500 to-emerald-600" 
+          : "bg-gradient-to-br from-yellow-500 to-orange-500"
+      )}>
+        {msg.admin_reply ? (
+          <CheckCircle className="w-5 h-5 text-white" />
+        ) : (
+          <Clock className="w-5 h-5 text-white" />
+        )}
+      </div>
+
+      {/* Content */}
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center justify-between gap-2">
+          <p className="font-medium text-sm truncate">{msg.subject}</p>
+          <span className="text-[10px] text-muted-foreground flex-shrink-0">
+            {format(new Date(msg.created_at), "MMM dd")}
+          </span>
+        </div>
+        <p className="text-xs text-muted-foreground truncate mt-0.5">
+          {msg.admin_reply ? `Admin: ${msg.admin_reply.substring(0, 40)}...` : msg.message.substring(0, 40) + "..."}
+        </p>
+        <div className="flex items-center gap-2 mt-1">
+          {getStatusBadge(msg.status)}
+        </div>
+      </div>
+
+      {/* Arrow */}
+      <ChevronRight className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+    </motion.div>
+  );
+
   return (
-    <Card className="border-border/50 bg-card/50 backdrop-blur">
-      <CardHeader className="pb-3">
+    <Card className="border-border/50 bg-card/50 backdrop-blur overflow-hidden">
+      <CardHeader className="pb-2">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="p-2 rounded-lg bg-primary/10">
               <MessageSquare className="w-5 h-5 text-primary" />
             </div>
             <div>
-              <CardTitle className="text-lg">My Support Messages</CardTitle>
-              <CardDescription>View your inquiries and admin replies</CardDescription>
+              <CardTitle className="text-lg flex items-center gap-2">
+                Support Chat
+                {unrepliedCount > 0 && (
+                  <Badge className="bg-yellow-500 text-white text-[10px] px-1.5">
+                    {unrepliedCount} pending
+                  </Badge>
+                )}
+              </CardTitle>
+              <CardDescription>Your conversations with support</CardDescription>
             </div>
           </div>
           <Button
@@ -126,111 +291,52 @@ export default function UserSupportMessages() {
           </Button>
         </div>
       </CardHeader>
-      <CardContent>
-        {/* Stats */}
-        <div className="grid grid-cols-3 gap-3 mb-4">
-          <div className="text-center p-3 rounded-lg bg-muted/50">
-            <p className="text-2xl font-bold text-foreground">{messages.length}</p>
-            <p className="text-xs text-muted-foreground">Total</p>
-          </div>
-          <div className="text-center p-3 rounded-lg bg-yellow-500/10">
-            <p className="text-2xl font-bold text-yellow-500">{unrepliedCount}</p>
-            <p className="text-xs text-muted-foreground">Pending</p>
-          </div>
-          <div className="text-center p-3 rounded-lg bg-green-500/10">
-            <p className="text-2xl font-bold text-green-500">{repliedCount}</p>
-            <p className="text-xs text-muted-foreground">Replied</p>
-          </div>
-        </div>
 
-        {messages.length === 0 ? (
-          <div className="text-center py-8">
-            <MessageCircle className="w-12 h-12 mx-auto mb-3 text-muted-foreground/50" />
-            <p className="text-muted-foreground">No support messages yet</p>
-            <p className="text-sm text-muted-foreground/70 mt-1">
-              Use the "Send Message" card to contact support
-            </p>
-          </div>
-        ) : (
-          <Accordion type="single" collapsible className="space-y-2">
-            {messages.map((msg, index) => (
-              <motion.div
-                key={msg.id}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.05 }}
-              >
-                <AccordionItem
-                  value={msg.id}
-                  className="border border-border/50 rounded-lg px-4 bg-background/50"
-                >
-                  <AccordionTrigger className="hover:no-underline py-3">
-                    <div className="flex items-center gap-3 flex-1 text-left">
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 mb-1">
-                          {getStatusBadge(msg.status)}
-                          {msg.admin_reply && (
-                            <Badge variant="outline" className="text-xs border-green-500/50 text-green-500">
-                              <CheckCircle className="w-3 h-3 mr-1" />
-                              Replied
-                            </Badge>
-                          )}
-                        </div>
-                        <p className="font-medium text-sm truncate">{msg.subject}</p>
-                        <p className="text-xs text-muted-foreground">
-                          {format(new Date(msg.created_at), "MMM dd, yyyy 'at' h:mm a")}
-                        </p>
-                      </div>
-                      {msg.admin_reply && (
-                        <div className="flex items-center text-green-500">
-                          <MessageCircle className="w-4 h-4" />
-                        </div>
-                      )}
-                    </div>
-                  </AccordionTrigger>
-                  <AccordionContent className="pb-4">
-                    <div className="space-y-4">
-                      {/* Original Message */}
-                      <div className="bg-muted/30 rounded-lg p-3">
-                        <div className="flex items-center gap-2 mb-2">
-                          <Send className="w-4 h-4 text-primary" />
-                          <span className="text-sm font-medium">Your Message</span>
-                          <Badge variant="outline" className="text-xs">{msg.issue_type}</Badge>
-                        </div>
-                        <p className="text-sm text-muted-foreground whitespace-pre-wrap">
-                          {msg.message}
-                        </p>
-                      </div>
-
-                      {/* Admin Reply */}
-                      {msg.admin_reply ? (
-                        <div className="bg-green-500/10 border border-green-500/20 rounded-lg p-3">
-                          <div className="flex items-center gap-2 mb-2">
-                            <MessageCircle className="w-4 h-4 text-green-500" />
-                            <span className="text-sm font-medium text-green-500">Admin Reply</span>
-                            {msg.replied_at && (
-                              <span className="text-xs text-muted-foreground">
-                                {format(new Date(msg.replied_at), "MMM dd, yyyy 'at' h:mm a")}
-                              </span>
-                            )}
-                          </div>
-                          <p className="text-sm whitespace-pre-wrap">{msg.admin_reply}</p>
-                        </div>
-                      ) : (
-                        <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-lg p-3 text-center">
-                          <Clock className="w-5 h-5 mx-auto mb-1 text-yellow-500" />
-                          <p className="text-sm text-yellow-600 dark:text-yellow-400">
-                            Waiting for admin reply...
-                          </p>
-                        </div>
-                      )}
-                    </div>
-                  </AccordionContent>
-                </AccordionItem>
-              </motion.div>
-            ))}
-          </Accordion>
-        )}
+      <CardContent className="p-0">
+        <AnimatePresence mode="wait">
+          {selectedChat ? (
+            <motion.div
+              key="chat"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              className="h-[400px]"
+            >
+              <ChatView chat={selectedChat} onBack={() => setSelectedChat(null)} />
+            </motion.div>
+          ) : (
+            <motion.div
+              key="list"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 20 }}
+            >
+              {messages.length === 0 ? (
+                <div className="text-center py-12 px-4">
+                  <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-muted/50 flex items-center justify-center">
+                    <MessageCircle className="w-8 h-8 text-muted-foreground/50" />
+                  </div>
+                  <p className="text-muted-foreground font-medium">No conversations yet</p>
+                  <p className="text-sm text-muted-foreground/70 mt-1">
+                    Send a message to start a conversation
+                  </p>
+                </div>
+              ) : (
+                <ScrollArea className="h-[400px]">
+                  <div className="p-3 space-y-1">
+                    {messages.map((msg, index) => (
+                      <ChatListItem
+                        key={msg.id}
+                        msg={msg}
+                        onClick={() => setSelectedChat(msg)}
+                      />
+                    ))}
+                  </div>
+                </ScrollArea>
+              )}
+            </motion.div>
+          )}
+        </AnimatePresence>
       </CardContent>
     </Card>
   );

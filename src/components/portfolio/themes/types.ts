@@ -101,12 +101,18 @@ export const THEME_OPTIONS: ThemeOption[] = [
   
   // Photographer Category
   { value: 'photographer', label: 'Photographer', description: 'Visual-focused theme with gallery layouts', isPremium: true, price: 200, category: 'photographer', tier: 'standard' },
+  { value: 'photographer-pro', label: 'Photographer Pro', description: 'Lightroom-inspired professional editing interface', isPremium: true, price: 300, category: 'photographer', tier: 'pro' },
+  { value: 'photographer-elite', label: 'Photographer Elite', description: 'Cinematic luxury theme with award aesthetics', isPremium: true, price: 400, category: 'photographer', tier: 'elite' },
   
   // Video Editor Category
   { value: 'video-editor', label: 'Video Editor', description: 'Dynamic theme with cinematic feel', isPremium: true, price: 200, category: 'video-editor', tier: 'standard' },
+  { value: 'video-editor-pro', label: 'Video Editor Pro', description: 'DaVinci Resolve-inspired color grading interface', isPremium: true, price: 300, category: 'video-editor', tier: 'pro' },
+  { value: 'video-editor-elite', label: 'Video Editor Elite', description: 'Premium cinematic filmmaker portfolio', isPremium: true, price: 400, category: 'video-editor', tier: 'elite' },
   
   // Digital Marketer Category
   { value: 'digital-marketer', label: 'Digital Marketer', description: 'Modern theme with analytics focus', isPremium: true, price: 200, category: 'digital-marketer', tier: 'standard' },
+  { value: 'digital-marketer-pro', label: 'Digital Marketer Pro', description: 'Growth-focused dashboard with metrics', isPremium: true, price: 300, category: 'digital-marketer', tier: 'pro' },
+  { value: 'digital-marketer-elite', label: 'Digital Marketer Elite', description: 'Elite strategist luxury portfolio', isPremium: true, price: 400, category: 'digital-marketer', tier: 'elite' },
   
   // Official Category
   { value: 'official', label: 'Official/Corporate', description: 'Professional business-oriented theme', isPremium: true, price: 200, category: 'official', tier: 'standard' },

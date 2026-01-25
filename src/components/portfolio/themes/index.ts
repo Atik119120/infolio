@@ -1,9 +1,15 @@
 export { default as PhotographerTheme } from "./PhotographerTheme";
+export { default as PhotographerProTheme } from "./PhotographerProTheme";
+export { default as PhotographerEliteTheme } from "./PhotographerEliteTheme";
 export { default as GraphicDesignerTheme } from "./GraphicDesignerTheme";
 export { default as GraphicDesignerProTheme } from "./GraphicDesignerProTheme";
 export { default as GraphicDesignerEliteTheme } from "./GraphicDesignerEliteTheme";
 export { default as VideoEditorTheme } from "./VideoEditorTheme";
+export { default as VideoEditorProTheme } from "./VideoEditorProTheme";
+export { default as VideoEditorEliteTheme } from "./VideoEditorEliteTheme";
 export { default as DigitalMarketerTheme } from "./DigitalMarketerTheme";
+export { default as DigitalMarketerProTheme } from "./DigitalMarketerProTheme";
+export { default as DigitalMarketerEliteTheme } from "./DigitalMarketerEliteTheme";
 export { default as WebDeveloperTheme } from "./WebDeveloperTheme";
 export { default as WebDeveloperProTheme } from "./WebDeveloperProTheme";
 export { default as WebDeveloperEliteTheme } from "./WebDeveloperEliteTheme";

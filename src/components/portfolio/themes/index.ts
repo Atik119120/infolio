@@ -20,8 +20,6 @@ export { default as PersonalTheme } from "./PersonalTheme";
 export { default as PersonalProTheme } from "./PersonalProTheme";
 export { default as PersonalEliteTheme } from "./PersonalEliteTheme";
 export { default as CosmicTheme } from "./CosmicTheme";
-export { default as CosmicProTheme } from "./CosmicProTheme";
-export { default as CosmicEliteTheme } from "./CosmicEliteTheme";
 export { default as SimpleTheme } from "./SimpleTheme";
 
 export * from "./types";

@@ -798,18 +798,21 @@ export default function GraphicDesignerProTheme({ profile, portfolio, skills, pr
           {socialLinks.length > 0 && (
             <ScrollReveal delay={0.3}>
               <div className="flex justify-center gap-4 mt-12">
-                {socialLinks.map((link) => (
-                  <motion.a
-                    key={link.id}
-                    href={link.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="p-4 rounded-xl bg-white/10 hover:bg-white/20 transition-colors"
-                    whileHover={{ scale: 1.1 }}
-                  >
-                    {getSocialIcon(link.platform)}
-                  </motion.a>
-                ))}
+                {socialLinks.map((link) => {
+                  const Icon = getSocialIcon(link.platform);
+                  return (
+                    <motion.a
+                      key={link.id}
+                      href={link.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="p-4 rounded-xl bg-white/10 hover:bg-white/20 transition-colors"
+                      whileHover={{ scale: 1.1 }}
+                    >
+                      <Icon className="w-6 h-6 text-white" />
+                    </motion.a>
+                  );
+                })}
               </div>
             </ScrollReveal>
           )}

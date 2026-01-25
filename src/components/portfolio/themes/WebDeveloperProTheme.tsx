@@ -397,19 +397,22 @@ export default function WebDeveloperProTheme({ profile, portfolio, skills, proje
                 {/* Social Links */}
                 {socialLinks.length > 0 && (
                   <div className="flex gap-3 pt-4">
-                    {socialLinks.map((link) => (
-                      <motion.a
-                        key={link.id}
-                        href={link.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="p-3 rounded-xl border transition-all"
-                        style={{ borderColor: matrixColors.border, backgroundColor: matrixColors.card }}
-                        whileHover={{ scale: 1.1, borderColor: matrixColors.neonGreen }}
-                      >
-                        {getSocialIcon(link.platform)}
-                      </motion.a>
-                    ))}
+                    {socialLinks.map((link) => {
+                      const Icon = getSocialIcon(link.platform);
+                      return (
+                        <motion.a
+                          key={link.id}
+                          href={link.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="p-3 rounded-xl border transition-all"
+                          style={{ borderColor: matrixColors.border, backgroundColor: matrixColors.card }}
+                          whileHover={{ scale: 1.1, borderColor: matrixColors.neonGreen }}
+                        >
+                          <Icon className="w-5 h-5" style={{ color: matrixColors.neonGreen }} />
+                        </motion.a>
+                      );
+                    })}
                   </div>
                 )}
               </div>
@@ -740,19 +743,22 @@ export default function WebDeveloperProTheme({ profile, portfolio, skills, proje
           {socialLinks.length > 0 && (
             <ScrollReveal delay={0.3}>
               <div className="flex justify-center gap-4 mt-8">
-                {socialLinks.map((link) => (
-                  <motion.a
-                    key={link.id}
-                    href={link.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="p-4 rounded-xl border"
-                    style={{ borderColor: matrixColors.border, backgroundColor: matrixColors.bg }}
-                    whileHover={{ scale: 1.1, borderColor: matrixColors.neonGreen }}
-                  >
-                    {getSocialIcon(link.platform)}
-                  </motion.a>
-                ))}
+                {socialLinks.map((link) => {
+                  const Icon = getSocialIcon(link.platform);
+                  return (
+                    <motion.a
+                      key={link.id}
+                      href={link.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="p-4 rounded-xl border"
+                      style={{ borderColor: matrixColors.border, backgroundColor: matrixColors.bg }}
+                      whileHover={{ scale: 1.1, borderColor: matrixColors.neonGreen }}
+                    >
+                      <Icon className="w-6 h-6" style={{ color: matrixColors.neonGreen }} />
+                    </motion.a>
+                  );
+                })}
               </div>
             </ScrollReveal>
           )}

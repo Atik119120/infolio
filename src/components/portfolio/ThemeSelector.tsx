@@ -22,9 +22,13 @@ const themeIcons: Record<string, typeof Camera> = {
   'simple': Star,
   'photographer': Camera,
   'graphic-designer': PenTool,
+  'graphic-designer-pro': PenTool,
+  'graphic-designer-elite': PenTool,
   'video-editor': Film,
   'digital-marketer': TrendingUp,
   'web-developer': Code2,
+  'web-developer-pro': Code2,
+  'web-developer-elite': Code2,
   'official': Building2,
   'personal': Heart,
   'cosmic': Eye,
@@ -34,9 +38,13 @@ const themeColors: Record<string, string> = {
   'simple': 'from-slate-500 to-slate-700',
   'photographer': 'from-zinc-600 to-zinc-900',
   'graphic-designer': 'from-pink-500 to-purple-600',
+  'graphic-designer-pro': 'from-fuchsia-500 to-pink-600',
+  'graphic-designer-elite': 'from-purple-600 via-violet-600 to-indigo-600',
   'video-editor': 'from-red-500 to-orange-500',
   'digital-marketer': 'from-green-500 to-teal-500',
   'web-developer': 'from-blue-500 to-cyan-500',
+  'web-developer-pro': 'from-green-500 via-emerald-500 to-teal-500',
+  'web-developer-elite': 'from-cyan-400 via-blue-500 to-purple-600',
   'official': 'from-slate-600 to-slate-800',
   'personal': 'from-rose-400 to-pink-500',
   'cosmic': 'from-indigo-600 via-purple-600 to-pink-500',
@@ -55,6 +63,14 @@ const themePreviews: Record<string, { hero: string; features: string[] }> = {
     hero: 'Bold typography with creative color gradients',
     features: ['Large portfolio grid', 'Colorful accents', 'Creative layouts', 'Modern aesthetics'],
   },
+  'graphic-designer-pro': {
+    hero: 'Magazine-style editorial theme with 3D elements',
+    features: ['3D floating shapes', 'Marquee text', 'Color swatches', 'Editorial layout'],
+  },
+  'graphic-designer-elite': {
+    hero: 'Luxury dark theme with cinematic animations',
+    features: ['3D gradient blobs', 'Tilt cards', 'Luxury animations', 'Dark aesthetics'],
+  },
   'video-editor': {
     hero: 'Cinematic widescreen layouts with play buttons',
     features: ['Video-focused grid', '16:9 aspect ratios', 'Film strip effects', 'Motion design ready'],
@@ -66,6 +82,14 @@ const themePreviews: Record<string, { hero: string; features: string[] }> = {
   'web-developer': {
     hero: 'Terminal-style with code aesthetics',
     features: ['Code editor UI', 'Tech stack badges', 'GitHub integration', 'Developer friendly'],
+  },
+  'web-developer-pro': {
+    hero: 'Matrix-style dark theme with terminal aesthetics',
+    features: ['3D floating cubes', 'Matrix rain effect', 'Bento grid layout', 'Terminal animations'],
+  },
+  'web-developer-elite': {
+    hero: 'Glassmorphism cyberpunk with 3D elements',
+    features: ['3D torus animations', 'Magnetic buttons', 'Animated counters', 'Glassmorphism UI'],
   },
   'official': {
     hero: 'Professional corporate look for business use',

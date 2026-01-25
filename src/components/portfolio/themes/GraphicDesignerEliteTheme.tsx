@@ -979,19 +979,22 @@ export default function GraphicDesignerEliteTheme({ profile, portfolio, skills, 
           {socialLinks.length > 0 && (
             <ScrollReveal delay={0.2}>
               <div className="flex justify-center gap-4 mt-12">
-                {socialLinks.map((link) => (
-                  <motion.a
-                    key={link.id}
-                    href={link.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="p-4 rounded-xl border"
-                    style={{ borderColor: eliteColors.border, backgroundColor: eliteColors.card }}
-                    whileHover={{ scale: 1.1, borderColor: eliteColors.accent1 }}
-                  >
-                    {getSocialIcon(link.platform)}
-                  </motion.a>
-                ))}
+                {socialLinks.map((link) => {
+                  const Icon = getSocialIcon(link.platform);
+                  return (
+                    <motion.a
+                      key={link.id}
+                      href={link.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="p-4 rounded-xl border"
+                      style={{ borderColor: eliteColors.border, backgroundColor: eliteColors.card }}
+                      whileHover={{ scale: 1.1, borderColor: eliteColors.accent1 }}
+                    >
+                      <Icon className="w-6 h-6" style={{ color: eliteColors.accent1 }} />
+                    </motion.a>
+                  );
+                })}
               </div>
             </ScrollReveal>
           )}

@@ -7,9 +7,13 @@ import { useEffect } from "react";
 import {
   PhotographerTheme,
   GraphicDesignerTheme,
+  GraphicDesignerProTheme,
+  GraphicDesignerEliteTheme,
   VideoEditorTheme,
   DigitalMarketerTheme,
   WebDeveloperTheme,
+  WebDeveloperProTheme,
+  WebDeveloperEliteTheme,
   OfficialTheme,
   PersonalTheme,
   CosmicTheme,
@@ -143,12 +147,20 @@ export default function ThemeDemo() {
         return <PhotographerTheme {...demoData} />;
       case 'graphic-designer':
         return <GraphicDesignerTheme {...demoData} />;
+      case 'graphic-designer-pro':
+        return <GraphicDesignerProTheme {...demoData} />;
+      case 'graphic-designer-elite':
+        return <GraphicDesignerEliteTheme {...demoData} />;
       case 'video-editor':
         return <VideoEditorTheme {...demoData} />;
       case 'digital-marketer':
         return <DigitalMarketerTheme {...demoData} />;
       case 'web-developer':
         return <WebDeveloperTheme {...demoData} />;
+      case 'web-developer-pro':
+        return <WebDeveloperProTheme {...demoData} />;
+      case 'web-developer-elite':
+        return <WebDeveloperEliteTheme {...demoData} />;
       case 'official':
         return <OfficialTheme {...demoData} />;
       case 'cosmic':

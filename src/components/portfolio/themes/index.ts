@@ -14,11 +14,7 @@ export { default as WebDeveloperTheme } from "./WebDeveloperTheme";
 export { default as WebDeveloperProTheme } from "./WebDeveloperProTheme";
 export { default as WebDeveloperEliteTheme } from "./WebDeveloperEliteTheme";
 export { default as OfficialTheme } from "./OfficialTheme";
-export { default as OfficialProTheme } from "./OfficialProTheme";
-export { default as OfficialEliteTheme } from "./OfficialEliteTheme";
 export { default as PersonalTheme } from "./PersonalTheme";
-export { default as PersonalProTheme } from "./PersonalProTheme";
-export { default as PersonalEliteTheme } from "./PersonalEliteTheme";
 export { default as CosmicTheme } from "./CosmicTheme";
 export { default as SimpleTheme } from "./SimpleTheme";
 

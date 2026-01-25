@@ -116,18 +116,12 @@ export const THEME_OPTIONS: ThemeOption[] = [
   
   // Official Category
   { value: 'official', label: 'Official/Corporate', description: 'Professional business-oriented theme', isPremium: true, price: 200, category: 'official', tier: 'standard' },
-  { value: 'official-pro', label: 'Official Pro', description: 'Enterprise-grade professional portfolio', isPremium: true, price: 300, category: 'official', tier: 'pro' },
-  { value: 'official-elite', label: 'Official Elite', description: 'Luxury corporate executive theme', isPremium: true, price: 400, category: 'official', tier: 'elite' },
   
   // Personal Category
   { value: 'personal', label: 'Personal/Biography', description: 'Elegant personal portfolio theme', isPremium: true, price: 200, category: 'personal', tier: 'standard' },
-  { value: 'personal-pro', label: 'Personal Pro', description: 'Memoir-style storytelling theme', isPremium: true, price: 300, category: 'personal', tier: 'pro' },
-  { value: 'personal-elite', label: 'Personal Elite', description: 'Cinematic luxury biography theme', isPremium: true, price: 400, category: 'personal', tier: 'elite' },
   
   // Cosmic Category
   { value: 'cosmic', label: 'Cosmic/Universe', description: 'Premium space-inspired luxury theme', isPremium: true, price: 200, category: 'cosmic', tier: 'standard' },
-  { value: 'cosmic-pro', label: 'Cosmic Pro', description: 'Nebula & constellation themed portfolio', isPremium: true, price: 300, category: 'cosmic', tier: 'pro' },
-  { value: 'cosmic-elite', label: 'Cosmic Elite', description: 'Holographic space odyssey theme', isPremium: true, price: 400, category: 'cosmic', tier: 'elite' },
 ];
 
 // Helper to get themes by category

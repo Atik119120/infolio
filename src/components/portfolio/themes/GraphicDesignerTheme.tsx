@@ -199,16 +199,16 @@ export default function GraphicDesignerTheme({ profile, portfolio, skills, proje
           />
         </div>
 
-        {/* Floating Color Palettes & Shapes */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        {/* Floating Color Palettes & Shapes - hidden on mobile for performance */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none hidden md:block">
           {/* Paint Splatters */}
           {[...Array(6)].map((_, i) => (
             <motion.div
               key={`splat-${i}`}
               className="absolute rounded-full blur-xl"
               style={{
-                width: `${100 + i * 30}px`,
-                height: `${100 + i * 30}px`,
+                width: `${80 + i * 20}px`,
+                height: `${80 + i * 20}px`,
                 background: `radial-gradient(circle, ${adobeApps[i % adobeApps.length].color}40, transparent)`,
                 left: `${15 + i * 15}%`,
                 top: `${20 + (i % 3) * 25}%`,
@@ -366,28 +366,28 @@ export default function GraphicDesignerTheme({ profile, portfolio, skills, proje
                   </div>
 
                   {/* Canvas Content */}
-                  <div className="aspect-square relative bg-gradient-to-br from-[#1a1a2e] to-[#0d0d18] p-6">
+                  <div className="aspect-square relative bg-gradient-to-br from-[#1a1a2e] to-[#0d0d18] p-4 sm:p-6">
                     {/* Grid Pattern */}
                     <div className="absolute inset-0 opacity-10" style={{
                       backgroundImage: `linear-gradient(white 1px, transparent 1px), linear-gradient(90deg, white 1px, transparent 1px)`,
                       backgroundSize: "20px 20px"
                     }} />
 
-                    {/* Floating Design Elements */}
+                    {/* Floating Design Elements - smaller on mobile */}
                     <motion.div 
-                      className="absolute top-8 left-8 w-24 h-24 rounded-2xl bg-gradient-to-br from-[#FF9A00] to-[#FF3366] shadow-xl"
+                      className="absolute top-4 sm:top-8 left-4 sm:left-8 w-12 sm:w-24 h-12 sm:h-24 rounded-xl sm:rounded-2xl bg-gradient-to-br from-[#FF9A00] to-[#FF3366] shadow-xl"
                       animate={{ rotate: [0, 10, 0], y: [0, -10, 0] }}
                       transition={{ duration: 4, repeat: Infinity }}
                     />
                     
                     <motion.div 
-                      className="absolute top-16 right-12 w-20 h-20 rounded-full bg-gradient-to-br from-[#31A8FF] to-[#A259FF] shadow-xl"
+                      className="absolute top-8 sm:top-16 right-6 sm:right-12 w-10 sm:w-20 h-10 sm:h-20 rounded-full bg-gradient-to-br from-[#31A8FF] to-[#A259FF] shadow-xl"
                       animate={{ rotate: [0, -10, 0], y: [0, 10, 0] }}
                       transition={{ duration: 5, repeat: Infinity }}
                     />
 
                     <motion.div 
-                      className="absolute bottom-16 left-16 w-16 h-16 bg-gradient-to-br from-[#FF3366] to-[#A259FF] shadow-xl"
+                      className="absolute bottom-8 sm:bottom-16 left-8 sm:left-16 w-8 sm:w-16 h-8 sm:h-16 bg-gradient-to-br from-[#FF3366] to-[#A259FF] shadow-xl hidden sm:block"
                       style={{ clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)" }}
                       animate={{ rotate: [0, 360] }}
                       transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
@@ -399,10 +399,10 @@ export default function GraphicDesignerTheme({ profile, portfolio, skills, proje
                       animate={{ scale: [1, 1.05, 1] }}
                       transition={{ duration: 3, repeat: Infinity }}
                     >
-                      <div className="w-32 h-32 rounded-full border-4 border-white/20 bg-gradient-to-br from-[#FF9A00] via-[#FF3366] to-[#A259FF] flex items-center justify-center shadow-2xl shadow-purple-500/30">
-                        <Avatar className="w-28 h-28 border-4 border-[#1a1a2e]">
+                      <div className="w-20 sm:w-32 h-20 sm:h-32 rounded-full border-2 sm:border-4 border-white/20 bg-gradient-to-br from-[#FF9A00] via-[#FF3366] to-[#A259FF] flex items-center justify-center shadow-2xl shadow-purple-500/30">
+                        <Avatar className="w-16 sm:w-28 h-16 sm:h-28 border-2 sm:border-4 border-[#1a1a2e]">
                           <AvatarImage src={profile?.avatar_url || undefined} className="object-cover" />
-                          <AvatarFallback className="text-4xl bg-[#1a1a2e] text-white font-black">
+                          <AvatarFallback className="text-xl sm:text-4xl bg-[#1a1a2e] text-white font-black">
                             {profile?.display_name?.[0]?.toUpperCase() || "D"}
                           </AvatarFallback>
                         </Avatar>

@@ -211,16 +211,16 @@ export default function PhotographerTheme({ profile, portfolio, skills, projects
           )}
         </div>
 
-        {/* Viewfinder Frame */}
-        <div className="absolute inset-8 sm:inset-12 md:inset-20 border border-amber-500/20 pointer-events-none z-10">
-          <div className="absolute -top-px -left-px w-8 h-8 border-t-2 border-l-2 border-amber-500/60" />
-          <div className="absolute -top-px -right-px w-8 h-8 border-t-2 border-r-2 border-amber-500/60" />
-          <div className="absolute -bottom-px -left-px w-8 h-8 border-b-2 border-l-2 border-amber-500/60" />
-          <div className="absolute -bottom-px -right-px w-8 h-8 border-b-2 border-r-2 border-amber-500/60" />
+        {/* Viewfinder Frame - responsive insets */}
+        <div className="absolute inset-4 sm:inset-8 md:inset-12 lg:inset-20 border border-amber-500/20 pointer-events-none z-10">
+          <div className="absolute -top-px -left-px w-4 sm:w-6 md:w-8 h-4 sm:h-6 md:h-8 border-t-2 border-l-2 border-amber-500/60" />
+          <div className="absolute -top-px -right-px w-4 sm:w-6 md:w-8 h-4 sm:h-6 md:h-8 border-t-2 border-r-2 border-amber-500/60" />
+          <div className="absolute -bottom-px -left-px w-4 sm:w-6 md:w-8 h-4 sm:h-6 md:h-8 border-b-2 border-l-2 border-amber-500/60" />
+          <div className="absolute -bottom-px -right-px w-4 sm:w-6 md:w-8 h-4 sm:h-6 md:h-8 border-b-2 border-r-2 border-amber-500/60" />
           
-          {/* Center Focus */}
+          {/* Center Focus - hidden on mobile */}
           <motion.div 
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16"
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-10 sm:w-12 md:w-16 h-10 sm:h-12 md:h-16 hidden sm:block"
             animate={{ scale: [1, 1.1, 1], opacity: [0.5, 0.8, 0.5] }}
             transition={{ duration: 2, repeat: Infinity }}
           >
@@ -228,8 +228,8 @@ export default function PhotographerTheme({ profile, portfolio, skills, projects
           </motion.div>
         </div>
 
-        {/* Camera Info */}
-        <div className="absolute top-24 left-6 sm:left-12 text-[10px] font-mono text-amber-500/60 space-y-1 z-10">
+        {/* Camera Info - hidden on small mobile */}
+        <div className="absolute top-20 sm:top-24 left-4 sm:left-6 md:left-12 text-[10px] font-mono text-amber-500/60 space-y-1 z-10 hidden sm:block">
           <div className="flex items-center gap-2"><Aperture className="w-3 h-3" /> f/1.8</div>
           <div className="flex items-center gap-2"><Camera className="w-3 h-3" /> 1/250s</div>
           <div>ISO 100</div>

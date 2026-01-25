@@ -216,9 +216,9 @@ export default function VideoEditorTheme({ profile, portfolio, skills, projects,
           transition={{ delay: 2.3, duration: 0.5 }}
         />
 
-        <div className="w-full max-w-7xl relative z-10">
-          <div className="grid lg:grid-cols-5 gap-6 items-center">
-            {/* Left: Effects Panel */}
+        <div className="w-full max-w-7xl mx-auto px-4 relative z-10">
+          <div className="grid lg:grid-cols-5 gap-4 lg:gap-6 items-center">
+            {/* Left: Effects Panel - hidden on mobile */}
             <motion.div 
               className="hidden lg:block lg:col-span-1"
               initial={{ opacity: 0, x: -30 }}
@@ -265,9 +265,9 @@ export default function VideoEditorTheme({ profile, portfolio, skills, projects,
               </div>
             </motion.div>
 
-            {/* Center: Main Preview */}
+            {/* Center: Main Preview - full width on mobile */}
             <motion.div 
-              className="lg:col-span-3"
+              className="col-span-full lg:col-span-3"
               initial={{ opacity: 0, y: 50 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 2.2 }}

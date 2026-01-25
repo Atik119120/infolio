@@ -58,17 +58,17 @@ const FloatingStars = () => {
   );
 };
 
-// Orbiting planets component
+// Orbiting planets component - hidden on mobile for performance
 const OrbitingPlanets = () => {
   const planets = [
-    { color: "bg-gradient-to-br from-orange-400 to-red-600", size: 12, orbit: 150, duration: 20, hasRing: false },
-    { color: "bg-gradient-to-br from-blue-400 to-cyan-600", size: 8, orbit: 200, duration: 15, hasRing: false },
-    { color: "bg-gradient-to-br from-amber-300 to-yellow-500", size: 16, orbit: 280, duration: 30, hasRing: true },
-    { color: "bg-gradient-to-br from-teal-400 to-emerald-600", size: 10, orbit: 350, duration: 25, hasRing: false },
+    { color: "bg-gradient-to-br from-orange-400 to-red-600", size: 8, orbit: 100, duration: 20, hasRing: false },
+    { color: "bg-gradient-to-br from-blue-400 to-cyan-600", size: 6, orbit: 140, duration: 15, hasRing: false },
+    { color: "bg-gradient-to-br from-amber-300 to-yellow-500", size: 10, orbit: 180, duration: 30, hasRing: true },
+    { color: "bg-gradient-to-br from-teal-400 to-emerald-600", size: 7, orbit: 220, duration: 25, hasRing: false },
   ];
 
   return (
-    <div className="absolute inset-0 pointer-events-none">
+    <div className="absolute inset-0 pointer-events-none hidden md:block overflow-hidden">
       {planets.map((planet, idx) => (
         <motion.div
           key={idx}
@@ -115,11 +115,11 @@ const OrbitingPlanets = () => {
   );
 };
 
-// Nebula background effect
+// Nebula background effect - reduced sizes for mobile
 const NebulaEffect = () => (
   <div className="absolute inset-0 overflow-hidden pointer-events-none">
     <motion.div
-      className="absolute w-[800px] h-[800px] rounded-full opacity-30 blur-3xl bg-gradient-to-r from-purple-500 via-pink-500 to-transparent"
+      className="absolute w-[300px] md:w-[800px] h-[300px] md:h-[800px] rounded-full opacity-30 blur-3xl bg-gradient-to-r from-purple-500 via-pink-500 to-transparent"
       style={{ top: "-20%", right: "-10%" }}
       animate={{
         scale: [1, 1.1, 1],
@@ -128,7 +128,7 @@ const NebulaEffect = () => (
       transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
     />
     <motion.div
-      className="absolute w-[600px] h-[600px] rounded-full opacity-20 blur-3xl bg-gradient-to-r from-cyan-500 via-blue-500 to-transparent"
+      className="absolute w-[250px] md:w-[600px] h-[250px] md:h-[600px] rounded-full opacity-20 blur-3xl bg-gradient-to-r from-cyan-500 via-blue-500 to-transparent"
       style={{ bottom: "-10%", left: "-5%" }}
       animate={{
         scale: [1, 1.15, 1],
@@ -137,7 +137,7 @@ const NebulaEffect = () => (
       transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 2 }}
     />
     <motion.div
-      className="absolute w-[400px] h-[400px] rounded-full opacity-25 blur-2xl bg-gradient-to-r from-amber-400 via-orange-500 to-transparent"
+      className="absolute w-[200px] md:w-[400px] h-[200px] md:h-[400px] rounded-full opacity-25 blur-2xl bg-gradient-to-r from-amber-400 via-orange-500 to-transparent hidden md:block"
       style={{ top: "40%", left: "30%" }}
       animate={{
         scale: [1, 1.2, 1],
@@ -242,9 +242,9 @@ export default function CosmicTheme({
               animate={{ scale: [1, 1.1, 1] }}
               transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
             />
-            <Avatar className="w-40 h-40 ring-4 ring-amber-400/50 shadow-2xl shadow-amber-500/30 relative z-10">
+            <Avatar className="w-28 h-28 sm:w-32 sm:h-32 md:w-40 md:h-40 ring-4 ring-amber-400/50 shadow-2xl shadow-amber-500/30 relative z-10">
               <AvatarImage src={profile?.avatar_url || ""} className="object-cover" />
-              <AvatarFallback className="text-4xl bg-gradient-to-br from-amber-400 to-orange-600 text-white">
+              <AvatarFallback className="text-2xl sm:text-3xl md:text-4xl bg-gradient-to-br from-amber-400 to-orange-600 text-white">
                 {profile?.display_name?.charAt(0) || "C"}
               </AvatarFallback>
             </Avatar>
@@ -256,20 +256,20 @@ export default function CosmicTheme({
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.5, duration: 0.8 }}
           >
-            <div className="flex items-center justify-center gap-3 mb-4">
-              <Sparkles className="w-6 h-6 text-amber-400" />
-              <span className="text-sm tracking-[0.3em] uppercase text-purple-300 font-medium">
+            <div className="flex items-center justify-center gap-2 sm:gap-3 mb-4 px-4">
+              <Sparkles className="w-4 h-4 sm:w-6 sm:h-6 text-amber-400" />
+              <span className="text-xs sm:text-sm tracking-[0.2em] sm:tracking-[0.3em] uppercase text-purple-300 font-medium">
                 Welcome to my universe
               </span>
-              <Sparkles className="w-6 h-6 text-amber-400" />
+              <Sparkles className="w-4 h-4 sm:w-6 sm:h-6 text-amber-400" />
             </div>
             
-            <h1 className="text-5xl md:text-7xl font-bold mb-4 bg-gradient-to-r from-amber-200 via-yellow-300 to-orange-400 bg-clip-text text-transparent drop-shadow-2xl">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-bold mb-4 bg-gradient-to-r from-amber-200 via-yellow-300 to-orange-400 bg-clip-text text-transparent drop-shadow-2xl px-4">
               {profile?.display_name || "Cosmic Creator"}
             </h1>
             
             <motion.p
-              className="text-xl md:text-2xl text-purple-200/90 max-w-2xl mx-auto mb-8 leading-relaxed"
+              className="text-base sm:text-lg md:text-xl lg:text-2xl text-purple-200/90 max-w-2xl mx-auto mb-8 leading-relaxed px-4"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.8 }}
@@ -388,24 +388,24 @@ export default function CosmicTheme({
 
       {/* Skills Section - Constellation Map */}
       {skills.length > 0 && (
-        <section className="relative py-32 px-6">
+        <section className="relative py-16 sm:py-24 md:py-32 px-4 sm:px-6">
           <div className="max-w-6xl mx-auto">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="text-center mb-16"
+              className="text-center mb-10 sm:mb-16"
             >
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 mb-6">
-                <Star className="w-4 h-4 text-amber-400" />
-                <span className="text-sm text-purple-300 tracking-wide">Skill Constellation</span>
+              <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-white/5 border border-white/10 mb-4 sm:mb-6">
+                <Star className="w-3 sm:w-4 h-3 sm:h-4 text-amber-400" />
+                <span className="text-xs sm:text-sm text-purple-300 tracking-wide">Skill Constellation</span>
               </div>
-              <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-cyan-300 via-blue-400 to-purple-400 bg-clip-text text-transparent">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-cyan-300 via-blue-400 to-purple-400 bg-clip-text text-transparent">
                 Powers & Abilities
               </h2>
             </motion.div>
 
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
               {Object.entries(skillsByCategory).map(([category, categorySkills], catIdx) => (
                 <motion.div
                   key={category}
@@ -455,24 +455,24 @@ export default function CosmicTheme({
 
       {/* Projects Section - Space Stations */}
       {projects.length > 0 && (
-        <section className="relative py-32 px-6">
+        <section className="relative py-16 sm:py-24 md:py-32 px-4 sm:px-6">
           <div className="max-w-7xl mx-auto">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="text-center mb-16"
+              className="text-center mb-10 sm:mb-16"
             >
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 mb-6">
-                <Rocket className="w-4 h-4 text-cyan-400" />
-                <span className="text-sm text-cyan-300 tracking-wide">Mission Control</span>
+              <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-white/5 border border-white/10 mb-4 sm:mb-6">
+                <Rocket className="w-3 sm:w-4 h-3 sm:h-4 text-cyan-400" />
+                <span className="text-xs sm:text-sm text-cyan-300 tracking-wide">Mission Control</span>
               </div>
-              <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-teal-300 via-cyan-400 to-blue-400 bg-clip-text text-transparent">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-teal-300 via-cyan-400 to-blue-400 bg-clip-text text-transparent">
                 Space Projects
               </h2>
             </motion.div>
 
-            <div className="grid md:grid-cols-2 gap-8">
+            <div className="grid sm:grid-cols-2 gap-4 sm:gap-6 md:gap-8">
               {projects.map((project, idx) => (
                 <motion.div
                   key={project.id}

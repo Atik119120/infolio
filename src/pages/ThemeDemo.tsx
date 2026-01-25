@@ -6,11 +6,17 @@ import { useEffect } from "react";
 // Theme imports
 import {
   PhotographerTheme,
+  PhotographerProTheme,
+  PhotographerEliteTheme,
   GraphicDesignerTheme,
   GraphicDesignerProTheme,
   GraphicDesignerEliteTheme,
   VideoEditorTheme,
+  VideoEditorProTheme,
+  VideoEditorEliteTheme,
   DigitalMarketerTheme,
+  DigitalMarketerProTheme,
+  DigitalMarketerEliteTheme,
   WebDeveloperTheme,
   WebDeveloperProTheme,
   WebDeveloperEliteTheme,
@@ -145,6 +151,10 @@ export default function ThemeDemo() {
         return <SimpleTheme {...demoData} />;
       case 'photographer':
         return <PhotographerTheme {...demoData} />;
+      case 'photographer-pro':
+        return <PhotographerProTheme {...demoData} />;
+      case 'photographer-elite':
+        return <PhotographerEliteTheme {...demoData} />;
       case 'graphic-designer':
         return <GraphicDesignerTheme {...demoData} />;
       case 'graphic-designer-pro':
@@ -153,8 +163,16 @@ export default function ThemeDemo() {
         return <GraphicDesignerEliteTheme {...demoData} />;
       case 'video-editor':
         return <VideoEditorTheme {...demoData} />;
+      case 'video-editor-pro':
+        return <VideoEditorProTheme {...demoData} />;
+      case 'video-editor-elite':
+        return <VideoEditorEliteTheme {...demoData} />;
       case 'digital-marketer':
         return <DigitalMarketerTheme {...demoData} />;
+      case 'digital-marketer-pro':
+        return <DigitalMarketerProTheme {...demoData} />;
+      case 'digital-marketer-elite':
+        return <DigitalMarketerEliteTheme {...demoData} />;
       case 'web-developer':
         return <WebDeveloperTheme {...demoData} />;
       case 'web-developer-pro':

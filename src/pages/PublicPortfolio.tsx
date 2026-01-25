@@ -8,9 +8,13 @@ import { Button } from "@/components/ui/button";
 import {
   PhotographerTheme,
   GraphicDesignerTheme,
+  GraphicDesignerProTheme,
+  GraphicDesignerEliteTheme,
   VideoEditorTheme,
   DigitalMarketerTheme,
   WebDeveloperTheme,
+  WebDeveloperProTheme,
+  WebDeveloperEliteTheme,
   OfficialTheme,
   PersonalTheme,
   CosmicTheme,
@@ -163,12 +167,20 @@ export default function PublicPortfolio() {
       return <PhotographerTheme {...themeProps} />;
     case 'graphic-designer':
       return <GraphicDesignerTheme {...themeProps} />;
+    case 'graphic-designer-pro':
+      return <GraphicDesignerProTheme {...themeProps} />;
+    case 'graphic-designer-elite':
+      return <GraphicDesignerEliteTheme {...themeProps} />;
     case 'video-editor':
       return <VideoEditorTheme {...themeProps} />;
     case 'digital-marketer':
       return <DigitalMarketerTheme {...themeProps} />;
     case 'web-developer':
       return <WebDeveloperTheme {...themeProps} />;
+    case 'web-developer-pro':
+      return <WebDeveloperProTheme {...themeProps} />;
+    case 'web-developer-elite':
+      return <WebDeveloperEliteTheme {...themeProps} />;
     case 'official':
       return <OfficialTheme {...themeProps} />;
     case 'cosmic':

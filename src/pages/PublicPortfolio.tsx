@@ -77,9 +77,11 @@ export default function PublicPortfolio() {
   }, [username]);
 
   const fetchPortfolio = async () => {
+    // Only select non-sensitive profile fields for public view
+    // Excludes email and phone_number to prevent PII exposure
     const { data: profileData, error: profileError } = await supabase
       .from("profiles")
-      .select("user_id, display_name, avatar_url, email")
+      .select("user_id, display_name, avatar_url")
       .eq("username", username)
       .maybeSingle();
 

@@ -360,6 +360,36 @@ function getPasswordResetEmailTemplate(otpCode: string, userName: string): strin
   `;
 }
 
+// Rate limit configuration: max 3 OTP requests per email per hour
+const MAX_OTP_REQUESTS_PER_HOUR = 3;
+const RATE_LIMIT_WINDOW_MS = 60 * 60 * 1000; // 1 hour
+
+// Rate limiting helper function
+// deno-lint-ignore no-explicit-any
+async function checkRateLimit(supabase: any, email: string): Promise<{ allowed: boolean; remaining: number }> {
+  const oneHourAgo = new Date(Date.now() - RATE_LIMIT_WINDOW_MS).toISOString();
+  
+  const { data: recentOTPs, error } = await supabase
+    .from("otp_codes")
+    .select("created_at")
+    .eq("email", email)
+    .gte("created_at", oneHourAgo);
+  
+  if (error) {
+    console.error("Rate limit check error:", error);
+    // On error, allow the request but log it
+    return { allowed: true, remaining: MAX_OTP_REQUESTS_PER_HOUR };
+  }
+  
+  const requestCount = recentOTPs?.length || 0;
+  const remaining = Math.max(0, MAX_OTP_REQUESTS_PER_HOUR - requestCount);
+  
+  return { 
+    allowed: requestCount < MAX_OTP_REQUESTS_PER_HOUR, 
+    remaining 
+  };
+}
+
 const handler = async (req: Request): Promise<Response> => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -372,12 +402,41 @@ const handler = async (req: Request): Promise<Response> => {
 
     const { action, email, code, userName, newPassword }: OTPRequest = await req.json();
 
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!email || !emailRegex.test(email)) {
+      return new Response(
+        JSON.stringify({ error: "Invalid email address" }),
+        { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
+
     console.log(`OTP Action: ${action} for email: ${email}`);
 
     // SEND OTP FOR SIGNUP
     if (action === "send") {
+      // Rate limiting check
+      const { allowed, remaining } = await checkRateLimit(supabase, email);
+      if (!allowed) {
+        console.log(`Rate limit exceeded for email: ${email}`);
+        return new Response(
+          JSON.stringify({ 
+            error: "Too many verification requests. Please try again later.",
+            retryAfter: 3600 // seconds until reset
+          }),
+          { 
+            status: 429, 
+            headers: { 
+              "Content-Type": "application/json", 
+              "Retry-After": "3600",
+              ...corsHeaders 
+            } 
+          }
+        );
+      }
+
+      // Clean up expired OTPs (don't delete recent ones for rate limiting)
       await supabase.from("otp_codes").delete().lt("expires_at", new Date().toISOString());
-      await supabase.from("otp_codes").delete().eq("email", email);
 
       const otpCode = generateOTP();
       const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
@@ -405,7 +464,11 @@ const handler = async (req: Request): Promise<Response> => {
       console.log("OTP email sent:", emailResponse);
 
       return new Response(
-        JSON.stringify({ success: true, message: "Verification code sent" }),
+        JSON.stringify({ 
+          success: true, 
+          message: "Verification code sent",
+          remainingAttempts: remaining - 1
+        }),
         { status: 200, headers: { "Content-Type": "application/json", ...corsHeaders } }
       );
     }
@@ -447,6 +510,26 @@ const handler = async (req: Request): Promise<Response> => {
 
     // SEND OTP FOR PASSWORD RESET
     if (action === "send_reset") {
+      // Rate limiting check for password reset too
+      const { allowed, remaining } = await checkRateLimit(supabase, email);
+      if (!allowed) {
+        console.log(`Rate limit exceeded for password reset email: ${email}`);
+        return new Response(
+          JSON.stringify({ 
+            error: "Too many reset requests. Please try again later.",
+            retryAfter: 3600
+          }),
+          { 
+            status: 429, 
+            headers: { 
+              "Content-Type": "application/json", 
+              "Retry-After": "3600",
+              ...corsHeaders 
+            } 
+          }
+        );
+      }
+
       // Check if user exists
       const { data: profile } = await supabase
         .from("profiles")
@@ -463,8 +546,8 @@ const handler = async (req: Request): Promise<Response> => {
         );
       }
 
+      // Clean up expired OTPs (don't delete recent ones for rate limiting)
       await supabase.from("otp_codes").delete().lt("expires_at", new Date().toISOString());
-      await supabase.from("otp_codes").delete().eq("email", email);
 
       const otpCode = generateOTP();
       const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
@@ -492,7 +575,11 @@ const handler = async (req: Request): Promise<Response> => {
       console.log("Password reset OTP email sent:", emailResponse);
 
       return new Response(
-        JSON.stringify({ success: true, message: "Reset code sent" }),
+        JSON.stringify({ 
+          success: true, 
+          message: "Reset code sent",
+          remainingAttempts: remaining - 1
+        }),
         { status: 200, headers: { "Content-Type": "application/json", ...corsHeaders } }
       );
     }

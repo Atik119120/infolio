@@ -48,6 +48,21 @@ function ScrollReveal({ children, delay = 0 }: { children: React.ReactNode; dela
   );
 }
 
+// Helper function to escape HTML entities to prevent XSS
+const escapeHtml = (text: string): string => {
+  const htmlEntities: Record<string, string> = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#039;',
+    '/': '&#x2F;',
+    '`': '&#x60;',
+    '=': '&#x3D;'
+  };
+  return text.replace(/[&<>"'`=/]/g, char => htmlEntities[char] || char);
+};
+
 export default function WebDeveloperTheme({ profile, portfolio, skills, projects, experiences, education, socialLinks }: ThemeProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [typedText, setTypedText] = useState("");
@@ -56,12 +71,18 @@ export default function WebDeveloperTheme({ profile, portfolio, skills, projects
   const featuredProjects = projects.filter((p) => p.featured);
   const allProjects = [...featuredProjects, ...projects.filter((p) => !p.featured)];
 
+  // Escape all user-controlled data to prevent XSS attacks
+  const safeName = escapeHtml(profile?.display_name || "Developer");
+  const safeRole = escapeHtml(portfolio?.headline || "Full Stack Developer");
+  const safeLocation = escapeHtml(portfolio?.location || "Remote");
+  const safeSkills = skills.slice(0, 3).map(s => escapeHtml(s.name));
+
   const fullText = `const developer = {
-  name: "${profile?.display_name || "Developer"}",
-  role: "${portfolio?.headline || "Full Stack Developer"}",
-  location: "${portfolio?.location || "Remote"}",
+  name: "${safeName}",
+  role: "${safeRole}",
+  location: "${safeLocation}",
   available: true,
-  skills: [${skills.slice(0, 3).map(s => `"${s.name}"`).join(", ")}],
+  skills: [${safeSkills.map(s => `"${s}"`).join(", ")}],
 };
 
 export default developer;`;

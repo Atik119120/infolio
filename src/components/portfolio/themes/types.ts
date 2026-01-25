@@ -3,7 +3,7 @@
 export interface ThemeProfile {
   display_name: string | null;
   avatar_url: string | null;
-  email: string | null;
+  email?: string | null; // Made optional - excluded from public queries for PII protection
 }
 
 export interface ThemePortfolio {

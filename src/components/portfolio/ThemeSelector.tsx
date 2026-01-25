@@ -7,9 +7,9 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { useToast } from "@/hooks/use-toast";
 import { 
   Camera, PenTool, Film, TrendingUp, Code2, Building2, Heart, 
-  Eye, Check, Palette, ExternalLink, Lock, Sparkles, Clock, Star
+  Eye, Check, Palette, ExternalLink, Lock, Sparkles, Clock, Star, Crown, Zap
 } from "lucide-react";
-import { THEME_OPTIONS } from "./themes/types";
+import { THEME_OPTIONS, getGroupedThemes, ThemeCategory } from "./themes/types";
 import { ThemePurchaseDialog } from "./ThemePurchaseDialog";
 
 interface ThemeSelectorProps {
@@ -18,36 +18,38 @@ interface ThemeSelectorProps {
   onUpdate: () => void;
 }
 
-const themeIcons: Record<string, typeof Camera> = {
-  'simple': Star,
-  'photographer': Camera,
+// Category icons mapping
+const categoryIcons: Record<ThemeCategory, React.ElementType> = {
+  'free': Star,
+  'web-developer': Code2,
   'graphic-designer': PenTool,
-  'graphic-designer-pro': PenTool,
-  'graphic-designer-elite': PenTool,
+  'photographer': Camera,
   'video-editor': Film,
   'digital-marketer': TrendingUp,
-  'web-developer': Code2,
-  'web-developer-pro': Code2,
-  'web-developer-elite': Code2,
   'official': Building2,
   'personal': Heart,
   'cosmic': Eye,
 };
 
-const themeColors: Record<string, string> = {
-  'simple': 'from-slate-500 to-slate-700',
-  'photographer': 'from-zinc-600 to-zinc-900',
-  'graphic-designer': 'from-pink-500 to-purple-600',
-  'graphic-designer-pro': 'from-fuchsia-500 to-pink-600',
-  'graphic-designer-elite': 'from-purple-600 via-violet-600 to-indigo-600',
-  'video-editor': 'from-red-500 to-orange-500',
-  'digital-marketer': 'from-green-500 to-teal-500',
-  'web-developer': 'from-blue-500 to-cyan-500',
-  'web-developer-pro': 'from-green-500 via-emerald-500 to-teal-500',
-  'web-developer-elite': 'from-cyan-400 via-blue-500 to-purple-600',
+// Category colors mapping
+const categoryColors: Record<ThemeCategory, string> = {
+  'free': 'from-slate-500 to-slate-700',
+  'web-developer': 'from-green-500 to-emerald-600',
+  'graphic-designer': 'from-pink-500 to-rose-600',
+  'photographer': 'from-amber-500 to-orange-600',
+  'video-editor': 'from-purple-500 to-violet-600',
+  'digital-marketer': 'from-blue-500 to-cyan-600',
   'official': 'from-slate-600 to-slate-800',
   'personal': 'from-rose-400 to-pink-500',
   'cosmic': 'from-indigo-600 via-purple-600 to-pink-500',
+};
+
+// Tier colors
+const tierColors: Record<string, string> = {
+  'free': 'from-gray-500 to-gray-700',
+  'standard': 'from-blue-500 to-cyan-500',
+  'pro': 'from-amber-500 to-orange-500',
+  'elite': 'from-purple-500 via-violet-500 to-fuchsia-500',
 };
 
 const themePreviews: Record<string, { hero: string; features: string[] }> = {
@@ -119,6 +121,8 @@ export function ThemeSelector({ currentTheme, userId, onUpdate }: ThemeSelectorP
   const [selectedPurchaseTheme, setSelectedPurchaseTheme] = useState<{id: string, name: string} | null>(null);
   const { toast } = useToast();
 
+  const groupedThemes = getGroupedThemes();
+
   // Fetch user's purchased themes
   useEffect(() => {
     const fetchPurchases = async () => {
@@ -150,21 +154,21 @@ export function ThemeSelector({ currentTheme, userId, onUpdate }: ThemeSelectorP
     return purchase?.status;
   };
 
-  const handleThemeChange = async (theme: string) => {
+  const handleThemeChange = async (themeValue: string) => {
     // Check if theme is locked
-    if (!isThemeUnlocked(theme)) {
-      const themeOption = THEME_OPTIONS.find(t => t.value === theme);
-      setSelectedPurchaseTheme({ id: theme, name: themeOption?.label || theme });
+    if (!isThemeUnlocked(themeValue)) {
+      const themeOption = THEME_OPTIONS.find(t => t.value === themeValue);
+      setSelectedPurchaseTheme({ id: themeValue, name: themeOption?.label || themeValue });
       setPurchaseDialogOpen(true);
       return;
     }
 
     setSaving(true);
-    setSelectedTheme(theme);
+    setSelectedTheme(themeValue);
 
     const { error } = await supabase
       .from("portfolios")
-      .update({ theme })
+      .update({ theme: themeValue })
       .eq("user_id", userId);
 
     setSaving(false);
@@ -178,7 +182,7 @@ export function ThemeSelector({ currentTheme, userId, onUpdate }: ThemeSelectorP
     } else {
       toast({
         title: "Theme Updated!",
-        description: `Your portfolio now uses the ${THEME_OPTIONS.find(t => t.value === theme)?.label} theme`,
+        description: `Your portfolio now uses the ${THEME_OPTIONS.find(t => t.value === themeValue)?.label} theme`,
       });
       onUpdate();
     }
@@ -205,192 +209,244 @@ export function ThemeSelector({ currentTheme, userId, onUpdate }: ThemeSelectorP
             Choose Your Theme
           </CardTitle>
           <CardDescription>
-            Select a theme that matches your profession. Simple theme is free, premium themes require one-time payment.
+            Select a theme that matches your profession. Themes are grouped by category.
           </CardDescription>
         </CardHeader>
-        <CardContent>
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {THEME_OPTIONS.map((theme) => {
-              const Icon = themeIcons[theme.value] || Heart;
-              const isSelected = selectedTheme === theme.value;
-              const preview = themePreviews[theme.value];
-              const gradient = themeColors[theme.value];
-              const isUnlocked = isThemeUnlocked(theme.value);
-              const purchaseStatus = getThemePurchaseStatus(theme.value);
-              const isFree = theme.value === 'simple';
+        <CardContent className="space-y-8">
+          {/* Tier Legend */}
+          <div className="flex flex-wrap items-center gap-4 text-sm p-4 bg-muted/50 rounded-lg">
+            <span className="font-medium">Tiers:</span>
+            <span className="flex items-center gap-1.5">
+              <div className="w-3 h-3 rounded bg-green-500" />
+              Free
+            </span>
+            <span className="flex items-center gap-1.5">
+              <div className="w-3 h-3 rounded bg-blue-500" />
+              Standard ৳200
+            </span>
+            <span className="flex items-center gap-1.5">
+              <div className="w-3 h-3 rounded bg-gradient-to-r from-amber-500 to-orange-500" />
+              <Zap className="w-3 h-3 text-amber-500" />
+              Pro ৳300
+            </span>
+            <span className="flex items-center gap-1.5">
+              <div className="w-3 h-3 rounded bg-gradient-to-r from-purple-500 to-fuchsia-500" />
+              <Crown className="w-3 h-3 text-purple-500" />
+              Elite ৳400
+            </span>
+          </div>
 
-              return (
-                <div
-                  key={theme.value}
-                  className={`relative rounded-xl border-2 transition-all cursor-pointer overflow-hidden ${
-                    isSelected 
-                      ? 'border-primary ring-2 ring-primary/20' 
-                      : 'border-border hover:border-primary/50'
-                  }`}
-                  onClick={() => handleThemeChange(theme.value)}
-                >
-                  {/* Theme Preview Header */}
-                  <div className={`h-24 bg-gradient-to-br ${gradient} relative`}>
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <Icon className="w-10 h-10 text-white/80" />
-                    </div>
-                    
-                    {/* Lock overlay for premium themes */}
-                    {!isUnlocked && !isFree && (
-                      <div className="absolute inset-0 bg-black/40 flex items-center justify-center backdrop-blur-[1px]">
-                        <div className="bg-black/60 rounded-full p-2">
-                          <Lock className="w-6 h-6 text-white" />
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Badges */}
-                    <div className="absolute top-2 right-2 flex flex-col gap-1">
-                      {isSelected && (
-                        <Badge className="bg-white text-primary">
-                          <Check className="w-3 h-3 mr-1" />
-                          Active
-                        </Badge>
-                      )}
-                      {isFree ? (
-                        <Badge variant="secondary" className="bg-green-500/90 text-white border-0">
-                          Free
-                        </Badge>
-                      ) : isUnlocked ? (
-                        <Badge variant="secondary" className="bg-amber-500/90 text-white border-0">
-                          <Sparkles className="w-3 h-3 mr-1" />
-                          Owned
-                        </Badge>
-                      ) : purchaseStatus === 'pending' ? (
-                        <Badge variant="secondary" className="bg-blue-500/90 text-white border-0">
-                          <Clock className="w-3 h-3 mr-1" />
-                          Pending
-                        </Badge>
-                      ) : (
-                        <Badge variant="secondary" className="bg-amber-500/90 text-white border-0">
-                          ৳{theme.price}
-                        </Badge>
-                      )}
-                    </div>
+          {/* Theme Categories */}
+          {groupedThemes.map((group) => {
+            const CategoryIcon = categoryIcons[group.category];
+            const categoryColor = categoryColors[group.category];
+            
+            return (
+              <div key={group.category}>
+                {/* Category Header */}
+                <div className="flex items-center gap-3 mb-4">
+                  <div className={`w-8 h-8 rounded-lg bg-gradient-to-br ${categoryColor} flex items-center justify-center`}>
+                    <CategoryIcon className="w-4 h-4 text-white" />
                   </div>
+                  <h3 className="font-semibold">{group.label}</h3>
+                  <Badge variant="secondary" className="text-xs">
+                    {group.themes.length} theme{group.themes.length > 1 ? 's' : ''}
+                  </Badge>
+                </div>
 
-                  {/* Theme Info */}
-                  <div className="p-4 bg-card">
-                    <div className="flex items-center justify-between mb-2">
-                      <h3 className="font-semibold">{theme.label}</h3>
-                      <Dialog>
-                        <DialogTrigger asChild>
-                          <Button 
-                            variant="ghost" 
-                            size="sm" 
-                            className="h-8 px-2"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setPreviewTheme(theme.value);
-                            }}
-                          >
-                            <Eye className="w-4 h-4 mr-1" />
-                            Preview
-                          </Button>
-                        </DialogTrigger>
-                        <DialogContent className="max-w-2xl">
-                          <DialogHeader>
-                            <DialogTitle className="flex items-center gap-3">
-                              <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${gradient} flex items-center justify-center`}>
-                                <Icon className="w-5 h-5 text-white" />
+                {/* Theme Cards */}
+                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                  {group.themes.map((theme) => {
+                    const Icon = categoryIcons[theme.category];
+                    const isSelected = selectedTheme === theme.value;
+                    const preview = themePreviews[theme.value];
+                    const gradient = tierColors[theme.tier];
+                    const isUnlocked = isThemeUnlocked(theme.value);
+                    const purchaseStatus = getThemePurchaseStatus(theme.value);
+                    const isFree = theme.tier === 'free';
+
+                    return (
+                      <div
+                        key={theme.value}
+                        className={`relative rounded-xl border-2 transition-all cursor-pointer overflow-hidden ${
+                          isSelected 
+                            ? 'border-primary ring-2 ring-primary/20' 
+                            : 'border-border hover:border-primary/50'
+                        }`}
+                        onClick={() => handleThemeChange(theme.value)}
+                      >
+                        {/* Theme Preview Header */}
+                        <div className={`h-24 bg-gradient-to-br ${gradient} relative`}>
+                          <div className="absolute inset-0 flex items-center justify-center">
+                            <Icon className="w-10 h-10 text-white/80" />
+                          </div>
+                          
+                          {/* Lock overlay for premium themes */}
+                          {!isUnlocked && !isFree && (
+                            <div className="absolute inset-0 bg-black/40 flex items-center justify-center backdrop-blur-[1px]">
+                              <div className="bg-black/60 rounded-full p-2">
+                                <Lock className="w-6 h-6 text-white" />
                               </div>
-                              {theme.label} Theme
-                              {isFree ? (
-                                <Badge variant="secondary" className="bg-green-500 text-white ml-2">
-                                  Free
+                            </div>
+                          )}
+
+                          {/* Badges */}
+                          <div className="absolute top-2 right-2 flex flex-col gap-1">
+                            {isSelected && (
+                              <Badge className="bg-white text-primary">
+                                <Check className="w-3 h-3 mr-1" />
+                                Active
+                              </Badge>
+                            )}
+                            {isFree ? (
+                              <Badge variant="secondary" className="bg-green-500/90 text-white border-0">
+                                Free
+                              </Badge>
+                            ) : isUnlocked ? (
+                              <Badge variant="secondary" className="bg-amber-500/90 text-white border-0">
+                                <Sparkles className="w-3 h-3 mr-1" />
+                                Owned
+                              </Badge>
+                            ) : purchaseStatus === 'pending' ? (
+                              <Badge variant="secondary" className="bg-blue-500/90 text-white border-0">
+                                <Clock className="w-3 h-3 mr-1" />
+                                Pending
+                              </Badge>
+                            ) : (
+                              <>
+                                <Badge className={`${theme.tier === 'pro' ? 'bg-gradient-to-r from-amber-500 to-orange-500' : theme.tier === 'elite' ? 'bg-gradient-to-r from-purple-500 to-fuchsia-500' : 'bg-blue-500'} text-white border-0 text-xs capitalize`}>
+                                  {theme.tier === 'elite' && <Crown className="w-3 h-3 mr-1" />}
+                                  {theme.tier === 'pro' && <Zap className="w-3 h-3 mr-1" />}
+                                  {theme.tier}
                                 </Badge>
-                              ) : (
-                                <Badge variant="secondary" className="bg-amber-500 text-white ml-2">
+                                <Badge variant="secondary" className="bg-black/60 text-white border-0">
                                   ৳{theme.price}
                                 </Badge>
-                              )}
-                            </DialogTitle>
-                          </DialogHeader>
-                          <div className="space-y-6 py-4">
-                            {/* Mock Preview */}
-                            <div className={`h-48 rounded-xl bg-gradient-to-br ${gradient} relative overflow-hidden`}>
-                              <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
-                                <div className="text-center text-white">
-                                  <Icon className="w-12 h-12 mx-auto mb-3 opacity-80" />
-                                  <p className="text-lg font-medium">{preview?.hero}</p>
-                                </div>
-                              </div>
-                            </div>
-
-                            {/* Features */}
-                            <div>
-                              <h4 className="font-medium mb-3">Theme Features:</h4>
-                              <div className="grid grid-cols-2 gap-2">
-                                {preview?.features.map((feature, i) => (
-                                  <div key={i} className="flex items-center gap-2 text-sm text-muted-foreground">
-                                    <Check className="w-4 h-4 text-primary" />
-                                    {feature}
-                                  </div>
-                                ))}
-                              </div>
-                            </div>
-
-                            {/* Action */}
-                            <div className="flex gap-3">
-                              {isUnlocked ? (
-                                <Button 
-                                  className="flex-1"
-                                  onClick={() => {
-                                    handleThemeChange(theme.value);
-                                  }}
-                                  disabled={isSelected || saving}
-                                >
-                                  {isSelected ? (
-                                    <>
-                                      <Check className="w-4 h-4 mr-2" />
-                                      Currently Active
-                                    </>
-                                  ) : (
-                                    <>
-                                      <Palette className="w-4 h-4 mr-2" />
-                                      Use This Theme
-                                    </>
-                                  )}
-                                </Button>
-                              ) : purchaseStatus === 'pending' ? (
-                                <Button className="flex-1" disabled>
-                                  <Clock className="w-4 h-4 mr-2" />
-                                  Purchase Pending Approval
-                                </Button>
-                              ) : (
-                                <Button 
-                                  className="flex-1 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600"
-                                  onClick={() => {
-                                    setSelectedPurchaseTheme({ id: theme.value, name: theme.label });
-                                    setPurchaseDialogOpen(true);
-                                  }}
-                                >
-                                  <Lock className="w-4 h-4 mr-2" />
-                                  Unlock for ৳{theme.price}
-                                </Button>
-                              )}
-                              <Button variant="outline" asChild>
-                                <a href={`/demo/${theme.value}`} target="_blank" rel="noopener noreferrer">
-                                  <ExternalLink className="w-4 h-4 mr-2" />
-                                  Live Demo
-                                </a>
-                              </Button>
-                            </div>
+                              </>
+                            )}
                           </div>
-                        </DialogContent>
-                      </Dialog>
-                    </div>
-                    <p className="text-sm text-muted-foreground">{theme.description}</p>
-                  </div>
+                        </div>
+
+                        {/* Theme Info */}
+                        <div className="p-4 bg-card">
+                          <div className="flex items-center justify-between mb-2">
+                            <h3 className="font-semibold text-sm">{theme.label}</h3>
+                            <Dialog>
+                              <DialogTrigger asChild>
+                                <Button 
+                                  variant="ghost" 
+                                  size="sm" 
+                                  className="h-7 px-2 text-xs"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    setPreviewTheme(theme.value);
+                                  }}
+                                >
+                                  <Eye className="w-3 h-3 mr-1" />
+                                  Preview
+                                </Button>
+                              </DialogTrigger>
+                              <DialogContent className="max-w-2xl">
+                                <DialogHeader>
+                                  <DialogTitle className="flex items-center gap-3">
+                                    <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${gradient} flex items-center justify-center`}>
+                                      <Icon className="w-5 h-5 text-white" />
+                                    </div>
+                                    {theme.label} Theme
+                                    {isFree ? (
+                                      <Badge variant="secondary" className="bg-green-500 text-white ml-2">
+                                        Free
+                                      </Badge>
+                                    ) : (
+                                      <Badge className={`${theme.tier === 'pro' ? 'bg-gradient-to-r from-amber-500 to-orange-500' : theme.tier === 'elite' ? 'bg-gradient-to-r from-purple-500 to-fuchsia-500' : 'bg-blue-500'} text-white ml-2 capitalize`}>
+                                        {theme.tier} - ৳{theme.price}
+                                      </Badge>
+                                    )}
+                                  </DialogTitle>
+                                </DialogHeader>
+                                <div className="space-y-6 py-4">
+                                  {/* Mock Preview */}
+                                  <div className={`h-48 rounded-xl bg-gradient-to-br ${gradient} relative overflow-hidden`}>
+                                    <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
+                                      <div className="text-center text-white">
+                                        <Icon className="w-12 h-12 mx-auto mb-3 opacity-80" />
+                                        <p className="text-lg font-medium">{preview?.hero}</p>
+                                      </div>
+                                    </div>
+                                  </div>
+
+                                  {/* Features */}
+                                  <div>
+                                    <h4 className="font-medium mb-3">Theme Features:</h4>
+                                    <div className="grid grid-cols-2 gap-2">
+                                      {preview?.features.map((feature, i) => (
+                                        <div key={i} className="flex items-center gap-2 text-sm text-muted-foreground">
+                                          <Check className="w-4 h-4 text-primary" />
+                                          {feature}
+                                        </div>
+                                      ))}
+                                    </div>
+                                  </div>
+
+                                  {/* Action */}
+                                  <div className="flex gap-3">
+                                    {isUnlocked ? (
+                                      <Button 
+                                        className="flex-1"
+                                        onClick={() => {
+                                          handleThemeChange(theme.value);
+                                        }}
+                                        disabled={isSelected || saving}
+                                      >
+                                        {isSelected ? (
+                                          <>
+                                            <Check className="w-4 h-4 mr-2" />
+                                            Currently Active
+                                          </>
+                                        ) : (
+                                          <>
+                                            <Palette className="w-4 h-4 mr-2" />
+                                            Use This Theme
+                                          </>
+                                        )}
+                                      </Button>
+                                    ) : purchaseStatus === 'pending' ? (
+                                      <Button className="flex-1" disabled>
+                                        <Clock className="w-4 h-4 mr-2" />
+                                        Purchase Pending Approval
+                                      </Button>
+                                    ) : (
+                                      <Button 
+                                        className={`flex-1 ${theme.tier === 'elite' ? 'bg-gradient-to-r from-purple-500 to-fuchsia-500 hover:from-purple-600 hover:to-fuchsia-600' : theme.tier === 'pro' ? 'bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600' : ''}`}
+                                        onClick={() => {
+                                          setSelectedPurchaseTheme({ id: theme.value, name: theme.label });
+                                          setPurchaseDialogOpen(true);
+                                        }}
+                                      >
+                                        <Lock className="w-4 h-4 mr-2" />
+                                        Unlock for ৳{theme.price}
+                                      </Button>
+                                    )}
+                                    <Button variant="outline" asChild>
+                                      <a href={`/demo/${theme.value}`} target="_blank" rel="noopener noreferrer">
+                                        <ExternalLink className="w-4 h-4 mr-2" />
+                                        Live Demo
+                                      </a>
+                                    </Button>
+                                  </div>
+                                </div>
+                              </DialogContent>
+                            </Dialog>
+                          </div>
+                          <p className="text-xs text-muted-foreground line-clamp-2">{theme.description}</p>
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
-              );
-            })}
-          </div>
+              </div>
+            );
+          })}
         </CardContent>
       </Card>
 

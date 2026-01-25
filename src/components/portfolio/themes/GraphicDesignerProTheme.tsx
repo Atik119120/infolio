@@ -1,98 +1,73 @@
 import { ThemeProps } from "./types";
 import { getSocialIcon, formatDate } from "./utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   MapPin, Mail, Phone, ExternalLink, Github, Palette, PenTool, Layers,
-  Briefcase, GraduationCap, Menu, X, Sparkles, Eye, Brush, Droplet,
-  Circle, Square, Triangle, Hexagon, Star, Zap, ArrowRight, Frame
+  Briefcase, GraduationCap, Menu, X, Eye, ArrowRight, Sparkles,
+  Image, Frame, Brush
 } from "lucide-react";
-import { useState, useEffect, useRef, Suspense } from "react";
-import { motion, AnimatePresence, useInView, useMotionValue, useTransform } from "framer-motion";
-import { Canvas, useFrame } from "@react-three/fiber";
-import { Float, Torus, Cone, Icosahedron, MeshDistortMaterial, OrbitControls } from "@react-three/drei";
-import * as THREE from "three";
+import { useState, useEffect, useRef } from "react";
+import { motion, AnimatePresence, useInView } from "framer-motion";
 
-// Magazine/Editorial style colors
+// Editorial magazine-inspired colors
 const proColors = {
-  bg: "#faf8f5",
+  bg: "#fdfcfa",
+  bgAlt: "#f5f3ef",
   card: "#ffffff",
-  dark: "#1a1a1a",
-  accent1: "#ff4d4d",
-  accent2: "#4d4dff",
-  accent3: "#ffd700",
-  accent4: "#00d4aa",
-  muted: "#666666",
+  text: "#1a1a1a",
+  textMuted: "#6b6b6b",
+  accent: "#e63946",
+  accentSecondary: "#457b9d",
+  accentTertiary: "#f4a261",
   border: "#e5e5e5",
 };
 
-// 3D Floating shapes
-function FloatingShape({ type, position, color }: { type: string; position: [number, number, number]; color: string }) {
-  const meshRef = useRef<THREE.Mesh>(null);
-  
-  useFrame((state) => {
-    if (meshRef.current) {
-      meshRef.current.rotation.x += 0.005;
-      meshRef.current.rotation.y += 0.01;
-    }
-  });
+// Adobe-style app badges
+const adobeApps = [
+  { icon: "Ps", name: "Photoshop", color: "#31A8FF" },
+  { icon: "Ai", name: "Illustrator", color: "#FF9A00" },
+  { icon: "Id", name: "InDesign", color: "#FF3366" },
+  { icon: "Xd", name: "XD", color: "#FF61F6" },
+  { icon: "Fg", name: "Figma", color: "#A259FF" },
+  { icon: "Ae", name: "After Effects", color: "#9999FF" },
+];
 
-  return (
-    <Float speed={2} rotationIntensity={0.5} floatIntensity={1}>
-      <mesh ref={meshRef} position={position}>
-        {type === 'torus' && <torusGeometry args={[0.4, 0.15, 16, 32]} />}
-        {type === 'cone' && <coneGeometry args={[0.4, 0.8, 4]} />}
-        {type === 'icosahedron' && <icosahedronGeometry args={[0.4]} />}
-        {type === 'box' && <boxGeometry args={[0.5, 0.5, 0.5]} />}
-        <meshStandardMaterial color={color} metalness={0.3} roughness={0.5} />
-      </mesh>
-    </Float>
-  );
-}
-
-// 3D Scene
-function Scene3D() {
-  return (
-    <Canvas camera={{ position: [0, 0, 5], fov: 50 }}>
-      <ambientLight intensity={0.6} />
-      <directionalLight position={[10, 10, 5]} intensity={1} />
-      <FloatingShape type="torus" position={[-2, 1.5, 0]} color={proColors.accent1} />
-      <FloatingShape type="cone" position={[2, -1, 0]} color={proColors.accent2} />
-      <FloatingShape type="icosahedron" position={[-1.5, -1.5, 1]} color={proColors.accent3} />
-      <FloatingShape type="box" position={[1.5, 1, -1]} color={proColors.accent4} />
-      <OrbitControls enableZoom={false} enablePan={false} autoRotate autoRotateSpeed={1} />
-    </Canvas>
-  );
-}
-
-// Scroll reveal animation
+// Scroll animation wrapper
 function ScrollReveal({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) {
   const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
+  const isInView = useInView(ref, { once: true, margin: "-80px" });
   return (
     <motion.div
       ref={ref}
-      initial={{ opacity: 0, y: 60 }}
-      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 60 }}
-      transition={{ duration: 0.8, delay, ease: "easeOut" }}
+      initial={{ opacity: 0, y: 50 }}
+      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
+      transition={{ duration: 0.7, delay, ease: [0.25, 0.1, 0.25, 1] }}
     >
       {children}
     </motion.div>
   );
 }
 
-// Marquee text component
-function MarqueeText({ text, direction = 1 }: { text: string; direction?: number }) {
+// Marquee text
+function MarqueeText({ text }: { text: string }) {
   return (
-    <div className="overflow-hidden whitespace-nowrap">
+    <div className="overflow-hidden whitespace-nowrap py-4">
       <motion.div
         className="inline-block"
-        animate={{ x: direction > 0 ? ["0%", "-50%"] : ["-50%", "0%"] }}
-        transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+        animate={{ x: ["0%", "-50%"] }}
+        transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
       >
         {[...Array(4)].map((_, i) => (
-          <span key={i} className="inline-block mx-8 text-6xl sm:text-8xl font-black uppercase" style={{ WebkitTextStroke: `2px ${proColors.dark}`, color: 'transparent' }}>
+          <span 
+            key={i} 
+            className="inline-block mx-6 text-7xl sm:text-9xl font-black uppercase tracking-tight"
+            style={{ 
+              WebkitTextStroke: `2px ${proColors.text}`, 
+              color: 'transparent',
+              fontFamily: 'system-ui, sans-serif'
+            }}
+          >
             {text}
           </span>
         ))}
@@ -101,36 +76,124 @@ function MarqueeText({ text, direction = 1 }: { text: string; direction?: number
   );
 }
 
-// Color swatch component
-function ColorSwatch({ color, name }: { color: string; name: string }) {
+// Section header with editorial style
+function SectionHeader({ label, title }: { label: string; title: string }) {
   return (
-    <motion.div 
-      className="flex flex-col items-center gap-2"
-      whileHover={{ scale: 1.1, y: -5 }}
+    <div className="mb-12">
+      <motion.div 
+        className="inline-block px-4 py-1.5 rounded-full text-xs font-medium uppercase tracking-wider mb-4"
+        style={{ backgroundColor: proColors.accent, color: '#fff' }}
+      >
+        {label}
+      </motion.div>
+      <h2 className="text-4xl sm:text-5xl font-black leading-tight" style={{ color: proColors.text }}>
+        {title}
+      </h2>
+    </div>
+  );
+}
+
+// Project card with hover effect
+function ProjectCard({ project, index }: { project: any; index: number }) {
+  const [isHovered, setIsHovered] = useState(false);
+  
+  return (
+    <motion.div
+      className="group relative"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      whileHover={{ y: -8 }}
+      transition={{ duration: 0.3 }}
     >
-      <div 
-        className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl shadow-lg"
-        style={{ backgroundColor: color }}
-      />
-      <span className="text-xs font-mono" style={{ color: proColors.muted }}>{name}</span>
+      {/* Image container */}
+      <div className="relative aspect-[4/3] rounded-2xl overflow-hidden mb-4">
+        {project.image_url ? (
+          <motion.img 
+            src={project.image_url} 
+            alt={project.title}
+            className="w-full h-full object-cover"
+            animate={{ scale: isHovered ? 1.05 : 1 }}
+            transition={{ duration: 0.5 }}
+          />
+        ) : (
+          <div 
+            className="w-full h-full flex items-center justify-center"
+            style={{ backgroundColor: proColors.bgAlt }}
+          >
+            <Frame className="w-16 h-16" style={{ color: proColors.accent }} />
+          </div>
+        )}
+        
+        {/* Overlay */}
+        <motion.div 
+          className="absolute inset-0 flex items-center justify-center gap-3"
+          style={{ backgroundColor: `${proColors.accent}e6` }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: isHovered ? 1 : 0 }}
+          transition={{ duration: 0.3 }}
+        >
+          {project.live_url && (
+            <motion.a
+              href={project.live_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-12 h-12 rounded-full bg-white flex items-center justify-center"
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <ExternalLink className="w-5 h-5" style={{ color: proColors.accent }} />
+            </motion.a>
+          )}
+          {project.github_url && (
+            <motion.a
+              href={project.github_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-12 h-12 rounded-full bg-white flex items-center justify-center"
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <Github className="w-5 h-5" style={{ color: proColors.accent }} />
+            </motion.a>
+          )}
+        </motion.div>
+
+        {/* Number badge */}
+        <div 
+          className="absolute top-4 left-4 w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold"
+          style={{ backgroundColor: proColors.text, color: '#fff' }}
+        >
+          {String(index + 1).padStart(2, '0')}
+        </div>
+      </div>
+
+      {/* Content */}
+      <div>
+        <h3 className="text-xl font-bold mb-2" style={{ color: proColors.text }}>{project.title}</h3>
+        <p className="text-sm mb-3 line-clamp-2" style={{ color: proColors.textMuted }}>{project.description}</p>
+        {project.tech_stack && (
+          <div className="flex flex-wrap gap-2">
+            {project.tech_stack.slice(0, 3).map((tech: string, idx: number) => (
+              <span 
+                key={idx} 
+                className="px-3 py-1 rounded-full text-xs font-medium"
+                style={{ backgroundColor: proColors.bgAlt, color: proColors.text }}
+              >
+                {tech}
+              </span>
+            ))}
+          </div>
+        )}
+      </div>
     </motion.div>
   );
 }
 
 export default function GraphicDesignerProTheme({ profile, portfolio, skills, projects, experiences, education, socialLinks }: ThemeProps) {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [hoveredProject, setHoveredProject] = useState<string | null>(null);
+  
   const featuredProjects = projects.filter((p) => p.featured);
   const allProjects = [...featuredProjects, ...projects.filter((p) => !p.featured)];
-
-  const adobeApps = [
-    { icon: "Ps", name: "Photoshop", color: "#31A8FF" },
-    { icon: "Ai", name: "Illustrator", color: "#FF9A00" },
-    { icon: "Id", name: "InDesign", color: "#FF3366" },
-    { icon: "Xd", name: "XD", color: "#FF61F6" },
-    { icon: "Fg", name: "Figma", color: "#A259FF" },
-    { icon: "Ae", name: "After Effects", color: "#9999FF" },
-  ];
 
   const groupedSkills = skills.reduce((acc, skill) => {
     const category = skill.category || "Design";
@@ -148,10 +211,12 @@ export default function GraphicDesignerProTheme({ profile, portfolio, skills, pr
     setMenuOpen(false);
   };
 
+  const navItems = ["Home", "About", "Skills", "Work", "Contact"];
+
   return (
-    <div className="min-h-screen font-sans" style={{ backgroundColor: proColors.bg, color: proColors.dark }}>
-      {/* Navigation - Magazine Style */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-lg border-b" style={{ borderColor: proColors.border }}>
+    <div className="min-h-screen" style={{ backgroundColor: proColors.bg, color: proColors.text }}>
+      {/* Navigation - Clean Editorial */}
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b" style={{ borderColor: proColors.border }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
@@ -164,39 +229,49 @@ export default function GraphicDesignerProTheme({ profile, portfolio, skills, pr
                 <img src={portfolio.logo_url} alt="Logo" className="h-8 w-auto" />
               ) : (
                 <div className="flex items-center gap-2">
-                  <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ backgroundColor: proColors.accent1 }}>
+                  <div 
+                    className="w-10 h-10 rounded-xl flex items-center justify-center"
+                    style={{ backgroundColor: proColors.accent }}
+                  >
                     <Palette className="w-5 h-5 text-white" />
                   </div>
-                  <span className="font-black text-lg tracking-tight">{profile?.display_name?.split(' ')[0] || "Designer"}</span>
-                  <span className="font-light text-lg">.pro</span>
+                  <div className="hidden sm:block">
+                    <span className="font-black text-lg">{profile?.display_name?.split(' ')[0] || "Studio"}</span>
+                    <span className="font-light text-lg opacity-50">.design</span>
+                  </div>
                 </div>
               )}
             </motion.div>
 
             {/* Desktop Nav */}
             <div className="hidden md:flex items-center gap-8">
-              {["Home", "About", "Skills", "Work", "Contact"].map((item, i) => (
+              {navItems.map((item, i) => (
                 <motion.button
                   key={item}
                   onClick={() => scrollTo(item.toLowerCase() === "home" ? "hero" : item.toLowerCase() === "work" ? "works" : item.toLowerCase() === "about" ? "bio" : item.toLowerCase())}
-                  className="text-sm font-medium hover:text-[#ff4d4d] transition-colors relative group"
+                  className="text-sm font-medium transition-colors relative group"
+                  style={{ color: proColors.textMuted }}
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.1 }}
+                  whileHover={{ color: proColors.text }}
                 >
                   {item}
-                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#ff4d4d] group-hover:w-full transition-all duration-300" />
+                  <span 
+                    className="absolute -bottom-1 left-0 w-0 h-0.5 group-hover:w-full transition-all duration-300"
+                    style={{ backgroundColor: proColors.accent }}
+                  />
                 </motion.button>
               ))}
             </div>
 
             {/* CTA + Mobile */}
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-4">
               {profile?.email && (
                 <Button 
                   size="sm" 
-                  className="hidden sm:flex rounded-full px-6"
-                  style={{ backgroundColor: proColors.dark }}
+                  className="rounded-full px-6 hidden sm:flex"
+                  style={{ backgroundColor: proColors.text, color: '#fff' }}
                   asChild
                 >
                   <a href={`mailto:${profile.email}`}>Let's Talk</a>
@@ -219,7 +294,7 @@ export default function GraphicDesignerProTheme({ profile, portfolio, skills, pr
               animate={{ height: "auto", opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
             >
-              {["Home", "About", "Skills", "Work", "Contact"].map((item) => (
+              {navItems.map((item) => (
                 <button
                   key={item}
                   onClick={() => scrollTo(item.toLowerCase() === "home" ? "hero" : item.toLowerCase() === "work" ? "works" : item.toLowerCase() === "about" ? "bio" : item.toLowerCase())}
@@ -234,46 +309,42 @@ export default function GraphicDesignerProTheme({ profile, portfolio, skills, pr
       </nav>
 
       {/* Hero Section - Editorial Magazine Style */}
-      <section id="hero" className="min-h-screen pt-16 relative overflow-hidden">
-        {/* 3D Background - Desktop */}
-        <div className="absolute inset-0 hidden md:block opacity-30">
-          <Suspense fallback={null}>
-            <Scene3D />
-          </Suspense>
-        </div>
-
-        {/* Content */}
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 min-h-[calc(100vh-4rem)] flex items-center">
-          <div className="w-full grid lg:grid-cols-2 gap-12 items-center py-12">
+      <section id="hero" className="min-h-screen pt-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 min-h-[calc(100vh-4rem)] flex items-center py-12">
+          <div className="w-full grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             {/* Left - Text */}
             <div className="order-2 lg:order-1">
               <ScrollReveal>
                 <div className="flex items-center gap-3 mb-6">
-                  <div className="flex gap-1">
-                    {[proColors.accent1, proColors.accent2, proColors.accent3].map((color, i) => (
+                  <div className="flex gap-1.5">
+                    {[proColors.accent, proColors.accentSecondary, proColors.accentTertiary].map((color, i) => (
                       <motion.div 
                         key={i}
                         className="w-3 h-3 rounded-full"
                         style={{ backgroundColor: color }}
-                        animate={{ scale: [1, 1.2, 1] }}
-                        transition={{ duration: 1, delay: i * 0.2, repeat: Infinity }}
+                        animate={{ y: [0, -4, 0] }}
+                        transition={{ duration: 1.5, delay: i * 0.2, repeat: Infinity }}
                       />
                     ))}
                   </div>
-                  <span className="text-sm font-medium" style={{ color: proColors.muted }}>Creative Designer</span>
+                  <span className="text-sm font-medium uppercase tracking-wider" style={{ color: proColors.textMuted }}>
+                    Creative Designer
+                  </span>
                 </div>
               </ScrollReveal>
 
               <ScrollReveal delay={0.1}>
-                <h1 className="text-5xl sm:text-6xl lg:text-8xl font-black leading-[0.9] mb-6">
+                <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black leading-[0.95] mb-6">
                   <span className="block">{profile?.display_name?.split(' ')[0] || "Creative"}</span>
-                  <span className="block" style={{ color: proColors.accent1 }}>{profile?.display_name?.split(' ').slice(1).join(' ') || "Designer"}</span>
+                  <span className="block" style={{ color: proColors.accent }}>
+                    {profile?.display_name?.split(' ').slice(1).join(' ') || "Designer"}
+                  </span>
                 </h1>
               </ScrollReveal>
 
               <ScrollReveal delay={0.2}>
-                <p className="text-xl mb-8 max-w-md" style={{ color: proColors.muted }}>
-                  {portfolio?.headline || "Crafting visual stories that captivate and inspire"}
+                <p className="text-xl mb-8 max-w-md leading-relaxed" style={{ color: proColors.textMuted }}>
+                  {portfolio?.headline || "Crafting visual stories that captivate and inspire through thoughtful design."}
                 </p>
               </ScrollReveal>
 
@@ -283,7 +354,7 @@ export default function GraphicDesignerProTheme({ profile, portfolio, skills, pr
                     <Button 
                       size="lg" 
                       className="rounded-full px-8"
-                      style={{ backgroundColor: proColors.accent1 }}
+                      style={{ backgroundColor: proColors.accent, color: '#fff' }}
                       asChild
                     >
                       <a href={`mailto:${profile.email}`}>
@@ -296,7 +367,7 @@ export default function GraphicDesignerProTheme({ profile, portfolio, skills, pr
                     size="lg" 
                     variant="outline"
                     className="rounded-full px-8 border-2"
-                    style={{ borderColor: proColors.dark }}
+                    style={{ borderColor: proColors.text }}
                     onClick={() => scrollTo('works')}
                   >
                     <Eye className="w-4 h-4 mr-2" />
@@ -305,20 +376,23 @@ export default function GraphicDesignerProTheme({ profile, portfolio, skills, pr
                 </div>
               </ScrollReveal>
 
-              {/* Tools */}
+              {/* Adobe Tools */}
               <ScrollReveal delay={0.4}>
                 <div className="flex items-center gap-4">
-                  <span className="text-xs font-medium uppercase tracking-wider" style={{ color: proColors.muted }}>Tools:</span>
+                  <span className="text-xs font-medium uppercase tracking-wider" style={{ color: proColors.textMuted }}>
+                    Tools:
+                  </span>
                   <div className="flex gap-2">
                     {adobeApps.slice(0, 5).map((app, i) => (
                       <motion.div
                         key={app.icon}
-                        className="w-10 h-10 rounded-xl flex items-center justify-center text-xs font-bold text-white shadow-lg"
+                        className="w-10 h-10 rounded-xl flex items-center justify-center text-xs font-bold text-white shadow-lg cursor-pointer"
                         style={{ backgroundColor: app.color }}
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.5 + i * 0.1 }}
-                        whileHover={{ y: -5, scale: 1.1 }}
+                        whileHover={{ y: -4, scale: 1.1 }}
+                        title={app.name}
                       >
                         {app.icon}
                       </motion.div>
@@ -328,40 +402,43 @@ export default function GraphicDesignerProTheme({ profile, portfolio, skills, pr
               </ScrollReveal>
             </div>
 
-            {/* Right - Avatar with creative frame */}
+            {/* Right - Avatar */}
             <ScrollReveal delay={0.2}>
-              <div className="order-1 lg:order-2 relative flex justify-center">
-                {/* Decorative shapes */}
+              <div className="order-1 lg:order-2 flex justify-center relative">
+                {/* Decorative elements */}
                 <motion.div 
-                  className="absolute -top-8 -left-8 w-32 h-32 rounded-full"
-                  style={{ backgroundColor: proColors.accent3 }}
+                  className="absolute -top-6 -left-6 w-24 h-24 rounded-full"
+                  style={{ backgroundColor: proColors.accentTertiary }}
                   animate={{ rotate: [0, 360] }}
                   transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
                 />
                 <motion.div 
-                  className="absolute -bottom-8 -right-8 w-24 h-24"
-                  style={{ backgroundColor: proColors.accent2, clipPath: "polygon(50% 0%, 100% 100%, 0% 100%)" }}
-                  animate={{ rotate: [0, -360] }}
+                  className="absolute -bottom-6 -right-6 w-20 h-20 rotate-45"
+                  style={{ backgroundColor: proColors.accentSecondary }}
+                  animate={{ rotate: [45, 405] }}
                   transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
                 />
                 
-                {/* Main avatar */}
+                {/* Main avatar with layered effect */}
                 <div className="relative">
                   <motion.div 
-                    className="absolute -inset-4 rounded-3xl"
-                    style={{ backgroundColor: proColors.accent1 }}
-                    animate={{ rotate: [3, -3, 3] }}
-                    transition={{ duration: 5, repeat: Infinity }}
+                    className="absolute -inset-3 rounded-3xl"
+                    style={{ backgroundColor: proColors.accent }}
+                    animate={{ rotate: [2, -2, 2] }}
+                    transition={{ duration: 4, repeat: Infinity }}
                   />
                   <motion.div 
-                    className="absolute -inset-4 rounded-3xl"
-                    style={{ backgroundColor: proColors.accent2 }}
-                    animate={{ rotate: [-3, 3, -3] }}
-                    transition={{ duration: 5, repeat: Infinity }}
+                    className="absolute -inset-3 rounded-3xl"
+                    style={{ backgroundColor: proColors.accentSecondary }}
+                    animate={{ rotate: [-2, 2, -2] }}
+                    transition={{ duration: 4, repeat: Infinity }}
                   />
-                  <Avatar className="w-64 h-64 sm:w-80 sm:h-80 rounded-3xl border-4 border-white relative shadow-2xl">
-                    <AvatarImage src={profile?.avatar_url || ""} className="object-cover rounded-2xl" />
-                    <AvatarFallback className="text-6xl rounded-2xl" style={{ backgroundColor: proColors.accent1, color: 'white' }}>
+                  <Avatar className="w-56 h-56 sm:w-72 sm:h-72 rounded-3xl border-4 border-white relative shadow-2xl">
+                    <AvatarImage src={profile?.avatar_url || ""} className="object-cover" />
+                    <AvatarFallback 
+                      className="text-5xl rounded-2xl"
+                      style={{ backgroundColor: proColors.accent, color: '#fff' }}
+                    >
                       {profile?.display_name?.charAt(0) || "D"}
                     </AvatarFallback>
                   </Avatar>
@@ -372,341 +449,183 @@ export default function GraphicDesignerProTheme({ profile, portfolio, skills, pr
         </div>
 
         {/* Marquee */}
-        <div className="absolute bottom-0 left-0 right-0 py-6 overflow-hidden" style={{ backgroundColor: proColors.dark }}>
-          <MarqueeText text="Creative • Design • Innovation • Art •" />
+        <div style={{ backgroundColor: proColors.text }}>
+          <MarqueeText text="Creative • Design • Innovation • Art • Brand •" />
         </div>
       </section>
 
       {/* About Section */}
-      <section id="bio" className="py-24 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
-            {/* Left - Image grid */}
-            <ScrollReveal>
+      <section id="bio" className="py-24 px-4 sm:px-6 lg:px-8" style={{ backgroundColor: proColors.bgAlt }}>
+        <div className="max-w-6xl mx-auto">
+          <ScrollReveal>
+            <SectionHeader label="About" title="The Story Behind the Design" />
+          </ScrollReveal>
+
+          <div className="grid md:grid-cols-2 gap-12 items-center">
+            {/* Creative grid */}
+            <ScrollReveal delay={0.1}>
               <div className="grid grid-cols-2 gap-4">
-                <motion.div 
-                  className="aspect-square rounded-3xl overflow-hidden"
-                  style={{ backgroundColor: proColors.accent1 }}
-                  whileHover={{ scale: 1.05 }}
-                >
-                  <div className="w-full h-full flex items-center justify-center">
-                    <Palette className="w-16 h-16 text-white" />
-                  </div>
-                </motion.div>
-                <motion.div 
-                  className="aspect-square rounded-3xl overflow-hidden translate-y-8"
-                  style={{ backgroundColor: proColors.accent2 }}
-                  whileHover={{ scale: 1.05 }}
-                >
-                  <div className="w-full h-full flex items-center justify-center">
-                    <PenTool className="w-16 h-16 text-white" />
-                  </div>
-                </motion.div>
-                <motion.div 
-                  className="aspect-square rounded-3xl overflow-hidden -translate-y-4"
-                  style={{ backgroundColor: proColors.accent3 }}
-                  whileHover={{ scale: 1.05 }}
-                >
-                  <div className="w-full h-full flex items-center justify-center">
-                    <Layers className="w-16 h-16 text-white" />
-                  </div>
-                </motion.div>
-                <motion.div 
-                  className="aspect-square rounded-3xl overflow-hidden translate-y-4"
-                  style={{ backgroundColor: proColors.accent4 }}
-                  whileHover={{ scale: 1.05 }}
-                >
-                  <div className="w-full h-full flex items-center justify-center">
-                    <Brush className="w-16 h-16 text-white" />
-                  </div>
-                </motion.div>
+                {[
+                  { icon: Palette, color: proColors.accent, label: "Brand Design" },
+                  { icon: PenTool, color: proColors.accentSecondary, label: "Illustration" },
+                  { icon: Layers, color: proColors.accentTertiary, label: "UI/UX" },
+                  { icon: Image, color: proColors.text, label: "Photography" },
+                ].map((item, i) => (
+                  <motion.div 
+                    key={i}
+                    className="aspect-square rounded-2xl flex flex-col items-center justify-center gap-3 p-6"
+                    style={{ backgroundColor: item.color }}
+                    whileHover={{ scale: 1.05 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <item.icon className="w-10 h-10 text-white" />
+                    <span className="text-sm font-medium text-white">{item.label}</span>
+                  </motion.div>
+                ))}
               </div>
             </ScrollReveal>
 
-            {/* Right - Content */}
-            <div>
-              <ScrollReveal>
-                <Badge className="mb-6 px-4 py-2 rounded-full" style={{ backgroundColor: `${proColors.accent1}20`, color: proColors.accent1 }}>
-                  About Me
-                </Badge>
-              </ScrollReveal>
-
-              <ScrollReveal delay={0.1}>
-                <h2 className="text-4xl sm:text-5xl font-black mb-6">
-                  Designing with
-                  <span style={{ color: proColors.accent1 }}> Passion</span>
-                </h2>
-              </ScrollReveal>
-
-              <ScrollReveal delay={0.2}>
-                <p className="text-lg mb-8 leading-relaxed" style={{ color: proColors.muted }}>
-                  {portfolio?.bio || "I'm a creative professional with a passion for visual storytelling. With expertise in brand identity, UI/UX design, and digital illustration, I help brands communicate their unique stories through compelling visuals."}
+            {/* Bio text */}
+            <ScrollReveal delay={0.2}>
+              <div>
+                <p className="text-lg leading-relaxed mb-6" style={{ color: proColors.textMuted }}>
+                  {portfolio?.bio || "A passionate designer with an eye for detail and a love for creating meaningful visual experiences. Every project is an opportunity to tell a unique story through design."}
                 </p>
-              </ScrollReveal>
-
-              <ScrollReveal delay={0.3}>
-                <div className="grid grid-cols-3 gap-4 mb-8">
-                  <div className="text-center p-4 rounded-2xl" style={{ backgroundColor: proColors.card }}>
-                    <div className="text-3xl font-black" style={{ color: proColors.accent1 }}>{projects.length}+</div>
-                    <div className="text-sm" style={{ color: proColors.muted }}>Projects</div>
-                  </div>
-                  <div className="text-center p-4 rounded-2xl" style={{ backgroundColor: proColors.card }}>
-                    <div className="text-3xl font-black" style={{ color: proColors.accent2 }}>{experiences.length}+</div>
-                    <div className="text-sm" style={{ color: proColors.muted }}>Years</div>
-                  </div>
-                  <div className="text-center p-4 rounded-2xl" style={{ backgroundColor: proColors.card }}>
-                    <div className="text-3xl font-black" style={{ color: proColors.accent4 }}>{skills.length}</div>
-                    <div className="text-sm" style={{ color: proColors.muted }}>Skills</div>
-                  </div>
-                </div>
-              </ScrollReveal>
-
-              {/* Location & Contact */}
-              <ScrollReveal delay={0.4}>
-                <div className="flex flex-wrap gap-4">
+                
+                <div className="space-y-4">
                   {portfolio?.location && (
-                    <div className="flex items-center gap-2 px-4 py-2 rounded-full" style={{ backgroundColor: proColors.card }}>
-                      <MapPin className="w-4 h-4" style={{ color: proColors.accent1 }} />
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: proColors.bg }}>
+                        <MapPin className="w-5 h-5" style={{ color: proColors.accent }} />
+                      </div>
                       <span>{portfolio.location}</span>
                     </div>
                   )}
+                  {profile?.email && (
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: proColors.bg }}>
+                        <Mail className="w-5 h-5" style={{ color: proColors.accent }} />
+                      </div>
+                      <a href={`mailto:${profile.email}`} className="hover:underline">{profile.email}</a>
+                    </div>
+                  )}
                   {portfolio?.phone && (
-                    <div className="flex items-center gap-2 px-4 py-2 rounded-full" style={{ backgroundColor: proColors.card }}>
-                      <Phone className="w-4 h-4" style={{ color: proColors.accent2 }} />
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: proColors.bg }}>
+                        <Phone className="w-5 h-5" style={{ color: proColors.accent }} />
+                      </div>
                       <span>{portfolio.phone}</span>
                     </div>
                   )}
                 </div>
-              </ScrollReveal>
-            </div>
+              </div>
+            </ScrollReveal>
           </div>
         </div>
       </section>
 
       {/* Skills Section */}
-      <section id="skills" className="py-24 px-4 sm:px-6 lg:px-8" style={{ backgroundColor: proColors.dark, color: 'white' }}>
-        <div className="max-w-7xl mx-auto">
+      <section id="skills" className="py-24 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-6xl mx-auto">
           <ScrollReveal>
-            <div className="text-center mb-16">
-              <Badge className="mb-6 px-4 py-2 rounded-full bg-white/10 text-white border-0">
-                <Layers className="w-3 h-3 mr-2" />
-                My Toolkit
-              </Badge>
-              <h2 className="text-4xl sm:text-5xl font-black">
-                Skills & <span style={{ color: proColors.accent3 }}>Expertise</span>
-              </h2>
-            </div>
+            <SectionHeader label="Skills" title="Tools & Expertise" />
           </ScrollReveal>
 
-          {/* Adobe Apps */}
+          {/* Adobe Tools highlight */}
           <ScrollReveal delay={0.1}>
-            <div className="flex flex-wrap justify-center gap-4 mb-16">
-              {adobeApps.map((app, i) => (
-                <motion.div
-                  key={app.icon}
-                  className="flex items-center gap-3 px-6 py-3 rounded-2xl bg-white/5"
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.1 }}
-                  whileHover={{ scale: 1.05, backgroundColor: `${app.color}30` }}
-                >
-                  <div 
-                    className="w-10 h-10 rounded-lg flex items-center justify-center text-sm font-bold text-white"
-                    style={{ backgroundColor: app.color }}
+            <div className="mb-12 p-8 rounded-3xl" style={{ backgroundColor: proColors.bgAlt }}>
+              <h3 className="text-lg font-bold mb-6">Creative Suite</h3>
+              <div className="flex flex-wrap gap-4">
+                {adobeApps.map((app, i) => (
+                  <motion.div
+                    key={app.icon}
+                    className="flex items-center gap-3 px-5 py-3 rounded-2xl bg-white shadow-sm"
+                    initial={{ opacity: 0, x: -20 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    transition={{ delay: i * 0.1 }}
+                    viewport={{ once: true }}
+                    whileHover={{ y: -3 }}
                   >
-                    {app.icon}
-                  </div>
-                  <span className="font-medium">{app.name}</span>
-                </motion.div>
-              ))}
+                    <div 
+                      className="w-10 h-10 rounded-xl flex items-center justify-center text-xs font-bold text-white"
+                      style={{ backgroundColor: app.color }}
+                    >
+                      {app.icon}
+                    </div>
+                    <span className="font-medium">{app.name}</span>
+                  </motion.div>
+                ))}
+              </div>
             </div>
           </ScrollReveal>
 
-          {/* Skills Grid */}
+          {/* Skills by category */}
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {Object.entries(groupedSkills).map(([category, categorySkills], catIdx) => (
-              <ScrollReveal key={category} delay={catIdx * 0.1}>
-                <motion.div 
-                  className="p-6 rounded-3xl bg-white/5"
-                  whileHover={{ backgroundColor: 'rgba(255,255,255,0.1)' }}
-                >
-                  <h3 className="text-lg font-bold mb-4 flex items-center gap-2" style={{ color: [proColors.accent1, proColors.accent2, proColors.accent3, proColors.accent4][catIdx % 4] }}>
-                    <Sparkles className="w-4 h-4" />
-                    {category}
-                  </h3>
-                  <div className="flex flex-wrap gap-2">
+            {Object.entries(groupedSkills).map(([category, categorySkills], catIndex) => (
+              <ScrollReveal key={category} delay={catIndex * 0.1}>
+                <div className="p-6 rounded-2xl bg-white shadow-sm border" style={{ borderColor: proColors.border }}>
+                  <h3 className="text-lg font-bold mb-4" style={{ color: proColors.accent }}>{category}</h3>
+                  <div className="space-y-4">
                     {categorySkills.map((skill) => (
-                      <span
-                        key={skill.id}
-                        className="px-3 py-1.5 rounded-full text-sm bg-white/10"
-                      >
-                        {skill.name}
-                      </span>
+                      <div key={skill.id}>
+                        <div className="flex justify-between text-sm mb-1">
+                          <span className="font-medium">{skill.name}</span>
+                          <span style={{ color: proColors.textMuted }}>{skill.proficiency || 80}%</span>
+                        </div>
+                        <div className="h-2 rounded-full overflow-hidden" style={{ backgroundColor: proColors.bgAlt }}>
+                          <motion.div 
+                            className="h-full rounded-full"
+                            style={{ backgroundColor: proColors.accent }}
+                            initial={{ width: 0 }}
+                            whileInView={{ width: `${skill.proficiency || 80}%` }}
+                            transition={{ duration: 1, delay: 0.2 }}
+                            viewport={{ once: true }}
+                          />
+                        </div>
+                      </div>
                     ))}
                   </div>
-                </motion.div>
-              </ScrollReveal>
-            ))}
-          </div>
-
-          {/* Color Palette */}
-          <ScrollReveal delay={0.3}>
-            <div className="mt-16 text-center">
-              <h3 className="text-lg font-medium mb-8" style={{ color: proColors.muted }}>My Color Palette</h3>
-              <div className="flex flex-wrap justify-center gap-6">
-                <ColorSwatch color={proColors.accent1} name="#FF4D4D" />
-                <ColorSwatch color={proColors.accent2} name="#4D4DFF" />
-                <ColorSwatch color={proColors.accent3} name="#FFD700" />
-                <ColorSwatch color={proColors.accent4} name="#00D4AA" />
-              </div>
-            </div>
-          </ScrollReveal>
-        </div>
-      </section>
-
-      {/* Projects Section - Magazine Grid */}
-      <section id="works" className="py-24 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
-          <ScrollReveal>
-            <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between mb-16">
-              <div>
-                <Badge className="mb-6 px-4 py-2 rounded-full" style={{ backgroundColor: `${proColors.accent2}20`, color: proColors.accent2 }}>
-                  <Frame className="w-3 h-3 mr-2" />
-                  Portfolio
-                </Badge>
-                <h2 className="text-4xl sm:text-5xl font-black">
-                  Selected <span style={{ color: proColors.accent2 }}>Works</span>
-                </h2>
-              </div>
-              <p className="text-lg max-w-md mt-4 sm:mt-0" style={{ color: proColors.muted }}>
-                A curated collection of my best design projects
-              </p>
-            </div>
-          </ScrollReveal>
-
-          {/* Projects Grid - Magazine Layout */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {allProjects.slice(0, 6).map((project, i) => (
-              <ScrollReveal key={project.id} delay={i * 0.1}>
-                <motion.div 
-                  className={`group relative rounded-3xl overflow-hidden ${i === 0 || i === 3 ? 'md:col-span-2' : ''}`}
-                  style={{ backgroundColor: proColors.card }}
-                  whileHover={{ scale: 1.02 }}
-                  onMouseEnter={() => setHoveredProject(project.id)}
-                  onMouseLeave={() => setHoveredProject(null)}
-                >
-                  <div className={`relative ${i === 0 || i === 3 ? 'aspect-[2/1]' : 'aspect-square'}`}>
-                    {project.image_url ? (
-                      <img 
-                        src={project.image_url} 
-                        alt={project.title}
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                      />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center" style={{ backgroundColor: [proColors.accent1, proColors.accent2, proColors.accent3, proColors.accent4][i % 4] }}>
-                        <Frame className="w-16 h-16 text-white/50" />
-                      </div>
-                    )}
-                    
-                    {/* Overlay */}
-                    <motion.div 
-                      className="absolute inset-0 flex flex-col justify-end p-6"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: hoveredProject === project.id ? 1 : 0 }}
-                      style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.9), transparent)' }}
-                    >
-                      <div className="flex items-end justify-between">
-                        <div>
-                          <h3 className="text-2xl font-black text-white mb-2">{project.title}</h3>
-                          <p className="text-white/70 line-clamp-2">{project.description}</p>
-                          {project.tech_stack && (
-                            <div className="flex flex-wrap gap-2 mt-3">
-                              {project.tech_stack.slice(0, 3).map((tech, idx) => (
-                                <span key={idx} className="px-3 py-1 rounded-full text-xs bg-white/20 text-white">
-                                  {tech}
-                                </span>
-                              ))}
-                            </div>
-                          )}
-                        </div>
-                        <div className="flex gap-2">
-                          {project.live_url && (
-                            <a 
-                              href={project.live_url} 
-                              target="_blank" 
-                              rel="noopener noreferrer"
-                              className="p-3 rounded-xl text-white"
-                              style={{ backgroundColor: proColors.accent1 }}
-                            >
-                              <ExternalLink className="w-5 h-5" />
-                            </a>
-                          )}
-                          {project.github_url && (
-                            <a 
-                              href={project.github_url} 
-                              target="_blank" 
-                              rel="noopener noreferrer"
-                              className="p-3 rounded-xl bg-white/20 text-white"
-                            >
-                              <Github className="w-5 h-5" />
-                            </a>
-                          )}
-                        </div>
-                      </div>
-                    </motion.div>
-
-                    {/* Featured badge */}
-                    {project.featured && (
-                      <div className="absolute top-4 left-4">
-                        <Badge className="rounded-full px-4" style={{ backgroundColor: proColors.accent3, color: proColors.dark }}>
-                          <Star className="w-3 h-3 mr-1" />
-                          Featured
-                        </Badge>
-                      </div>
-                    )}
-                  </div>
-                </motion.div>
+                </div>
               </ScrollReveal>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Experience Section */}
+      {/* Experience & Education */}
       {(experiences.length > 0 || education.length > 0) && (
-        <section className="py-24 px-4 sm:px-6 lg:px-8" style={{ backgroundColor: proColors.card }}>
-          <div className="max-w-7xl mx-auto">
-            <div className="grid md:grid-cols-2 gap-16">
+        <section className="py-24 px-4 sm:px-6 lg:px-8" style={{ backgroundColor: proColors.bgAlt }}>
+          <div className="max-w-6xl mx-auto">
+            <div className="grid md:grid-cols-2 gap-12">
               {/* Experience */}
               {experiences.length > 0 && (
                 <div>
                   <ScrollReveal>
-                    <h3 className="text-2xl font-black mb-8 flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: proColors.accent1 }}>
+                    <div className="flex items-center gap-3 mb-8">
+                      <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: proColors.accent }}>
                         <Briefcase className="w-5 h-5 text-white" />
                       </div>
-                      Experience
-                    </h3>
+                      <h3 className="text-2xl font-bold">Experience</h3>
+                    </div>
                   </ScrollReveal>
                   <div className="space-y-6">
                     {experiences.map((exp, i) => (
                       <ScrollReveal key={exp.id} delay={i * 0.1}>
-                        <motion.div 
-                          className="relative pl-8 border-l-2"
-                          style={{ borderColor: proColors.accent1 }}
-                          whileHover={{ x: 5 }}
-                        >
-                          <div className="absolute left-0 top-0 w-4 h-4 rounded-full -translate-x-[9px]" style={{ backgroundColor: proColors.accent1 }} />
-                          <p className="font-bold text-lg">{exp.position}</p>
-                          <p style={{ color: proColors.accent1 }}>{exp.company}</p>
-                          <p className="text-sm mt-1" style={{ color: proColors.muted }}>
-                            {formatDate(exp.start_date)} - {exp.is_current ? "Present" : formatDate(exp.end_date)}
-                          </p>
-                          {exp.description && (
-                            <p className="text-sm mt-2" style={{ color: proColors.muted }}>{exp.description}</p>
-                          )}
-                        </motion.div>
+                        <div className="relative pl-6 border-l-2" style={{ borderColor: proColors.accent }}>
+                          <div className="absolute -left-2 top-0 w-4 h-4 rounded-full" style={{ backgroundColor: proColors.accent }} />
+                          <div className="bg-white p-5 rounded-xl shadow-sm">
+                            <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
+                              <h4 className="font-bold">{exp.position}</h4>
+                              <span className="text-xs px-3 py-1 rounded-full" style={{ backgroundColor: proColors.bgAlt, color: proColors.textMuted }}>
+                                {formatDate(exp.start_date)} - {exp.is_current ? 'Present' : formatDate(exp.end_date)}
+                              </span>
+                            </div>
+                            <p className="text-sm font-medium mb-2" style={{ color: proColors.accent }}>{exp.company}</p>
+                            {exp.description && (
+                              <p className="text-sm" style={{ color: proColors.textMuted }}>{exp.description}</p>
+                            )}
+                          </div>
+                        </div>
                       </ScrollReveal>
                     ))}
                   </div>
@@ -717,28 +636,29 @@ export default function GraphicDesignerProTheme({ profile, portfolio, skills, pr
               {education.length > 0 && (
                 <div>
                   <ScrollReveal>
-                    <h3 className="text-2xl font-black mb-8 flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: proColors.accent2 }}>
+                    <div className="flex items-center gap-3 mb-8">
+                      <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ backgroundColor: proColors.accentSecondary }}>
                         <GraduationCap className="w-5 h-5 text-white" />
                       </div>
-                      Education
-                    </h3>
+                      <h3 className="text-2xl font-bold">Education</h3>
+                    </div>
                   </ScrollReveal>
                   <div className="space-y-6">
                     {education.map((edu, i) => (
                       <ScrollReveal key={edu.id} delay={i * 0.1}>
-                        <motion.div 
-                          className="relative pl-8 border-l-2"
-                          style={{ borderColor: proColors.accent2 }}
-                          whileHover={{ x: 5 }}
-                        >
-                          <div className="absolute left-0 top-0 w-4 h-4 rounded-full -translate-x-[9px]" style={{ backgroundColor: proColors.accent2 }} />
-                          <p className="font-bold text-lg">{edu.degree}</p>
-                          <p style={{ color: proColors.accent2 }}>{edu.institution}</p>
-                          <p className="text-sm mt-1" style={{ color: proColors.muted }}>
-                            {edu.field_of_study}
-                          </p>
-                        </motion.div>
+                        <div className="relative pl-6 border-l-2" style={{ borderColor: proColors.accentSecondary }}>
+                          <div className="absolute -left-2 top-0 w-4 h-4 rounded-full" style={{ backgroundColor: proColors.accentSecondary }} />
+                          <div className="bg-white p-5 rounded-xl shadow-sm">
+                            <h4 className="font-bold mb-1">{edu.degree}</h4>
+                            <p className="text-sm font-medium mb-1" style={{ color: proColors.accentSecondary }}>{edu.institution}</p>
+                            {edu.field_of_study && (
+                              <p className="text-sm mb-2" style={{ color: proColors.textMuted }}>{edu.field_of_study}</p>
+                            )}
+                            <span className="text-xs" style={{ color: proColors.textMuted }}>
+                              {formatDate(edu.start_date)} - {edu.is_current ? 'Present' : formatDate(edu.end_date)}
+                            </span>
+                          </div>
+                        </div>
                       </ScrollReveal>
                     ))}
                   </div>
@@ -749,55 +669,53 @@ export default function GraphicDesignerProTheme({ profile, portfolio, skills, pr
         </section>
       )}
 
-      {/* Contact Section */}
-      <section id="contact" className="py-24 px-4 sm:px-6 lg:px-8" style={{ backgroundColor: proColors.accent1 }}>
-        <div className="max-w-4xl mx-auto text-center text-white">
+      {/* Projects Section */}
+      <section id="works" className="py-24 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-6xl mx-auto">
           <ScrollReveal>
-            <h2 className="text-4xl sm:text-6xl font-black mb-6">
-              Let's Create<br />Something Amazing
-            </h2>
+            <SectionHeader label="Portfolio" title="Selected Works" />
           </ScrollReveal>
 
-          <ScrollReveal delay={0.1}>
-            <p className="text-xl mb-12 opacity-90">
-              Have a project in mind? Let's bring your vision to life.
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {allProjects.map((project, index) => (
+              <ScrollReveal key={project.id} delay={index * 0.1}>
+                <ProjectCard project={project} index={index} />
+              </ScrollReveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Contact Section */}
+      <section id="contact" className="py-24 px-4 sm:px-6 lg:px-8" style={{ backgroundColor: proColors.text, color: '#fff' }}>
+        <div className="max-w-4xl mx-auto text-center">
+          <ScrollReveal>
+            <h2 className="text-4xl sm:text-5xl font-black mb-6">Let's Create Something Amazing</h2>
+            <p className="text-lg mb-10 opacity-80">
+              Ready to bring your vision to life? Let's start a conversation.
             </p>
           </ScrollReveal>
 
-          <ScrollReveal delay={0.2}>
-            <div className="flex flex-wrap justify-center gap-4">
-              {profile?.email && (
-                <Button 
-                  size="lg" 
-                  className="rounded-full px-8 text-[#ff4d4d]"
-                  style={{ backgroundColor: 'white' }}
-                  asChild
-                >
-                  <a href={`mailto:${profile.email}`}>
-                    <Mail className="w-4 h-4 mr-2" />
-                    {profile.email}
-                  </a>
-                </Button>
-              )}
-              {portfolio?.phone && (
-                <Button 
-                  size="lg" 
-                  variant="outline"
-                  className="rounded-full px-8 border-2 border-white text-white hover:bg-white/10"
-                  asChild
-                >
-                  <a href={`tel:${portfolio.phone}`}>
-                    <Phone className="w-4 h-4 mr-2" />
-                    {portfolio.phone}
-                  </a>
-                </Button>
-              )}
-            </div>
+          <ScrollReveal delay={0.1}>
+            {profile?.email && (
+              <Button 
+                size="lg" 
+                className="rounded-full px-10"
+                style={{ backgroundColor: proColors.accent }}
+                asChild
+              >
+                <a href={`mailto:${profile.email}`}>
+                  <Mail className="w-5 h-5 mr-2" />
+                  Get in Touch
+                </a>
+              </Button>
+            )}
           </ScrollReveal>
 
+          {/* Social Links */}
           {socialLinks.length > 0 && (
-            <ScrollReveal delay={0.3}>
-              <div className="flex justify-center gap-4 mt-12">
+            <ScrollReveal delay={0.2}>
+              <div className="flex justify-center gap-4 mt-10">
                 {socialLinks.map((link) => {
                   const Icon = getSocialIcon(link.platform);
                   return (
@@ -806,10 +724,10 @@ export default function GraphicDesignerProTheme({ profile, portfolio, skills, pr
                       href={link.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="p-4 rounded-xl bg-white/10 hover:bg-white/20 transition-colors"
+                      className="w-12 h-12 rounded-full flex items-center justify-center border border-white/20 hover:bg-white/10 transition-colors"
                       whileHover={{ scale: 1.1 }}
                     >
-                      <Icon className="w-6 h-6 text-white" />
+                      <Icon className="w-5 h-5" />
                     </motion.a>
                   );
                 })}
@@ -820,26 +738,17 @@ export default function GraphicDesignerProTheme({ profile, portfolio, skills, pr
       </section>
 
       {/* Footer */}
-      <footer className="py-12 px-4 border-t" style={{ borderColor: proColors.border, backgroundColor: proColors.bg }}>
-        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-6">
-          <div className="flex items-center gap-3">
-            {portfolio?.logo_url ? (
-              <img src={portfolio.logo_url} alt="Logo" className="h-6 w-auto" />
-            ) : (
-              <div className="w-8 h-8 rounded-full flex items-center justify-center" style={{ backgroundColor: proColors.accent1 }}>
-                <Palette className="w-4 h-4 text-white" />
-              </div>
-            )}
-            <span style={{ color: proColors.muted }}>
-              © {new Date().getFullYear()} {profile?.display_name}. All rights reserved.
-            </span>
+      <footer className="py-8 px-4 border-t" style={{ backgroundColor: proColors.bg, borderColor: proColors.border }}>
+        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-2 text-sm" style={{ color: proColors.textMuted }}>
+            <Palette className="w-4 h-4" />
+            <span>© {new Date().getFullYear()} {profile?.display_name || "Designer"}</span>
           </div>
-          <div className="flex items-center gap-2 text-sm" style={{ color: proColors.muted }}>
-            <span>Designed with</span>
-            <span style={{ color: proColors.accent1 }}>✨</span>
-            <a href="https://alphaportfolio0.lovable.app" target="_blank" rel="noopener noreferrer" className="hover:underline" style={{ color: proColors.accent1 }}>
-              Alpha Portfolio
-            </a>
+          {portfolio?.logo_url && (
+            <img src={portfolio.logo_url} alt="Logo" className="h-6 opacity-50" />
+          )}
+          <div className="text-sm" style={{ color: proColors.textMuted }}>
+            Crafted with passion
           </div>
         </div>
       </footer>

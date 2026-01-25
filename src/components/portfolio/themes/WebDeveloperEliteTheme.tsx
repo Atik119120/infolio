@@ -1,197 +1,236 @@
 import { ThemeProps } from "./types";
 import { getSocialIcon, formatDate } from "./utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   MapPin, Mail, Phone, ExternalLink, Github, Code2, Terminal, Braces,
-  Briefcase, GraduationCap, Menu, X, Globe, ChevronRight, Folder, FileCode, 
-  Cpu, Database, Server, GitBranch, Layers, Zap, ArrowRight, Sparkles,
-  Monitor, Smartphone, Tablet, Command, Hash
+  Briefcase, GraduationCap, Menu, X, Globe, Folder, FileCode, 
+  Database, Server, GitBranch, Layers, Zap, ArrowRight,
+  Monitor, Command, ChevronRight, Play, Circle
 } from "lucide-react";
-import { useState, useEffect, useRef, Suspense } from "react";
-import { motion, AnimatePresence, useInView, useMotionValue, useSpring, useTransform } from "framer-motion";
-import { Canvas, useFrame } from "@react-three/fiber";
-import { Float, MeshDistortMaterial, Sphere, OrbitControls, Stars } from "@react-three/drei";
-import * as THREE from "three";
+import { useState, useEffect, useRef } from "react";
+import { motion, AnimatePresence, useInView } from "framer-motion";
 
-// Glassmorphism cyberpunk theme
+// Modern IDE-inspired dark theme
 const eliteColors = {
-  bg: "#050510",
-  card: "rgba(15, 15, 35, 0.8)",
-  cardSolid: "#0f0f23",
-  border: "rgba(100, 100, 255, 0.2)",
-  text: "#ffffff",
-  muted: "#8888aa",
-  // Gradients
-  gradient1: "#6366f1",
-  gradient2: "#8b5cf6",
-  gradient3: "#d946ef",
-  gradient4: "#f43f5e",
-  // Neon
-  neonCyan: "#00fff5",
-  neonPink: "#ff00ff",
-  neonYellow: "#ffff00",
+  bg: "#0d1117",
+  bgSecondary: "#161b22",
+  card: "#21262d",
+  border: "#30363d",
+  text: "#c9d1d9",
+  textMuted: "#8b949e",
+  // Syntax highlighting colors
+  syntaxKeyword: "#ff7b72",
+  syntaxString: "#a5d6ff",
+  syntaxFunction: "#d2a8ff",
+  syntaxVariable: "#79c0ff",
+  syntaxComment: "#8b949e",
+  syntaxNumber: "#79c0ff",
+  // Accent
+  accent: "#58a6ff",
+  accentGreen: "#3fb950",
+  accentYellow: "#d29922",
+  accentPurple: "#a371f7",
+  gradient: "linear-gradient(135deg, #58a6ff, #a371f7)",
 };
 
-// 3D Animated Torus
-function AnimatedTorus() {
-  const meshRef = useRef<THREE.Mesh>(null);
-  
-  useFrame((state) => {
-    if (meshRef.current) {
-      meshRef.current.rotation.x = Math.sin(state.clock.elapsedTime * 0.3) * 0.5;
-      meshRef.current.rotation.y += 0.005;
-    }
-  });
-
-  return (
-    <mesh ref={meshRef}>
-      <torusGeometry args={[2, 0.5, 32, 100]} />
-      <meshStandardMaterial 
-        color={eliteColors.gradient1} 
-        metalness={0.9} 
-        roughness={0.1}
-        emissive={eliteColors.gradient2}
-        emissiveIntensity={0.3}
-      />
-    </mesh>
-  );
-}
-
-// 3D Energy Sphere
-function EnergySphere({ position, color }: { position: [number, number, number]; color: string }) {
-  return (
-    <Float speed={2} rotationIntensity={0.5} floatIntensity={1}>
-      <Sphere args={[0.3, 64, 64]} position={position}>
-        <MeshDistortMaterial 
-          color={color} 
-          attach="material" 
-          distort={0.5} 
-          speed={3} 
-          roughness={0}
-          metalness={1}
-          emissive={color}
-          emissiveIntensity={0.5}
-        />
-      </Sphere>
-    </Float>
-  );
-}
-
-// Hero 3D Scene
-function HeroScene() {
-  return (
-    <Canvas camera={{ position: [0, 0, 6], fov: 50 }}>
-      <ambientLight intensity={0.2} />
-      <pointLight position={[10, 10, 10]} intensity={1} color={eliteColors.gradient1} />
-      <pointLight position={[-10, -10, -10]} intensity={0.5} color={eliteColors.gradient3} />
-      <Stars radius={100} depth={50} count={2000} factor={4} saturation={0} fade speed={1} />
-      <AnimatedTorus />
-      <EnergySphere position={[-3, 1, 0]} color={eliteColors.neonCyan} />
-      <EnergySphere position={[3, -1, 0]} color={eliteColors.neonPink} />
-      <EnergySphere position={[0, 2, -2]} color={eliteColors.gradient3} />
-      <OrbitControls enableZoom={false} enablePan={false} autoRotate autoRotateSpeed={0.5} />
-    </Canvas>
-  );
-}
-
-// Magnetic button effect
-function MagneticButton({ children, className = "" }: { children: React.ReactNode; className?: string }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
-  const springX = useSpring(x, { stiffness: 300, damping: 20 });
-  const springY = useSpring(y, { stiffness: 300, damping: 20 });
-
-  const handleMouseMove = (e: React.MouseEvent) => {
-    if (!ref.current) return;
-    const rect = ref.current.getBoundingClientRect();
-    const centerX = rect.left + rect.width / 2;
-    const centerY = rect.top + rect.height / 2;
-    x.set((e.clientX - centerX) * 0.1);
-    y.set((e.clientY - centerY) * 0.1);
-  };
-
-  const handleMouseLeave = () => {
-    x.set(0);
-    y.set(0);
-  };
-
-  return (
-    <motion.div
-      ref={ref}
-      className={className}
-      style={{ x: springX, y: springY }}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-    >
-      {children}
-    </motion.div>
-  );
-}
-
-// Animated counter
-function Counter({ value, suffix = "" }: { value: number; suffix?: string }) {
+// Typing animation for code
+function TypedCode({ code, speed = 30 }: { code: string; speed?: number }) {
+  const [displayedCode, setDisplayedCode] = useState("");
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true });
-  const [count, setCount] = useState(0);
 
   useEffect(() => {
-    if (isInView) {
-      let start = 0;
-      const end = value;
-      const duration = 2000;
-      const increment = end / (duration / 16);
-      
-      const timer = setInterval(() => {
-        start += increment;
-        if (start >= end) {
-          setCount(end);
-          clearInterval(timer);
-        } else {
-          setCount(Math.floor(start));
-        }
-      }, 16);
-      return () => clearInterval(timer);
-    }
-  }, [isInView, value]);
+    if (!isInView) return;
+    let index = 0;
+    const timer = setInterval(() => {
+      if (index < code.length) {
+        setDisplayedCode(code.slice(0, index + 1));
+        index++;
+      } else {
+        clearInterval(timer);
+      }
+    }, speed);
+    return () => clearInterval(timer);
+  }, [isInView, code, speed]);
 
-  return <span ref={ref}>{count}{suffix}</span>;
+  return (
+    <span ref={ref}>
+      {displayedCode}
+      <motion.span
+        className="inline-block w-2 h-5 ml-0.5 bg-current"
+        animate={{ opacity: [1, 0, 1] }}
+        transition={{ duration: 1, repeat: Infinity }}
+      />
+    </span>
+  );
 }
 
 // Scroll animation wrapper
 function ScrollReveal({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) {
   const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
+  const isInView = useInView(ref, { once: true, margin: "-80px" });
   return (
     <motion.div
       ref={ref}
-      initial={{ opacity: 0, y: 60 }}
-      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 60 }}
-      transition={{ duration: 0.8, delay, ease: "easeOut" }}
+      initial={{ opacity: 0, y: 40 }}
+      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
+      transition={{ duration: 0.6, delay, ease: "easeOut" }}
     >
       {children}
     </motion.div>
   );
 }
 
-// Glowing text effect
-function GlowText({ children, color = eliteColors.gradient1 }: { children: React.ReactNode; color?: string }) {
+// Terminal window component
+function TerminalWindow({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <motion.span
-      className="relative inline-block"
-      animate={{ textShadow: [`0 0 20px ${color}80`, `0 0 40px ${color}`, `0 0 20px ${color}80`] }}
-      transition={{ duration: 2, repeat: Infinity }}
+    <div className="rounded-xl overflow-hidden border" style={{ backgroundColor: eliteColors.bgSecondary, borderColor: eliteColors.border }}>
+      {/* Title bar */}
+      <div className="flex items-center gap-2 px-4 py-3 border-b" style={{ borderColor: eliteColors.border }}>
+        <div className="flex gap-2">
+          <div className="w-3 h-3 rounded-full bg-[#ff5f56]" />
+          <div className="w-3 h-3 rounded-full bg-[#ffbd2e]" />
+          <div className="w-3 h-3 rounded-full bg-[#27ca41]" />
+        </div>
+        <span className="ml-3 text-sm font-mono" style={{ color: eliteColors.textMuted }}>{title}</span>
+      </div>
+      <div className="p-4 font-mono text-sm" style={{ color: eliteColors.text }}>
+        {children}
+      </div>
+    </div>
+  );
+}
+
+// File tab component
+function FileTab({ name, active = false, icon: Icon = FileCode }: { name: string; active?: boolean; icon?: any }) {
+  return (
+    <div 
+      className={`flex items-center gap-2 px-4 py-2 text-sm border-b-2 transition-colors ${active ? 'border-[#58a6ff]' : 'border-transparent'}`}
+      style={{ 
+        backgroundColor: active ? eliteColors.card : 'transparent',
+        color: active ? eliteColors.text : eliteColors.textMuted 
+      }}
     >
-      {children}
-    </motion.span>
+      <Icon className="w-4 h-4" />
+      <span>{name}</span>
+    </div>
+  );
+}
+
+// Code syntax highlighting helper
+function SyntaxHighlight({ children, type }: { children: string; type: 'keyword' | 'string' | 'function' | 'variable' | 'comment' | 'number' }) {
+  const colors: Record<string, string> = {
+    keyword: eliteColors.syntaxKeyword,
+    string: eliteColors.syntaxString,
+    function: eliteColors.syntaxFunction,
+    variable: eliteColors.syntaxVariable,
+    comment: eliteColors.syntaxComment,
+    number: eliteColors.syntaxNumber,
+  };
+  return <span style={{ color: colors[type] }}>{children}</span>;
+}
+
+// Project card
+function ProjectCard({ project, index }: { project: any; index: number }) {
+  const [isHovered, setIsHovered] = useState(false);
+  
+  return (
+    <motion.div
+      className="group relative rounded-xl overflow-hidden border"
+      style={{ backgroundColor: eliteColors.card, borderColor: eliteColors.border }}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      whileHover={{ y: -8, borderColor: eliteColors.accent }}
+      transition={{ duration: 0.3 }}
+    >
+      {/* Image */}
+      <div className="relative aspect-video overflow-hidden">
+        {project.image_url ? (
+          <motion.img 
+            src={project.image_url} 
+            alt={project.title}
+            className="w-full h-full object-cover"
+            animate={{ scale: isHovered ? 1.05 : 1 }}
+            transition={{ duration: 0.4 }}
+          />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center" style={{ backgroundColor: eliteColors.bgSecondary }}>
+            <Code2 className="w-12 h-12" style={{ color: eliteColors.accent }} />
+          </div>
+        )}
+        
+        {/* Overlay */}
+        <motion.div 
+          className="absolute inset-0 flex items-center justify-center gap-3"
+          style={{ backgroundColor: 'rgba(13, 17, 23, 0.9)' }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: isHovered ? 1 : 0 }}
+          transition={{ duration: 0.3 }}
+        >
+          {project.live_url && (
+            <motion.a
+              href={project.live_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="p-3 rounded-lg"
+              style={{ backgroundColor: eliteColors.accent }}
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <ExternalLink className="w-5 h-5 text-black" />
+            </motion.a>
+          )}
+          {project.github_url && (
+            <motion.a
+              href={project.github_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="p-3 rounded-lg border"
+              style={{ borderColor: eliteColors.border }}
+              whileHover={{ scale: 1.1, borderColor: eliteColors.accent }}
+              whileTap={{ scale: 0.95 }}
+            >
+              <Github className="w-5 h-5" />
+            </motion.a>
+          )}
+        </motion.div>
+
+        {/* Index badge */}
+        <div 
+          className="absolute top-3 left-3 px-2 py-1 rounded text-xs font-mono font-bold"
+          style={{ backgroundColor: eliteColors.accent, color: '#000' }}
+        >
+          {String(index + 1).padStart(2, '0')}
+        </div>
+      </div>
+
+      {/* Content */}
+      <div className="p-5">
+        <h3 className="text-lg font-semibold mb-2" style={{ color: eliteColors.text }}>{project.title}</h3>
+        <p className="text-sm mb-4 line-clamp-2" style={{ color: eliteColors.textMuted }}>{project.description}</p>
+        {project.tech_stack && (
+          <div className="flex flex-wrap gap-2">
+            {project.tech_stack.slice(0, 4).map((tech: string, idx: number) => (
+              <span 
+                key={idx} 
+                className="px-2 py-1 rounded text-xs font-mono"
+                style={{ backgroundColor: eliteColors.bgSecondary, color: eliteColors.accent }}
+              >
+                {tech}
+              </span>
+            ))}
+          </div>
+        )}
+      </div>
+    </motion.div>
   );
 }
 
 export default function WebDeveloperEliteTheme({ profile, portfolio, skills, projects, experiences, education, socialLinks }: ThemeProps) {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [activeSection, setActiveSection] = useState("hero");
+  
   const featuredProjects = projects.filter((p) => p.featured);
   const allProjects = [...featuredProjects, ...projects.filter((p) => !p.featured)];
 
@@ -206,105 +245,97 @@ export default function WebDeveloperEliteTheme({ profile, portfolio, skills, pro
     window.scrollTo(0, 0);
   }, []);
 
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      setMousePosition({ x: e.clientX, y: e.clientY });
-    };
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, []);
-
   const scrollTo = (id: string) => {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
     setMenuOpen(false);
+    setActiveSection(id);
   };
 
   const navItems = [
-    { id: "hero", label: "Home", icon: Monitor },
-    { id: "bio", label: "About", icon: Command },
-    { id: "skills", label: "Stack", icon: Layers },
-    { id: "works", label: "Work", icon: Folder },
-    { id: "contact", label: "Contact", icon: Mail },
+    { id: "hero", label: "~/home", icon: Monitor },
+    { id: "bio", label: "~/about", icon: Command },
+    { id: "skills", label: "~/skills", icon: Layers },
+    { id: "works", label: "~/projects", icon: Folder },
+    { id: "contact", label: "~/contact", icon: Mail },
   ];
 
+  // Generate intro code
+  const introCode = `const developer = {
+  name: "${profile?.display_name || 'Developer'}",
+  role: "${portfolio?.headline || 'Full Stack Developer'}",
+  location: "${portfolio?.location || 'Remote'}",
+  available: true
+};`;
+
   return (
-    <div className="min-h-screen" style={{ backgroundColor: eliteColors.bg, color: eliteColors.text }}>
-      {/* Cursor follower */}
-      <motion.div
-        className="fixed w-64 h-64 rounded-full pointer-events-none z-0 hidden md:block"
-        style={{
-          background: `radial-gradient(circle, ${eliteColors.gradient1}20, transparent 70%)`,
-          x: mousePosition.x - 128,
-          y: mousePosition.y - 128,
-        }}
-      />
-
-      {/* Navigation - Glass */}
-      <nav className="fixed top-0 left-0 right-0 z-50">
-        <div className="mx-4 mt-4 rounded-2xl backdrop-blur-xl border" style={{ backgroundColor: eliteColors.card, borderColor: eliteColors.border }}>
-          <div className="max-w-7xl mx-auto px-4 sm:px-6">
-            <div className="flex items-center justify-between h-16">
-              {/* Logo */}
-              <motion.div 
-                className="flex items-center gap-3"
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-              >
-                {portfolio?.logo_url ? (
-                  <img src={portfolio.logo_url} alt="Logo" className="h-8 w-auto" />
-                ) : (
-                  <div className="relative">
-                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#6366f1] via-[#8b5cf6] to-[#d946ef] flex items-center justify-center">
-                      <Code2 className="w-5 h-5 text-white" />
-                    </div>
-                    <motion.div 
-                      className="absolute inset-0 rounded-xl bg-gradient-to-br from-[#6366f1] via-[#8b5cf6] to-[#d946ef] blur-lg opacity-50"
-                      animate={{ scale: [1, 1.2, 1], opacity: [0.5, 0.3, 0.5] }}
-                      transition={{ duration: 2, repeat: Infinity }}
-                    />
+    <div className="min-h-screen font-sans" style={{ backgroundColor: eliteColors.bg, color: eliteColors.text }}>
+      {/* Navigation - IDE Tab Bar Style */}
+      <nav className="fixed top-0 left-0 right-0 z-50 border-b" style={{ backgroundColor: eliteColors.bg, borderColor: eliteColors.border }}>
+        <div className="max-w-7xl mx-auto">
+          <div className="flex items-center justify-between h-14 px-4">
+            {/* Logo */}
+            <motion.div 
+              className="flex items-center gap-3"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+            >
+              {portfolio?.logo_url ? (
+                <img src={portfolio.logo_url} alt="Logo" className="h-8 w-auto" />
+              ) : (
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: eliteColors.accent }}>
+                    <Terminal className="w-4 h-4 text-black" />
                   </div>
-                )}
-                <div className="hidden sm:block">
-                  <span className="font-bold">{profile?.display_name?.split(' ')[0] || "Developer"}</span>
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#6366f1] to-[#d946ef]">.elite</span>
+                  <span className="font-mono text-sm hidden sm:block">
+                    <span style={{ color: eliteColors.accent }}>@</span>
+                    {profile?.display_name?.toLowerCase().replace(' ', '_') || 'developer'}
+                  </span>
                 </div>
-              </motion.div>
+              )}
+            </motion.div>
 
-              {/* Desktop Nav */}
-              <div className="hidden md:flex items-center gap-1">
-                {navItems.map((item, i) => (
-                  <motion.button
-                    key={item.id}
-                    onClick={() => scrollTo(item.id)}
-                    className="px-4 py-2 rounded-xl text-sm transition-all hover:bg-white/5"
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: i * 0.1 }}
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
-                    {item.label}
-                  </motion.button>
-                ))}
-              </div>
+            {/* Desktop Nav - File Tabs */}
+            <div className="hidden md:flex items-center">
+              {navItems.map((item, i) => (
+                <motion.button
+                  key={item.id}
+                  onClick={() => scrollTo(item.id)}
+                  className={`flex items-center gap-2 px-4 py-2 text-sm font-mono transition-all border-b-2 ${
+                    activeSection === item.id 
+                      ? 'border-[#58a6ff]' 
+                      : 'border-transparent hover:bg-[#21262d]'
+                  }`}
+                  style={{ 
+                    color: activeSection === item.id ? eliteColors.accent : eliteColors.textMuted 
+                  }}
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.1 }}
+                >
+                  <item.icon className="w-4 h-4" />
+                  {item.label}
+                </motion.button>
+              ))}
+            </div>
 
-              {/* CTA + Mobile Menu */}
-              <div className="flex items-center gap-3">
-                {profile?.email && (
-                  <MagneticButton className="hidden sm:block">
-                    <Button 
-                      size="sm" 
-                      className="rounded-xl bg-gradient-to-r from-[#6366f1] via-[#8b5cf6] to-[#d946ef] hover:opacity-90"
-                      asChild
-                    >
-                      <a href={`mailto:${profile.email}`}>Hire Me</a>
-                    </Button>
-                  </MagneticButton>
-                )}
-                <button className="md:hidden p-2" onClick={() => setMenuOpen(!menuOpen)}>
-                  {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-                </button>
-              </div>
+            {/* Right side */}
+            <div className="flex items-center gap-3">
+              {profile?.email && (
+                <Button 
+                  size="sm" 
+                  className="rounded-lg hidden sm:flex font-mono text-xs"
+                  style={{ backgroundColor: eliteColors.accentGreen, color: '#000' }}
+                  asChild
+                >
+                  <a href={`mailto:${profile.email}`}>
+                    <Circle className="w-2 h-2 mr-2 fill-current" />
+                    Available
+                  </a>
+                </Button>
+              )}
+              <button className="md:hidden p-2" onClick={() => setMenuOpen(!menuOpen)}>
+                {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+              </button>
             </div>
           </div>
         </div>
@@ -313,18 +344,19 @@ export default function WebDeveloperEliteTheme({ profile, portfolio, skills, pro
         <AnimatePresence>
           {menuOpen && (
             <motion.div
-              className="md:hidden mx-4 mt-2 rounded-2xl backdrop-blur-xl border overflow-hidden"
-              style={{ backgroundColor: eliteColors.card, borderColor: eliteColors.border }}
+              className="md:hidden border-t"
+              style={{ backgroundColor: eliteColors.bgSecondary, borderColor: eliteColors.border }}
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: "auto", opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
             >
-              <div className="p-4 space-y-2">
+              <div className="p-4 space-y-1">
                 {navItems.map((item) => (
                   <button
                     key={item.id}
                     onClick={() => scrollTo(item.id)}
-                    className="flex items-center gap-3 w-full p-3 rounded-xl hover:bg-white/5 transition-colors"
+                    className="flex items-center gap-3 w-full p-3 rounded-lg hover:bg-[#21262d] transition-colors font-mono text-sm"
+                    style={{ color: eliteColors.textMuted }}
                   >
                     <item.icon className="w-4 h-4" />
                     {item.label}
@@ -336,416 +368,332 @@ export default function WebDeveloperEliteTheme({ profile, portfolio, skills, pro
         </AnimatePresence>
       </nav>
 
-      {/* Hero Section */}
-      <section id="hero" className="min-h-screen relative overflow-hidden pt-24">
-        {/* 3D Background - Desktop */}
-        <div className="absolute inset-0 hidden md:block">
-          <Suspense fallback={null}>
-            <HeroScene />
-          </Suspense>
-        </div>
-
-        {/* Mobile gradient */}
-        <div className="absolute inset-0 md:hidden">
-          <div className="absolute inset-0 bg-gradient-to-br from-[#6366f120] via-transparent to-[#d946ef20]" />
-          <div className="absolute top-1/4 left-1/4 w-64 h-64 rounded-full bg-[#6366f1] blur-[100px] opacity-30" />
-          <div className="absolute bottom-1/4 right-1/4 w-64 h-64 rounded-full bg-[#d946ef] blur-[100px] opacity-30" />
-        </div>
-
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 min-h-[calc(100vh-6rem)] flex items-center">
-          <div className="w-full">
-            <div className="grid lg:grid-cols-2 gap-12 items-center">
-              {/* Left Content */}
-              <div className="space-y-8">
-                <ScrollReveal>
-                  <motion.div 
-                    className="inline-flex items-center gap-2 px-4 py-2 rounded-full border backdrop-blur-xl"
-                    style={{ borderColor: eliteColors.border, backgroundColor: eliteColors.card }}
-                  >
-                    <motion.div 
-                      className="w-2 h-2 rounded-full bg-green-400"
-                      animate={{ scale: [1, 1.2, 1], opacity: [1, 0.5, 1] }}
-                      transition={{ duration: 2, repeat: Infinity }}
-                    />
-                    <span className="text-sm">Available for new projects</span>
-                  </motion.div>
-                </ScrollReveal>
-
-                <ScrollReveal delay={0.1}>
-                  <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold leading-tight">
-                    <span className="block" style={{ color: eliteColors.muted }}>Hello, I'm</span>
-                    <GlowText color={eliteColors.gradient1}>
-                      <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#6366f1] via-[#8b5cf6] to-[#d946ef]">
-                        {profile?.display_name || "Developer"}
-                      </span>
-                    </GlowText>
-                  </h1>
-                </ScrollReveal>
-
-                <ScrollReveal delay={0.2}>
-                  <p className="text-xl sm:text-2xl" style={{ color: eliteColors.muted }}>
-                    {portfolio?.headline || "Full Stack Developer & Designer"}
-                  </p>
-                </ScrollReveal>
-
-                <ScrollReveal delay={0.3}>
-                  <div className="flex flex-wrap gap-3">
-                    {skills.slice(0, 5).map((skill, i) => (
-                      <motion.div
-                        key={skill.id}
-                        className="px-4 py-2 rounded-xl backdrop-blur-xl border"
-                        style={{ borderColor: eliteColors.border, backgroundColor: eliteColors.card }}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.4 + i * 0.1 }}
-                        whileHover={{ scale: 1.05, borderColor: eliteColors.gradient1 }}
-                      >
-                        <span className="text-sm">{skill.name}</span>
-                      </motion.div>
-                    ))}
-                  </div>
-                </ScrollReveal>
-
-                <ScrollReveal delay={0.4}>
-                  <div className="flex flex-wrap gap-4">
-                    {profile?.email && (
-                      <MagneticButton>
-                        <Button 
-                          size="lg" 
-                          className="rounded-xl px-8 bg-gradient-to-r from-[#6366f1] via-[#8b5cf6] to-[#d946ef] hover:opacity-90"
-                          asChild
-                        >
-                          <a href={`mailto:${profile.email}`}>
-                            <Mail className="w-4 h-4 mr-2" />
-                            Let's Talk
-                          </a>
-                        </Button>
-                      </MagneticButton>
-                    )}
-                    <MagneticButton>
-                      <Button 
-                        size="lg" 
-                        variant="outline"
-                        className="rounded-xl px-8 border-white/20 hover:bg-white/5"
-                        onClick={() => scrollTo('works')}
-                      >
-                        <Folder className="w-4 h-4 mr-2" />
-                        View Work
-                      </Button>
-                    </MagneticButton>
-                  </div>
-                </ScrollReveal>
-
-                {/* Stats */}
-                <ScrollReveal delay={0.5}>
-                  <div className="grid grid-cols-3 gap-6 pt-8 border-t border-white/10">
+      {/* Hero Section - Terminal Style */}
+      <section id="hero" className="min-h-screen pt-20 pb-16 px-4">
+        <div className="max-w-6xl mx-auto flex items-center min-h-[calc(100vh-8rem)]">
+          <div className="w-full grid lg:grid-cols-5 gap-8 items-center">
+            {/* Left - Terminal */}
+            <div className="lg:col-span-3">
+              <ScrollReveal>
+                <TerminalWindow title="profile.js">
+                  <div className="space-y-1">
                     <div>
-                      <div className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#6366f1] to-[#8b5cf6]">
-                        <Counter value={projects.length} suffix="+" />
-                      </div>
-                      <div className="text-sm" style={{ color: eliteColors.muted }}>Projects</div>
+                      <SyntaxHighlight type="keyword">const</SyntaxHighlight>
+                      <span> developer = {"{"}</span>
                     </div>
-                    <div>
-                      <div className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#8b5cf6] to-[#d946ef]">
-                        <Counter value={experiences.length} suffix="+" />
-                      </div>
-                      <div className="text-sm" style={{ color: eliteColors.muted }}>Years Exp</div>
+                    <div className="pl-4">
+                      <SyntaxHighlight type="variable">name</SyntaxHighlight>
+                      <span>: </span>
+                      <SyntaxHighlight type="string">{`"${profile?.display_name || 'Developer'}"`}</SyntaxHighlight>
+                      <span>,</span>
                     </div>
-                    <div>
-                      <div className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#d946ef] to-[#f43f5e]">
-                        <Counter value={skills.length} />
-                      </div>
-                      <div className="text-sm" style={{ color: eliteColors.muted }}>Skills</div>
+                    <div className="pl-4">
+                      <SyntaxHighlight type="variable">role</SyntaxHighlight>
+                      <span>: </span>
+                      <SyntaxHighlight type="string">{`"${portfolio?.headline || 'Full Stack Developer'}"`}</SyntaxHighlight>
+                      <span>,</span>
                     </div>
+                    <div className="pl-4">
+                      <SyntaxHighlight type="variable">location</SyntaxHighlight>
+                      <span>: </span>
+                      <SyntaxHighlight type="string">{`"${portfolio?.location || 'Remote'}"`}</SyntaxHighlight>
+                      <span>,</span>
+                    </div>
+                    <div className="pl-4">
+                      <SyntaxHighlight type="variable">available</SyntaxHighlight>
+                      <span>: </span>
+                      <SyntaxHighlight type="keyword">true</SyntaxHighlight>
+                    </div>
+                    <div>{"}"}</div>
                   </div>
-                </ScrollReveal>
-              </div>
-
-              {/* Right - Avatar */}
-              <ScrollReveal delay={0.2}>
-                <div className="relative hidden lg:flex justify-center">
-                  {/* Glowing background */}
-                  <motion.div 
-                    className="absolute w-80 h-80 rounded-full blur-3xl opacity-40"
-                    style={{ background: `linear-gradient(135deg, ${eliteColors.gradient1}, ${eliteColors.gradient3})` }}
-                    animate={{ scale: [1, 1.2, 1], rotate: [0, 180, 360] }}
-                    transition={{ duration: 20, repeat: Infinity }}
-                  />
                   
-                  {/* Avatar container */}
-                  <div className="relative">
-                    <motion.div 
-                      className="absolute -inset-2 rounded-full bg-gradient-to-r from-[#6366f1] via-[#8b5cf6] to-[#d946ef] opacity-80"
-                      animate={{ rotate: [0, 360] }}
-                      transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
-                    />
-                    <Avatar className="w-72 h-72 border-4 border-white/10 relative">
-                      <AvatarImage src={profile?.avatar_url || ""} className="object-cover" />
-                      <AvatarFallback className="text-6xl bg-gradient-to-br from-[#6366f1] to-[#d946ef]">
-                        {profile?.display_name?.charAt(0) || "E"}
-                      </AvatarFallback>
-                    </Avatar>
-
-                    {/* Floating badges */}
-                    <motion.div 
-                      className="absolute -top-4 -right-4 px-4 py-2 rounded-xl backdrop-blur-xl border"
-                      style={{ borderColor: eliteColors.border, backgroundColor: eliteColors.card }}
-                      animate={{ y: [0, -10, 0] }}
-                      transition={{ duration: 3, repeat: Infinity }}
-                    >
-                      <div className="flex items-center gap-2">
-                        <Sparkles className="w-4 h-4 text-yellow-400" />
-                        <span className="font-bold">ELITE</span>
-                      </div>
-                    </motion.div>
-
-                    <motion.div 
-                      className="absolute -bottom-4 -left-4 px-4 py-2 rounded-xl backdrop-blur-xl border"
-                      style={{ borderColor: eliteColors.border, backgroundColor: eliteColors.card }}
-                      animate={{ y: [0, 10, 0] }}
-                      transition={{ duration: 3.5, repeat: Infinity }}
-                    >
-                      <div className="flex items-center gap-2">
-                        <Code2 className="w-4 h-4" style={{ color: eliteColors.gradient1 }} />
-                        <span>Developer</span>
-                      </div>
-                    </motion.div>
+                  <div className="mt-6 pt-4 border-t" style={{ borderColor: eliteColors.border }}>
+                    <div className="flex items-center gap-2" style={{ color: eliteColors.textMuted }}>
+                      <span>$</span>
+                      <TypedCode code={`echo "Welcome to my portfolio!"`} speed={50} />
+                    </div>
                   </div>
+                </TerminalWindow>
+              </ScrollReveal>
+
+              {/* Tech Stack Pills */}
+              <ScrollReveal delay={0.2}>
+                <div className="mt-8 flex flex-wrap gap-2">
+                  {skills.slice(0, 6).map((skill, i) => (
+                    <motion.div
+                      key={skill.id}
+                      className="px-3 py-1.5 rounded-lg text-sm font-mono border"
+                      style={{ borderColor: eliteColors.border, color: eliteColors.accent }}
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ delay: 0.3 + i * 0.1 }}
+                      whileHover={{ borderColor: eliteColors.accent }}
+                    >
+                      {skill.name}
+                    </motion.div>
+                  ))}
+                </div>
+              </ScrollReveal>
+
+              {/* CTA Buttons */}
+              <ScrollReveal delay={0.3}>
+                <div className="mt-8 flex flex-wrap gap-4">
+                  {profile?.email && (
+                    <Button 
+                      size="lg" 
+                      className="rounded-lg font-mono"
+                      style={{ backgroundColor: eliteColors.accent, color: '#000' }}
+                      asChild
+                    >
+                      <a href={`mailto:${profile.email}`}>
+                        <Mail className="w-4 h-4 mr-2" />
+                        contact@{profile.display_name?.split(' ')[0].toLowerCase() || 'dev'}
+                      </a>
+                    </Button>
+                  )}
+                  <Button 
+                    size="lg" 
+                    variant="outline"
+                    className="rounded-lg font-mono"
+                    style={{ borderColor: eliteColors.border, color: eliteColors.text }}
+                    onClick={() => scrollTo('works')}
+                  >
+                    <Folder className="w-4 h-4 mr-2" />
+                    ./view-projects
+                  </Button>
                 </div>
               </ScrollReveal>
             </div>
+
+            {/* Right - Avatar */}
+            <ScrollReveal delay={0.2}>
+              <div className="lg:col-span-2 flex justify-center">
+                <div className="relative">
+                  <motion.div 
+                    className="absolute -inset-4 rounded-2xl opacity-50 blur-xl"
+                    style={{ backgroundColor: eliteColors.accent }}
+                    animate={{ opacity: [0.3, 0.5, 0.3] }}
+                    transition={{ duration: 3, repeat: Infinity }}
+                  />
+                  <Avatar className="w-48 h-48 sm:w-64 sm:h-64 rounded-2xl border-4 relative" style={{ borderColor: eliteColors.border }}>
+                    <AvatarImage src={profile?.avatar_url || ""} className="object-cover" />
+                    <AvatarFallback 
+                      className="text-4xl rounded-xl"
+                      style={{ backgroundColor: eliteColors.card, color: eliteColors.accent }}
+                    >
+                      {profile?.display_name?.charAt(0) || "D"}
+                    </AvatarFallback>
+                  </Avatar>
+                  
+                  {/* Status badge */}
+                  <div 
+                    className="absolute -bottom-3 left-1/2 -translate-x-1/2 px-4 py-2 rounded-lg font-mono text-xs flex items-center gap-2"
+                    style={{ backgroundColor: eliteColors.card, borderColor: eliteColors.border, border: '1px solid' }}
+                  >
+                    <motion.div 
+                      className="w-2 h-2 rounded-full"
+                      style={{ backgroundColor: eliteColors.accentGreen }}
+                      animate={{ opacity: [1, 0.5, 1] }}
+                      transition={{ duration: 2, repeat: Infinity }}
+                    />
+                    <span style={{ color: eliteColors.accentGreen }}>online</span>
+                  </div>
+                </div>
+              </div>
+            </ScrollReveal>
           </div>
         </div>
-
-        {/* Scroll indicator */}
-        <motion.div 
-          className="absolute bottom-8 left-1/2 -translate-x-1/2"
-          animate={{ y: [0, 10, 0] }}
-          transition={{ duration: 2, repeat: Infinity }}
-        >
-          <div className="w-6 h-10 rounded-full border-2 border-white/20 flex justify-center pt-2">
-            <motion.div 
-              className="w-1 h-2 rounded-full bg-white/50"
-              animate={{ y: [0, 12, 0], opacity: [1, 0, 1] }}
-              transition={{ duration: 2, repeat: Infinity }}
-            />
-          </div>
-        </motion.div>
       </section>
 
       {/* About Section */}
-      <section id="bio" className="py-24 px-4 sm:px-6 lg:px-8 relative">
-        <div className="max-w-7xl mx-auto">
+      <section id="bio" className="py-20 px-4" style={{ backgroundColor: eliteColors.bgSecondary }}>
+        <div className="max-w-6xl mx-auto">
           <ScrollReveal>
-            <div className="text-center mb-16">
-              <Badge className="mb-4 px-4 py-1.5 bg-gradient-to-r from-[#6366f1]/20 to-[#d946ef]/20 border-0">
-                <Command className="w-3 h-3 mr-2" />
-                About Me
-              </Badge>
-              <h2 className="text-4xl sm:text-5xl font-bold">
-                Crafting Digital
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#6366f1] to-[#d946ef]"> Experiences</span>
+            <div className="flex items-center gap-3 mb-8">
+              <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ backgroundColor: eliteColors.card }}>
+                <Command className="w-5 h-5" style={{ color: eliteColors.accent }} />
+              </div>
+              <h2 className="text-2xl font-bold font-mono">
+                <span style={{ color: eliteColors.textMuted }}>//</span> about_me
               </h2>
             </div>
           </ScrollReveal>
 
-          <div className="grid lg:grid-cols-3 gap-8">
-            {/* Bio Card */}
+          <div className="grid md:grid-cols-2 gap-8">
             <ScrollReveal delay={0.1}>
-              <motion.div 
-                className="lg:col-span-2 rounded-3xl border backdrop-blur-xl p-8"
-                style={{ borderColor: eliteColors.border, backgroundColor: eliteColors.card }}
-                whileHover={{ borderColor: eliteColors.gradient1 }}
-              >
-                <h3 className="text-2xl font-bold mb-4">My Story</h3>
-                <p className="text-lg leading-relaxed" style={{ color: eliteColors.muted }}>
-                  {portfolio?.bio || "Passionate about creating innovative digital solutions that make a difference. With years of experience in full-stack development, I bring ideas to life through clean code and thoughtful design."}
+              <TerminalWindow title="README.md">
+                <p className="leading-relaxed" style={{ color: eliteColors.textMuted }}>
+                  {portfolio?.bio || "A passionate developer focused on creating impactful digital experiences."}
                 </p>
-                
-                {/* Quick info */}
-                <div className="grid sm:grid-cols-2 gap-4 mt-8">
+              </TerminalWindow>
+            </ScrollReveal>
+
+            <ScrollReveal delay={0.2}>
+              <TerminalWindow title="contact.json">
+                <div className="space-y-3">
                   {portfolio?.location && (
-                    <div className="flex items-center gap-3 p-4 rounded-xl" style={{ backgroundColor: 'rgba(255,255,255,0.03)' }}>
-                      <MapPin className="w-5 h-5" style={{ color: eliteColors.gradient1 }} />
+                    <div className="flex items-center gap-3">
+                      <MapPin className="w-4 h-4" style={{ color: eliteColors.accent }} />
                       <span>{portfolio.location}</span>
                     </div>
                   )}
                   {profile?.email && (
-                    <div className="flex items-center gap-3 p-4 rounded-xl" style={{ backgroundColor: 'rgba(255,255,255,0.03)' }}>
-                      <Mail className="w-5 h-5" style={{ color: eliteColors.gradient2 }} />
-                      <span>{profile.email}</span>
+                    <div className="flex items-center gap-3">
+                      <Mail className="w-4 h-4" style={{ color: eliteColors.accent }} />
+                      <a href={`mailto:${profile.email}`} className="hover:underline">{profile.email}</a>
+                    </div>
+                  )}
+                  {portfolio?.phone && (
+                    <div className="flex items-center gap-3">
+                      <Phone className="w-4 h-4" style={{ color: eliteColors.accent }} />
+                      <span>{portfolio.phone}</span>
+                    </div>
+                  )}
+                  {portfolio?.website && (
+                    <div className="flex items-center gap-3">
+                      <Globe className="w-4 h-4" style={{ color: eliteColors.accent }} />
+                      <a href={portfolio.website} target="_blank" rel="noopener noreferrer" className="hover:underline">{portfolio.website}</a>
                     </div>
                   )}
                 </div>
-              </motion.div>
-            </ScrollReveal>
-
-            {/* Experience Card */}
-            <ScrollReveal delay={0.2}>
-              <motion.div 
-                className="rounded-3xl border backdrop-blur-xl p-8"
-                style={{ borderColor: eliteColors.border, backgroundColor: eliteColors.card }}
-                whileHover={{ borderColor: eliteColors.gradient2 }}
-              >
-                <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
-                  <Briefcase className="w-5 h-5" style={{ color: eliteColors.gradient2 }} />
-                  Experience
-                </h3>
-                <div className="space-y-6">
-                  {experiences.slice(0, 3).map((exp, i) => (
-                    <div key={exp.id} className="relative pl-6 border-l-2 border-white/10">
-                      <div className="absolute left-0 top-0 w-3 h-3 rounded-full -translate-x-[7px]" style={{ backgroundColor: eliteColors.gradient1 }} />
-                      <p className="font-semibold">{exp.position}</p>
-                      <p className="text-sm" style={{ color: eliteColors.muted }}>{exp.company}</p>
-                      <p className="text-xs mt-1" style={{ color: eliteColors.muted }}>
-                        {formatDate(exp.start_date)} - {exp.is_current ? "Present" : formatDate(exp.end_date)}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              </motion.div>
+              </TerminalWindow>
             </ScrollReveal>
           </div>
         </div>
       </section>
 
       {/* Skills Section */}
-      <section id="skills" className="py-24 px-4 sm:px-6 lg:px-8" style={{ backgroundColor: eliteColors.cardSolid }}>
-        <div className="max-w-7xl mx-auto">
+      <section id="skills" className="py-20 px-4">
+        <div className="max-w-6xl mx-auto">
           <ScrollReveal>
-            <div className="text-center mb-16">
-              <Badge className="mb-4 px-4 py-1.5 bg-gradient-to-r from-[#8b5cf6]/20 to-[#d946ef]/20 border-0">
-                <Layers className="w-3 h-3 mr-2" />
-                Tech Stack
-              </Badge>
-              <h2 className="text-4xl sm:text-5xl font-bold">
-                Skills &
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#8b5cf6] to-[#d946ef]"> Technologies</span>
+            <div className="flex items-center gap-3 mb-8">
+              <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ backgroundColor: eliteColors.card }}>
+                <Layers className="w-5 h-5" style={{ color: eliteColors.accentPurple }} />
+              </div>
+              <h2 className="text-2xl font-bold font-mono">
+                <span style={{ color: eliteColors.textMuted }}>//</span> tech_stack
               </h2>
             </div>
           </ScrollReveal>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {Object.entries(groupedSkills).map(([category, categorySkills], catIdx) => (
-              <ScrollReveal key={category} delay={catIdx * 0.1}>
-                <motion.div 
-                  className="rounded-3xl border backdrop-blur-xl p-6"
-                  style={{ borderColor: eliteColors.border, backgroundColor: eliteColors.card }}
-                  whileHover={{ borderColor: [eliteColors.gradient1, eliteColors.gradient2, eliteColors.gradient3][catIdx % 3] }}
-                >
-                  <h3 className="text-lg font-bold mb-6 flex items-center gap-2">
-                    <Hash className="w-4 h-4" style={{ color: [eliteColors.gradient1, eliteColors.gradient2, eliteColors.gradient3][catIdx % 3] }} />
-                    {category}
-                  </h3>
-                  <div className="flex flex-wrap gap-2">
+            {Object.entries(groupedSkills).map(([category, categorySkills], catIndex) => (
+              <ScrollReveal key={category} delay={catIndex * 0.1}>
+                <TerminalWindow title={`${category.toLowerCase()}.ts`}>
+                  <div className="space-y-3">
                     {categorySkills.map((skill) => (
-                      <motion.span
-                        key={skill.id}
-                        className="px-3 py-1.5 rounded-lg text-sm"
-                        style={{ backgroundColor: 'rgba(255,255,255,0.05)' }}
-                        whileHover={{ 
-                          backgroundColor: [eliteColors.gradient1, eliteColors.gradient2, eliteColors.gradient3][catIdx % 3] + '30',
-                          scale: 1.05
-                        }}
-                      >
-                        {skill.name}
-                      </motion.span>
+                      <div key={skill.id} className="flex items-center justify-between">
+                        <span className="font-mono text-sm">{skill.name}</span>
+                        <div className="flex items-center gap-2">
+                          <div className="w-24 h-2 rounded-full overflow-hidden" style={{ backgroundColor: eliteColors.border }}>
+                            <motion.div 
+                              className="h-full rounded-full"
+                              style={{ backgroundColor: eliteColors.accent }}
+                              initial={{ width: 0 }}
+                              whileInView={{ width: `${skill.proficiency || 80}%` }}
+                              transition={{ duration: 1, delay: 0.2 }}
+                              viewport={{ once: true }}
+                            />
+                          </div>
+                          <span className="text-xs font-mono" style={{ color: eliteColors.textMuted }}>
+                            {skill.proficiency || 80}%
+                          </span>
+                        </div>
+                      </div>
                     ))}
                   </div>
-                </motion.div>
+                </TerminalWindow>
               </ScrollReveal>
             ))}
           </div>
         </div>
       </section>
 
+      {/* Experience & Education */}
+      {(experiences.length > 0 || education.length > 0) && (
+        <section className="py-20 px-4" style={{ backgroundColor: eliteColors.bgSecondary }}>
+          <div className="max-w-6xl mx-auto">
+            <div className="grid md:grid-cols-2 gap-8">
+              {/* Experience */}
+              {experiences.length > 0 && (
+                <div>
+                  <ScrollReveal>
+                    <div className="flex items-center gap-3 mb-6">
+                      <Briefcase className="w-5 h-5" style={{ color: eliteColors.accentYellow }} />
+                      <h3 className="text-xl font-bold font-mono">experience</h3>
+                    </div>
+                  </ScrollReveal>
+                  <div className="space-y-4">
+                    {experiences.map((exp, i) => (
+                      <ScrollReveal key={exp.id} delay={i * 0.1}>
+                        <div className="p-4 rounded-xl border" style={{ backgroundColor: eliteColors.card, borderColor: eliteColors.border }}>
+                          <div className="flex items-start justify-between mb-2">
+                            <h4 className="font-semibold">{exp.position}</h4>
+                            <span className="text-xs font-mono" style={{ color: eliteColors.textMuted }}>
+                              {formatDate(exp.start_date)} - {exp.is_current ? 'Present' : formatDate(exp.end_date)}
+                            </span>
+                          </div>
+                          <p className="text-sm mb-2" style={{ color: eliteColors.accent }}>{exp.company}</p>
+                          {exp.description && (
+                            <p className="text-sm" style={{ color: eliteColors.textMuted }}>{exp.description}</p>
+                          )}
+                        </div>
+                      </ScrollReveal>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Education */}
+              {education.length > 0 && (
+                <div>
+                  <ScrollReveal>
+                    <div className="flex items-center gap-3 mb-6">
+                      <GraduationCap className="w-5 h-5" style={{ color: eliteColors.accentGreen }} />
+                      <h3 className="text-xl font-bold font-mono">education</h3>
+                    </div>
+                  </ScrollReveal>
+                  <div className="space-y-4">
+                    {education.map((edu, i) => (
+                      <ScrollReveal key={edu.id} delay={i * 0.1}>
+                        <div className="p-4 rounded-xl border" style={{ backgroundColor: eliteColors.card, borderColor: eliteColors.border }}>
+                          <h4 className="font-semibold mb-1">{edu.degree}</h4>
+                          <p className="text-sm mb-1" style={{ color: eliteColors.accent }}>{edu.institution}</p>
+                          {edu.field_of_study && (
+                            <p className="text-sm" style={{ color: eliteColors.textMuted }}>{edu.field_of_study}</p>
+                          )}
+                          <p className="text-xs font-mono mt-2" style={{ color: eliteColors.textMuted }}>
+                            {formatDate(edu.start_date)} - {edu.is_current ? 'Present' : formatDate(edu.end_date)}
+                          </p>
+                        </div>
+                      </ScrollReveal>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* Projects Section */}
-      <section id="works" className="py-24 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
+      <section id="works" className="py-20 px-4">
+        <div className="max-w-6xl mx-auto">
           <ScrollReveal>
-            <div className="text-center mb-16">
-              <Badge className="mb-4 px-4 py-1.5 bg-gradient-to-r from-[#d946ef]/20 to-[#f43f5e]/20 border-0">
-                <Folder className="w-3 h-3 mr-2" />
-                Portfolio
-              </Badge>
-              <h2 className="text-4xl sm:text-5xl font-bold">
-                Featured
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#d946ef] to-[#f43f5e]"> Projects</span>
+            <div className="flex items-center gap-3 mb-8">
+              <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ backgroundColor: eliteColors.card }}>
+                <Folder className="w-5 h-5" style={{ color: eliteColors.accentYellow }} />
+              </div>
+              <h2 className="text-2xl font-bold font-mono">
+                <span style={{ color: eliteColors.textMuted }}>//</span> projects
               </h2>
             </div>
           </ScrollReveal>
 
-          <div className="grid md:grid-cols-2 gap-8">
-            {allProjects.slice(0, 4).map((project, i) => (
-              <ScrollReveal key={project.id} delay={i * 0.1}>
-                <motion.div 
-                  className="group rounded-3xl border overflow-hidden"
-                  style={{ borderColor: eliteColors.border, backgroundColor: eliteColors.card }}
-                  whileHover={{ borderColor: eliteColors.gradient1 }}
-                >
-                  {project.image_url && (
-                    <div className="relative aspect-video overflow-hidden">
-                      <img 
-                        src={project.image_url} 
-                        alt={project.title}
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500 flex items-end p-6">
-                        <div className="flex gap-3">
-                          {project.live_url && (
-                            <motion.a 
-                              href={project.live_url} 
-                              target="_blank" 
-                              rel="noopener noreferrer"
-                              className="p-3 rounded-xl bg-gradient-to-r from-[#6366f1] to-[#8b5cf6]"
-                              whileHover={{ scale: 1.1 }}
-                            >
-                              <ExternalLink className="w-5 h-5" />
-                            </motion.a>
-                          )}
-                          {project.github_url && (
-                            <motion.a 
-                              href={project.github_url} 
-                              target="_blank" 
-                              rel="noopener noreferrer"
-                              className="p-3 rounded-xl border border-white/20"
-                              whileHover={{ scale: 1.1 }}
-                            >
-                              <Github className="w-5 h-5" />
-                            </motion.a>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                  <div className="p-6">
-                    <div className="flex items-start justify-between mb-3">
-                      <h3 className="text-xl font-bold">{project.title}</h3>
-                      {project.featured && (
-                        <Badge className="bg-gradient-to-r from-[#d946ef]/20 to-[#f43f5e]/20 border-0 text-white">
-                          <Sparkles className="w-3 h-3 mr-1" />
-                          Featured
-                        </Badge>
-                      )}
-                    </div>
-                    <p className="text-sm mb-4 line-clamp-2" style={{ color: eliteColors.muted }}>
-                      {project.description}
-                    </p>
-                    {project.tech_stack && (
-                      <div className="flex flex-wrap gap-2">
-                        {project.tech_stack.slice(0, 4).map((tech, idx) => (
-                          <span 
-                            key={idx} 
-                            className="px-2 py-1 rounded-lg text-xs"
-                            style={{ backgroundColor: 'rgba(255,255,255,0.05)' }}
-                          >
-                            {tech}
-                          </span>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                </motion.div>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {allProjects.map((project, index) => (
+              <ScrollReveal key={project.id} delay={index * 0.1}>
+                <ProjectCard project={project} index={index} />
               </ScrollReveal>
             ))}
           </div>
@@ -753,59 +701,39 @@ export default function WebDeveloperEliteTheme({ profile, portfolio, skills, pro
       </section>
 
       {/* Contact Section */}
-      <section id="contact" className="py-24 px-4 sm:px-6 lg:px-8" style={{ backgroundColor: eliteColors.cardSolid }}>
+      <section id="contact" className="py-20 px-4" style={{ backgroundColor: eliteColors.bgSecondary }}>
         <div className="max-w-4xl mx-auto text-center">
           <ScrollReveal>
-            <Badge className="mb-4 px-4 py-1.5 bg-gradient-to-r from-[#6366f1]/20 to-[#d946ef]/20 border-0">
-              <Mail className="w-3 h-3 mr-2" />
-              Get in Touch
-            </Badge>
-            <h2 className="text-4xl sm:text-5xl font-bold mb-6">
-              Let's Work
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#6366f1] to-[#d946ef]"> Together</span>
+            <h2 className="text-3xl sm:text-4xl font-bold font-mono mb-4">
+              <span style={{ color: eliteColors.textMuted }}>$</span> npm run <span style={{ color: eliteColors.accent }}>collaborate</span>
             </h2>
-            <p className="text-xl mb-12" style={{ color: eliteColors.muted }}>
-              Have a project in mind? Let's create something amazing together.
+            <p className="text-lg mb-8" style={{ color: eliteColors.textMuted }}>
+              Let's build something amazing together
             </p>
           </ScrollReveal>
 
           <ScrollReveal delay={0.1}>
-            <div className="flex flex-wrap justify-center gap-4">
+            <div className="flex flex-wrap justify-center gap-4 mb-8">
               {profile?.email && (
-                <MagneticButton>
-                  <Button 
-                    size="lg" 
-                    className="rounded-xl px-8 bg-gradient-to-r from-[#6366f1] via-[#8b5cf6] to-[#d946ef]"
-                    asChild
-                  >
-                    <a href={`mailto:${profile.email}`}>
-                      <Mail className="w-4 h-4 mr-2" />
-                      Send Email
-                    </a>
-                  </Button>
-                </MagneticButton>
-              )}
-              {portfolio?.phone && (
-                <MagneticButton>
-                  <Button 
-                    size="lg" 
-                    variant="outline"
-                    className="rounded-xl px-8 border-white/20"
-                    asChild
-                  >
-                    <a href={`tel:${portfolio.phone}`}>
-                      <Phone className="w-4 h-4 mr-2" />
-                      {portfolio.phone}
-                    </a>
-                  </Button>
-                </MagneticButton>
+                <Button 
+                  size="lg" 
+                  className="rounded-lg font-mono"
+                  style={{ backgroundColor: eliteColors.accent, color: '#000' }}
+                  asChild
+                >
+                  <a href={`mailto:${profile.email}`}>
+                    <Mail className="w-4 h-4 mr-2" />
+                    Send Message
+                  </a>
+                </Button>
               )}
             </div>
           </ScrollReveal>
 
+          {/* Social Links */}
           {socialLinks.length > 0 && (
             <ScrollReveal delay={0.2}>
-              <div className="flex justify-center gap-4 mt-12">
+              <div className="flex justify-center gap-4">
                 {socialLinks.map((link) => {
                   const Icon = getSocialIcon(link.platform);
                   return (
@@ -814,11 +742,11 @@ export default function WebDeveloperEliteTheme({ profile, portfolio, skills, pro
                       href={link.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="p-4 rounded-xl border backdrop-blur-xl"
-                      style={{ borderColor: eliteColors.border, backgroundColor: eliteColors.card }}
-                      whileHover={{ scale: 1.1, borderColor: eliteColors.gradient1 }}
+                      className="w-12 h-12 rounded-lg flex items-center justify-center border transition-colors"
+                      style={{ borderColor: eliteColors.border }}
+                      whileHover={{ borderColor: eliteColors.accent, backgroundColor: eliteColors.card }}
                     >
-                      <Icon className="w-6 h-6" style={{ color: eliteColors.gradient1 }} />
+                      <Icon className="w-5 h-5" />
                     </motion.a>
                   );
                 })}
@@ -829,25 +757,17 @@ export default function WebDeveloperEliteTheme({ profile, portfolio, skills, pro
       </section>
 
       {/* Footer */}
-      <footer className="py-12 px-4 border-t" style={{ borderColor: eliteColors.border }}>
-        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-6">
-          <div className="flex items-center gap-3">
-            {portfolio?.logo_url ? (
-              <img src={portfolio.logo_url} alt="Logo" className="h-6 w-auto" />
-            ) : (
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#6366f1] to-[#d946ef] flex items-center justify-center">
-                <Code2 className="w-4 h-4" />
-              </div>
-            )}
-            <span style={{ color: eliteColors.muted }}>
-              © {new Date().getFullYear()} {profile?.display_name}. All rights reserved.
-            </span>
+      <footer className="py-8 px-4 border-t" style={{ borderColor: eliteColors.border }}>
+        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-2 font-mono text-sm" style={{ color: eliteColors.textMuted }}>
+            <Terminal className="w-4 h-4" />
+            <span>© {new Date().getFullYear()} {profile?.display_name || "Developer"}</span>
           </div>
-          <div className="flex items-center gap-2 text-sm" style={{ color: eliteColors.muted }}>
-            <span>Powered by</span>
-            <a href="https://alphaportfolio0.lovable.app" target="_blank" rel="noopener noreferrer" className="hover:underline text-transparent bg-clip-text bg-gradient-to-r from-[#6366f1] to-[#d946ef] font-medium">
-              Alpha Portfolio
-            </a>
+          {portfolio?.logo_url && (
+            <img src={portfolio.logo_url} alt="Logo" className="h-6 opacity-50" />
+          )}
+          <div className="text-sm font-mono" style={{ color: eliteColors.textMuted }}>
+            Built with <span style={{ color: eliteColors.accent }}>❤</span>
           </div>
         </div>
       </footer>

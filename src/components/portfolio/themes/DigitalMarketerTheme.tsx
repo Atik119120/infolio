@@ -181,27 +181,27 @@ export default function DigitalMarketerTheme({ profile, portfolio, skills, proje
               </motion.div>
             </div>
 
-            {/* Dashboard */}
+            {/* Dashboard - show simplified version on tablet, full on desktop */}
             <motion.div 
-              className="hidden lg:block"
+              className="hidden md:block"
               initial={{ opacity: 0, x: 50 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.5 }}
             >
-              <div className="bg-white/5 backdrop-blur-xl rounded-3xl p-6 sm:p-8 border border-white/10">
-                <div className="flex items-center justify-between mb-6">
-                  <h3 className="font-semibold">Performance Dashboard</h3>
+              <div className="bg-white/5 backdrop-blur-xl rounded-2xl lg:rounded-3xl p-4 lg:p-6 xl:p-8 border border-white/10">
+                <div className="flex items-center justify-between mb-4 lg:mb-6">
+                  <h3 className="font-semibold text-sm lg:text-base">Performance Dashboard</h3>
                   <div className="flex items-center gap-2 text-xs text-green-400">
                     <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
                     Live
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4 mb-6">
+                <div className="grid grid-cols-2 gap-2 lg:gap-4 mb-4 lg:mb-6">
                   {metrics.map((metric, i) => (
                     <motion.div 
                       key={metric.label}
-                      className="bg-white/5 rounded-2xl p-4 relative overflow-hidden"
+                      className="bg-white/5 rounded-xl lg:rounded-2xl p-2 lg:p-4 relative overflow-hidden"
                       initial={{ opacity: 0, scale: 0.9 }}
                       animate={{ opacity: 1, scale: 1 }}
                       transition={{ delay: 0.8 + i * 0.1 }}
@@ -211,17 +211,17 @@ export default function DigitalMarketerTheme({ profile, portfolio, skills, proje
                         style={{ backgroundColor: metric.color }}
                         animate={{ opacity: activeMetric === i ? 0.2 : 0.1 }}
                       />
-                      <p className="text-xs text-white/40 mb-1">{metric.label}</p>
-                      <p className="text-xl sm:text-2xl font-bold" style={{ color: metric.color }}>{metric.value}</p>
+                      <p className="text-[10px] lg:text-xs text-white/40 mb-1">{metric.label}</p>
+                      <p className="text-lg lg:text-xl xl:text-2xl font-bold" style={{ color: metric.color }}>{metric.value}</p>
                     </motion.div>
                   ))}
                 </div>
 
-                <div className="h-24 sm:h-32 flex items-end gap-2">
+                <div className="h-16 lg:h-24 xl:h-32 flex items-end gap-1 lg:gap-2">
                   {[40, 65, 45, 80, 55, 90, 70, 85].map((height, i) => (
                     <motion.div 
                       key={i}
-                      className="flex-1 rounded-t-lg bg-gradient-to-t from-blue-500 to-purple-500"
+                      className="flex-1 rounded-t-md lg:rounded-t-lg bg-gradient-to-t from-blue-500 to-purple-500"
                       initial={{ height: 0 }}
                       animate={{ height: `${height}%` }}
                       transition={{ delay: 1 + i * 0.1, type: "spring" }}

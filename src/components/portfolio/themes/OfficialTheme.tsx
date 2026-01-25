@@ -74,26 +74,26 @@ export default function OfficialTheme({ profile, portfolio, skills, projects, ex
         <AnimatePresence>{menuOpen && (<motion.div className="md:hidden bg-white border-t border-slate-100 px-6 py-4" initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }}>{["Home", "About", "Services", "Portfolio", "Contact"].map((item) => (<button key={item} onClick={() => scrollTo(item.toLowerCase() === "home" ? "hero" : item.toLowerCase() === "services" ? "skills" : item.toLowerCase() === "about" ? "bio" : item.toLowerCase() === "portfolio" ? "works" : item.toLowerCase())} className="block w-full text-left py-3 text-slate-600">{item}</button>))}</motion.div>)}</AnimatePresence>
       </motion.nav>
 
-      <motion.section id="hero" className="min-h-screen flex items-center pt-20 relative overflow-hidden" style={{ opacity: heroOpacity }}>
+      <motion.section id="hero" className="min-h-screen flex items-center pt-16 sm:pt-20 relative overflow-hidden" style={{ opacity: heroOpacity }}>
         <div className="absolute inset-0 bg-gradient-to-br from-slate-50 via-white to-slate-50" />
-        <div className="absolute top-20 right-20 w-[600px] h-[600px] rounded-full bg-gradient-to-br from-blue-100/50 to-indigo-100/30 blur-3xl hidden lg:block" />
+        <div className="absolute top-20 right-20 w-[300px] md:w-[600px] h-[300px] md:h-[600px] rounded-full bg-gradient-to-br from-blue-100/50 to-indigo-100/30 blur-3xl hidden md:block" />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
-          <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-            <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
-              <Badge className="mb-6 bg-slate-900 text-white border-0 rounded-full px-5 py-2 shadow-lg"><Award className="w-3 h-3 mr-2" />Professional Profile</Badge>
-              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-[1.1] tracking-tight">{profile?.display_name || "Your Name"}</h1>
-              {portfolio?.headline && <p className="text-lg sm:text-xl text-slate-500 font-light mb-8 leading-relaxed max-w-lg">{portfolio.headline}</p>}
-              <div className="flex flex-wrap items-center gap-4 text-sm text-slate-500 mb-8">
-                {portfolio?.location && <span className="flex items-center gap-2 bg-slate-100 px-4 py-2 rounded-full"><MapPin className="w-4 h-4 text-slate-600" />{portfolio.location}</span>}
-                {profile?.email && <a href={`mailto:${profile.email}`} className="flex items-center gap-2 bg-slate-100 px-4 py-2 rounded-full hover:bg-slate-200 transition-colors"><Mail className="w-4 h-4 text-slate-600" />{profile.email}</a>}
+          <div className="grid lg:grid-cols-2 gap-8 lg:gap-20 items-center">
+            <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }} className="order-2 lg:order-1 text-center lg:text-left">
+              <Badge className="mb-4 sm:mb-6 bg-slate-900 text-white border-0 rounded-full px-4 sm:px-5 py-1.5 sm:py-2 shadow-lg"><Award className="w-3 h-3 mr-2" />Professional Profile</Badge>
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-4 sm:mb-6 leading-[1.1] tracking-tight">{profile?.display_name || "Your Name"}</h1>
+              {portfolio?.headline && <p className="text-base sm:text-lg md:text-xl text-slate-500 font-light mb-6 sm:mb-8 leading-relaxed max-w-lg mx-auto lg:mx-0">{portfolio.headline}</p>}
+              <div className="flex flex-wrap items-center justify-center lg:justify-start gap-2 sm:gap-4 text-sm text-slate-500 mb-6 sm:mb-8">
+                {portfolio?.location && <span className="flex items-center gap-2 bg-slate-100 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm"><MapPin className="w-3 sm:w-4 h-3 sm:h-4 text-slate-600" />{portfolio.location}</span>}
+                {profile?.email && <a href={`mailto:${profile.email}`} className="flex items-center gap-2 bg-slate-100 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full hover:bg-slate-200 transition-colors text-xs sm:text-sm"><Mail className="w-3 sm:w-4 h-3 sm:h-4 text-slate-600" /><span className="hidden sm:inline">{profile.email}</span><span className="sm:hidden">Email</span></a>}
               </div>
-              <div className="flex flex-wrap gap-4">
-                {profile?.email && <Button size="lg" className="rounded-full bg-slate-900 hover:bg-slate-800 px-8 shadow-lg" asChild><a href={`mailto:${profile.email}`}>Get In Touch <ArrowRight className="w-4 h-4 ml-2" /></a></Button>}
-                <Button size="lg" variant="outline" className="rounded-full px-8 border-slate-300 hover:bg-slate-50" onClick={() => scrollTo('works')}>View Work</Button>
+              <div className="flex flex-wrap justify-center lg:justify-start gap-3 sm:gap-4">
+                {profile?.email && <Button size="lg" className="rounded-full bg-slate-900 hover:bg-slate-800 px-6 sm:px-8 shadow-lg text-sm sm:text-base" asChild><a href={`mailto:${profile.email}`}>Get In Touch <ArrowRight className="w-4 h-4 ml-2" /></a></Button>}
+                <Button size="lg" variant="outline" className="rounded-full px-6 sm:px-8 border-slate-300 hover:bg-slate-50 text-sm sm:text-base" onClick={() => scrollTo('works')}>View Work</Button>
               </div>
             </motion.div>
-            <motion.div className="flex justify-center" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.8, delay: 0.2 }}>
-              <div className="relative"><div className="absolute -inset-6 bg-gradient-to-br from-blue-200/50 to-indigo-200/50 rounded-full blur-2xl" /><Avatar className="relative w-64 h-64 sm:w-80 sm:h-80 border-8 border-white shadow-2xl"><AvatarImage src={profile?.avatar_url || undefined} /><AvatarFallback className="text-5xl sm:text-7xl bg-gradient-to-br from-slate-200 to-slate-300 text-slate-600">{profile?.display_name?.[0]?.toUpperCase() || "?"}</AvatarFallback></Avatar></div>
+            <motion.div className="flex justify-center order-1 lg:order-2" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.8, delay: 0.2 }}>
+              <div className="relative"><div className="absolute -inset-4 sm:-inset-6 bg-gradient-to-br from-blue-200/50 to-indigo-200/50 rounded-full blur-2xl" /><Avatar className="relative w-48 h-48 sm:w-56 sm:h-56 md:w-64 md:h-64 lg:w-80 lg:h-80 border-4 sm:border-8 border-white shadow-2xl"><AvatarImage src={profile?.avatar_url || undefined} /><AvatarFallback className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl bg-gradient-to-br from-slate-200 to-slate-300 text-slate-600">{profile?.display_name?.[0]?.toUpperCase() || "?"}</AvatarFallback></Avatar></div>
             </motion.div>
           </div>
         </div>

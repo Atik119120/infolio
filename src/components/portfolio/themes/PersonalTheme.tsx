@@ -176,7 +176,7 @@ export default function PersonalTheme({ profile, portfolio, skills, projects, ex
         />
 
         <div className="max-w-6xl mx-auto px-4 sm:px-6 w-full relative z-10">
-          <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+          <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center">
             {/* Left: Elegant Photo Frame */}
             <motion.div 
               className="relative order-2 lg:order-1"
@@ -184,34 +184,34 @@ export default function PersonalTheme({ profile, portfolio, skills, projects, ex
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8, delay: 0.3 }}
             >
-              <div className="relative max-w-md mx-auto lg:mx-0">
-                {/* Decorative Frame Layers */}
+              <div className="relative max-w-xs sm:max-w-sm md:max-w-md mx-auto lg:mx-0">
+                {/* Decorative Frame Layers - reduced on mobile */}
                 <motion.div 
-                  className="absolute -inset-8 rounded-[3rem] bg-gradient-to-br from-rose-200/60 via-pink-200/40 to-purple-200/60 dark:from-rose-800/40 dark:via-pink-800/30 dark:to-purple-800/40"
+                  className="absolute -inset-4 sm:-inset-6 md:-inset-8 rounded-[2rem] sm:rounded-[2.5rem] md:rounded-[3rem] bg-gradient-to-br from-rose-200/60 via-pink-200/40 to-purple-200/60 dark:from-rose-800/40 dark:via-pink-800/30 dark:to-purple-800/40"
                   animate={{ rotate: [3, 5, 3] }}
                   transition={{ duration: 6, repeat: Infinity }}
                 />
                 <motion.div 
-                  className="absolute -inset-6 rounded-[2.5rem] bg-gradient-to-tr from-yellow-100/50 via-orange-100/30 to-rose-100/50 dark:from-yellow-900/30 dark:via-orange-900/20 dark:to-rose-900/30"
+                  className="absolute -inset-3 sm:-inset-4 md:-inset-6 rounded-[1.5rem] sm:rounded-[2rem] md:rounded-[2.5rem] bg-gradient-to-tr from-yellow-100/50 via-orange-100/30 to-rose-100/50 dark:from-yellow-900/30 dark:via-orange-900/20 dark:to-rose-900/30 hidden sm:block"
                   animate={{ rotate: [-2, -4, -2] }}
                   transition={{ duration: 8, repeat: Infinity }}
                 />
                 <motion.div 
-                  className="absolute -inset-4 rounded-[2rem] bg-white/80 dark:bg-slate-800/80 shadow-2xl"
+                  className="absolute -inset-2 sm:-inset-3 md:-inset-4 rounded-[1.25rem] sm:rounded-[1.5rem] md:rounded-[2rem] bg-white/80 dark:bg-slate-800/80 shadow-2xl"
                   animate={{ rotate: [1, 2, 1] }}
                   transition={{ duration: 5, repeat: Infinity }}
                 />
 
                 {/* Main Photo Container */}
                 <motion.div 
-                  className="relative rounded-3xl overflow-hidden shadow-2xl border-4 border-white dark:border-slate-700"
+                  className="relative rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl border-2 sm:border-4 border-white dark:border-slate-700"
                   whileHover={{ scale: 1.02, rotate: 0 }}
                   transition={{ type: "spring", stiffness: 300 }}
                 >
                   <div className="aspect-[4/5] relative">
                     <Avatar className="w-full h-full rounded-none">
                       <AvatarImage src={profile?.avatar_url || undefined} className="object-cover" />
-                      <AvatarFallback className="text-8xl bg-gradient-to-br from-rose-400 via-pink-500 to-purple-500 text-white rounded-none font-serif">
+                      <AvatarFallback className="text-5xl sm:text-6xl md:text-8xl bg-gradient-to-br from-rose-400 via-pink-500 to-purple-500 text-white rounded-none font-serif">
                         {profile?.display_name?.[0]?.toUpperCase() || "?"}
                       </AvatarFallback>
                     </Avatar>
@@ -234,20 +234,20 @@ export default function PersonalTheme({ profile, portfolio, skills, projects, ex
                   </motion.div>
                 </motion.div>
 
-                {/* Floating Decorations */}
+                {/* Floating Decorations - smaller on mobile */}
                 <motion.div 
-                  className="absolute -top-4 -right-4 w-16 h-16 bg-gradient-to-br from-rose-400 to-pink-500 rounded-2xl shadow-lg flex items-center justify-center"
+                  className="absolute -top-2 sm:-top-4 -right-2 sm:-right-4 w-10 sm:w-16 h-10 sm:h-16 bg-gradient-to-br from-rose-400 to-pink-500 rounded-xl sm:rounded-2xl shadow-lg flex items-center justify-center"
                   animate={{ y: [0, -10, 0], rotate: [0, 10, 0] }}
                   transition={{ duration: 4, repeat: Infinity }}
                 >
-                  <Heart className="w-8 h-8 text-white" />
+                  <Heart className="w-5 sm:w-8 h-5 sm:h-8 text-white" />
                 </motion.div>
                 <motion.div 
-                  className="absolute -bottom-4 -left-4 w-12 h-12 bg-gradient-to-br from-purple-400 to-violet-500 rounded-xl shadow-lg flex items-center justify-center"
+                  className="absolute -bottom-2 sm:-bottom-4 -left-2 sm:-left-4 w-8 sm:w-12 h-8 sm:h-12 bg-gradient-to-br from-purple-400 to-violet-500 rounded-lg sm:rounded-xl shadow-lg flex items-center justify-center"
                   animate={{ y: [0, 10, 0], rotate: [0, -10, 0] }}
                   transition={{ duration: 5, repeat: Infinity }}
                 >
-                  <Sparkles className="w-6 h-6 text-white" />
+                  <Sparkles className="w-4 sm:w-6 h-4 sm:h-6 text-white" />
                 </motion.div>
               </div>
             </motion.div>

@@ -440,13 +440,12 @@ export function ThemeSelector({ currentTheme, userId, onUpdate }: ThemeSelectorP
 
       {/* Purchase Dialog */}
       {selectedPurchaseTheme && (
-        <ThemePurchaseDialog
+        <WhatsAppUpgradeDialog
           open={purchaseDialogOpen}
           onOpenChange={setPurchaseDialogOpen}
-          themeId={selectedPurchaseTheme.id}
-          themeName={selectedPurchaseTheme.name}
-          userId={userId}
-          onSuccess={handlePurchaseSuccess}
+          reason={`Unlock theme: ${selectedPurchaseTheme.name}`}
+          title={`Unlock ${selectedPurchaseTheme.name}`}
+          description="Contact us on WhatsApp to unlock this premium theme."
         />
       )}
     </>

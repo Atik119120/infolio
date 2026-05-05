@@ -186,7 +186,7 @@ export default function Index() {
                 ))}
               </ul>
 
-              <Button size="lg" variant="outline" className="w-full rounded-full" onClick={() => navigate("/auth")}>
+              <Button size="lg" variant="outline" className="w-full rounded-full border-primary/30 text-primary hover:bg-primary/10 hover:text-primary" onClick={() => navigate("/auth")}>
                 Get Started Free <ArrowRight className="ml-2 w-4 h-4" />
               </Button>
             </div>

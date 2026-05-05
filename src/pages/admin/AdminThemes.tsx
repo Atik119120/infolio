@@ -255,15 +255,8 @@ export default function AdminThemes() {
         </p>
       </div>
 
-      <Tabs defaultValue="purchases" className="space-y-6">
+      <Tabs defaultValue="themes" className="space-y-6">
         <TabsList className="bg-slate-800/50">
-          <TabsTrigger value="purchases" className="data-[state=active]:bg-orange-500">
-            <CreditCard className="w-4 h-4 mr-2" />
-            Purchase Requests
-            {pendingPurchases.length > 0 && (
-              <Badge className="ml-2 bg-red-500 text-white">{pendingPurchases.length}</Badge>
-            )}
-          </TabsTrigger>
           <TabsTrigger value="themes" className="data-[state=active]:bg-orange-500">
             <Palette className="w-4 h-4 mr-2" />
             All Themes
@@ -273,131 +266,6 @@ export default function AdminThemes() {
             Statistics
           </TabsTrigger>
         </TabsList>
-
-        {/* Purchase Requests Tab */}
-        <TabsContent value="purchases" className="space-y-6">
-          {/* Pending Purchases */}
-          <Card className="bg-slate-900/50 border-slate-800">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-white">
-                <Clock className="w-5 h-5 text-amber-500" />
-                Pending Approvals
-              </CardTitle>
-              <CardDescription className="text-slate-400">
-                Review and approve theme purchase requests
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              {pendingPurchases.length === 0 ? (
-                <div className="text-center py-8 text-slate-500">
-                  No pending purchase requests
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  {pendingPurchases.map((purchase) => (
-                    <motion.div
-                      key={purchase.id}
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      className="flex items-center justify-between p-4 rounded-lg bg-slate-800/50 border border-slate-700"
-                    >
-                      <div className="flex items-center gap-4">
-                        <div className={`w-12 h-12 rounded-lg bg-gradient-to-br ${getThemeColor(purchase.theme_id)} flex items-center justify-center`}>
-                          <Palette className="w-6 h-6 text-white" />
-                        </div>
-                        <div>
-                          <div className="flex items-center gap-2">
-                            <h4 className="font-semibold text-white">{getThemeName(purchase.theme_id)}</h4>
-                            <Badge className="bg-amber-500/20 text-amber-400 border-amber-500/30">
-                              ৳{purchase.amount}
-                            </Badge>
-                          </div>
-                          <p className="text-sm text-slate-400">
-                            {purchase.profile?.display_name || purchase.profile?.username} • {purchase.profile?.email}
-                          </p>
-                          <div className="flex items-center gap-3 mt-1 text-xs text-slate-500">
-                            <span className="uppercase font-medium">{purchase.payment_method}</span>
-                            <span>TXN: {purchase.transaction_id}</span>
-                            <span>{format(new Date(purchase.created_at), 'MMM dd, yyyy HH:mm')}</span>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          className="border-red-500/50 text-red-400 hover:bg-red-500/10"
-                          onClick={() => handleReject(purchase)}
-                          disabled={processingId === purchase.id}
-                        >
-                          {processingId === purchase.id ? (
-                            <Loader2 className="w-4 h-4 animate-spin" />
-                          ) : (
-                            <XCircle className="w-4 h-4" />
-                          )}
-                        </Button>
-                        <Button
-                          size="sm"
-                          className="bg-green-600 hover:bg-green-700"
-                          onClick={() => handleApprove(purchase)}
-                          disabled={processingId === purchase.id}
-                        >
-                          {processingId === purchase.id ? (
-                            <Loader2 className="w-4 h-4 animate-spin" />
-                          ) : (
-                            <>
-                              <CheckCircle2 className="w-4 h-4 mr-1" />
-                              Approve
-                            </>
-                          )}
-                        </Button>
-                      </div>
-                    </motion.div>
-                  ))}
-                </div>
-              )}
-            </CardContent>
-          </Card>
-
-          {/* Recent Approved */}
-          <Card className="bg-slate-900/50 border-slate-800">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-white">
-                <CheckCircle2 className="w-5 h-5 text-green-500" />
-                Recent Approvals
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              {approvedPurchases.length === 0 ? (
-                <div className="text-center py-4 text-slate-500">No approved purchases yet</div>
-              ) : (
-                <div className="space-y-2">
-                  {approvedPurchases.slice(0, 10).map((purchase) => (
-                    <div
-                      key={purchase.id}
-                      className="flex items-center justify-between p-3 rounded-lg bg-green-500/5 border border-green-500/20"
-                    >
-                      <div className="flex items-center gap-3">
-                        <div className={`w-8 h-8 rounded bg-gradient-to-br ${getThemeColor(purchase.theme_id)} flex items-center justify-center`}>
-                          <Palette className="w-4 h-4 text-white" />
-                        </div>
-                        <div>
-                          <span className="font-medium text-white">{getThemeName(purchase.theme_id)}</span>
-                          <span className="text-slate-400 mx-2">•</span>
-                          <span className="text-sm text-slate-400">{purchase.profile?.display_name || purchase.profile?.email}</span>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-2 text-sm text-slate-500">
-                        <span>৳{purchase.amount}</span>
-                        <Badge variant="outline" className="border-green-500/30 text-green-400">Approved</Badge>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </TabsContent>
 
         {/* All Themes Tab */}
         <TabsContent value="themes">

@@ -183,8 +183,8 @@ export default function PRDDigitalMarketerTheme({
                 {headline}. {bio}
               </p>
               <div className="flex flex-wrap gap-3 mb-10">
-                <a href="#contact" className="gl-btn-primary px-7 py-3.5 text-sm font-bold rounded-lg inline-flex items-center gap-2">
-                  Get Free Growth Audit <ArrowRight className="w-4 h-4" />
+                <a href={heroCtaLink || "#contact"} className="gl-btn-primary px-7 py-3.5 text-sm font-bold rounded-lg inline-flex items-center gap-2">
+                  {heroCtaText || "Get Free Growth Audit"} <ArrowRight className="w-4 h-4" />
                 </a>
                 <a href="#work" className="gl-btn-outline px-7 py-3.5 text-sm font-bold rounded-lg">
                   See Case Studies

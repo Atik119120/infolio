@@ -118,19 +118,21 @@ export default function DashboardDomainStatus() {
   // Run DNS checks for a domain
   const checkDomainDns = useCallback(async (d: DomainRow) => {
     setDnsChecks((prev) => ({ ...prev, [d.id]: { txt: "pending", a: "pending" } }));
-    const [txt, a] = await Promise.all([
+    const [txt, a, cname] = await Promise.all([
       dohQuery(`_lovable.${d.domain}`, "TXT"),
       dohQuery(d.domain, "A"),
+      dohQuery(d.domain, "CNAME"),
     ]);
     const txtOk = !!d.verification_token && txt.includes(d.verification_token);
-    const aOk = a.some((ip) => ACCEPTED_IPS.includes(ip));
+    const dnsOk = a.some((ip) => ACCEPTED_IPS.includes(ip)) || cname.some((target) => ACCEPTED_CNAME_TARGETS.includes(target.toLowerCase()));
     setDnsChecks((prev) => ({
       ...prev,
       [d.id]: {
         txt: txtOk ? "ok" : "fail",
-        a: aOk ? "ok" : "fail",
+        a: dnsOk ? "ok" : "fail",
         txtValue: txt,
         aValue: a,
+        cnameValue: cname,
         checkedAt: new Date(),
       },
     }));
@@ -138,9 +140,10 @@ export default function DashboardDomainStatus() {
 
   const checkSubdomain = useCallback(async () => {
     setSubdomainCheck({ txt: "ok", a: "pending" });
-    const a = await dohQuery(`${username || "test"}.${MAIN_DOMAIN}`, "A");
-    const aOk = a.some((ip) => ACCEPTED_IPS.includes(ip));
-    setSubdomainCheck({ txt: "ok", a: aOk ? "ok" : "fail", aValue: a, checkedAt: new Date() });
+    const host = `${username || "test"}.${MAIN_DOMAIN}`;
+    const [a, cname] = await Promise.all([dohQuery(host, "A"), dohQuery(host, "CNAME")]);
+    const dnsOk = a.some((ip) => ACCEPTED_IPS.includes(ip)) || cname.some((target) => ACCEPTED_CNAME_TARGETS.includes(target.toLowerCase()));
+    setSubdomainCheck({ txt: "ok", a: dnsOk ? "ok" : "fail", aValue: a, cnameValue: cname, checkedAt: new Date() });
   }, [username]);
 
   // Auto-run DNS checks on load

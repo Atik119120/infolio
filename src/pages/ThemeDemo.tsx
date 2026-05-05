@@ -24,6 +24,11 @@ import {
   PersonalTheme,
   CosmicTheme,
   SimpleTheme,
+  FreelancerTheme,
+  SmallBusinessTheme,
+  PRDGraphicDesignerTheme,
+  PRDPhotographerTheme,
+  PRDDigitalMarketerTheme,
   ThemeProps,
 } from "@/components/portfolio/themes";
 
@@ -149,6 +154,16 @@ export default function ThemeDemo() {
     switch (themeName) {
       case 'simple':
         return <SimpleTheme {...demoData} />;
+      case 'freelancer':
+        return <FreelancerTheme {...demoData} />;
+      case 'small-business':
+        return <SmallBusinessTheme {...demoData} />;
+      case 'prd-graphic-designer':
+        return <PRDGraphicDesignerTheme {...demoData} />;
+      case 'prd-photographer':
+        return <PRDPhotographerTheme {...demoData} />;
+      case 'prd-digital-marketer':
+        return <PRDDigitalMarketerTheme {...demoData} />;
       case 'photographer':
         return <PhotographerTheme {...demoData} />;
       case 'photographer-pro':

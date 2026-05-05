@@ -171,8 +171,8 @@ export default function SmallBusinessTheme({
                   style={{ background: C.accent, opacity: 0.2 }} />
                 <div aria-hidden className="absolute -bottom-6 -right-6 w-40 h-40 rounded-3xl"
                   style={{ background: C.primary, opacity: 0.15 }} />
-                {profile?.avatar_url ? (
-                  <img src={profile.avatar_url} alt={name}
+                {heroImage ? (
+                  <img src={heroImage} alt={name}
                     className="relative w-full max-w-sm mx-auto aspect-[4/5] object-cover rounded-3xl"
                     style={{ boxShadow: `0 30px 60px -20px ${C.ink}33` }} />
                 ) : (

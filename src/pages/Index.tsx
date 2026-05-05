@@ -258,7 +258,7 @@ export default function Index() {
             It only took me 2 minutes to set up, and now all my clients know exactly where to find my work. The themes look genuinely professional.
           </p>
           <div className="flex items-center justify-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-foreground text-background grid place-items-center font-semibold text-sm">SC</div>
+            <div className="w-10 h-10 rounded-full gradient-primary text-white grid place-items-center font-semibold text-sm shadow-md shadow-primary/30">SC</div>
             <div className="text-left">
               <div className="font-medium text-sm">Sarah C.</div>
               <div className="text-xs text-muted-foreground">Owner · Greek Studio</div>

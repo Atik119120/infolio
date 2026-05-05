@@ -68,10 +68,22 @@ export default function PublicPortfolio() {
     if (p.og_image_url) setMeta('og:image', p.og_image_url, 'property');
     if (p.google_verification) setMeta('google-site-verification', p.google_verification);
 
+    // Inject custom <head> HTML (sitemap, analytics, etc.)
+    if (p.custom_head_html) {
+      const container = document.createElement('div');
+      container.innerHTML = p.custom_head_html;
+      Array.from(container.children).forEach((node) => {
+        node.setAttribute('data-portfolio-custom', 'true');
+        document.head.appendChild(node);
+      });
+    }
+
     return () => {
       const link = document.querySelector("link[rel~='icon']") as HTMLLinkElement | null;
       if (link) link.href = '/favicon.ico';
       document.title = 'Alpha Portfolio';
+      // Remove injected custom head nodes
+      document.head.querySelectorAll('[data-portfolio-custom]').forEach((n) => n.remove());
     };
   }, [portfolio, profile?.display_name]);
 

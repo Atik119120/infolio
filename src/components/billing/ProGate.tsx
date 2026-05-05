@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Crown, Lock } from "lucide-react";
 import { usePlan } from "@/hooks/usePlan";
 import { useAuth } from "@/contexts/AuthContext";
-import { PlanPurchaseDialog } from "./PlanPurchaseDialog";
+import { WhatsAppUpgradeDialog } from "./WhatsAppUpgradeDialog";
 
 interface ProGateProps {
   title: string;
@@ -41,7 +41,7 @@ export function ProGate({ title, description, icon, children }: ProGateProps) {
         </CardContent>
       </Card>
 
-      {user && <PlanPurchaseDialog open={open} onOpenChange={setOpen} userId={user.id} />}
+      {user && <WhatsAppUpgradeDialog open={open} onOpenChange={setOpen} reason={`Pro feature: ${title}`} title="Upgrade to Pro" description="Contact us on WhatsApp to upgrade." />}
     </>
   );
 }

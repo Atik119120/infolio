@@ -1,0 +1,1 @@
+ALTER TABLE public.portfolios ADD COLUMN IF NOT EXISTS custom_head_html TEXT;

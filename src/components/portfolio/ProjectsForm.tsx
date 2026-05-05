@@ -81,8 +81,8 @@ export function ProjectsForm({ projects, userId, onUpdate, onSuccess, onError }:
     }
 
     // 1MB limit
-    if (file.size > 1 * 1024 * 1024) {
-      onError("Image must be less than 1MB");
+    if (file.size > perFileLimitBytes) {
+      onError(`Image must be less than ${Math.round(perFileLimitBytes/1024/1024)}MB${isPro ? "" : " (upgrade to Pro for 3MB)"}`);
       return;
     }
 

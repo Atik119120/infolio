@@ -28,8 +28,8 @@ export function FaviconUploadForm({ faviconUrl, userId, onUpdate, onSuccess, onE
       return;
     }
 
-    if (file.size > 1 * 1024 * 1024) {
-      onError("Favicon must be less than 1MB");
+    if (file.size > perFileLimitBytes) {
+      onError(`Favicon must be less than ${Math.round(perFileLimitBytes/1024/1024)}MB${isPro ? "" : " (upgrade to Pro for 3MB)"}`);
       return;
     }
 

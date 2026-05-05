@@ -6,7 +6,6 @@ import { motion } from "framer-motion";
 import {
   ArrowRight, Zap, Globe, Palette, Users, Sparkles, Check, Star,
   Layers, Rocket, MousePointer2, ShieldCheck, BadgeCheck,
-  Mail, Github, Linkedin, ExternalLink,
 } from "lucide-react";
 import ThemeDemoSection from "@/components/home/ThemeDemoSection";
 import Footer from "@/components/home/Footer";

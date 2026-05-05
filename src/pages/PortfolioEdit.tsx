@@ -315,6 +315,16 @@ export default function PortfolioEdit() {
             onError={showError}
           />
         </TabsContent>
+
+        <TabsContent value="seo" className="mt-4">
+          <SeoSettingsForm
+            portfolio={portfolio as any}
+            userId={user?.id || ""}
+            onUpdate={fetchAllData}
+            onSuccess={showSuccess}
+            onError={showError}
+          />
+        </TabsContent>
       </Tabs>
     </div>
   );

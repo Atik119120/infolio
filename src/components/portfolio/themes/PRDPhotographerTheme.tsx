@@ -1,6 +1,6 @@
 import { useEffect, useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, ArrowRight, Mail, Phone, MapPin, Globe, ExternalLink, Camera, Award, Aperture } from "lucide-react";
+import { Menu, X, ArrowRight, Mail, Phone, MapPin, Globe, ExternalLink, Camera, Award, Aperture, ChevronLeft, ChevronRight } from "lucide-react";
 import { ServiceIcon } from "@/lib/serviceIcons";
 import { ThemeProps } from "./types";
 import { ContactForm } from "@/components/portfolio/ContactForm";

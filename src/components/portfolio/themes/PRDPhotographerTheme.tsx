@@ -302,11 +302,10 @@ export default function PRDPhotographerTheme({
                   key={sv.id}
                   {...fadeUp}
                   transition={{ duration: 0.5, delay: i * 0.06 }}
-                  className="relative p-8 group transition-all duration-300 hover:-translate-y-1"
-                  style={{ background: C.surface, border: `1px solid ${C.border}` }}
+                  className="relative p-8 rounded-2xl gx-glass gx-glow-ring group transition-all duration-300 hover:-translate-y-1"
                 >
-                  <div className="w-14 h-14 flex items-center justify-center mb-5"
-                    style={{ background: C.surface2, color: C.primary, border: `1px solid ${C.primary}33` }}>
+                  <div className="w-14 h-14 flex items-center justify-center mb-5 rounded-xl gx-glass-strong"
+                    style={{ color: C.primary }}>
                     <ServiceIcon icon={sv.icon} className="w-6 h-6" />
                   </div>
                   <h3 className="sl-display text-2xl font-bold mb-3 italic">{sv.title}</h3>

@@ -32,7 +32,7 @@ export default function Index() {
           </button>
           <div className="hidden md:flex items-center gap-8">
             <a href="#features" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Features</a>
-            
+            <button onClick={() => navigate("/themes")} className="text-sm text-muted-foreground hover:text-foreground transition-colors">Themes</button>
             <a href="#pricing" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Pricing</a>
             <a href="#faq" className="text-sm text-muted-foreground hover:text-foreground transition-colors">FAQ</a>
           </div>
@@ -240,22 +240,32 @@ export default function Index() {
       </section>
 
       {/* FAQ */}
-      <section id="faq" className="py-20 px-6 border-t border-border/60">
-        <div className="container mx-auto max-w-3xl">
+      <section id="faq" className="py-24 px-6 border-t border-border/60 relative overflow-hidden">
+        <div aria-hidden className="absolute inset-0 -z-10 pointer-events-none">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-primary/5 blur-[120px]" />
+        </div>
+        <div className="container mx-auto max-w-5xl">
           <SectionHeader eyebrow="FAQ" title="Frequently asked questions" subtitle="Everything you might want to know before getting started." />
 
-          <div className="mt-10 space-y-3">
+          <div className="mt-12 grid md:grid-cols-2 gap-4">
             {FAQS.map((faq, i) => {
               const isOpen = openFaq === i;
               return (
-                <div key={i} className={`border rounded-2xl overflow-hidden transition-all ${isOpen ? "border-primary/40 bg-primary/[0.03]" : "border-border bg-card hover:border-primary/20"}`}>
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, y: 14 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-50px" }}
+                  transition={{ duration: 0.35, delay: (i % 2) * 0.05 }}
+                  className={`border rounded-2xl overflow-hidden transition-all h-fit ${isOpen ? "border-primary/50 bg-primary/[0.04] shadow-lg shadow-primary/10" : "border-border bg-card hover:border-primary/30 hover:shadow-md hover:shadow-primary/5"}`}
+                >
                   <button
                     onClick={() => setOpenFaq(isOpen ? null : i)}
                     className="w-full text-left px-6 py-5 flex items-center justify-between gap-4"
                   >
                     <span className="font-semibold text-[15px] tracking-tight">{faq.q}</span>
-                    <span className={`shrink-0 w-7 h-7 rounded-full grid place-items-center transition-colors ${isOpen ? "gradient-primary text-white" : "bg-muted text-foreground/70"}`}>
-                      {isOpen ? <Minus className="w-3.5 h-3.5" /> : <Plus className="w-3.5 h-3.5" />}
+                    <span className={`shrink-0 w-8 h-8 rounded-full grid place-items-center transition-all ${isOpen ? "gradient-primary text-white shadow-md shadow-primary/40" : "bg-muted text-foreground/70"}`}>
+                      {isOpen ? <Minus className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
                     </span>
                   </button>
                   {isOpen && (
@@ -268,9 +278,16 @@ export default function Index() {
                       {faq.a}
                     </motion.div>
                   )}
-                </div>
+                </motion.div>
               );
             })}
+          </div>
+
+          <div className="mt-12 text-center">
+            <p className="text-sm text-muted-foreground mb-3">Still have questions?</p>
+            <Button onClick={() => navigate("/auth")} variant="outline" className="rounded-full">
+              Contact support <ArrowRight className="ml-1.5 w-4 h-4" />
+            </Button>
           </div>
         </div>
       </section>

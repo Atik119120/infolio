@@ -194,7 +194,7 @@ export default function AdminUsers() {
   }, [users, searchQuery, filterStatus, sortField, sortOrder]);
 
   const pendingApprovalUsers = filteredUsers.filter((u) => !u.is_approved);
-  const pendingPublishUsers = filteredUsers.filter((u) => u.portfolio?.pending_publish);
+  const pendingPublishUsers = filteredUsers.filter((u) => false);
 
   // Selection handlers
   const toggleSelectAll = () => {
@@ -224,7 +224,7 @@ export default function AdminUsers() {
       user.email || "",
       user.phone_number || "",
       user.is_approved ? "Approved" : "Pending",
-      user.portfolio?.is_published ? "Published" : user.portfolio?.pending_publish ? "Pending Publish" : "Draft",
+      user.portfolio?.is_published ? "Published" : false ? "Pending Publish" : "Draft",
       user.portfolio?.theme || "default",
       format(new Date(user.created_at), "yyyy-MM-dd HH:mm")
     ]);
@@ -253,7 +253,7 @@ export default function AdminUsers() {
       email: user.email,
       phone_number: user.phone_number,
       is_approved: user.is_approved,
-      portfolio_status: user.portfolio?.is_published ? "published" : user.portfolio?.pending_publish ? "pending" : "draft",
+      portfolio_status: user.portfolio?.is_published ? "published" : false ? "pending" : "draft",
       theme: user.portfolio?.theme || "default",
       created_at: user.created_at,
     }));
@@ -871,7 +871,7 @@ export default function AdminUsers() {
                             )}
                             {user.portfolio?.is_published ? (
                               <Badge className="bg-green-500/10 text-green-600 text-xs w-fit">Published</Badge>
-                            ) : user.portfolio?.pending_publish ? (
+                            ) : false ? (
                               <Badge className="bg-purple-500/10 text-purple-600 text-xs w-fit">Pending</Badge>
                             ) : (
                               <Badge variant="secondary" className="text-xs w-fit">Draft</Badge>
@@ -899,7 +899,7 @@ export default function AdminUsers() {
                                   Approve User
                                 </DropdownMenuItem>
                               )}
-                              {user.portfolio?.pending_publish && (
+                              {false && (
                                 <DropdownMenuItem onClick={() => handleApprovePublish(user)}>
                                   <CheckCircle className="w-4 h-4 mr-2" />
                                   Approve Publish

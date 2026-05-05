@@ -316,7 +316,7 @@ export default function DashboardSettings() {
   }
 
   const portfolioUrl = `${window.location.origin}/u/${profile?.username}`;
-  const subdomainUrl = `${profile?.username}.alphaportfolio.com`;
+  const subdomainUrl = `${profile?.username}.alokchitra.site`;
 
   return (
     <div className="space-y-6 animate-fade-in">

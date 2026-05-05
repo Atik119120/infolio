@@ -33,7 +33,7 @@ export function WhatsAppUpgradeDialog({
   description = "Contact us on WhatsApp to upgrade your account.",
 }: WhatsAppUpgradeDialogProps) {
   const message = encodeURIComponent(
-    `Hi! I'd like to upgrade my Alpha Portfolio account.\n\nRequest: ${reason}\n\nPlease guide me with the payment process.`
+    `Hi! I'd like to upgrade my Alokchitra account.\n\nRequest: ${reason}\n\nPlease guide me with the payment process.`
   );
   const waLink = `https://wa.me/${WHATSAPP_NUMBER}?text=${message}`;
 

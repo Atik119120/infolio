@@ -47,8 +47,8 @@ export default function Footer() {
           {/* Brand Column */}
           <div className="col-span-2">
             <div className="flex items-center gap-3 mb-6">
-              <img src={alphaLogo} alt="Alpha Portfolio" className="w-10 h-10 object-contain dark:invert" />
-              <span className="text-xl font-bold">Alpha Portfolio</span>
+              <img src={alphaLogo} alt="Alokchitra" className="w-10 h-10 object-contain dark:invert" />
+              <span className="text-xl font-bold">Alokchitra</span>
             </div>
             <p className="text-muted-foreground mb-6 max-w-xs">
               Create stunning portfolio websites in minutes. Showcase your work and land your dream opportunities.
@@ -143,10 +143,10 @@ export default function Footer() {
         <div className="container mx-auto px-6 py-6">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <p className="text-muted-foreground text-sm">
-              © {currentYear} Alpha Portfolio. All rights reserved.
+              © {currentYear} Alokchitra. All rights reserved.
             </p>
             <p className="text-muted-foreground text-sm flex items-center gap-1">
-              Made with <Heart className="w-4 h-4 text-red-500 fill-red-500" /> by Alpha Portfolio Team
+              Made with <Heart className="w-4 h-4 text-red-500 fill-red-500" /> by Alokchitra Team
             </p>
           </div>
         </div>

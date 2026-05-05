@@ -254,24 +254,24 @@ export default function Index() {
         <div className="container mx-auto max-w-5xl">
           <SectionHeader eyebrow="FAQ" title="Frequently asked questions" subtitle="Everything you might want to know before getting started." />
 
-          <div className="mt-12 grid md:grid-cols-2 gap-4">
+          <div className="mt-12 max-w-3xl mx-auto flex flex-col gap-3">
             {FAQS.map((faq, i) => {
               const isOpen = openFaq === i;
               return (
                 <motion.div
                   key={i}
-                  initial={{ opacity: 0, y: 14 }}
+                  initial={{ opacity: 0, y: 10 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, margin: "-50px" }}
-                  transition={{ duration: 0.35, delay: (i % 2) * 0.05 }}
-                  className={`border rounded-2xl overflow-hidden transition-all h-fit ${isOpen ? "border-primary/50 bg-primary/[0.04] shadow-lg shadow-primary/10" : "border-border bg-card hover:border-primary/30 hover:shadow-md hover:shadow-primary/5"}`}
+                  transition={{ duration: 0.3, delay: i * 0.04 }}
+                  className={`border rounded-2xl overflow-hidden transition-all backdrop-blur-sm ${isOpen ? "border-primary/40 bg-primary/[0.05] shadow-xl shadow-primary/10" : "border-border/70 bg-card/60 hover:border-primary/30"}`}
                 >
                   <button
                     onClick={() => setOpenFaq(isOpen ? null : i)}
-                    className="w-full text-left px-6 py-5 flex items-center justify-between gap-4"
+                    className="w-full text-left px-5 md:px-6 py-4 md:py-5 flex items-center justify-between gap-4"
                   >
-                    <span className="font-semibold text-[15px] tracking-tight">{faq.q}</span>
-                    <span className={`shrink-0 w-8 h-8 rounded-full grid place-items-center transition-all ${isOpen ? "gradient-primary text-white shadow-md shadow-primary/40" : "bg-muted text-foreground/70"}`}>
+                    <span className="font-medium text-[15px] md:text-base tracking-tight">{faq.q}</span>
+                    <span className={`shrink-0 w-8 h-8 rounded-full grid place-items-center transition-all ${isOpen ? "gradient-primary text-white rotate-180 shadow-md shadow-primary/40" : "bg-muted text-foreground/70"}`}>
                       {isOpen ? <Minus className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
                     </span>
                   </button>
@@ -280,7 +280,7 @@ export default function Index() {
                       initial={{ opacity: 0, height: 0 }}
                       animate={{ opacity: 1, height: "auto" }}
                       transition={{ duration: 0.25 }}
-                      className="px-6 pb-5 -mt-1 text-sm text-muted-foreground leading-relaxed"
+                      className="px-5 md:px-6 pb-5 -mt-1 text-sm text-muted-foreground leading-relaxed"
                     >
                       {faq.a}
                     </motion.div>

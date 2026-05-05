@@ -138,8 +138,8 @@ export default function BiographyTheme({
           <div className="px-4 md:px-8 pb-4">
             <div className="flex flex-col md:flex-row md:items-end gap-4 -mt-16 md:-mt-20">
               <div className="relative shrink-0 mx-auto md:mx-0">
-                <div className="w-36 h-36 md:w-40 md:h-40 rounded-full overflow-hidden ring-4 bg-white grid place-items-center text-4xl font-extrabold"
-                  style={{ ringColor: C.surface as any, color: C.muted, background: C.hover }}>
+                <div className="w-36 h-36 md:w-40 md:h-40 rounded-full overflow-hidden bg-white grid place-items-center text-4xl font-extrabold"
+                  style={{ boxShadow: `0 0 0 4px ${C.surface}`, color: C.muted, background: C.hover }}>
                   {avatar ? (
                     <img src={avatar} alt={name} className="w-full h-full object-cover" />
                   ) : (

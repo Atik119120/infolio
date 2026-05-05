@@ -115,12 +115,6 @@ export default function ThemeCollection() {
       {freeThemes && freeThemes.themes.length > 0 && (
         <section className="py-8 px-6">
           <div className="container mx-auto">
-            <div className="flex items-center gap-2 mb-6">
-              <Badge variant="secondary" className="text-lg px-4 py-1.5">
-                🎁 Free Theme
-              </Badge>
-            </div>
-            
             {freeThemes.themes.map((theme) => (
               <motion.div
                 key={theme.value}
@@ -193,36 +187,7 @@ export default function ThemeCollection() {
       {/* Premium Themes by Category */}
       <section className="py-12 px-6">
         <div className="container mx-auto">
-          <div className="flex items-center gap-2 mb-6">
-            <Badge className="text-lg px-4 py-1.5 bg-gradient-to-r from-amber-500 to-orange-500 text-white border-0">
-              <Crown className="w-4 h-4 mr-1.5" />
-              Premium Themes
-            </Badge>
-          </div>
-          
-          {/* Tier Legend */}
-          <div className="bg-muted/50 rounded-2xl p-6 mb-8">
-            <h3 className="font-semibold mb-4">Theme Tiers</h3>
-            <div className="flex flex-wrap items-center gap-6 text-sm">
-              <span className="flex items-center gap-2">
-                <div className="w-4 h-4 rounded bg-blue-500" />
-                <span className="font-medium">Standard</span>
-                <span className="text-muted-foreground">- ৳200</span>
-              </span>
-              <span className="flex items-center gap-2">
-                <div className="w-4 h-4 rounded bg-gradient-to-r from-amber-500 to-orange-500" />
-                <span className="font-medium">Pro</span>
-                <span className="text-muted-foreground">- ৳300</span>
-                <Zap className="w-4 h-4 text-amber-500" />
-              </span>
-              <span className="flex items-center gap-2">
-                <div className="w-4 h-4 rounded bg-gradient-to-r from-purple-500 to-fuchsia-500" />
-                <span className="font-medium">Elite</span>
-                <span className="text-muted-foreground">- ৳400</span>
-                <Crown className="w-4 h-4 text-purple-500" />
-              </span>
-            </div>
-          </div>
+          {/* Theme Categories */}
 
           {/* Theme Categories */}
           <div className="space-y-12">

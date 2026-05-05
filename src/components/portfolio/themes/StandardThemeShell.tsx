@@ -640,3 +640,45 @@ function ContactCard({ icon, label, value, href, s }: { icon: React.ReactNode; l
   );
   return href ? <a href={href} className="block hover:-translate-y-0.5 transition-transform">{inner}</a> : inner;
 }
+
+function SkillRing({ value, s }: { value: number; s: ThemeStyle }) {
+  const r = 22;
+  const c = 2 * Math.PI * r;
+  const offset = c - (value / 100) * c;
+  return (
+    <div className="relative w-14 h-14 shrink-0">
+      <svg viewBox="0 0 56 56" className="w-14 h-14 -rotate-90">
+        <circle cx="28" cy="28" r={r} fill="none" stroke={s.border} strokeWidth="4" />
+        <motion.circle
+          cx="28" cy="28" r={r} fill="none"
+          stroke={s.primary} strokeWidth="4" strokeLinecap="round"
+          strokeDasharray={c}
+          initial={{ strokeDashoffset: c }}
+          whileInView={{ strokeDashoffset: offset }}
+          viewport={{ once: true }}
+          transition={{ duration: 1, ease: "easeOut" }}
+        />
+      </svg>
+      <div className="absolute inset-0 flex items-center justify-center text-[11px] font-bold" style={{ color: s.text }}>
+        {value}%
+      </div>
+    </div>
+  );
+}
+
+function ContactLine({ icon, label, value, href, s }: { icon: React.ReactNode; label: string; value: string; href?: string; s: ThemeStyle }) {
+  const inner = (
+    <div className="flex items-center gap-4 group">
+      <div className="w-11 h-11 rounded-full flex items-center justify-center shrink-0 transition-colors"
+        style={{ background: `${s.primary}33`, color: "#fff" }}>
+        {icon}
+      </div>
+      <div className="min-w-0">
+        <div className="text-[10px] uppercase tracking-[0.25em] opacity-60">{label}</div>
+        <div className="font-semibold truncate group-hover:translate-x-1 transition-transform" style={{ color: "#fff" }}>{value}</div>
+      </div>
+    </div>
+  );
+  return href ? <a href={href}>{inner}</a> : inner;
+}
+

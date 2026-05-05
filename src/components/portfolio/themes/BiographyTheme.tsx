@@ -128,43 +128,31 @@ export default function BiographyTheme({
               <div className="w-full h-full rounded-b-xl"
                 style={{ background: `linear-gradient(135deg, ${C.primary} 0%, #4267B2 50%, #5b7bd5 100%)` }} />
             )}
-            <button className="absolute bottom-4 right-4 inline-flex items-center gap-2 px-3 py-2 rounded-md text-[13px] font-semibold shadow"
-              style={{ background: C.surface, color: C.ink2 }}>
-              <Camera className="w-4 h-4" /> Edit Cover
-            </button>
           </div>
 
-          {/* Profile row */}
-          <div className="px-4 md:px-8 pb-4">
-            <div className="flex flex-col md:flex-row md:items-end gap-4 -mt-16 md:-mt-20">
-              <div className="relative shrink-0 mx-auto md:mx-0">
-                <div className="w-36 h-36 md:w-40 md:h-40 rounded-full overflow-hidden bg-white grid place-items-center text-4xl font-extrabold"
-                  style={{ boxShadow: `0 0 0 4px ${C.surface}`, color: C.muted, background: C.hover }}>
+          {/* Profile row — centered */}
+          <div className="px-4 md:px-8 pb-6">
+            <div className="flex flex-col items-center -mt-20 md:-mt-24">
+              <div className="relative">
+                <div className="w-40 h-40 md:w-44 md:h-44 rounded-full overflow-hidden bg-white grid place-items-center text-4xl font-extrabold"
+                  style={{ boxShadow: `0 0 0 5px ${C.surface}, 0 4px 12px rgba(0,0,0,0.08)`, color: C.muted, background: C.hover }}>
                   {avatar ? (
                     <img src={avatar} alt={name} className="w-full h-full object-cover" />
                   ) : (
                     <span>{(name[0] || "?").toUpperCase()}</span>
                   )}
                 </div>
-                <button className="absolute bottom-2 right-2 w-9 h-9 rounded-full grid place-items-center shadow"
-                  style={{ background: C.surface, border: `1px solid ${C.border}` }}>
-                  <Camera className="w-4 h-4" />
-                </button>
               </div>
 
-              <div className="flex-1 md:pb-3 text-center md:text-left">
-                <div className="flex items-center justify-center md:justify-start gap-2">
+              <div className="mt-4 text-center">
+                <div className="flex items-center justify-center gap-2">
                   <h1 className="text-3xl md:text-[34px] font-extrabold" style={{ color: C.ink }}>{name}</h1>
                   <BadgeCheck className="w-7 h-7" style={{ color: C.primary }} />
                 </div>
                 <div className="text-[15px] font-semibold mt-1" style={{ color: C.muted }}>{headline}</div>
-                <div className="text-[13px] mt-1" style={{ color: C.muted }}>
-                  <span className="font-semibold" style={{ color: C.ink2 }}>{followers.toLocaleString()}</span> followers · {" "}
-                  <span className="font-semibold" style={{ color: C.ink2 }}>{friends.toLocaleString()}</span> friends
-                </div>
               </div>
 
-              <div className="flex flex-wrap items-center justify-center md:justify-end gap-2 md:pb-3">
+              <div className="flex flex-wrap items-center justify-center gap-2 mt-4">
                 {email && (
                   <a href={`mailto:${email}`} className="inline-flex items-center gap-2 px-4 py-2 rounded-md text-[14px] font-semibold text-white"
                     style={{ background: C.primary }}>
@@ -176,27 +164,7 @@ export default function BiographyTheme({
                   style={{ background: C.hover, color: C.ink2 }}>
                   <ThumbsUp className="w-4 h-4" /> Follow
                 </button>
-                <button className="inline-flex items-center justify-center w-10 h-10 rounded-md"
-                  style={{ background: C.hover }}>
-                  <Share2 className="w-4 h-4" />
-                </button>
               </div>
-            </div>
-
-            {/* Sub-tabs */}
-            <div className="mt-4 border-t flex items-center gap-1 overflow-x-auto" style={{ borderColor: C.border }}>
-              {["Posts", "About", "Photos", "Websites", "More"].map((t, i) => (
-                <button key={t} onClick={() => {
-                  if (t === "About") scrollTo("about");
-                  if (t === "Websites") scrollTo("websites");
-                }} className={`px-4 py-3 text-[14px] font-semibold whitespace-nowrap relative`}
-                  style={{ color: i === 0 ? C.primary : C.muted }}>
-                  {t}
-                  {i === 0 && (
-                    <span className="absolute left-2 right-2 -bottom-px h-[3px] rounded-t" style={{ background: C.primary }} />
-                  )}
-                </button>
-              ))}
             </div>
           </div>
         </div>
@@ -286,23 +254,6 @@ export default function BiographyTheme({
                 <img src={cover} alt="" className="w-full max-h-[420px] object-cover" />
               </div>
             )}
-            <div className="px-4 py-2 flex items-center justify-between text-[13px]" style={{ color: C.muted }}>
-              <div className="flex items-center gap-1">
-                <span className="w-5 h-5 rounded-full grid place-items-center text-white text-[10px]" style={{ background: C.primary }}>
-                  <ThumbsUp className="w-3 h-3" />
-                </span>
-                <span className="w-5 h-5 -ml-1 rounded-full grid place-items-center text-white text-[10px]" style={{ background: "#f33e58" }}>
-                  <Heart className="w-3 h-3" />
-                </span>
-                <span className="ml-1">{(followers / 4 | 0).toLocaleString()}</span>
-              </div>
-              <div>{(projects?.length || 0) + (experiences?.length || 0)} comments · 84 shares</div>
-            </div>
-            <div className="px-2 py-1 border-t flex items-center" style={{ borderColor: C.border }}>
-              <ActionBtn icon={<ThumbsUp className="w-5 h-5" />} label="Like" />
-              <ActionBtn icon={<MessageCircle className="w-5 h-5" />} label="Comment" />
-              <ActionBtn icon={<Share2 className="w-5 h-5" />} label="Share" />
-            </div>
           </motion.div>
 
           {/* Websites card — "his website tap" */}

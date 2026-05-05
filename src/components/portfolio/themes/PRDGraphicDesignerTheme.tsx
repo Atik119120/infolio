@@ -3,26 +3,23 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, ArrowRight, Mail, Phone, MapPin, Globe, ExternalLink, Github, Sparkles, Palette } from "lucide-react";
 import { ServiceIcon } from "@/lib/serviceIcons";
 import { ThemeProps } from "./types";
-import { ContactForm } from "@/components/portfolio/ContactForm";
 import { getSocialIcon } from "./utils";
 
 /**
- * Graphic Designer theme.
- * Sections: Header → Hero → About → Skills + Services + Software →
- *           Projects (Pinterest masonry + lightbox) → Clients → Contact → Footer
+ * Graphic Designer theme — premium glassmorphism on a soft creative gradient.
+ * Sections: Header → Hero (glass panel + portrait) → About → Expertise → Projects → Clients → Contact → Footer
  */
 const C = {
-  primary: "#ff4d4d",
-  accent: "#111111",
-  bg: "#f5f0eb",
-  surface: "#ffffff",
-  ink: "#111111",
-  muted: "#57534e",
-  border: "#e7e0d6",
-  cream: "#ebe4d8",
+  primary: "#ec4899", // pink
+  primary2: "#a855f7", // purple
+  accent: "#22d3ee", // cyan accent
+  bg: "#0b0815",
+  bg2: "#120c20",
+  ink: "#f5f3ff",
+  muted: "#a89eb9",
+  border: "rgba(255,255,255,0.08)",
 };
 
-// Software icon presets — friendly emoji fallbacks
 const SOFTWARE = [
   { name: "Photoshop", icon: "🖌️" },
   { name: "Illustrator", icon: "✒️" },
@@ -40,14 +37,11 @@ export default function PRDGraphicDesignerTheme({
   services = [],
   socialLinks,
   experiences,
-  userId,
 }: ThemeProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeProject, setActiveProject] = useState<typeof projects[number] | null>(null);
 
   useEffect(() => { window.scrollTo(0, 0); }, []);
-
-  // Lock scroll when lightbox open
   useEffect(() => {
     document.body.style.overflow = activeProject ? "hidden" : "";
     return () => { document.body.style.overflow = ""; };
@@ -77,14 +71,12 @@ export default function PRDGraphicDesignerTheme({
     { id: "contact", label: "Contact" },
   ];
 
-  // Pinterest-style column distribution
   const columns = useMemo(() => {
     const cols: typeof projects[] = [[], [], []];
     projects.forEach((p, i) => cols[i % 3].push(p));
     return cols;
   }, [projects]);
 
-  // Clients = unique companies from experiences
   const clients = useMemo(() => {
     const seen = new Set<string>();
     return experiences
@@ -96,7 +88,6 @@ export default function PRDGraphicDesignerTheme({
       });
   }, [experiences]);
 
-  // Software = first 6 skill names from "Software" or "Tools" categories, else default list
   const softwares = useMemo(() => {
     const fromSkills = skills
       .filter((s) => /software|tool/i.test(s.category || ""))
@@ -107,49 +98,53 @@ export default function PRDGraphicDesignerTheme({
   }, [skills]);
 
   return (
-    <div style={{ background: C.bg, color: C.ink, fontFamily: "'Satoshi', 'Inter', system-ui, sans-serif" }} className="min-h-screen">
+    <div style={{ background: C.bg, color: C.ink, fontFamily: "'Satoshi', 'Inter', system-ui, sans-serif" }} className="min-h-screen relative overflow-hidden">
       <style>{`
         @import url('https://api.fontshare.com/v2/css?f[]=clash-display@600,700,800&f[]=satoshi@400,500,700&display=swap');
         .gd-display { font-family: 'Clash Display', 'Inter', sans-serif; }
-        .gd-btn-primary { background: ${C.ink}; color: #fff; transition: all .2s; }
-        .gd-btn-primary:hover { background: ${C.primary}; transform: translateY(-2px); }
-        .gd-btn-outline { border: 1.5px solid ${C.ink}; color: ${C.ink}; transition: all .2s; }
-        .gd-btn-outline:hover { background: ${C.ink}; color: #fff; }
-        .gd-link { transition: color .2s; }
-        .gd-link:hover { color: ${C.primary}; }
-        @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
-        .gd-marquee { animation: marquee 30s linear infinite; }
+        .gd-grad-text { background: linear-gradient(135deg, ${C.primary}, ${C.primary2}, ${C.accent}); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .gd-btn-primary { background: linear-gradient(135deg, ${C.primary}, ${C.primary2}); color: #fff; transition: all .25s; }
+        .gd-btn-primary:hover { transform: translateY(-2px); box-shadow: 0 15px 40px ${C.primary}66; }
+        .gd-btn-glass { transition: all .25s; }
+        .gd-btn-glass:hover { transform: translateY(-2px); }
+        @keyframes gd-marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+        .gd-marquee { animation: gd-marquee 35s linear infinite; }
       `}</style>
 
-      {/* HEADER */}
-      <header className="sticky top-0 z-40 gx-glass-nav-light">
-        <div className="container mx-auto px-5 py-4 flex items-center justify-between">
-          <a href="#home" className="gd-display text-2xl font-bold tracking-tight">
+      {/* Background mesh */}
+      <div className="gx-mesh-cool fixed inset-0 -z-10" />
+      <div className="fixed inset-0 -z-10 pointer-events-none opacity-[0.04]"
+        style={{ backgroundImage: `radial-gradient(#fff 1px, transparent 1px)`, backgroundSize: "32px 32px" }} />
+
+      {/* HEADER — slim floating pill */}
+      <header className="sticky top-3 z-40 px-3 md:px-5">
+        <div className="container mx-auto gx-glass-nav rounded-full px-4 md:px-5 py-2.5 flex items-center justify-between max-w-6xl">
+          <a href="#home" className="gd-display text-base font-bold tracking-tight">
             {portfolio?.logo_url ? (
-              <img src={portfolio.logo_url} alt={name} className="h-9 w-auto object-contain" />
+              <img src={portfolio.logo_url} alt={name} className="h-7 w-auto object-contain" />
             ) : (
               <span>
-                {name.split(" ")[0]}<span style={{ color: C.primary }}>®</span>
+                {name.split(" ")[0]}<span className="gd-grad-text">®</span>
               </span>
             )}
           </a>
-          <nav className="hidden md:flex items-center gap-1 text-sm font-medium gx-glass-light rounded-full px-2 py-1.5">
+          <nav className="hidden md:flex items-center gap-1 text-[12px] font-medium">
             {NAV.map((n) => (
-              <a key={n.id} href={`#${n.id}`} className="gd-link px-4 py-1.5 rounded-full hover:bg-black/5 transition" style={{ color: C.muted }}>{n.label}</a>
+              <a key={n.id} href={`#${n.id}`} className="px-3 py-1.5 rounded-full hover:bg-white/10 transition" style={{ color: C.muted }}>{n.label}</a>
             ))}
           </nav>
           <div className="hidden md:block">
-            <a href="#contact" className="gd-btn-primary inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold">
-              Hire Me <ArrowRight className="w-4 h-4" />
+            <a href="#contact" className="gd-btn-primary inline-flex items-center gap-1.5 px-4 py-1.5 text-xs font-semibold rounded-full">
+              Hire <ArrowRight className="w-3 h-3" />
             </a>
           </div>
           <button className="md:hidden" onClick={() => setMenuOpen(!menuOpen)} aria-label="Menu">
-            {menuOpen ? <X /> : <Menu />}
+            {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
         </div>
         {menuOpen && (
-          <div className="md:hidden gx-glass-nav-light">
-            <div className="container mx-auto px-5 py-3 flex flex-col gap-3">
+          <div className="md:hidden mt-2 container mx-auto max-w-6xl gx-glass-nav rounded-2xl">
+            <div className="px-5 py-3 flex flex-col gap-2">
               {NAV.map((n) => (
                 <a key={n.id} href={`#${n.id}`} onClick={() => setMenuOpen(false)} className="py-2 text-sm">{n.label}</a>
               ))}
@@ -159,59 +154,57 @@ export default function PRDGraphicDesignerTheme({
       </header>
 
       {/* HERO */}
-      <section id="home" className="relative overflow-hidden">
-        <div aria-hidden className="absolute inset-0 pointer-events-none opacity-[0.04]"
-          style={{ backgroundImage: `linear-gradient(${C.ink} 1px, transparent 1px), linear-gradient(90deg, ${C.ink} 1px, transparent 1px)`, backgroundSize: "48px 48px" }} />
-        <div className="container mx-auto px-5 py-16 md:py-24 relative">
-          <div className="grid md:grid-cols-12 gap-10 items-center">
-            <motion.div {...fadeUp} className="md:col-span-7">
-              <div className="inline-flex items-center gap-2 mb-6 px-3 py-1.5 text-xs font-bold tracking-[0.2em] uppercase"
-                style={{ background: C.ink, color: "#fff" }}>
-                <Sparkles className="w-3 h-3" /> Open to projects
+      <section id="home" className="relative pt-12 md:pt-16 pb-16">
+        <div className="container mx-auto px-5">
+          <div className="grid lg:grid-cols-12 gap-10 items-center">
+            <motion.div {...fadeUp} className="lg:col-span-7">
+              <div className="inline-flex items-center gap-2 mb-6 px-3 py-1.5 text-[11px] font-semibold tracking-[0.2em] uppercase rounded-full gx-glass">
+                <Sparkles className="w-3 h-3" style={{ color: C.primary }} /> Open to projects
               </div>
-              <h1 className="gd-display text-6xl md:text-8xl lg:text-9xl font-extrabold leading-[0.9] tracking-tight mb-6">
-                I design<br />
-                <span style={{ color: C.primary }}>brands</span> that<br />
-                <span className="italic">stand out.</span>
+              <h1 className="gd-display text-5xl md:text-7xl lg:text-8xl font-extrabold leading-[0.95] tracking-tight mb-6">
+                I design <span className="gd-grad-text">brands</span><br />
+                that <span className="italic">stand out.</span>
               </h1>
-              <p className="text-lg md:text-xl mb-8 max-w-xl" style={{ color: C.muted }}>
-                Hi, I'm <strong>{name}</strong> — {headline.toLowerCase()}.
+              <p className="text-lg mb-8 max-w-xl" style={{ color: C.muted }}>
+                Hi, I'm <strong style={{ color: C.ink }}>{name}</strong> — {headline.toLowerCase()}.
               </p>
               <div className="flex flex-wrap gap-3">
-                <a href="#projects" className="gd-btn-primary px-7 py-4 text-sm font-bold uppercase tracking-wider inline-flex items-center gap-2">
+                <a href="#projects" className="gd-btn-primary px-7 py-3.5 text-xs font-bold uppercase tracking-wider inline-flex items-center gap-2 rounded-full">
                   See Portfolio <ArrowRight className="w-4 h-4" />
                 </a>
-                <a href="#contact" className="gd-btn-outline px-7 py-4 text-sm font-bold uppercase tracking-wider">
+                <a href="#contact" className="gd-btn-glass gx-glass px-7 py-3.5 text-xs font-bold uppercase tracking-wider rounded-full" style={{ color: C.ink }}>
                   Start a Project
                 </a>
               </div>
             </motion.div>
 
-            <motion.div {...fadeUp} transition={{ duration: 0.6, delay: 0.15 }} className="md:col-span-5">
+            <motion.div {...fadeUp} transition={{ duration: 0.6, delay: 0.15 }} className="lg:col-span-5">
               <div className="relative">
-                <div aria-hidden className="absolute -top-4 -left-4 w-24 h-24" style={{ background: C.primary }} />
-                <div aria-hidden className="absolute -bottom-4 -right-4 w-32 h-32" style={{ background: C.ink }} />
-                {profile?.avatar_url ? (
-                  <img src={profile.avatar_url} alt={name} className="relative w-full max-w-sm mx-auto aspect-[4/5] object-cover" />
-                ) : (
-                  <div className="relative w-full max-w-sm mx-auto aspect-[4/5] flex items-center justify-center gd-display text-9xl font-extrabold"
-                    style={{ background: C.ink, color: C.primary }}>
-                    {name.charAt(0)}
-                  </div>
-                )}
+                <div aria-hidden className="absolute -inset-6 rounded-[2rem] opacity-60"
+                  style={{ background: `linear-gradient(135deg, ${C.primary}, ${C.primary2}, ${C.accent})`, filter: "blur(60px)" }} />
+                <div className="relative rounded-3xl overflow-hidden gx-glass gx-glow-ring p-2">
+                  {profile?.avatar_url ? (
+                    <img src={profile.avatar_url} alt={name} className="w-full aspect-[4/5] object-cover rounded-[1.25rem]" />
+                  ) : (
+                    <div className="w-full aspect-[4/5] flex items-center justify-center gd-display text-9xl font-extrabold rounded-[1.25rem]"
+                      style={{ background: `linear-gradient(135deg, ${C.primary}, ${C.primary2})`, color: "#fff" }}>
+                      {name.charAt(0)}
+                    </div>
+                  )}
+                </div>
               </div>
             </motion.div>
           </div>
         </div>
 
         {/* Marquee strip */}
-        <div className="border-y overflow-hidden py-4 mt-8" style={{ borderColor: C.ink, background: C.ink, color: "#fff" }}>
+        <div className="overflow-hidden py-4 mt-14 gx-glass border-y" style={{ borderColor: C.border }}>
           <div className="flex gap-12 gd-marquee whitespace-nowrap">
             {[...Array(2)].map((_, k) => (
-              <div key={k} className="flex gap-12 shrink-0">
+              <div key={k} className="flex gap-12 shrink-0 items-center">
                 {["Branding", "Logo Design", "Print", "Editorial", "Packaging", "Illustration", "Visual Identity", "Type Design"].map((w) => (
-                  <span key={w} className="gd-display text-2xl font-bold flex items-center gap-12">
-                    {w} <span style={{ color: C.primary }}>✦</span>
+                  <span key={w} className="gd-display text-2xl font-bold flex items-center gap-12" style={{ color: C.ink }}>
+                    {w} <span className="gd-grad-text">✦</span>
                   </span>
                 ))}
               </div>
@@ -221,71 +214,70 @@ export default function PRDGraphicDesignerTheme({
       </section>
 
       {/* ABOUT */}
-      <section id="about" className="py-20 md:py-28" style={{ background: C.surface }}>
+      <section id="about" className="py-20 md:py-28 relative">
         <div className="container mx-auto px-5">
           <div className="grid md:grid-cols-12 gap-12 items-center">
             <motion.div {...fadeUp} className="md:col-span-5">
-              <div className="relative">
+              <div className="relative rounded-3xl overflow-hidden gx-glass gx-glow-ring p-2">
                 {profile?.avatar_url ? (
-                  <img src={profile.avatar_url} alt={name} className="w-full aspect-square object-cover" />
+                  <img src={profile.avatar_url} alt={name} className="w-full aspect-square object-cover rounded-[1.25rem]" />
                 ) : (
-                  <div className="w-full aspect-square flex items-center justify-center gd-display text-9xl font-extrabold"
-                    style={{ background: C.cream, color: C.ink }}>
+                  <div className="w-full aspect-square flex items-center justify-center gd-display text-9xl font-extrabold rounded-[1.25rem]"
+                    style={{ background: `linear-gradient(135deg, ${C.primary}, ${C.primary2})`, color: "#fff" }}>
                     {name.charAt(0)}
                   </div>
                 )}
-                <div className="absolute -bottom-5 -right-5 px-5 py-3 text-white"
-                  style={{ background: C.primary }}>
+                <div className="absolute -bottom-3 -right-3 px-5 py-3 rounded-2xl gd-btn-primary">
                   <div className="gd-display text-2xl font-bold">{experiences.length}+</div>
-                  <div className="text-[10px] uppercase tracking-wider">Years Designing</div>
+                  <div className="text-[10px] uppercase tracking-wider opacity-90">Years</div>
                 </div>
               </div>
             </motion.div>
             <motion.div {...fadeUp} transition={{ duration: 0.6, delay: 0.1 }} className="md:col-span-7">
-              <div className="inline-flex items-center gap-2 text-xs font-bold tracking-[0.3em] uppercase mb-4" style={{ color: C.primary }}>
+              <div className="inline-flex items-center gap-2 text-[11px] font-bold tracking-[0.3em] uppercase mb-4" style={{ color: C.primary }}>
                 <span className="w-8 h-px" style={{ background: C.primary }} /> About Me
               </div>
-              <h2 className="gd-display text-4xl md:text-6xl font-bold leading-[1] mb-6">
-                Crafting <span style={{ color: C.primary }}>visual</span><br />
+              <h2 className="gd-display text-4xl md:text-6xl font-bold leading-[1.05] mb-6">
+                Crafting <span className="gd-grad-text">visual</span><br />
                 identities since day one.
               </h2>
               <p className="text-base md:text-lg leading-[1.85] mb-8" style={{ color: C.muted }}>
                 {bio}
               </p>
-              <div className="grid sm:grid-cols-2 gap-x-8 gap-y-3 mb-8 text-sm">
-                {phone && <FactRow label="Phone" value={phone} />}
-                {location && <FactRow label="Based" value={location} />}
-                {email && <FactRow label="Email" value={email} />}
-                {website && <FactRow label="Web" value={website.replace(/^https?:\/\//, "")} />}
-                <FactRow label="Projects" value={`${projects.length}+`} />
-                <FactRow label="Clients" value={`${clients.length || projects.length}+`} />
+              <div className="grid sm:grid-cols-2 gap-3 mb-8 text-sm">
+                {phone && <FactPill label="Phone" value={phone} />}
+                {location && <FactPill label="Based" value={location} />}
+                {email && <FactPill label="Email" value={email} />}
+                {website && <FactPill label="Web" value={website.replace(/^https?:\/\//, "")} />}
+                <FactPill label="Projects" value={`${projects.length}+`} />
+                <FactPill label="Clients" value={`${clients.length || projects.length}+`} />
               </div>
-              <a href="#contact" className="gd-btn-primary inline-flex items-center gap-2 px-7 py-3.5 text-sm font-bold uppercase tracking-wider">
-                Let's Collaborate
+              <a href="#contact" className="gd-btn-primary inline-flex items-center gap-2 px-7 py-3.5 text-xs font-bold uppercase tracking-wider rounded-full">
+                Let's Collaborate <ArrowRight className="w-4 h-4" />
               </a>
             </motion.div>
           </div>
         </div>
       </section>
 
-      {/* EXPERTISE: Skills + Services + Software */}
+      {/* EXPERTISE */}
       <section id="expertise" className="py-20 md:py-28">
         <div className="container mx-auto px-5">
           <motion.div {...fadeUp} className="text-center max-w-2xl mx-auto mb-14">
-            <div className="inline-flex items-center gap-2 text-xs font-bold tracking-[0.3em] uppercase mb-4" style={{ color: C.primary }}>
+            <div className="inline-flex items-center gap-2 text-[11px] font-bold tracking-[0.3em] uppercase mb-4" style={{ color: C.primary }}>
               <span className="w-8 h-px" style={{ background: C.primary }} /> What I Do
               <span className="w-8 h-px" style={{ background: C.primary }} />
             </div>
-            <h2 className="gd-display text-4xl md:text-6xl font-bold leading-[1] mb-3">
-              Skills, services & <span style={{ color: C.primary }}>software</span>
+            <h2 className="gd-display text-4xl md:text-6xl font-bold leading-[1.05] mb-3">
+              Skills, services & <span className="gd-grad-text">software</span>
             </h2>
           </motion.div>
 
           {/* Skills */}
           {skills.length > 0 && (
-            <motion.div {...fadeUp} className="mb-16">
+            <motion.div {...fadeUp} className="mb-16 max-w-5xl mx-auto">
               <h3 className="gd-display text-2xl font-bold mb-6 flex items-center gap-3">
-                <span className="text-xs font-bold tracking-[0.3em] uppercase" style={{ color: C.primary }}>01</span>
+                <span className="text-[11px] font-bold tracking-[0.3em] uppercase" style={{ color: C.primary }}>01</span>
                 My Skills
               </h3>
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-x-10 gap-y-5">
@@ -293,16 +285,16 @@ export default function PRDGraphicDesignerTheme({
                   <div key={sk.id}>
                     <div className="flex items-center justify-between mb-2">
                       <span className="font-semibold text-sm">{sk.name}</span>
-                      <span className="gd-display text-sm font-bold" style={{ color: C.primary }}>{sk.proficiency || 0}%</span>
+                      <span className="gd-display text-sm font-bold gd-grad-text">{sk.proficiency || 0}%</span>
                     </div>
-                    <div className="h-1.5 w-full overflow-hidden" style={{ background: C.cream }}>
+                    <div className="h-1.5 w-full overflow-hidden rounded-full" style={{ background: "rgba(255,255,255,0.08)" }}>
                       <motion.div
                         initial={{ width: 0 }}
                         whileInView={{ width: `${sk.proficiency || 0}%` }}
                         viewport={{ once: true }}
                         transition={{ duration: 1, ease: "easeOut" }}
-                        className="h-full"
-                        style={{ background: C.primary }}
+                        className="h-full rounded-full"
+                        style={{ background: `linear-gradient(90deg, ${C.primary}, ${C.primary2})` }}
                       />
                     </div>
                   </div>
@@ -315,22 +307,20 @@ export default function PRDGraphicDesignerTheme({
           {services.length > 0 && (
             <motion.div {...fadeUp} className="mb-16">
               <h3 className="gd-display text-2xl font-bold mb-6 flex items-center gap-3">
-                <span className="text-xs font-bold tracking-[0.3em] uppercase" style={{ color: C.primary }}>02</span>
+                <span className="text-[11px] font-bold tracking-[0.3em] uppercase" style={{ color: C.primary }}>02</span>
                 Services
               </h3>
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
                 {services.map((sv) => (
-                  <div key={sv.id} className="p-7 group transition-all hover:-translate-y-1"
-                    style={{ background: C.surface, border: `1px solid ${C.border}` }}>
-                    <div className="w-12 h-12 flex items-center justify-center mb-4"
-                      style={{ background: C.cream, color: C.primary }}>
+                  <div key={sv.id} className="p-7 rounded-2xl gx-glass gx-glow-ring group transition-all hover:-translate-y-1">
+                    <div className="w-12 h-12 flex items-center justify-center mb-4 rounded-xl gx-glass-strong" style={{ color: C.primary }}>
                       <ServiceIcon icon={sv.icon} className="w-6 h-6" />
                     </div>
                     <h4 className="gd-display text-xl font-bold mb-2">{sv.title}</h4>
                     {sv.description && <p className="text-sm leading-relaxed mb-4" style={{ color: C.muted }}>{sv.description}</p>}
                     <div className="flex items-center justify-between pt-3 border-t" style={{ borderColor: C.border }}>
                       {sv.price ? (
-                        <span className="gd-display font-bold" style={{ color: C.primary }}>{sv.price}</span>
+                        <span className="gd-display font-bold gd-grad-text">{sv.price}</span>
                       ) : (
                         <span className="text-xs uppercase tracking-wider" style={{ color: C.muted }}>On request</span>
                       )}
@@ -344,17 +334,18 @@ export default function PRDGraphicDesignerTheme({
             </motion.div>
           )}
 
-          {/* Expert Software */}
+          {/* Software */}
           <motion.div {...fadeUp}>
             <h3 className="gd-display text-2xl font-bold mb-6 flex items-center gap-3">
-              <span className="text-xs font-bold tracking-[0.3em] uppercase" style={{ color: C.primary }}>03</span>
+              <span className="text-[11px] font-bold tracking-[0.3em] uppercase" style={{ color: C.primary }}>03</span>
               Expert Software
             </h3>
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
               {softwares.map((sw) => (
-                <div key={sw.name} className="aspect-square flex flex-col items-center justify-center gap-3 p-4 transition-all hover:-translate-y-1"
-                  style={{ background: C.surface, border: `1px solid ${C.border}` }}>
-                  <div style={{ color: C.primary }}><ServiceIcon icon={sw.icon} className="w-8 h-8" /></div>
+                <div key={sw.name} className="aspect-square flex flex-col items-center justify-center gap-3 p-4 rounded-2xl gx-glass transition-all hover:-translate-y-1">
+                  <div className="text-2xl" style={{ color: C.primary }}>
+                    <ServiceIcon icon={sw.icon} className="w-8 h-8" />
+                  </div>
                   <span className="gd-display text-sm font-bold text-center">{sw.name}</span>
                 </div>
               ))}
@@ -365,15 +356,15 @@ export default function PRDGraphicDesignerTheme({
 
       {/* PROJECTS — Pinterest masonry */}
       {projects.length > 0 && (
-        <section id="projects" className="py-20 md:py-28" style={{ background: C.cream }}>
+        <section id="projects" className="py-20 md:py-28">
           <div className="container mx-auto px-5">
             <motion.div {...fadeUp} className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-12">
               <div>
-                <div className="inline-flex items-center gap-2 text-xs font-bold tracking-[0.3em] uppercase mb-3" style={{ color: C.primary }}>
+                <div className="inline-flex items-center gap-2 text-[11px] font-bold tracking-[0.3em] uppercase mb-3" style={{ color: C.primary }}>
                   <span className="w-8 h-px" style={{ background: C.primary }} /> My Projects
                 </div>
-                <h2 className="gd-display text-4xl md:text-6xl font-bold leading-[1]">
-                  Selected <span style={{ color: C.primary, fontStyle: "italic" }}>works.</span>
+                <h2 className="gd-display text-4xl md:text-6xl font-bold leading-[1.05]">
+                  Selected <span className="gd-grad-text italic">works.</span>
                 </h2>
               </div>
               <p className="text-sm max-w-sm" style={{ color: C.muted }}>
@@ -381,7 +372,6 @@ export default function PRDGraphicDesignerTheme({
               </p>
             </motion.div>
 
-            {/* Masonry grid via 3 columns of cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
               {columns.map((col, ci) => (
                 <div key={ci} className="flex flex-col gap-5">
@@ -393,8 +383,7 @@ export default function PRDGraphicDesignerTheme({
                       whileInView={{ opacity: 1, y: 0 }}
                       viewport={{ once: true, margin: "-50px" }}
                       transition={{ duration: 0.5, delay: i * 0.06 }}
-                      className="group relative block w-full text-left overflow-hidden"
-                      style={{ background: C.surface, border: `1px solid ${C.border}` }}
+                      className="group relative block w-full text-left overflow-hidden rounded-2xl gx-glass gx-glow-ring"
                     >
                       {p.image_url ? (
                         <img
@@ -404,14 +393,14 @@ export default function PRDGraphicDesignerTheme({
                           style={{ aspectRatio: ci % 3 === 0 ? "4/5" : ci % 3 === 1 ? "1/1" : "3/4" }}
                         />
                       ) : (
-                        <div className="w-full aspect-[4/5] flex items-center justify-center" style={{ background: `linear-gradient(135deg, ${C.primary}, ${C.ink})` }}>
+                        <div className="w-full aspect-[4/5] flex items-center justify-center" style={{ background: `linear-gradient(135deg, ${C.primary}, ${C.primary2})` }}>
                           <Palette className="w-16 h-16 text-white/80" />
                         </div>
                       )}
-                      <div className="absolute inset-0 flex flex-col justify-end p-5 transition-opacity"
-                        style={{ background: "linear-gradient(to top, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.45) 45%, transparent 75%)" }}>
+                      <div className="absolute inset-0 flex flex-col justify-end p-5"
+                        style={{ background: "linear-gradient(to top, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.35) 45%, transparent 70%)" }}>
                         {(p.tech_stack && p.tech_stack[0]) && (
-                          <div className="text-[10px] font-bold uppercase tracking-[0.3em] mb-1.5" style={{ color: C.primary }}>{p.tech_stack[0]}</div>
+                          <div className="text-[10px] font-bold uppercase tracking-[0.3em] mb-1.5" style={{ color: C.accent }}>{p.tech_stack[0]}</div>
                         )}
                         <h3 className="gd-display text-xl md:text-2xl font-bold text-white leading-tight">{p.title}</h3>
                       </div>
@@ -426,27 +415,22 @@ export default function PRDGraphicDesignerTheme({
 
       {/* CLIENTS */}
       {clients.length > 0 && (
-        <section id="clients" className="py-20 md:py-24" style={{ background: C.surface }}>
+        <section id="clients" className="py-20 md:py-24">
           <div className="container mx-auto px-5">
             <motion.div {...fadeUp} className="text-center max-w-2xl mx-auto mb-12">
-              <div className="inline-flex items-center gap-2 text-xs font-bold tracking-[0.3em] uppercase mb-4" style={{ color: C.primary }}>
+              <div className="inline-flex items-center gap-2 text-[11px] font-bold tracking-[0.3em] uppercase mb-4" style={{ color: C.primary }}>
                 <span className="w-8 h-px" style={{ background: C.primary }} /> My Clients
                 <span className="w-8 h-px" style={{ background: C.primary }} />
               </div>
-              <h2 className="gd-display text-4xl md:text-5xl font-bold leading-[1] mb-3">
-                Trusted by <span style={{ color: C.primary, fontStyle: "italic" }}>great brands</span>
+              <h2 className="gd-display text-4xl md:text-5xl font-bold leading-[1.05] mb-3">
+                Trusted by <span className="gd-grad-text italic">great brands</span>
               </h2>
-              <p className="text-base" style={{ color: C.muted }}>
-                A few of the wonderful teams I've had the pleasure to design for.
-              </p>
             </motion.div>
 
-            <motion.div {...fadeUp} className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-px"
-              style={{ background: C.border }}>
+            <motion.div {...fadeUp} className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
               {clients.map((c) => (
-                <div key={c} className="aspect-[3/2] flex items-center justify-center p-6 transition-colors hover:bg-[var(--cream)]"
-                  style={{ background: C.surface, ["--cream" as any]: C.cream }}>
-                  <span className="gd-display text-lg md:text-xl font-bold text-center" style={{ color: C.ink }}>
+                <div key={c} className="aspect-[3/2] flex items-center justify-center p-6 rounded-2xl gx-glass transition-all hover:-translate-y-0.5">
+                  <span className="gd-display text-lg md:text-xl font-bold text-center">
                     {c}
                   </span>
                 </div>
@@ -460,12 +444,12 @@ export default function PRDGraphicDesignerTheme({
       <section id="contact" className="py-20 md:py-28">
         <div className="container mx-auto px-5">
           <motion.div {...fadeUp} className="text-center max-w-2xl mx-auto mb-12">
-            <div className="inline-flex items-center gap-2 text-xs font-bold tracking-[0.3em] uppercase mb-4" style={{ color: C.primary }}>
+            <div className="inline-flex items-center gap-2 text-[11px] font-bold tracking-[0.3em] uppercase mb-4" style={{ color: C.primary }}>
               <span className="w-8 h-px" style={{ background: C.primary }} /> Contact Me
               <span className="w-8 h-px" style={{ background: C.primary }} />
             </div>
-            <h2 className="gd-display text-4xl md:text-6xl font-bold leading-[1] mb-3">
-              Got an <span style={{ color: C.primary, fontStyle: "italic" }}>idea?</span>
+            <h2 className="gd-display text-4xl md:text-6xl font-bold leading-[1.05] mb-3">
+              Got an <span className="gd-grad-text italic">idea?</span>
             </h2>
             <p className="text-base" style={{ color: C.muted }}>
               Tell me about your project. I'll reply within 24 hours.
@@ -482,19 +466,19 @@ export default function PRDGraphicDesignerTheme({
       </section>
 
       {/* FOOTER */}
-      <footer style={{ background: C.ink, color: "#fff" }} className="pt-16 pb-8">
+      <footer className="pt-16 pb-8 border-t" style={{ borderColor: C.border, background: "rgba(0,0,0,0.4)" }}>
         <div className="container mx-auto px-5">
           <div className="grid md:grid-cols-4 gap-10 mb-12">
             <div className="md:col-span-2">
-              <div className="gd-display text-2xl font-bold mb-3">{name}<span style={{ color: C.primary }}>®</span></div>
-              <p className="text-sm opacity-70 mb-5 max-w-md">{headline}</p>
+              <div className="gd-display text-2xl font-bold mb-3">{name}<span className="gd-grad-text">®</span></div>
+              <p className="text-sm mb-5 max-w-md" style={{ color: C.muted }}>{headline}</p>
               <div className="flex gap-2">
                 {socialLinks.map((sl) => {
                   const Icon = getSocialIcon(sl.platform);
                   return (
                     <a key={sl.id} href={sl.url} target="_blank" rel="noreferrer"
-                      className="w-10 h-10 flex items-center justify-center transition hover:-translate-y-0.5"
-                      style={{ background: `${C.primary}33` }}>
+                      className="w-10 h-10 rounded-full flex items-center justify-center gx-glass transition hover:-translate-y-0.5"
+                      style={{ color: C.primary }}>
                       <Icon className="w-4 h-4" />
                     </a>
                   );
@@ -502,21 +486,21 @@ export default function PRDGraphicDesignerTheme({
               </div>
             </div>
             <div>
-              <h4 className="text-sm font-semibold mb-3 uppercase tracking-wider opacity-90">Navigate</h4>
-              <ul className="space-y-2 text-sm opacity-70">
-                {NAV.map((n) => <li key={n.id}><a href={`#${n.id}`} className="hover:opacity-100">{n.label}</a></li>)}
+              <h4 className="text-xs font-bold mb-3 uppercase tracking-wider" style={{ color: C.primary }}>Navigate</h4>
+              <ul className="space-y-2 text-sm" style={{ color: C.muted }}>
+                {NAV.map((n) => <li key={n.id}><a href={`#${n.id}`} className="hover:text-white transition">{n.label}</a></li>)}
               </ul>
             </div>
             <div>
-              <h4 className="text-sm font-semibold mb-3 uppercase tracking-wider opacity-90">Contact</h4>
-              <ul className="space-y-2 text-sm opacity-70">
-                {email && <li><a href={`mailto:${email}`} className="hover:opacity-100">{email}</a></li>}
+              <h4 className="text-xs font-bold mb-3 uppercase tracking-wider" style={{ color: C.primary }}>Contact</h4>
+              <ul className="space-y-2 text-sm" style={{ color: C.muted }}>
+                {email && <li><a href={`mailto:${email}`} className="hover:text-white transition">{email}</a></li>}
                 {phone && <li>{phone}</li>}
                 {location && <li>{location}</li>}
               </ul>
             </div>
           </div>
-          <div className="border-t pt-6 flex flex-col md:flex-row justify-between items-center gap-3 text-xs opacity-60" style={{ borderColor: "#ffffff22" }}>
+          <div className="border-t pt-6 flex flex-col md:flex-row justify-between items-center gap-3 text-xs" style={{ borderColor: C.border, color: C.muted }}>
             <div>© {new Date().getFullYear()} {name}. All rights reserved.</div>
             <div>Built with Alpha Portfolio</div>
           </div>
@@ -531,7 +515,7 @@ export default function PRDGraphicDesignerTheme({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-8"
-            style={{ background: "rgba(17,17,17,0.92)" }}
+            style={{ background: "rgba(5,3,15,0.92)", backdropFilter: "blur(12px)" }}
             onClick={() => setActiveProject(null)}
           >
             <motion.div
@@ -539,31 +523,30 @@ export default function PRDGraphicDesignerTheme({
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
               transition={{ duration: 0.3 }}
-              className="relative w-full max-w-5xl max-h-[90vh] overflow-y-auto grid md:grid-cols-2"
-              style={{ background: C.surface }}
+              className="relative w-full max-w-5xl max-h-[90vh] overflow-y-auto grid md:grid-cols-2 rounded-3xl gx-glass-strong"
               onClick={(e) => e.stopPropagation()}
             >
               <button
                 onClick={() => setActiveProject(null)}
-                className="absolute top-3 right-3 z-10 w-10 h-10 flex items-center justify-center rounded-full transition"
-                style={{ background: C.ink, color: "#fff" }}
+                className="absolute top-3 right-3 z-10 w-10 h-10 flex items-center justify-center rounded-full gx-glass-strong transition hover:scale-110"
                 aria-label="Close"
+                style={{ color: C.ink }}
               >
                 <X className="w-5 h-5" />
               </button>
 
-              <div className="bg-[var(--cream)]" style={{ ["--cream" as any]: C.cream }}>
+              <div className="flex items-center justify-center" style={{ background: "rgba(0,0,0,0.4)" }}>
                 {activeProject.image_url ? (
                   <img src={activeProject.image_url} alt={activeProject.title} className="w-full h-full object-cover max-h-[90vh]" />
                 ) : (
-                  <div className="w-full aspect-square flex items-center justify-center" style={{ background: `linear-gradient(135deg, ${C.primary}, ${C.ink})` }}>
+                  <div className="w-full aspect-square flex items-center justify-center" style={{ background: `linear-gradient(135deg, ${C.primary}, ${C.primary2})` }}>
                     <Palette className="w-24 h-24 text-white/80" />
                   </div>
                 )}
               </div>
 
               <div className="p-8 md:p-10 flex flex-col">
-                <div className="text-xs font-bold tracking-[0.3em] uppercase mb-3" style={{ color: C.primary }}>
+                <div className="text-[11px] font-bold tracking-[0.3em] uppercase mb-3" style={{ color: C.primary }}>
                   Project Case
                 </div>
                 <h3 className="gd-display text-3xl md:text-4xl font-bold leading-tight mb-4">{activeProject.title}</h3>
@@ -575,7 +558,7 @@ export default function PRDGraphicDesignerTheme({
                     <div className="text-[11px] uppercase tracking-wider font-bold mb-2" style={{ color: C.muted }}>Tools used</div>
                     <div className="flex flex-wrap gap-2">
                       {activeProject.tech_stack.map((t) => (
-                        <span key={t} className="text-xs px-3 py-1.5 font-medium" style={{ background: C.cream }}>{t}</span>
+                        <span key={t} className="text-xs px-3 py-1.5 rounded-full gx-glass">{t}</span>
                       ))}
                     </div>
                   </div>
@@ -583,13 +566,13 @@ export default function PRDGraphicDesignerTheme({
                 <div className="mt-auto flex flex-wrap gap-3 pt-4">
                   {activeProject.live_url && (
                     <a href={activeProject.live_url} target="_blank" rel="noreferrer"
-                      className="gd-btn-primary inline-flex items-center gap-2 px-5 py-3 text-xs font-bold uppercase tracking-wider">
+                      className="gd-btn-primary inline-flex items-center gap-2 px-5 py-3 text-xs font-bold uppercase tracking-wider rounded-full">
                       Visit Project <ExternalLink className="w-4 h-4" />
                     </a>
                   )}
                   {activeProject.github_url && (
                     <a href={activeProject.github_url} target="_blank" rel="noreferrer"
-                      className="gd-btn-outline inline-flex items-center gap-2 px-5 py-3 text-xs font-bold uppercase tracking-wider">
+                      className="gd-btn-glass gx-glass inline-flex items-center gap-2 px-5 py-3 text-xs font-bold uppercase tracking-wider rounded-full" style={{ color: C.ink }}>
                       Source <Github className="w-4 h-4" />
                     </a>
                   )}
@@ -603,26 +586,24 @@ export default function PRDGraphicDesignerTheme({
   );
 }
 
-function FactRow({ label, value }: { label: string; value: string }) {
+function FactPill({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex items-center gap-3 min-w-0">
-      <span className="font-bold shrink-0" style={{ color: C.ink }}>{label}</span>
-      <span style={{ color: C.border }}>|</span>
-      <span className="truncate" style={{ color: C.muted }}>{value}</span>
+    <div className="flex items-center gap-3 min-w-0 px-4 py-2.5 rounded-full gx-glass">
+      <span className="text-[10px] uppercase tracking-[0.25em] shrink-0" style={{ color: C.primary }}>{label}</span>
+      <span className="truncate text-sm font-medium" style={{ color: C.ink }}>{value}</span>
     </div>
   );
 }
 
 function ContactCard({ icon, label, value, href }: { icon: React.ReactNode; label: string; value: string; href?: string }) {
   const inner = (
-    <div className="flex items-center gap-4 p-5 transition-all hover:-translate-y-0.5"
-      style={{ background: C.surface, border: `1px solid ${C.border}` }}>
-      <div className="w-12 h-12 flex items-center justify-center" style={{ background: C.cream, color: C.primary }}>
+    <div className="flex items-center gap-4 p-5 rounded-2xl gx-glass gx-glow-ring transition-all hover:-translate-y-0.5">
+      <div className="w-12 h-12 flex items-center justify-center rounded-xl gx-glass-strong" style={{ color: C.primary }}>
         {icon}
       </div>
       <div className="min-w-0">
-        <div className="text-[11px] uppercase tracking-wider" style={{ color: C.muted }}>{label}</div>
-        <div className="font-semibold truncate">{value}</div>
+        <div className="text-[10px] uppercase tracking-[0.25em]" style={{ color: C.primary }}>{label}</div>
+        <div className="font-semibold truncate" style={{ color: C.ink }}>{value}</div>
       </div>
     </div>
   );

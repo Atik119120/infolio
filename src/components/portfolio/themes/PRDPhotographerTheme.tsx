@@ -1,6 +1,6 @@
 import { useEffect, useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, ArrowRight, Mail, Phone, MapPin, Globe, ExternalLink, Camera, Award, Aperture } from "lucide-react";
+import { Menu, X, ArrowRight, Mail, Phone, MapPin, Globe, ExternalLink, Camera, Award, Aperture, ChevronLeft, ChevronRight } from "lucide-react";
 import { ServiceIcon } from "@/lib/serviceIcons";
 import { ThemeProps } from "./types";
 import { ContactForm } from "@/components/portfolio/ContactForm";
@@ -33,6 +33,7 @@ export default function PRDPhotographerTheme({
 }: ThemeProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [activePhoto, setActivePhoto] = useState<typeof projects[number] | null>(null);
+  const [bannerIdx, setBannerIdx] = useState(0);
 
   useEffect(() => { window.scrollTo(0, 0); }, []);
   useEffect(() => {
@@ -63,14 +64,19 @@ export default function PRDPhotographerTheme({
     { id: "contact", label: "Contact" },
   ];
 
-  // Hero carousel: featured (or all) projects with images
+  // Hero banner: featured (or all) projects with images — landscape auto-slideshow
   const heroPhotos = useMemo(() => {
     const withImg = projects.filter((p) => p.image_url);
     const featured = withImg.filter((p) => p.featured);
-    const list = featured.length > 0 ? featured : withImg;
-    // duplicate for seamless marquee
-    return list.length > 0 ? [...list, ...list] : [];
+    return featured.length > 0 ? featured : withImg;
   }, [projects]);
+
+  // Auto-advance banner
+  useEffect(() => {
+    if (heroPhotos.length < 2) return;
+    const t = setInterval(() => setBannerIdx((i) => (i + 1) % heroPhotos.length), 5000);
+    return () => clearInterval(t);
+  }, [heroPhotos.length]);
 
   // Awards = combine education honors + featured projects + experience milestones
   const awards = useMemo(() => {
@@ -103,36 +109,36 @@ export default function PRDPhotographerTheme({
         .sl-carousel:hover { animation-play-state: paused; }
       `}</style>
 
-      {/* HEADER */}
-      <header className="sticky top-0 z-40 gx-glass-nav">
-        <div className="container mx-auto px-5 py-4 flex items-center justify-between">
-          <a href="#home" className="sl-display text-2xl font-bold tracking-tight flex items-center gap-2" style={{ color: C.ink }}>
+      {/* HEADER — slim floating pill */}
+      <header className="sticky top-3 z-40 px-3 md:px-5">
+        <div className="container mx-auto gx-glass-nav rounded-full px-4 md:px-5 py-2.5 flex items-center justify-between max-w-6xl">
+          <a href="#home" className="sl-display text-lg font-bold tracking-tight flex items-center gap-2" style={{ color: C.ink }}>
             {portfolio?.logo_url ? (
-              <img src={portfolio.logo_url} alt={name} className="h-9 w-auto object-contain" />
+              <img src={portfolio.logo_url} alt={name} className="h-7 w-auto object-contain" />
             ) : (
               <>
-                <Aperture className="w-6 h-6" style={{ color: C.primary }} />
+                <Aperture className="w-5 h-5" style={{ color: C.primary }} />
                 <span className="italic">{name.split(" ")[0]}</span>
               </>
             )}
           </a>
-          <nav className="hidden md:flex items-center gap-1 text-sm tracking-wider uppercase gx-glass rounded-full px-2 py-1.5">
+          <nav className="hidden md:flex items-center gap-1 text-[11px] tracking-[0.2em] uppercase">
             {NAV.map((n) => (
-              <a key={n.id} href={`#${n.id}`} className="sl-link px-4 py-1.5 rounded-full hover:bg-white/10 transition" style={{ color: C.muted }}>{n.label}</a>
+              <a key={n.id} href={`#${n.id}`} className="sl-link px-3 py-1.5 rounded-full hover:bg-white/10 transition" style={{ color: C.muted }}>{n.label}</a>
             ))}
           </nav>
           <div className="hidden md:block">
-            <a href="#contact" className="sl-btn-primary inline-flex items-center gap-2 px-5 py-2.5 text-xs font-bold uppercase tracking-wider rounded-full">
-              Book a Shoot <ArrowRight className="w-3.5 h-3.5" />
+            <a href="#contact" className="sl-btn-primary inline-flex items-center gap-1.5 px-4 py-1.5 text-[10px] font-bold uppercase tracking-wider rounded-full">
+              Book <ArrowRight className="w-3 h-3" />
             </a>
           </div>
           <button className="md:hidden" onClick={() => setMenuOpen(!menuOpen)} aria-label="Menu">
-            {menuOpen ? <X /> : <Menu />}
+            {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
         </div>
         {menuOpen && (
-          <div className="md:hidden gx-glass-nav">
-            <div className="container mx-auto px-5 py-3 flex flex-col gap-3">
+          <div className="md:hidden mt-2 container mx-auto max-w-6xl gx-glass-nav rounded-2xl">
+            <div className="px-5 py-3 flex flex-col gap-2">
               {NAV.map((n) => (
                 <a key={n.id} href={`#${n.id}`} onClick={() => setMenuOpen(false)} className="py-2 text-sm uppercase tracking-wider">{n.label}</a>
               ))}
@@ -168,39 +174,87 @@ export default function PRDPhotographerTheme({
           </motion.div>
         </div>
 
-        {/* Scrolling photo carousel */}
-        {heroPhotos.length > 0 ? (
-          <div className="relative" style={{ maskImage: "linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent)" }}>
-            <div className="flex gap-5 sl-carousel w-max">
-              {heroPhotos.map((p, i) => (
-                <div
-                  key={`${p.id}-${i}`}
-                  className="relative shrink-0 w-[280px] md:w-[360px] aspect-[3/4] overflow-hidden group cursor-pointer"
-                  style={{ background: C.surface }}
-                  onClick={() => setActivePhoto(p)}
+        {/* LANDSCAPE BANNER — auto-changing */}
+        <div className="container mx-auto px-5 relative">
+          {heroPhotos.length > 0 ? (
+            <div className="relative w-full aspect-[16/9] md:aspect-[21/9] overflow-hidden rounded-3xl gx-glass gx-glow-ring"
+              style={{ background: C.surface }}>
+              <AnimatePresence mode="wait">
+                <motion.button
+                  key={heroPhotos[bannerIdx]?.id || bannerIdx}
+                  onClick={() => setActivePhoto(heroPhotos[bannerIdx])}
+                  initial={{ opacity: 0, scale: 1.04 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.98 }}
+                  transition={{ duration: 1.1, ease: "easeOut" }}
+                  className="absolute inset-0 w-full h-full block group"
                 >
-                  <img src={p.image_url!} alt={p.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
-                  <div className="absolute inset-0 flex flex-col justify-end p-5"
-                    style={{ background: "linear-gradient(to top, rgba(0,0,0,0.85), transparent 50%)" }}>
-                    <div className="text-[10px] tracking-[0.3em] uppercase mb-1" style={{ color: C.primary }}>
-                      {p.tech_stack?.[0] || "Photography"}
+                  <img
+                    src={heroPhotos[bannerIdx].image_url!}
+                    alt={heroPhotos[bannerIdx].title}
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute inset-0"
+                    style={{ background: "linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.25) 45%, transparent 70%)" }} />
+                  <div className="absolute bottom-0 left-0 right-0 p-6 md:p-10 text-left">
+                    <div className="text-[10px] tracking-[0.35em] uppercase mb-2" style={{ color: C.primary }}>
+                      {heroPhotos[bannerIdx].tech_stack?.[0] || "Photography"}
                     </div>
-                    <h3 className="sl-display text-xl font-semibold text-white">{p.title}</h3>
-                    {p.description && (
-                      <p className="text-xs text-white/70 mt-1 line-clamp-2">{p.description}</p>
+                    <h3 className="sl-display text-2xl md:text-4xl font-bold text-white max-w-2xl leading-tight">
+                      {heroPhotos[bannerIdx].title}
+                    </h3>
+                    {heroPhotos[bannerIdx].description && (
+                      <p className="text-sm md:text-base text-white/80 mt-2 max-w-xl line-clamp-2">
+                        {heroPhotos[bannerIdx].description}
+                      </p>
                     )}
                   </div>
-                </div>
-              ))}
+                </motion.button>
+              </AnimatePresence>
+
+              {/* Controls */}
+              {heroPhotos.length > 1 && (
+                <>
+                  <button
+                    onClick={() => setBannerIdx((i) => (i - 1 + heroPhotos.length) % heroPhotos.length)}
+                    className="absolute left-3 md:left-5 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full gx-glass-strong flex items-center justify-center hover:scale-110 transition"
+                    aria-label="Previous"
+                    style={{ color: C.ink }}
+                  >
+                    <ChevronLeft className="w-5 h-5" />
+                  </button>
+                  <button
+                    onClick={() => setBannerIdx((i) => (i + 1) % heroPhotos.length)}
+                    className="absolute right-3 md:right-5 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full gx-glass-strong flex items-center justify-center hover:scale-110 transition"
+                    aria-label="Next"
+                    style={{ color: C.ink }}
+                  >
+                    <ChevronRight className="w-5 h-5" />
+                  </button>
+                  {/* Dots */}
+                  <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-2">
+                    {heroPhotos.map((_, i) => (
+                      <button
+                        key={i}
+                        onClick={() => setBannerIdx(i)}
+                        aria-label={`Slide ${i + 1}`}
+                        className="h-1.5 rounded-full transition-all"
+                        style={{
+                          width: i === bannerIdx ? 28 : 8,
+                          background: i === bannerIdx ? C.primary : "rgba(255,255,255,0.4)",
+                        }}
+                      />
+                    ))}
+                  </div>
+                </>
+              )}
             </div>
-          </div>
-        ) : (
-          <div className="container mx-auto px-5">
-            <div className="aspect-[16/9] flex items-center justify-center" style={{ background: C.surface }}>
+          ) : (
+            <div className="aspect-[21/9] flex items-center justify-center rounded-3xl" style={{ background: C.surface }}>
               <Camera className="w-16 h-16" style={{ color: C.primary }} />
             </div>
-          </div>
-        )}
+          )}
+        </div>
 
         {/* Stats strip */}
         <div className="container mx-auto px-5 mt-12">

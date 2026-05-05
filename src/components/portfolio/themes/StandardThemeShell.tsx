@@ -129,12 +129,12 @@ export function StandardThemeShell({
         ${s.aesthetic === "noise" ? `.t-bg-deco { background-color: var(--t-bg); background-image: radial-gradient(${s.border} 1px, transparent 1px); background-size: 18px 18px; opacity: .4; }` : ""}
       `}</style>
 
-      {/* MODERN HEADER */}
-      <header className="sticky top-0 z-50 gx-glass-nav-light">
-        <div className="container mx-auto px-5 py-4 flex items-center justify-between">
-          <a href="#home" className="t-display text-xl font-bold tracking-tight" style={{ color: s.text }}>
+      {/* SLIM FLOATING HEADER */}
+      <header className="sticky top-3 z-50 px-3 md:px-5">
+        <div className="container mx-auto gx-glass-nav-light rounded-full px-4 md:px-5 py-2.5 flex items-center justify-between max-w-6xl">
+          <a href="#home" className="t-display text-base font-bold tracking-tight" style={{ color: s.text }}>
             {portfolio?.logo_url ? (
-              <img src={portfolio.logo_url} alt={name} className="h-9 w-auto object-contain" />
+              <img src={portfolio.logo_url} alt={name} className="h-7 w-auto object-contain" />
             ) : (
               <>
                 <span style={{ color: s.primary }}>{name.split(" ")[0]}</span>
@@ -143,26 +143,26 @@ export function StandardThemeShell({
             )}
           </a>
 
-          <nav className="hidden md:flex items-center gap-1 text-sm font-medium gx-glass-light rounded-full px-2 py-1.5">
+          <nav className="hidden md:flex items-center gap-1 text-[12px] font-medium">
             {NAV.map((n) => (
-              <a key={n.id} href={`#${n.id}`} className="t-link px-4 py-1.5 rounded-full hover:bg-black/5 transition" style={{ color: s.textMuted }}>{n.label}</a>
+              <a key={n.id} href={`#${n.id}`} className="t-link px-3 py-1.5 rounded-full hover:bg-black/5 transition" style={{ color: s.textMuted }}>{n.label}</a>
             ))}
           </nav>
 
           <div className="hidden md:block">
-            <a href="#contact" className="t-btn-primary inline-flex items-center gap-2 px-4 py-2 text-sm font-medium">
-              Hire Me <ArrowRight className="w-4 h-4" />
+            <a href="#contact" className="t-btn-primary inline-flex items-center gap-1.5 px-4 py-1.5 text-xs font-semibold">
+              Hire Me <ArrowRight className="w-3 h-3" />
             </a>
           </div>
 
           <button className="md:hidden" onClick={() => setMenuOpen(!menuOpen)} aria-label="Menu">
-            {menuOpen ? <X /> : <Menu />}
+            {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
         </div>
 
         {menuOpen && (
-          <div className="md:hidden gx-glass-nav-light">
-            <div className="container mx-auto px-5 py-3 flex flex-col gap-3">
+          <div className="md:hidden mt-2 container mx-auto max-w-6xl gx-glass-nav-light rounded-2xl">
+            <div className="px-5 py-3 flex flex-col gap-2">
               {NAV.map((n) => (
                 <a key={n.id} href={`#${n.id}`} onClick={() => setMenuOpen(false)} className="py-2 text-sm" style={{ color: s.text }}>{n.label}</a>
               ))}

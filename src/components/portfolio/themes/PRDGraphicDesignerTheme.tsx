@@ -122,7 +122,7 @@ export default function PRDGraphicDesignerTheme({
       `}</style>
 
       {/* HEADER */}
-      <header className="sticky top-0 z-40 backdrop-blur-md" style={{ background: `${C.bg}e6`, borderBottom: `1px solid ${C.border}` }}>
+      <header className="sticky top-0 z-40 gx-glass-nav-light">
         <div className="container mx-auto px-5 py-4 flex items-center justify-between">
           <a href="#home" className="gd-display text-2xl font-bold tracking-tight">
             {portfolio?.logo_url ? (
@@ -133,9 +133,9 @@ export default function PRDGraphicDesignerTheme({
               </span>
             )}
           </a>
-          <nav className="hidden md:flex items-center gap-8 text-sm font-medium">
+          <nav className="hidden md:flex items-center gap-1 text-sm font-medium gx-glass-light rounded-full px-2 py-1.5">
             {NAV.map((n) => (
-              <a key={n.id} href={`#${n.id}`} className="gd-link" style={{ color: C.muted }}>{n.label}</a>
+              <a key={n.id} href={`#${n.id}`} className="gd-link px-4 py-1.5 rounded-full hover:bg-black/5 transition" style={{ color: C.muted }}>{n.label}</a>
             ))}
           </nav>
           <div className="hidden md:block">
@@ -148,7 +148,7 @@ export default function PRDGraphicDesignerTheme({
           </button>
         </div>
         {menuOpen && (
-          <div className="md:hidden border-t" style={{ borderColor: C.border, background: C.surface }}>
+          <div className="md:hidden gx-glass-nav-light">
             <div className="container mx-auto px-5 py-3 flex flex-col gap-3">
               {NAV.map((n) => (
                 <a key={n.id} href={`#${n.id}`} onClick={() => setMenuOpen(false)} className="py-2 text-sm">{n.label}</a>

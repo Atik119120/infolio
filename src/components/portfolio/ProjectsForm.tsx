@@ -31,6 +31,7 @@ const emptyProject = {
 };
 
 export function ProjectsForm({ projects, userId, onUpdate, onSuccess, onError }: ProjectsFormProps) {
+  const { perFileLimitBytes, isPro } = usePlan();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingProject, setEditingProject] = useState<Project | null>(null);
   const [formData, setFormData] = useState(emptyProject);

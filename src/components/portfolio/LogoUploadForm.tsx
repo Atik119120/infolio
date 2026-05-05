@@ -16,6 +16,7 @@ interface LogoUploadFormProps {
 }
 
 export function LogoUploadForm({ logoUrl, userId, onUpdate, onSuccess, onError }: LogoUploadFormProps) {
+  const { perFileLimitBytes, isPro } = usePlan();
   const [uploading, setUploading] = useState(false);
   const [removing, setRemoving] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);

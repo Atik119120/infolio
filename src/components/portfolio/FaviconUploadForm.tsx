@@ -15,6 +15,7 @@ interface FaviconUploadFormProps {
 }
 
 export function FaviconUploadForm({ faviconUrl, userId, onUpdate, onSuccess, onError }: FaviconUploadFormProps) {
+  const { perFileLimitBytes, isPro } = usePlan();
   const [uploading, setUploading] = useState(false);
   const [removing, setRemoving] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);

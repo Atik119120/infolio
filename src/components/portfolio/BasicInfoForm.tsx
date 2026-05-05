@@ -21,6 +21,7 @@ interface BasicInfoFormProps {
 }
 
 export function BasicInfoForm({ profile, portfolio, userId, onUpdate, onSuccess, onError }: BasicInfoFormProps) {
+  const { perFileLimitBytes, isPro } = usePlan();
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);

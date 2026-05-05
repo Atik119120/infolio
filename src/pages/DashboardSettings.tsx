@@ -405,8 +405,19 @@ export default function DashboardSettings() {
         </CardContent>
       </Card>
 
-      {/* Custom Domains */}
-      <CustomDomainManager />
+      {/* Plan */}
+      <PlanCard />
+
+      {/* Custom Domains — Pro only */}
+      <ProGate
+        title="Custom Domain"
+        description="Connect your own domain (e.g. yourname.com) to your portfolio."
+      >
+        <CustomDomainManager />
+      </ProGate>
+
+      {/* SEO — Pro only */}
+      <SeoSettingsCard />
 
       {/* Theme Selection */}
       <Card>

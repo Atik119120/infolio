@@ -51,10 +51,10 @@ export default function Index() {
         {/* Gradient bars background */}
         <div aria-hidden className="absolute inset-0 -z-20 bg-background" />
         {/* Gradient bars sit above bg, below content */}
-        <div aria-hidden className="absolute inset-0 -z-10 pointer-events-none opacity-70">
+        <div aria-hidden className="absolute inset-0 -z-10 pointer-events-none">
           <GradientBars
             numBars={15}
-            gradientFrom="hsl(var(--primary))"
+            gradientFrom="hsl(187 90% 55%)"
             gradientTo="transparent"
             animationDuration={2.4}
           />

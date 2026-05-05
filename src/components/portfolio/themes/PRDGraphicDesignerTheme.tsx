@@ -189,8 +189,8 @@ export default function PRDGraphicDesignerTheme({
                 <div aria-hidden className="absolute -inset-6 rounded-[2rem] opacity-60"
                   style={{ background: `linear-gradient(135deg, ${C.primary}, ${C.primary2}, ${C.accent})`, filter: "blur(60px)" }} />
                 <div className="relative rounded-3xl overflow-hidden gx-glass gx-glow-ring p-2">
-                  {profile?.avatar_url ? (
-                    <img src={profile.avatar_url} alt={name} className="w-full aspect-[4/5] object-cover rounded-[1.25rem]" />
+                  {heroImage ? (
+                    <img src={heroImage} alt={name} className="w-full aspect-[4/5] object-cover rounded-[1.25rem]" />
                   ) : (
                     <div className="w-full aspect-[4/5] flex items-center justify-center gd-display text-9xl font-extrabold rounded-[1.25rem]"
                       style={{ background: `linear-gradient(135deg, ${C.primary}, ${C.primary2})`, color: "#fff" }}>

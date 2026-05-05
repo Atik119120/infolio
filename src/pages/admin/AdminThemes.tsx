@@ -414,13 +414,6 @@ export default function AdminThemes() {
                     <div className="absolute inset-0 flex items-center justify-center">
                       <theme.icon className="w-12 h-12 text-white/80" />
                     </div>
-                    <div className="absolute top-2 right-2">
-                      {theme.isPremium ? (
-                        <Badge className="bg-amber-500 text-white">৳200</Badge>
-                      ) : (
-                        <Badge className="bg-green-500 text-white">Free</Badge>
-                      )}
-                    </div>
                   </div>
                   <CardHeader className="pb-2">
                     <div className="flex items-center justify-between">

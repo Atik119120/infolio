@@ -33,6 +33,7 @@ export default function PRDPhotographerTheme({
 }: ThemeProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [activePhoto, setActivePhoto] = useState<typeof projects[number] | null>(null);
+  const [bannerIdx, setBannerIdx] = useState(0);
 
   useEffect(() => { window.scrollTo(0, 0); }, []);
   useEffect(() => {

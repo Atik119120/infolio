@@ -491,7 +491,7 @@ const handler = async (req: Request): Promise<Response> => {
     console.log("Email sent successfully:", emailResponse);
 
     // Also send to Telegram for important notifications
-    const telegramTypes = ['new_user', 'publish_request', 'theme_purchase', 'support_message'];
+    const telegramTypes = ['new_user', 'publish_request', 'theme_purchase', 'plan_purchase', 'support_message'];
     if (type && telegramTypes.includes(type)) {
       const resolvedEmail = userEmail || email;
       const resolvedName = userName || displayName;

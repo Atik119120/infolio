@@ -25,6 +25,7 @@ import {
   Sparkles,
   ChevronRight,
   MessageSquare,
+  Crown,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 

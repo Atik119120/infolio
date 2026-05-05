@@ -9,6 +9,7 @@ import {
   PRDGraphicDesignerTheme,
   PRDPhotographerTheme,
   PRDDigitalMarketerTheme,
+  BiographyTheme,
   ThemeProps,
 } from "@/components/portfolio/themes";
 
@@ -77,6 +78,8 @@ export default function ThemeDemo() {
         return <PRDPhotographerTheme {...demoData} />;
       case 'prd-digital-marketer':
         return <PRDDigitalMarketerTheme {...demoData} />;
+      case 'biography':
+        return <BiographyTheme {...demoData} />;
       case 'freelancer':
       default:
         return <FreelancerTheme {...demoData} />;

@@ -56,7 +56,7 @@ export default function Index() {
           playsInline
           className="absolute inset-0 w-full h-full object-cover -z-20"
         />
-        <div aria-hidden className="absolute inset-0 -z-10 bg-background/70 backdrop-blur-[2px]" />
+        <div aria-hidden className="absolute inset-0 -z-10 bg-background/40" />
         {/* cyan ambient */}
         <div aria-hidden className="absolute inset-0 -z-10">
           <div className="absolute top-1/4 -left-40 w-[520px] h-[520px] rounded-full bg-primary/25 blur-[140px]" />

@@ -65,6 +65,7 @@ const App = () => (
                   <Route path="support" element={<DashboardSupport />} />
                   <Route path="purchases" element={<DashboardPurchases />} />
                   <Route path="settings" element={<DashboardSettings />} />
+                  <Route path="domain-status" element={<DashboardDomainStatus />} />
                 </Route>
                 {/* Admin Routes */}
                 <Route path="/admin" element={

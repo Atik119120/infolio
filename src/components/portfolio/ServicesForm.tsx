@@ -25,10 +25,8 @@ interface ServicesFormProps {
   onError: (message: string) => void;
 }
 
-const ICON_CHOICES = ["✨","🎨","💼","📈","📷","🎬","💻","🚀","🎯","💡","📱","🛠️"];
-
 export function ServicesForm({ services, userId, onUpdate, onSuccess, onError }: ServicesFormProps) {
-  const [draft, setDraft] = useState({ title: "", description: "", icon: "✨", price: "" });
+  const [draft, setDraft] = useState({ title: "", description: "", icon: "sparkles", price: "" });
   const [adding, setAdding] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
 

@@ -49,7 +49,9 @@ export default function Index() {
       {/* HERO — unique split: text left, layered cards right */}
       <section className="relative pt-32 md:pt-36 pb-20 px-6 overflow-hidden">
         {/* Gradient bars background */}
-        <div aria-hidden className="absolute inset-0 -z-20 bg-background">
+        <div aria-hidden className="absolute inset-0 -z-20 bg-background" />
+        {/* Gradient bars sit above bg, below content */}
+        <div aria-hidden className="absolute inset-0 -z-10 pointer-events-none opacity-70">
           <GradientBars
             numBars={15}
             gradientFrom="hsl(var(--primary))"
@@ -57,15 +59,16 @@ export default function Index() {
             animationDuration={2.4}
           />
         </div>
-        {/* readability overlay */}
+        {/* subtle top fade to soften bars near nav */}
         <div
           aria-hidden
-          className="absolute inset-0 -z-10 bg-gradient-to-b from-background/30 via-background/60 to-background"
+          className="absolute inset-x-0 top-0 h-40 -z-10 pointer-events-none bg-gradient-to-b from-background to-transparent"
         />
         {/* cyan ambient + grid */}
         <div aria-hidden className="absolute inset-0 -z-10 pointer-events-none">
-          <div className="absolute top-1/4 -left-40 w-[520px] h-[520px] rounded-full bg-primary/20 blur-[140px]" />
-          <div className="absolute -top-32 right-0 w-[520px] h-[520px] rounded-full bg-accent/25 blur-[140px]" />
+          <div className="absolute top-1/4 -left-40 w-[420px] h-[420px] rounded-full bg-primary/15 blur-[140px]" />
+          <div className="absolute -top-32 right-0 w-[420px] h-[420px] rounded-full bg-accent/15 blur-[140px]" />
+
           <div
             className="absolute inset-0 opacity-[0.05]"
             style={{

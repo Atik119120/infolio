@@ -5,7 +5,7 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { motion } from "framer-motion";
 import {
   ArrowRight, Zap, Globe, Palette, Users, Sparkles, Check,
-  Layers, Rocket, ShieldCheck, BadgeCheck, ArrowUpRight,
+  ShieldCheck, ArrowUpRight, Plus, Minus, Star,
 } from "lucide-react";
 import ThemeDemoSection from "@/components/home/ThemeDemoSection";
 import Footer from "@/components/home/Footer";
@@ -14,6 +14,7 @@ import alphaLogo from "@/assets/alpha-portfolio-logo.png";
 export default function Index() {
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
+  const [openFaq, setOpenFaq] = useState<number | null>(0);
 
   const handleClaim = () => {
     navigate(`/auth${username ? `?username=${encodeURIComponent(username)}` : ""}`);
@@ -23,16 +24,16 @@ export default function Index() {
     <div className="min-h-screen bg-background overflow-x-hidden text-foreground">
       {/* NAV */}
       <nav className="fixed top-0 left-0 right-0 z-50 bg-background/70 backdrop-blur-xl border-b border-border/60">
-        <div className="container mx-auto px-6 py-3.5 flex items-center justify-between">
+        <div className="container mx-auto px-6 py-3 flex items-center justify-between">
           <button onClick={() => navigate("/")} className="flex items-center gap-2.5">
             <img src={alphaLogo} alt="Alpha Portfolio" className="w-8 h-8 object-contain dark:invert" />
             <span className="text-[15px] font-semibold tracking-tight">Alpha Portfolio</span>
           </button>
           <div className="hidden md:flex items-center gap-8">
-            <a href="#how" className="text-sm text-muted-foreground hover:text-foreground transition-colors">How it works</a>
+            <a href="#why" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Why us</a>
             <a href="#features" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Features</a>
             <a href="#themes" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Themes</a>
-            <a href="#pricing" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Pricing</a>
+            <a href="#faq" className="text-sm text-muted-foreground hover:text-foreground transition-colors">FAQ</a>
           </div>
           <div className="flex items-center gap-2">
             <ThemeToggle />
@@ -44,42 +45,41 @@ export default function Index() {
         </div>
       </nav>
 
-      {/* HERO */}
-      <section className="relative pt-40 pb-28 px-6 overflow-hidden">
+      {/* HERO — unique split: text left, layered cards right */}
+      <section className="relative pt-32 md:pt-36 pb-20 px-6 overflow-hidden">
+        {/* cyan ambient */}
         <div aria-hidden className="absolute inset-0 -z-10">
-          {/* cyan blobs */}
-          <div className="absolute top-1/4 -left-32 w-[500px] h-[500px] rounded-full bg-primary/20 blur-[130px]" />
-          <div className="absolute -top-20 right-0 w-[480px] h-[480px] rounded-full bg-accent/25 blur-[140px]" />
-          <div className="absolute bottom-0 left-1/3 w-[420px] h-[420px] rounded-full bg-secondary/15 blur-[120px]" />
+          <div className="absolute top-1/4 -left-40 w-[520px] h-[520px] rounded-full bg-primary/25 blur-[140px]" />
+          <div className="absolute -top-32 right-0 w-[520px] h-[520px] rounded-full bg-accent/30 blur-[140px]" />
           <div
             className="absolute inset-0 opacity-[0.05]"
             style={{
               backgroundImage:
                 "linear-gradient(hsl(var(--primary)) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--primary)) 1px, transparent 1px)",
-              backgroundSize: "72px 72px",
-              maskImage: "radial-gradient(ellipse 70% 50% at 50% 40%, #000 30%, transparent 80%)",
+              backgroundSize: "64px 64px",
+              maskImage: "radial-gradient(ellipse 80% 60% at 50% 30%, #000 30%, transparent 80%)",
             }}
           />
         </div>
 
-        <div className="container mx-auto max-w-3xl text-center relative z-10">
-          <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-primary/30 bg-primary/10 text-primary mb-8">
-              <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-              <span className="text-[11px] font-semibold tracking-[0.18em] uppercase">Your Digital Identity</span>
+        <div className="container mx-auto grid lg:grid-cols-12 gap-12 items-center relative z-10">
+          {/* LEFT */}
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className="lg:col-span-7">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-primary/30 bg-primary/10 text-primary mb-6">
+              <Sparkles className="w-3 h-3" />
+              <span className="text-[11px] font-semibold tracking-[0.18em] uppercase">Build in minutes</span>
             </div>
 
-            <h1 className="text-5xl md:text-7xl font-semibold leading-[1.02] tracking-[-0.03em] mb-6">
-              One profile.
-              <br />
-              <span className="gradient-text">Endless reach.</span>
+            <h1 className="text-5xl md:text-6xl lg:text-7xl font-semibold leading-[1.02] tracking-[-0.03em] mb-5">
+              Your <span className="gradient-text">portfolio</span>,
+              <br />done right.
             </h1>
 
-            <p className="text-base md:text-lg text-muted-foreground max-w-xl mx-auto mb-10 leading-relaxed">
-              A clean, beautiful portfolio in minutes. Showcase your work, links and story in a single place you actually own.
+            <p className="text-base md:text-lg text-muted-foreground max-w-xl mb-8 leading-relaxed">
+              Pick a theme, fill a form, share your link. Beautiful portfolios for creators, developers and freelancers — without writing a single line of code.
             </p>
 
-            <div className="bg-card border border-primary/20 rounded-full p-1.5 flex items-center gap-2 max-w-lg mx-auto shadow-lg shadow-primary/10">
+            <div className="bg-card border border-primary/20 rounded-full p-1.5 flex items-center gap-2 max-w-lg shadow-lg shadow-primary/10">
               <div className="flex-1 flex items-center pl-4 min-w-0">
                 <span className="text-muted-foreground text-sm font-medium hidden sm:inline">alphazero.online/</span>
                 <input
@@ -95,182 +95,160 @@ export default function Index() {
               </Button>
             </div>
 
-            <div className="mt-5 flex items-center justify-center gap-2 text-sm text-muted-foreground">
-              <Check className="w-4 h-4 text-primary" />
-              <span>Free forever. No credit card required.</span>
+            <div className="mt-5 flex items-center gap-5 text-sm text-muted-foreground flex-wrap">
+              <span className="inline-flex items-center gap-1.5"><Check className="w-4 h-4 text-primary" /> Free forever</span>
+              <span className="inline-flex items-center gap-1.5"><Check className="w-4 h-4 text-primary" /> No credit card</span>
+              <span className="inline-flex items-center gap-1.5"><Check className="w-4 h-4 text-primary" /> Live in 5 min</span>
+            </div>
+          </motion.div>
+
+          {/* RIGHT — Layered preview cards */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.92 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.7, delay: 0.15 }}
+            className="lg:col-span-5 relative h-[420px] hidden lg:block"
+          >
+            {/* Big back card */}
+            <div className="absolute top-0 right-0 w-[300px] rounded-3xl bg-card border border-primary/20 p-5 shadow-2xl shadow-primary/20 rotate-[6deg]">
+              <div className="flex items-center gap-2 mb-4">
+                <div className="w-10 h-10 rounded-full gradient-primary" />
+                <div className="flex-1">
+                  <div className="h-2.5 bg-foreground/80 rounded w-3/4 mb-1.5" />
+                  <div className="h-2 bg-muted-foreground/30 rounded w-1/2" />
+                </div>
+              </div>
+              <div className="space-y-2">
+                <div className="h-2 bg-muted-foreground/20 rounded w-full" />
+                <div className="h-2 bg-muted-foreground/20 rounded w-5/6" />
+                <div className="h-2 bg-muted-foreground/20 rounded w-3/4" />
+              </div>
+              <div className="grid grid-cols-3 gap-2 mt-4">
+                <div className="aspect-square rounded-lg gradient-primary opacity-80" />
+                <div className="aspect-square rounded-lg bg-accent/40" />
+                <div className="aspect-square rounded-lg bg-secondary/40" />
+              </div>
+            </div>
+
+            {/* Front card */}
+            <motion.div
+              animate={{ y: [0, -10, 0] }}
+              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+              className="absolute bottom-0 left-0 w-[280px] rounded-3xl bg-card border border-border p-5 shadow-2xl shadow-primary/30 -rotate-[4deg]"
+            >
+              <div className="flex items-center justify-between mb-3">
+                <div className="text-[11px] font-semibold text-primary tracking-wider uppercase">Live preview</div>
+                <div className="flex gap-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-destructive/50" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-warning/60" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-success/60" />
+                </div>
+              </div>
+              <div className="text-center py-3">
+                <div className="w-16 h-16 mx-auto rounded-full gradient-primary p-1 mb-3">
+                  <div className="w-full h-full rounded-full bg-card grid place-items-center text-xl font-bold gradient-text">A</div>
+                </div>
+                <div className="font-bold text-sm flex items-center justify-center gap-1">
+                  Alex Rivera <BadgeCheck className="w-3.5 h-3.5 text-primary" />
+                </div>
+                <div className="text-[10px] text-muted-foreground">Designer · Bangladesh</div>
+              </div>
+              <div className="space-y-2 mt-2">
+                {["My Portfolio", "Latest Work", "Contact Me"].map((l, i) => (
+                  <div key={i} className={`text-[11px] font-semibold py-2 rounded-lg text-center ${i === 0 ? "gradient-primary text-white" : "bg-muted text-foreground/70"}`}>
+                    {l}
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+
+            {/* Floating star */}
+            <div className="absolute top-1/2 left-[55%] w-12 h-12 rounded-2xl gradient-accent grid place-items-center shadow-xl shadow-accent/40 rotate-12 animate-float">
+              <Star className="w-6 h-6 text-white fill-white" />
             </div>
           </motion.div>
         </div>
       </section>
 
-      {/* TRUSTED BAR */}
-      <section className="py-8 border-y border-border/60">
-        <div className="container mx-auto px-6">
-          <div className="text-center text-[11px] uppercase tracking-[0.25em] text-muted-foreground/80 font-semibold mb-5">
-            Built for creators, freelancers & founders
-          </div>
-          <div className="flex flex-wrap items-center justify-center gap-x-10 gap-y-3">
-            {["Designers", "Developers", "Photographers", "Writers", "Marketers", "Founders"].map(l => (
-              <div key={l} className="text-sm font-medium text-muted-foreground/60 hover:text-foreground transition-colors">{l}</div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* HOW IT WORKS */}
-      <section id="how" className="py-28 px-6">
+      {/* WHY US — compact 4-stat row */}
+      <section id="why" className="py-16 px-6 border-y border-border/60 bg-muted/30">
         <div className="container mx-auto max-w-6xl">
-          <SectionHeader eyebrow="How it works" title="Three steps to your digital hub" subtitle="From signup to a live portfolio in less than 5 minutes — no coding, no fuss." />
-
-          <div className="grid md:grid-cols-3 gap-6 mt-16">
-            <StepCard num="01" icon={<BadgeCheck className="w-5 h-5" />} title="Claim your identity" desc="Sign up free with your Google account and secure your unique username." />
-            <StepCard num="02" icon={<Layers className="w-5 h-5" />} title="Add your content" desc="Fill in your bio, links, projects and services with our guided builder." />
-            <StepCard num="03" icon={<Rocket className="w-5 h-5" />} title="Share everywhere" desc="Drop your link in Instagram, TikTok, email — wherever your audience lives." />
+          <div className="text-center mb-10">
+            <Eyebrow text="Why Alpha Portfolio" />
+            <h2 className="text-3xl md:text-4xl font-semibold tracking-[-0.025em] mt-4">
+              Built for people, <span className="gradient-text">not coders.</span>
+            </h2>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <WhyCard icon={<Zap className="w-5 h-5" />} title="5-min setup" desc="Live portfolio without code." />
+            <WhyCard icon={<Palette className="w-5 h-5" />} title="Pro themes" desc="Profession-specific designs." />
+            <WhyCard icon={<Globe className="w-5 h-5" />} title="Custom domain" desc="Use your own URL." />
+            <WhyCard icon={<ShieldCheck className="w-5 h-5" />} title="You own it" desc="Privacy-first by default." />
           </div>
         </div>
       </section>
 
       {/* FEATURES */}
-      <section id="features" className="py-28 px-6 border-t border-border/60">
+      <section id="features" className="py-20 px-6">
         <div className="container mx-auto max-w-6xl">
-          <SectionHeader eyebrow="Features" title="Everything you need to stand out" subtitle="Powerful tools wrapped in a simple, focused interface." />
+          <SectionHeader eyebrow="Features" title="Everything you need" subtitle="A focused toolkit — no bloat." />
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-px bg-border/60 mt-16 rounded-2xl overflow-hidden border border-border/60">
-            <FeatureCard icon={<Palette className="w-5 h-5" />} title="Beautiful Themes" description="Profession-specific themes for designers, photographers, marketers and more." />
-            <FeatureCard icon={<Zap className="w-5 h-5" />} title="No-Code Builder" description="Fill in a guided form and watch your portfolio update live. No skills needed." />
-            <FeatureCard icon={<Globe className="w-5 h-5" />} title="Custom Domain" description="Use a free /u/username link or connect your own domain in a click." />
-            <FeatureCard icon={<Users className="w-5 h-5" />} title="Social Hub" description="Connect Instagram, GitHub, LinkedIn and 20+ platforms in one place." />
-            <FeatureCard icon={<ShieldCheck className="w-5 h-5" />} title="Privacy First" description="You own your data. Approval-based publishing keeps your space spam-free." />
-            <FeatureCard icon={<Sparkles className="w-5 h-5" />} title="SEO Optimized" description="Built-in metadata so recruiters and clients can find you on Google instantly." />
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-px bg-border/60 mt-12 rounded-2xl overflow-hidden border border-border/60">
+            <FeatureCard icon={<Palette className="w-5 h-5" />} title="Beautiful Themes" description="Profession-specific themes for designers, photographers, marketers & more." />
+            <FeatureCard icon={<Zap className="w-5 h-5" />} title="No-Code Builder" description="Fill a guided form, watch your portfolio update live." />
+            <FeatureCard icon={<Globe className="w-5 h-5" />} title="Custom Domain" description="Free /u/username link or connect your own domain." />
+            <FeatureCard icon={<Users className="w-5 h-5" />} title="Social Hub" description="Connect 20+ social platforms in one place." />
+            <FeatureCard icon={<ShieldCheck className="w-5 h-5" />} title="Privacy First" description="Approval-based publishing keeps spam out." />
+            <FeatureCard icon={<Sparkles className="w-5 h-5" />} title="SEO Optimized" description="Built-in metadata so clients find you on Google." />
           </div>
         </div>
       </section>
 
-      {/* THEME DEMO */}
+      {/* THEMES */}
       <section id="themes" className="border-t border-border/60">
         <ThemeDemoSection />
       </section>
 
-      {/* PRICING */}
-      <section id="pricing" className="py-28 px-6 border-t border-border/60">
-        <div className="container mx-auto max-w-5xl">
-          <SectionHeader eyebrow="Pricing" title="Simple, transparent pricing" subtitle="Start free. Upgrade when you need premium themes & power features." />
+      {/* FAQ */}
+      <section id="faq" className="py-20 px-6 border-t border-border/60">
+        <div className="container mx-auto max-w-3xl">
+          <SectionHeader eyebrow="FAQ" title="Frequently asked questions" subtitle="Everything you might want to know before getting started." />
 
-          <div className="grid md:grid-cols-2 gap-5 mt-12">
-            {/* BASIC */}
-            <div className="bg-card border border-border rounded-2xl p-8 md:p-10 flex flex-col">
-              <div>
-                <h3 className="text-xl font-semibold tracking-tight">Basic Plan</h3>
-                <p className="text-sm text-muted-foreground mt-1">Everything to get your portfolio live for free.</p>
-              </div>
-
-              <div className="flex items-baseline gap-1 mt-6">
-                <span className="text-5xl font-semibold tracking-tight">৳0</span>
-                <span className="text-muted-foreground text-sm ml-1">/forever</span>
-              </div>
-
-              <div className="my-7 h-px bg-border" />
-
-              <ul className="space-y-3 mb-8 flex-1">
-                {[
-                  "Unlimited portfolio sections",
-                  "Free Simple theme",
-                  "Custom /u/username public URL",
-                  "Contact inquiries inbox",
-                  "Mobile-optimized layouts",
-                ].map((f) => (
-                  <li key={f} className="flex items-start gap-2.5 text-sm">
-                    <Check className="w-4 h-4 mt-0.5 shrink-0 text-foreground/70" />
-                    <span className="text-foreground/80">{f}</span>
-                  </li>
-                ))}
-              </ul>
-
-              <Button size="lg" variant="outline" className="w-full rounded-full border-primary/30 text-primary hover:bg-primary/10 hover:text-primary" onClick={() => navigate("/auth")}>
-                Get Started Free <ArrowRight className="ml-2 w-4 h-4" />
-              </Button>
-            </div>
-
-            {/* PRO */}
-            <div className="gradient-primary text-white rounded-2xl p-8 md:p-10 flex flex-col relative overflow-hidden shadow-xl shadow-primary/30">
-              <div
-                aria-hidden
-                className="absolute inset-0 opacity-[0.05] pointer-events-none"
-                style={{
-                  backgroundImage:
-                    "linear-gradient(rgba(255,255,255,1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,1) 1px, transparent 1px)",
-                  backgroundSize: "40px 40px",
-                  maskImage: "radial-gradient(ellipse at top right, #000 30%, transparent 75%)",
-                }}
-              />
-              <div className="relative z-10 flex flex-col flex-1">
-                <div className="flex items-start justify-between gap-3">
-                  <div>
-                    <h3 className="text-xl font-semibold tracking-tight">Pro Plan</h3>
-                    <p className="text-sm text-white/80 mt-1">Premium themes & advanced features for professionals.</p>
-                  </div>
-                  <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-white/40 text-white text-[11px] font-semibold uppercase tracking-wider shrink-0 bg-white/10">
-                    <span className="w-1.5 h-1.5 rounded-full bg-white" /> Popular
-                  </div>
+          <div className="mt-10 space-y-3">
+            {FAQS.map((faq, i) => {
+              const isOpen = openFaq === i;
+              return (
+                <div key={i} className={`border rounded-2xl overflow-hidden transition-all ${isOpen ? "border-primary/40 bg-primary/[0.03]" : "border-border bg-card hover:border-primary/20"}`}>
+                  <button
+                    onClick={() => setOpenFaq(isOpen ? null : i)}
+                    className="w-full text-left px-6 py-5 flex items-center justify-between gap-4"
+                  >
+                    <span className="font-semibold text-[15px] tracking-tight">{faq.q}</span>
+                    <span className={`shrink-0 w-7 h-7 rounded-full grid place-items-center transition-colors ${isOpen ? "gradient-primary text-white" : "bg-muted text-foreground/70"}`}>
+                      {isOpen ? <Minus className="w-3.5 h-3.5" /> : <Plus className="w-3.5 h-3.5" />}
+                    </span>
+                  </button>
+                  {isOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: "auto" }}
+                      transition={{ duration: 0.25 }}
+                      className="px-6 pb-5 -mt-1 text-sm text-muted-foreground leading-relaxed"
+                    >
+                      {faq.a}
+                    </motion.div>
+                  )}
                 </div>
-
-                <div className="flex items-baseline gap-1 mt-6">
-                  <span className="text-5xl font-semibold tracking-tight">৳499</span>
-                  <span className="text-white/80 text-sm ml-1">/one-time</span>
-                </div>
-
-                <div className="my-7 h-px bg-white/20" />
-
-                <ul className="space-y-3 mb-8 flex-1">
-                  {[
-                    "Everything in Basic",
-                    "All premium themes unlocked",
-                    "Custom domain support",
-                    "Advanced analytics",
-                    "Priority support",
-                    "Remove Alpha branding",
-                  ].map((f) => (
-                    <li key={f} className="flex items-start gap-2.5 text-sm">
-                      <Check className="w-4 h-4 mt-0.5 shrink-0 text-white" />
-                      <span className="text-white/95">{f}</span>
-                    </li>
-                  ))}
-                </ul>
-
-                <Button size="lg" className="w-full rounded-full bg-white text-primary hover:bg-white/90 font-semibold" onClick={() => navigate("/auth")}>
-                  Upgrade to Pro <ArrowRight className="ml-2 w-4 h-4" />
-                </Button>
-              </div>
-            </div>
-          </div>
-
-          <p className="text-center text-xs text-muted-foreground mt-6">
-            One-time payment via bKash / Nagad / Rocket — no subscriptions.
-          </p>
-        </div>
-      </section>
-
-      {/* TESTIMONIAL */}
-      <section className="py-28 px-6 border-t border-border/60">
-        <div className="container mx-auto max-w-3xl text-center">
-          <div className="text-foreground/30 text-7xl font-serif leading-none mb-4 select-none">"</div>
-          <p className="text-2xl md:text-3xl font-medium leading-snug tracking-tight mb-8">
-            It only took me 2 minutes to set up, and now all my clients know exactly where to find my work. The themes look genuinely professional.
-          </p>
-          <div className="flex items-center justify-center gap-3">
-            <div className="w-10 h-10 rounded-full gradient-primary text-white grid place-items-center font-semibold text-sm shadow-md shadow-primary/30">SC</div>
-            <div className="text-left">
-              <div className="font-medium text-sm">Sarah C.</div>
-              <div className="text-xs text-muted-foreground">Owner · Greek Studio</div>
-            </div>
+              );
+            })}
           </div>
         </div>
       </section>
 
       {/* CTA */}
-      <section className="py-28 px-6 border-t border-border/60">
+      <section className="py-20 px-6 border-t border-border/60">
         <div className="container mx-auto max-w-4xl">
-          <div className="gradient-hero rounded-3xl p-12 md:p-20 text-center text-white relative overflow-hidden shadow-2xl shadow-primary/40">
+          <div className="gradient-hero rounded-3xl p-10 md:p-16 text-center text-white relative overflow-hidden shadow-2xl shadow-primary/40">
             <div
               aria-hidden
               className="absolute inset-0 opacity-[0.1]"
@@ -282,8 +260,8 @@ export default function Index() {
               }}
             />
             <div className="relative z-10">
-              <h2 className="text-4xl md:text-5xl font-semibold mb-4 tracking-[-0.02em]">Ready to claim your space?</h2>
-              <p className="text-base md:text-lg text-white/85 max-w-xl mx-auto mb-8">
+              <h2 className="text-3xl md:text-5xl font-semibold mb-3 tracking-[-0.02em]">Claim your space today.</h2>
+              <p className="text-base md:text-lg text-white/85 max-w-xl mx-auto mb-7">
                 Join thousands of professionals showcasing their work the smart way.
               </p>
               <Button size="lg" className="rounded-full bg-white text-primary hover:bg-white/90 text-sm font-semibold px-7" onClick={() => navigate("/auth")}>
@@ -299,7 +277,24 @@ export default function Index() {
   );
 }
 
-/* ---------------- helpers ---------------- */
+/* ---------------- data & helpers ---------------- */
+
+const FAQS = [
+  { q: "Is Alpha Portfolio really free?", a: "Yes. The Basic plan is free forever with the Simple theme and unlimited sections. Premium themes are an optional one-time purchase." },
+  { q: "Do I need any coding skills?", a: "No code at all. Just sign up, fill a guided form, and your portfolio is live with a public URL." },
+  { q: "Can I use my own domain?", a: "Yes. You get a free /u/username link, and you can connect a custom domain from your dashboard." },
+  { q: "How long does it take to get approved?", a: "New accounts are usually activated within a few hours by our team. You'll get an email when your account is ready." },
+  { q: "How do payments work for premium themes?", a: "One-time payment via bKash, Nagad or Rocket — no subscriptions. Once paid, the theme is yours forever." },
+  { q: "Can I change my theme later?", a: "Absolutely. Switch themes anytime from your dashboard — your content carries over automatically." },
+];
+
+function Eyebrow({ text }: { text: string }) {
+  return (
+    <div className="inline-flex items-center gap-2 text-[11px] font-semibold tracking-[0.2em] uppercase text-primary">
+      <span className="w-6 h-px bg-primary/40" /> {text} <span className="w-6 h-px bg-primary/40" />
+    </div>
+  );
+}
 
 function SectionHeader({ eyebrow, title, subtitle }: { eyebrow: string; title: string; subtitle: string }) {
   return (
@@ -310,32 +305,27 @@ function SectionHeader({ eyebrow, title, subtitle }: { eyebrow: string; title: s
       transition={{ duration: 0.5 }}
       className="text-center max-w-2xl mx-auto"
     >
-      <div className="inline-flex items-center gap-2 text-[11px] font-semibold tracking-[0.2em] uppercase text-primary mb-5">
-        <span className="w-6 h-px bg-primary/40" /> {eyebrow} <span className="w-6 h-px bg-primary/40" />
-      </div>
-      <h2 className="text-3xl md:text-5xl font-semibold tracking-[-0.025em] mb-4">{title}</h2>
-      <p className="text-base md:text-lg text-muted-foreground leading-relaxed">{subtitle}</p>
+      <Eyebrow text={eyebrow} />
+      <h2 className="text-3xl md:text-5xl font-semibold tracking-[-0.025em] mt-4 mb-3">{title}</h2>
+      <p className="text-base text-muted-foreground leading-relaxed">{subtitle}</p>
     </motion.div>
   );
 }
 
-function StepCard({ num, icon, title, desc }: { num: string; icon: React.ReactNode; title: string; desc: string }) {
+function WhyCard({ icon, title, desc }: { icon: React.ReactNode; title: string; desc: string }) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 16 }}
+      initial={{ opacity: 0, y: 14 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-50px" }}
-      transition={{ duration: 0.45 }}
-      className="relative bg-card border border-border rounded-2xl p-7 hover:border-primary/40 hover:shadow-lg hover:shadow-primary/10 hover:-translate-y-1 transition-all"
+      transition={{ duration: 0.4 }}
+      className="bg-card border border-border rounded-2xl p-5 hover:border-primary/40 hover:shadow-lg hover:shadow-primary/10 transition-all"
     >
-      <div className="flex items-center justify-between mb-6">
-        <div className="w-11 h-11 rounded-xl gradient-primary text-white grid place-items-center shadow-md shadow-primary/30">
-          {icon}
-        </div>
-        <span className="text-xs font-mono text-primary/60 tracking-wider">{num}</span>
+      <div className="w-10 h-10 rounded-xl gradient-primary text-white grid place-items-center mb-3 shadow-md shadow-primary/30">
+        {icon}
       </div>
-      <h3 className="text-base font-semibold mb-2 tracking-tight">{title}</h3>
-      <p className="text-sm text-muted-foreground leading-relaxed">{desc}</p>
+      <h3 className="text-sm font-semibold tracking-tight">{title}</h3>
+      <p className="text-xs text-muted-foreground mt-1">{desc}</p>
     </motion.div>
   );
 }

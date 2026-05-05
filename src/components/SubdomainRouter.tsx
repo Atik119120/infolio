@@ -3,15 +3,11 @@ import { supabase } from "@/integrations/supabase/client";
 import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
-  PhotographerTheme,
-  GraphicDesignerTheme,
-  VideoEditorTheme,
-  DigitalMarketerTheme,
-  WebDeveloperTheme,
-  OfficialTheme,
-  PersonalTheme,
-  CosmicTheme,
-  SimpleTheme,
+  FreelancerTheme,
+  SmallBusinessTheme,
+  PRDGraphicDesignerTheme,
+  PRDPhotographerTheme,
+  PRDDigitalMarketerTheme,
   ThemeProfile,
   ThemePortfolio,
   ThemeSkill,
@@ -185,27 +181,19 @@ function SubdomainPortfolio({ username }: { username: string }) {
     socialLinks,
   };
 
-  const selectedTheme = portfolio?.theme || 'simple';
+  const selectedTheme = portfolio?.theme || 'freelancer';
 
   switch (selectedTheme) {
-    case 'simple':
-      return <SimpleTheme {...themeProps} />;
-    case 'photographer':
-      return <PhotographerTheme {...themeProps} />;
-    case 'graphic-designer':
-      return <GraphicDesignerTheme {...themeProps} />;
-    case 'video-editor':
-      return <VideoEditorTheme {...themeProps} />;
-    case 'digital-marketer':
-      return <DigitalMarketerTheme {...themeProps} />;
-    case 'web-developer':
-      return <WebDeveloperTheme {...themeProps} />;
-    case 'official':
-      return <OfficialTheme {...themeProps} />;
-    case 'cosmic':
-      return <CosmicTheme {...themeProps} />;
-    case 'personal':
+    case 'small-business':
+      return <SmallBusinessTheme {...themeProps} />;
+    case 'prd-graphic-designer':
+      return <PRDGraphicDesignerTheme {...themeProps} />;
+    case 'prd-photographer':
+      return <PRDPhotographerTheme {...themeProps} />;
+    case 'prd-digital-marketer':
+      return <PRDDigitalMarketerTheme {...themeProps} />;
+    case 'freelancer':
     default:
-      return <PersonalTheme {...themeProps} />;
+      return <FreelancerTheme {...themeProps} />;
   }
 }

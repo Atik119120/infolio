@@ -73,7 +73,7 @@ export interface ThemeProps {
 }
 
 // Theme categories for grouping
-export type ThemeCategory = 'free' | 'web-developer' | 'graphic-designer' | 'photographer' | 'video-editor' | 'digital-marketer' | 'official' | 'personal' | 'cosmic';
+export type ThemeCategory = 'free';
 
 export interface ThemeOption {
   value: string;

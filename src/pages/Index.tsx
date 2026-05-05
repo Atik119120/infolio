@@ -62,9 +62,48 @@ export default function Index() {
           />
         </div>
 
-        <div className="container mx-auto grid lg:grid-cols-12 gap-12 items-center relative z-10">
-          {/* LEFT */}
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className="lg:col-span-7">
+        {/* Decorative background orbs & rings */}
+        <div aria-hidden className="absolute inset-0 -z-10 pointer-events-none">
+          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] rounded-full border border-primary/10" />
+          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[1000px] h-[1000px] rounded-full border border-primary/5" />
+          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[1300px] h-[1300px] rounded-full border border-primary/5" />
+          <motion.div
+            animate={{ y: [0, -18, 0] }}
+            transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+            className="absolute top-[18%] left-[12%] w-14 h-14 rounded-2xl gradient-primary shadow-xl shadow-primary/40 grid place-items-center rotate-12"
+          >
+            <Sparkles className="w-6 h-6 text-white" />
+          </motion.div>
+          <motion.div
+            animate={{ y: [0, 14, 0] }}
+            transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 0.6 }}
+            className="absolute bottom-[16%] right-[10%] w-16 h-16 rounded-2xl gradient-accent shadow-xl shadow-accent/40 grid place-items-center -rotate-6"
+          >
+            <Star className="w-7 h-7 text-white fill-white" />
+          </motion.div>
+          <motion.div
+            animate={{ y: [0, -12, 0] }}
+            transition={{ duration: 7, repeat: Infinity, ease: "easeInOut", delay: 0.3 }}
+            className="absolute top-[28%] right-[14%] w-12 h-12 rounded-full bg-card border border-primary/30 shadow-xl shadow-primary/20 grid place-items-center"
+          >
+            <BadgeCheck className="w-5 h-5 text-primary" />
+          </motion.div>
+          <motion.div
+            animate={{ y: [0, 10, 0] }}
+            transition={{ duration: 6.5, repeat: Infinity, ease: "easeInOut", delay: 0.9 }}
+            className="absolute bottom-[22%] left-[14%] w-12 h-12 rounded-full bg-card border border-primary/30 shadow-xl shadow-primary/20 grid place-items-center"
+          >
+            <Globe className="w-5 h-5 text-primary" />
+          </motion.div>
+        </div>
+
+        <div className="container mx-auto relative z-10">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="max-w-3xl mx-auto text-center"
+          >
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-primary/30 bg-primary/10 text-primary mb-6">
               <Sparkles className="w-3 h-3" />
               <span className="text-[11px] font-semibold tracking-[0.18em] uppercase">Build in minutes</span>
@@ -75,11 +114,11 @@ export default function Index() {
               <br />done right.
             </h1>
 
-            <p className="text-base md:text-lg text-muted-foreground max-w-xl mb-8 leading-relaxed">
+            <p className="text-base md:text-lg text-muted-foreground max-w-xl mx-auto mb-8 leading-relaxed">
               Pick a theme, fill a form, share your link. Beautiful portfolios for creators, developers and freelancers — without writing a single line of code.
             </p>
 
-            <div className="bg-card border border-primary/20 rounded-full p-1.5 flex items-center gap-2 max-w-lg shadow-lg shadow-primary/10">
+            <div className="bg-card border border-primary/20 rounded-full p-1.5 flex items-center gap-2 max-w-lg mx-auto shadow-lg shadow-primary/10">
               <div className="flex-1 flex items-center pl-4 min-w-0">
                 <span className="text-muted-foreground text-sm font-medium hidden sm:inline">alphazero.online/</span>
                 <input
@@ -95,76 +134,10 @@ export default function Index() {
               </Button>
             </div>
 
-            <div className="mt-5 flex items-center gap-5 text-sm text-muted-foreground flex-wrap">
+            <div className="mt-5 flex items-center justify-center gap-5 text-sm text-muted-foreground flex-wrap">
               <span className="inline-flex items-center gap-1.5"><Check className="w-4 h-4 text-primary" /> Free forever</span>
               <span className="inline-flex items-center gap-1.5"><Check className="w-4 h-4 text-primary" /> No credit card</span>
               <span className="inline-flex items-center gap-1.5"><Check className="w-4 h-4 text-primary" /> Live in 5 min</span>
-            </div>
-          </motion.div>
-
-          {/* RIGHT — Layered preview cards */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.92 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.7, delay: 0.15 }}
-            className="lg:col-span-5 relative h-[420px] hidden lg:block"
-          >
-            {/* Big back card */}
-            <div className="absolute top-0 right-0 w-[300px] rounded-3xl bg-card border border-primary/20 p-5 shadow-2xl shadow-primary/20 rotate-[6deg]">
-              <div className="flex items-center gap-2 mb-4">
-                <div className="w-10 h-10 rounded-full gradient-primary" />
-                <div className="flex-1">
-                  <div className="h-2.5 bg-foreground/80 rounded w-3/4 mb-1.5" />
-                  <div className="h-2 bg-muted-foreground/30 rounded w-1/2" />
-                </div>
-              </div>
-              <div className="space-y-2">
-                <div className="h-2 bg-muted-foreground/20 rounded w-full" />
-                <div className="h-2 bg-muted-foreground/20 rounded w-5/6" />
-                <div className="h-2 bg-muted-foreground/20 rounded w-3/4" />
-              </div>
-              <div className="grid grid-cols-3 gap-2 mt-4">
-                <div className="aspect-square rounded-lg gradient-primary opacity-80" />
-                <div className="aspect-square rounded-lg bg-accent/40" />
-                <div className="aspect-square rounded-lg bg-secondary/40" />
-              </div>
-            </div>
-
-            {/* Front card */}
-            <motion.div
-              animate={{ y: [0, -10, 0] }}
-              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute bottom-0 left-0 w-[280px] rounded-3xl bg-card border border-border p-5 shadow-2xl shadow-primary/30 -rotate-[4deg]"
-            >
-              <div className="flex items-center justify-between mb-3">
-                <div className="text-[11px] font-semibold text-primary tracking-wider uppercase">Live preview</div>
-                <div className="flex gap-1">
-                  <span className="w-1.5 h-1.5 rounded-full bg-destructive/50" />
-                  <span className="w-1.5 h-1.5 rounded-full bg-warning/60" />
-                  <span className="w-1.5 h-1.5 rounded-full bg-success/60" />
-                </div>
-              </div>
-              <div className="text-center py-3">
-                <div className="w-16 h-16 mx-auto rounded-full gradient-primary p-1 mb-3">
-                  <div className="w-full h-full rounded-full bg-card grid place-items-center text-xl font-bold gradient-text">A</div>
-                </div>
-                <div className="font-bold text-sm flex items-center justify-center gap-1">
-                  Alex Rivera <BadgeCheck className="w-3.5 h-3.5 text-primary" />
-                </div>
-                <div className="text-[10px] text-muted-foreground">Designer · Bangladesh</div>
-              </div>
-              <div className="space-y-2 mt-2">
-                {["My Portfolio", "Latest Work", "Contact Me"].map((l, i) => (
-                  <div key={i} className={`text-[11px] font-semibold py-2 rounded-lg text-center ${i === 0 ? "gradient-primary text-white" : "bg-muted text-foreground/70"}`}>
-                    {l}
-                  </div>
-                ))}
-              </div>
-            </motion.div>
-
-            {/* Floating star */}
-            <div className="absolute top-1/2 left-[55%] w-12 h-12 rounded-2xl gradient-accent grid place-items-center shadow-xl shadow-accent/40 rotate-12 animate-float">
-              <Star className="w-6 h-6 text-white fill-white" />
             </div>
           </motion.div>
         </div>

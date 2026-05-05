@@ -207,7 +207,7 @@ export default function BiographyTheme({
         {/* FOOTER */}
         <footer className="mt-14 text-center">
           <p className="text-[11px]" style={{ color: C.muted }}>
-            © {new Date().getFullYear()} {name}
+            {footerText || `© ${new Date().getFullYear()} ${name}`}
           </p>
         </footer>
       </main>

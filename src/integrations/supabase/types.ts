@@ -262,13 +262,22 @@ export type Database = {
       }
       portfolios: {
         Row: {
+          about_image_url: string | null
+          about_text: string | null
           bio: string | null
           brand_name: string | null
+          browser_title: string | null
           created_at: string
           custom_head_html: string | null
           favicon_url: string | null
+          footer_text: string | null
           google_verification: string | null
           headline: string | null
+          hero_cta_link: string | null
+          hero_cta_text: string | null
+          hero_headline: string | null
+          hero_image_url: string | null
+          hero_subheadline: string | null
           id: string
           is_published: boolean | null
           location: string | null
@@ -278,19 +287,29 @@ export type Database = {
           meta_title: string | null
           og_image_url: string | null
           phone: string | null
+          section_visibility: Json | null
           theme: string | null
           updated_at: string
           user_id: string
           website: string | null
         }
         Insert: {
+          about_image_url?: string | null
+          about_text?: string | null
           bio?: string | null
           brand_name?: string | null
+          browser_title?: string | null
           created_at?: string
           custom_head_html?: string | null
           favicon_url?: string | null
+          footer_text?: string | null
           google_verification?: string | null
           headline?: string | null
+          hero_cta_link?: string | null
+          hero_cta_text?: string | null
+          hero_headline?: string | null
+          hero_image_url?: string | null
+          hero_subheadline?: string | null
           id?: string
           is_published?: boolean | null
           location?: string | null
@@ -300,19 +319,29 @@ export type Database = {
           meta_title?: string | null
           og_image_url?: string | null
           phone?: string | null
+          section_visibility?: Json | null
           theme?: string | null
           updated_at?: string
           user_id: string
           website?: string | null
         }
         Update: {
+          about_image_url?: string | null
+          about_text?: string | null
           bio?: string | null
           brand_name?: string | null
+          browser_title?: string | null
           created_at?: string
           custom_head_html?: string | null
           favicon_url?: string | null
+          footer_text?: string | null
           google_verification?: string | null
           headline?: string | null
+          hero_cta_link?: string | null
+          hero_cta_text?: string | null
+          hero_headline?: string | null
+          hero_image_url?: string | null
+          hero_subheadline?: string | null
           id?: string
           is_published?: boolean | null
           location?: string | null
@@ -322,6 +351,7 @@ export type Database = {
           meta_title?: string | null
           og_image_url?: string | null
           phone?: string | null
+          section_visibility?: Json | null
           theme?: string | null
           updated_at?: string
           user_id?: string

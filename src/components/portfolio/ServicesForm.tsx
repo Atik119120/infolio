@@ -86,10 +86,10 @@ export function ServicesForm({ services, userId, onUpdate, onSuccess, onError }:
           <div className="space-y-2">
             <Label>Icon</Label>
             <div className="flex flex-wrap gap-2">
-              {ICON_CHOICES.map((ic) => (
+              {SERVICE_ICON_KEYS.map((ic) => (
                 <button key={ic} type="button" onClick={() => setDraft({ ...draft, icon: ic })}
-                  className={`w-10 h-10 rounded-lg text-xl border-2 transition ${draft.icon === ic ? "border-primary bg-primary/10" : "border-muted hover:border-primary/50"}`}>
-                  {ic}
+                  className={`w-10 h-10 rounded-lg grid place-items-center border-2 transition ${draft.icon === ic ? "border-primary bg-primary/10 text-primary" : "border-muted hover:border-primary/50 text-foreground"}`}>
+                  <ServiceIcon icon={ic} className="w-5 h-5" />
                 </button>
               ))}
             </div>

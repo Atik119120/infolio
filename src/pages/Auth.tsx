@@ -202,7 +202,14 @@ export default function Auth() {
   };
 
   return (
-    <div className="min-h-screen flex">
+    <div className="min-h-screen flex relative">
+      {/* Back to home */}
+      <button
+        onClick={() => navigate("/")}
+        className="absolute top-4 left-4 z-20 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-background/80 backdrop-blur border border-border/60 text-sm text-foreground hover:bg-muted transition-colors shadow-sm"
+      >
+        <ArrowLeft className="w-4 h-4" /> Home
+      </button>
       {/* Left Side - Branding */}
       <div className="hidden lg:flex lg:w-1/2 gradient-hero relative overflow-hidden">
         <div className="absolute inset-0 bg-black/20" />

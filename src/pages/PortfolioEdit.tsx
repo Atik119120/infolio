@@ -205,7 +205,7 @@ export default function PortfolioEdit() {
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
         <TabsList
           className="grid h-auto gap-1.5 bg-transparent p-0"
-          style={{ gridTemplateColumns: `repeat(${Math.min(tabs.length, 10)}, minmax(0, 1fr))` }}
+          style={{ gridTemplateColumns: `repeat(${Math.min(tabs.length, 11)}, minmax(0, 1fr))` }}
         >
           {tabs.map((tab) => (
             <TabsTrigger

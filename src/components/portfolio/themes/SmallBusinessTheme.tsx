@@ -140,8 +140,8 @@ export default function SmallBusinessTheme({
                 {headline}
               </p>
               <div className="flex flex-wrap gap-3 mb-12">
-                <a href="#ventures" className="e-btn-primary px-7 py-3.5 text-sm font-semibold rounded-full inline-flex items-center gap-2">
-                  See My Ventures <ArrowRight className="w-4 h-4" />
+                <a href={heroCtaLink || "#ventures"} className="e-btn-primary px-7 py-3.5 text-sm font-semibold rounded-full inline-flex items-center gap-2">
+                  {heroCtaText || "See My Ventures"} <ArrowRight className="w-4 h-4" />
                 </a>
                 <a href="#contact" className="e-btn-outline px-7 py-3.5 text-sm font-semibold rounded-full">
                   Get in Touch

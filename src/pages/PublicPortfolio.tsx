@@ -10,6 +10,7 @@ import {
   PRDGraphicDesignerTheme,
   PRDPhotographerTheme,
   PRDDigitalMarketerTheme,
+  BiographyTheme,
   ThemeProfile,
   ThemePortfolio,
   ThemeSkill,
@@ -153,6 +154,8 @@ export default function PublicPortfolio() {
       return <PRDPhotographerTheme {...themeProps} />;
     case 'prd-digital-marketer':
       return <PRDDigitalMarketerTheme {...themeProps} />;
+    case 'biography':
+      return <BiographyTheme {...themeProps} />;
     case 'freelancer':
     default:
       return <FreelancerTheme {...themeProps} />;

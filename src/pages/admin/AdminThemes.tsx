@@ -7,18 +7,15 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   Palette, 
   Eye, 
-  Code, 
   Camera, 
-  Video, 
   TrendingUp, 
   Briefcase, 
-  Heart,
-  Sparkles,
+  Store,
+  BookOpen,
   ExternalLink,
   Clock,
   CheckCircle2,
   XCircle,
-  Star,
   CreditCard,
   Loader2
 } from "lucide-react";

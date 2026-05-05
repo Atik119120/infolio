@@ -86,7 +86,7 @@ export function CustomizationForm({ portfolio, userId, onUpdate, onSuccess, onEr
       const { data: u } = supabase.storage.from("avatars").getPublicUrl(fileName);
       const url = u.publicUrl + "?t=" + Date.now();
       setData((d) => ({ ...d, [key]: url }));
-      const { error: updErr } = await supabase.from("portfolios").update({ [key]: url }).eq("user_id", userId);
+      const { error: updErr } = await supabase.from("portfolios").update({ [key]: url } as any).eq("user_id", userId);
       if (updErr) throw updErr;
       onSuccess("Image uploaded");
       onUpdate();

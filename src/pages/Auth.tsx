@@ -479,6 +479,7 @@ export default function Auth() {
               </Tabs>
             </CardContent>
           </Card>
+          )}
 
           <p className="text-center text-sm text-muted-foreground mt-6">
             By continuing, you agree to our Terms of Service and Privacy Policy.

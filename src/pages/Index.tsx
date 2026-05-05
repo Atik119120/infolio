@@ -28,7 +28,6 @@ export default function Index() {
         <div className="px-5 py-2.5 flex items-center justify-between">
           <button onClick={() => navigate("/")} className="flex items-center gap-2.5">
             <img src={alphaLogo} alt="Alokchitra" className="h-8 w-auto object-contain invert" />
-            <span className="text-[15px] font-semibold tracking-tight">Alokchitra</span>
           </button>
           <div className="hidden md:flex items-center gap-8">
             <a href="#features" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Features</a>

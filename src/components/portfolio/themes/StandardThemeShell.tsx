@@ -65,8 +65,15 @@ export function StandardThemeShell({
   useEffect(() => { window.scrollTo(0, 0); }, []);
 
   const name = portfolio?.brand_name || profile?.display_name || "Your Name";
-  const headline = portfolio?.headline || "Creative Professional";
-  const bio = portfolio?.bio || "Tell your story here.";
+  const headline = portfolio?.hero_headline || portfolio?.headline || "Creative Professional";
+  const subheadline = portfolio?.hero_subheadline || s.heroBadge;
+  const heroCtaText = portfolio?.hero_cta_text || s.heroCta;
+  const heroCtaLink = portfolio?.hero_cta_link || "#works";
+  const heroImage = portfolio?.hero_image_url || profile?.avatar_url;
+  const aboutImage = portfolio?.about_image_url || profile?.avatar_url;
+  const aboutText = portfolio?.about_text || portfolio?.bio || "Tell your story here.";
+  const bio = portfolio?.bio || aboutText;
+  const footerText = portfolio?.footer_text;
   const email = profile?.email;
   const phone = portfolio?.phone;
   const location = portfolio?.location;

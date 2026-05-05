@@ -134,7 +134,30 @@ export default function Auth() {
     }
 
     setIsLoading(true);
-    
+    // Send OTP code instead of creating account immediately
+    const { data, error } = await supabase.functions.invoke("otp-verification", {
+      body: { action: "send", email, userName: username },
+    });
+    setIsLoading(false);
+
+    if (error || (data && data.error)) {
+      toast({
+        variant: "destructive",
+        title: "Failed to send code",
+        description: (data && data.error) || error?.message || "Try again later.",
+      });
+      return;
+    }
+
+    toast({
+      title: "Code sent! 📧",
+      description: "Check your Gmail inbox for a 6-digit verification code.",
+    });
+    setShowOTP(true);
+  };
+
+  const handleOTPVerified = async () => {
+    setIsLoading(true);
     const { error } = await signUp(email, password, username, phone);
     setIsLoading(false);
 
@@ -146,6 +169,7 @@ export default function Auth() {
           title: "Account exists",
           description: "This email is already registered. Please login instead.",
         });
+        setShowOTP(false);
         setActiveTab("login");
       } else if (errorMsg.includes("username") || errorMsg.includes("duplicate key") || errorMsg.includes("profiles_username_key")) {
         toast({
@@ -154,20 +178,22 @@ export default function Auth() {
           description: "This username is already in use. Please choose a different one.",
         });
         setErrors({ username: "This username is already taken" });
+        setShowOTP(false);
       } else {
         toast({
           variant: "destructive",
           title: "Signup failed",
           description: error.message,
         });
+        setShowOTP(false);
       }
     } else {
       toast({
         title: "Account Created! 🎉",
-        description: "Your account is pending admin approval. You can login and start building your portfolio.",
+        description: "Your account is pending admin approval. You can login once approved.",
       });
+      setShowOTP(false);
       setActiveTab("login");
-      // Clear form
       setUsername("");
       setEmail("");
       setPassword("");

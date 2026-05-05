@@ -140,9 +140,10 @@ export function ThemeSelector({ currentTheme, userId, onUpdate }: ThemeSelectorP
   }, [userId]);
 
   const isThemeUnlocked = (themeValue: string) => {
-    // Simple theme is always free
-    if (themeValue === 'simple') return true;
-    
+    // Free tier themes are always unlocked
+    const themeOption = THEME_OPTIONS.find(t => t.value === themeValue);
+    if (themeOption?.tier === 'free') return true;
+
     // Check if user has approved purchase
     return purchasedThemes.some(
       p => p.theme_id === themeValue && p.status === 'approved'

@@ -189,6 +189,30 @@ export function LogoUploadForm({ logoUrl, brandName, userId, onUpdate, onSuccess
             </div>
           </div>
         </div>
+
+        {/* Brand name fallback */}
+        <div className="border-t pt-4 space-y-2">
+          <Label htmlFor="brand_name" className="flex items-center gap-2">
+            <Type className="w-4 h-4 text-muted-foreground" />
+            Brand Name (text fallback)
+          </Label>
+          <p className="text-xs text-muted-foreground">
+            Shown in your portfolio header & footer when no logo image is uploaded.
+            Leave empty to use your display name.
+          </p>
+          <div className="flex gap-2">
+            <Input
+              id="brand_name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              maxLength={40}
+              placeholder="e.g., John Doe Studio"
+            />
+            <Button onClick={handleSaveName} disabled={savingName} variant="secondary">
+              {savingName ? <Loader2 className="w-4 h-4 animate-spin" /> : "Save"}
+            </Button>
+          </div>
+        </div>
       </CardContent>
     </Card>
   );

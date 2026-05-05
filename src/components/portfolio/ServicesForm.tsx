@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Plus, X, Loader2, Briefcase } from "lucide-react";
+import { ServiceIcon, SERVICE_ICON_KEYS } from "@/lib/serviceIcons";
 
 export interface Service {
   id: string;
@@ -24,10 +25,8 @@ interface ServicesFormProps {
   onError: (message: string) => void;
 }
 
-const ICON_CHOICES = ["✨","🎨","💼","📈","📷","🎬","💻","🚀","🎯","💡","📱","🛠️"];
-
 export function ServicesForm({ services, userId, onUpdate, onSuccess, onError }: ServicesFormProps) {
-  const [draft, setDraft] = useState({ title: "", description: "", icon: "✨", price: "" });
+  const [draft, setDraft] = useState({ title: "", description: "", icon: "sparkles", price: "" });
   const [adding, setAdding] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
@@ -49,7 +48,7 @@ export function ServicesForm({ services, userId, onUpdate, onSuccess, onError }:
     if (error) onError("Failed to add service");
     else {
       onSuccess("Service added");
-      setDraft({ title: "", description: "", icon: "✨", price: "" });
+      setDraft({ title: "", description: "", icon: "sparkles", price: "" });
       onUpdate();
     }
   };
@@ -87,10 +86,10 @@ export function ServicesForm({ services, userId, onUpdate, onSuccess, onError }:
           <div className="space-y-2">
             <Label>Icon</Label>
             <div className="flex flex-wrap gap-2">
-              {ICON_CHOICES.map((ic) => (
+              {SERVICE_ICON_KEYS.map((ic) => (
                 <button key={ic} type="button" onClick={() => setDraft({ ...draft, icon: ic })}
-                  className={`w-10 h-10 rounded-lg text-xl border-2 transition ${draft.icon === ic ? "border-primary bg-primary/10" : "border-muted hover:border-primary/50"}`}>
-                  {ic}
+                  className={`w-10 h-10 rounded-lg grid place-items-center border-2 transition ${draft.icon === ic ? "border-primary bg-primary/10 text-primary" : "border-muted hover:border-primary/50 text-foreground"}`}>
+                  <ServiceIcon icon={ic} className="w-5 h-5" />
                 </button>
               ))}
             </div>
@@ -117,7 +116,7 @@ export function ServicesForm({ services, userId, onUpdate, onSuccess, onError }:
           {services.map((s) => (
             <Card key={s.id}>
               <CardContent className="p-4 flex items-start gap-3">
-                <div className="text-2xl">{s.icon || "✨"}</div>
+                <div className="w-10 h-10 rounded-lg grid place-items-center bg-primary/10 text-primary shrink-0"><ServiceIcon icon={s.icon} className="w-5 h-5" /></div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between gap-2">
                     <h4 className="font-semibold truncate">{s.title}</h4>

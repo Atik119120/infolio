@@ -1,6 +1,7 @@
 import { useEffect, useState, useMemo } from "react";
 import { motion } from "framer-motion";
 import { Menu, X, ArrowRight, ArrowUpRight, Mail, Phone, MapPin, Globe, TrendingUp, BarChart3, Search, Target, Zap, LineChart, Users } from "lucide-react";
+import { ServiceIcon } from "@/lib/serviceIcons";
 import { ThemeProps } from "./types";
 import { ContactForm } from "@/components/portfolio/ContactForm";
 import { getSocialIcon } from "./utils";
@@ -341,9 +342,9 @@ export default function PRDDigitalMarketerTheme({
                   <div aria-hidden className="absolute -top-12 -right-12 w-40 h-40 rounded-full opacity-0 group-hover:opacity-30 transition-opacity"
                     style={{ background: `radial-gradient(circle, ${C.primary}, transparent 70%)` }} />
                   <div className="relative">
-                    <div className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl mb-5"
+                    <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-5"
                       style={{ background: `linear-gradient(135deg, ${C.primary}33, ${C.accent}33)`, color: C.primary, border: `1px solid ${C.primary}44` }}>
-                      {sv.icon || "✦"}
+                      <ServiceIcon icon={sv.icon} className="w-6 h-6" />
                     </div>
                     <h3 className="gl-display text-xl font-bold mb-3">{sv.title}</h3>
                     {sv.description && (

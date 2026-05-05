@@ -1,6 +1,7 @@
 import { useEffect, useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, ArrowRight, Mail, Phone, MapPin, Globe, ExternalLink, Github, Sparkles, Palette } from "lucide-react";
+import { ServiceIcon } from "@/lib/serviceIcons";
 import { ThemeProps } from "./types";
 import { ContactForm } from "@/components/portfolio/ContactForm";
 import { getSocialIcon } from "./utils";
@@ -321,9 +322,9 @@ export default function PRDGraphicDesignerTheme({
                 {services.map((sv) => (
                   <div key={sv.id} className="p-7 group transition-all hover:-translate-y-1"
                     style={{ background: C.surface, border: `1px solid ${C.border}` }}>
-                    <div className="w-12 h-12 flex items-center justify-center text-2xl mb-4"
+                    <div className="w-12 h-12 flex items-center justify-center mb-4"
                       style={{ background: C.cream, color: C.primary }}>
-                      {sv.icon || "✦"}
+                      <ServiceIcon icon={sv.icon} className="w-6 h-6" />
                     </div>
                     <h4 className="gd-display text-xl font-bold mb-2">{sv.title}</h4>
                     {sv.description && <p className="text-sm leading-relaxed mb-4" style={{ color: C.muted }}>{sv.description}</p>}
@@ -353,7 +354,7 @@ export default function PRDGraphicDesignerTheme({
               {softwares.map((sw) => (
                 <div key={sw.name} className="aspect-square flex flex-col items-center justify-center gap-3 p-4 transition-all hover:-translate-y-1"
                   style={{ background: C.surface, border: `1px solid ${C.border}` }}>
-                  <span className="text-4xl">{sw.icon}</span>
+                  <div style={{ color: C.primary }}><ServiceIcon icon={sw.icon} className="w-8 h-8" /></div>
                   <span className="gd-display text-sm font-bold text-center">{sw.name}</span>
                 </div>
               ))}

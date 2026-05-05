@@ -1,6 +1,7 @@
 import { useEffect, useState, useMemo } from "react";
 import { motion } from "framer-motion";
 import { Menu, X, ArrowRight, Mail, Phone, MapPin, Globe } from "lucide-react";
+import { ServiceIcon } from "@/lib/serviceIcons";
 import { ThemeProps, ThemeService } from "./types";
 import { ContactForm } from "@/components/portfolio/ContactForm";
 import { getSocialIcon } from "./utils";
@@ -402,10 +403,10 @@ export function StandardThemeShell({
                   }}
                 >
                   <div
-                    className="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl mb-5 transition-transform group-hover:scale-110"
+                    className="w-14 h-14 rounded-2xl flex items-center justify-center mb-5 transition-transform group-hover:scale-110"
                     style={{ background: `${s.primary}15`, color: s.primary }}
                   >
-                    {sv.icon || "✦"}
+                    <ServiceIcon icon={sv.icon} className="w-6 h-6" />
                   </div>
                   <h3 className="t-display text-xl font-bold mb-3" style={{ color: s.text }}>{sv.title}</h3>
                   {sv.description && (

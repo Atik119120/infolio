@@ -36,14 +36,9 @@ export default function SubdomainRouter({ children, mainDomain }: SubdomainRoute
   const [isChecking, setIsChecking] = useState(true);
 
   useEffect(() => {
-    // SUBDOMAIN ROUTING DISABLED FOR NOW
-    // Users access portfolios via /u/username instead
-    // To re-enable subdomain routing in the future, uncomment the code below
-    
-    /*
     const hostname = window.location.hostname;
-    
-    // Skip subdomain detection for localhost and preview URLs
+
+    // Skip detection for localhost and Lovable preview/staging URLs
     if (
       hostname === "localhost" ||
       hostname === "127.0.0.1" ||
@@ -54,22 +49,44 @@ export default function SubdomainRouter({ children, mainDomain }: SubdomainRoute
       return;
     }
 
-    // Check if hostname matches pattern: subdomain.maindomain.tld
     const mainDomainLower = mainDomain.toLowerCase();
     const hostnameLower = hostname.toLowerCase();
 
-    // If hostname ends with main domain and has something before it
-    if (hostnameLower.endsWith(mainDomainLower)) {
-      const prefix = hostnameLower.replace(mainDomainLower, "").replace(/\.$/, "");
-      
-      // If there's a prefix and it's not "www"
-      if (prefix && prefix !== "www" && prefix !== "") {
+    // 1) Subdomain match: <prefix>.maindomain.tld
+    if (hostnameLower.endsWith("." + mainDomainLower)) {
+      const prefix = hostnameLower.slice(0, hostnameLower.length - mainDomainLower.length - 1);
+      if (prefix && prefix !== "www" && !prefix.includes(".") && /^[a-z0-9-]+$/.test(prefix)) {
         setSubdomain(prefix);
+        setIsChecking(false);
+        return;
       }
+      // Root domain (or www) — show normal app
+      setIsChecking(false);
+      return;
     }
-    */
-    
-    setIsChecking(false);
+
+    // 2) Custom domain: lookup verified domain → username
+    (async () => {
+      const candidates = [hostnameLower, hostnameLower.replace(/^www\./, "")];
+      const { data: domainRow } = await supabase
+        .from("domains")
+        .select("user_id")
+        .in("domain", candidates)
+        .eq("is_verified", true)
+        .maybeSingle();
+
+      if (domainRow?.user_id) {
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("username")
+          .eq("user_id", domainRow.user_id)
+          .maybeSingle();
+        if (profile?.username) {
+          setSubdomain(profile.username);
+        }
+      }
+      setIsChecking(false);
+    })();
   }, [mainDomain]);
 
   // While checking, show nothing (prevents flash)

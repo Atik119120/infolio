@@ -48,8 +48,14 @@ export default function PRDGraphicDesignerTheme({
   }, [activeProject]);
 
   const name = portfolio?.brand_name || profile?.display_name || "Your Name";
-  const headline = portfolio?.headline || "Graphic Designer";
+  const headline = portfolio?.hero_headline || portfolio?.headline || "Graphic Designer";
   const bio = portfolio?.bio || "Crafting visual stories that move people.";
+  const aboutText = portfolio?.about_text || bio;
+  const heroImage = portfolio?.hero_image_url || profile?.avatar_url;
+  const aboutImage = portfolio?.about_image_url || profile?.avatar_url;
+  const heroCtaText = portfolio?.hero_cta_text;
+  const heroCtaLink = portfolio?.hero_cta_link;
+  const footerText = portfolio?.footer_text;
   const email = profile?.email;
   const phone = portfolio?.phone;
   const location = portfolio?.location;
@@ -169,8 +175,8 @@ export default function PRDGraphicDesignerTheme({
                 Hi, I'm <strong style={{ color: C.ink }}>{name}</strong> — {headline.toLowerCase()}.
               </p>
               <div className="flex flex-wrap gap-3">
-                <a href="#projects" className="gd-btn-primary px-7 py-3.5 text-xs font-bold uppercase tracking-wider inline-flex items-center gap-2 rounded-full">
-                  See Portfolio <ArrowRight className="w-4 h-4" />
+                <a href={heroCtaLink || "#projects"} className="gd-btn-primary px-7 py-3.5 text-xs font-bold uppercase tracking-wider inline-flex items-center gap-2 rounded-full">
+                  {heroCtaText || "See Portfolio"} <ArrowRight className="w-4 h-4" />
                 </a>
                 <a href="#contact" className="gd-btn-glass gx-glass px-7 py-3.5 text-xs font-bold uppercase tracking-wider rounded-full" style={{ color: C.ink }}>
                   Start a Project
@@ -183,8 +189,8 @@ export default function PRDGraphicDesignerTheme({
                 <div aria-hidden className="absolute -inset-6 rounded-[2rem] opacity-60"
                   style={{ background: `linear-gradient(135deg, ${C.primary}, ${C.primary2}, ${C.accent})`, filter: "blur(60px)" }} />
                 <div className="relative rounded-3xl overflow-hidden gx-glass gx-glow-ring p-2">
-                  {profile?.avatar_url ? (
-                    <img src={profile.avatar_url} alt={name} className="w-full aspect-[4/5] object-cover rounded-[1.25rem]" />
+                  {heroImage ? (
+                    <img src={heroImage} alt={name} className="w-full aspect-[4/5] object-cover rounded-[1.25rem]" />
                   ) : (
                     <div className="w-full aspect-[4/5] flex items-center justify-center gd-display text-9xl font-extrabold rounded-[1.25rem]"
                       style={{ background: `linear-gradient(135deg, ${C.primary}, ${C.primary2})`, color: "#fff" }}>
@@ -219,8 +225,8 @@ export default function PRDGraphicDesignerTheme({
           <div className="grid md:grid-cols-12 gap-12 items-center">
             <motion.div {...fadeUp} className="md:col-span-5">
               <div className="relative rounded-3xl overflow-hidden gx-glass gx-glow-ring p-2">
-                {profile?.avatar_url ? (
-                  <img src={profile.avatar_url} alt={name} className="w-full aspect-square object-cover rounded-[1.25rem]" />
+                {aboutImage ? (
+                  <img src={aboutImage} alt={name} className="w-full aspect-square object-cover rounded-[1.25rem]" />
                 ) : (
                   <div className="w-full aspect-square flex items-center justify-center gd-display text-9xl font-extrabold rounded-[1.25rem]"
                     style={{ background: `linear-gradient(135deg, ${C.primary}, ${C.primary2})`, color: "#fff" }}>
@@ -242,7 +248,7 @@ export default function PRDGraphicDesignerTheme({
                 identities since day one.
               </h2>
               <p className="text-base md:text-lg leading-[1.85] mb-8" style={{ color: C.muted }}>
-                {bio}
+                {aboutText}
               </p>
               <div className="grid sm:grid-cols-2 gap-3 mb-8 text-sm">
                 {phone && <FactPill label="Phone" value={phone} />}
@@ -501,7 +507,7 @@ export default function PRDGraphicDesignerTheme({
             </div>
           </div>
           <div className="border-t pt-6 flex flex-col md:flex-row justify-between items-center gap-3 text-xs" style={{ borderColor: C.border, color: C.muted }}>
-            <div>© {new Date().getFullYear()} {name}. All rights reserved.</div>
+            <div>{footerText || `© ${new Date().getFullYear()} ${name}. All rights reserved.`}</div>
             <div>Built with Alokchitra</div>
           </div>
         </div>

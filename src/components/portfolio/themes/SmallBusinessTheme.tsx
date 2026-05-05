@@ -38,8 +38,14 @@ export default function SmallBusinessTheme({
   }, []);
 
   const name = portfolio?.brand_name || profile?.display_name || "Your Name";
-  const headline = portfolio?.headline || "Founder & Entrepreneur";
+  const headline = portfolio?.hero_headline || portfolio?.headline || "Founder & Entrepreneur";
   const bio = portfolio?.bio || "Building businesses that solve real problems.";
+  const aboutText = portfolio?.about_text || bio;
+  const heroImage = portfolio?.hero_image_url || profile?.avatar_url;
+  const aboutImage = portfolio?.about_image_url || profile?.avatar_url;
+  const heroCtaText = portfolio?.hero_cta_text;
+  const heroCtaLink = portfolio?.hero_cta_link;
+  const footerText = portfolio?.footer_text;
   const email = profile?.email;
   const phone = portfolio?.phone;
   const location = portfolio?.location;
@@ -134,8 +140,8 @@ export default function SmallBusinessTheme({
                 {headline}
               </p>
               <div className="flex flex-wrap gap-3 mb-12">
-                <a href="#ventures" className="e-btn-primary px-7 py-3.5 text-sm font-semibold rounded-full inline-flex items-center gap-2">
-                  See My Ventures <ArrowRight className="w-4 h-4" />
+                <a href={heroCtaLink || "#ventures"} className="e-btn-primary px-7 py-3.5 text-sm font-semibold rounded-full inline-flex items-center gap-2">
+                  {heroCtaText || "See My Ventures"} <ArrowRight className="w-4 h-4" />
                 </a>
                 <a href="#contact" className="e-btn-outline px-7 py-3.5 text-sm font-semibold rounded-full">
                   Get in Touch
@@ -165,8 +171,8 @@ export default function SmallBusinessTheme({
                   style={{ background: C.accent, opacity: 0.2 }} />
                 <div aria-hidden className="absolute -bottom-6 -right-6 w-40 h-40 rounded-3xl"
                   style={{ background: C.primary, opacity: 0.15 }} />
-                {profile?.avatar_url ? (
-                  <img src={profile.avatar_url} alt={name}
+                {heroImage ? (
+                  <img src={heroImage} alt={name}
                     className="relative w-full max-w-sm mx-auto aspect-[4/5] object-cover rounded-3xl"
                     style={{ boxShadow: `0 30px 60px -20px ${C.ink}33` }} />
                 ) : (
@@ -196,8 +202,8 @@ export default function SmallBusinessTheme({
           <div className="grid md:grid-cols-12 gap-12 items-center">
             <motion.div {...fadeUp} className="md:col-span-5">
               <div className="relative">
-                {profile?.avatar_url ? (
-                  <img src={profile.avatar_url} alt={name}
+                {aboutImage ? (
+                  <img src={aboutImage} alt={name}
                     className="w-full aspect-square object-cover rounded-3xl"
                     style={{ boxShadow: `0 20px 60px -20px ${C.ink}22` }} />
                 ) : (
@@ -222,7 +228,7 @@ export default function SmallBusinessTheme({
                 Building <span style={{ color: C.primary, fontStyle: "italic" }}>businesses</span> that matter.
               </h2>
               <p className="text-base md:text-lg leading-[1.85] mb-8" style={{ color: C.muted }}>
-                {bio}
+                {aboutText}
               </p>
 
               <div className="grid sm:grid-cols-2 gap-4 mb-8">
@@ -488,7 +494,7 @@ export default function SmallBusinessTheme({
             </div>
           </div>
           <div className="border-t pt-6 flex flex-col md:flex-row justify-between items-center gap-3 text-xs opacity-60" style={{ borderColor: "#ffffff22" }}>
-            <div>© {new Date().getFullYear()} {name}. All rights reserved.</div>
+            <div>{footerText || `© ${new Date().getFullYear()} ${name}. All rights reserved.`}</div>
             <div>Built with Alokchitra</div>
           </div>
         </div>

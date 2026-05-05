@@ -42,8 +42,14 @@ export default function PRDPhotographerTheme({
   }, [activePhoto]);
 
   const name = portfolio?.brand_name || profile?.display_name || "Your Name";
-  const headline = portfolio?.headline || "Visual Storyteller";
+  const headline = portfolio?.hero_headline || portfolio?.headline || "Visual Storyteller";
   const bio = portfolio?.bio || "I capture moments that words can't tell.";
+  const aboutText = portfolio?.about_text || bio;
+  const heroImage = portfolio?.hero_image_url || profile?.avatar_url;
+  const aboutImage = portfolio?.about_image_url || profile?.avatar_url;
+  const heroCtaText = portfolio?.hero_cta_text;
+  const heroCtaLink = portfolio?.hero_cta_link;
+  const footerText = portfolio?.footer_text;
   const email = profile?.email;
   const phone = portfolio?.phone;
   const location = portfolio?.location;
@@ -64,12 +70,16 @@ export default function PRDPhotographerTheme({
     { id: "contact", label: "Contact" },
   ];
 
-  // Hero banner: featured (or all) projects with images — landscape auto-slideshow
+  // Hero banner: custom hero image first, then featured (or all) projects
   const heroPhotos = useMemo(() => {
     const withImg = projects.filter((p) => p.image_url);
     const featured = withImg.filter((p) => p.featured);
-    return featured.length > 0 ? featured : withImg;
-  }, [projects]);
+    const list = featured.length > 0 ? featured : withImg;
+    if (portfolio?.hero_image_url) {
+      return [{ id: "_hero", title: "", image_url: portfolio.hero_image_url } as any, ...list];
+    }
+    return list;
+  }, [projects, portfolio?.hero_image_url]);
 
   // Auto-advance banner
   useEffect(() => {
@@ -164,8 +174,8 @@ export default function PRDPhotographerTheme({
               {headline}
             </p>
             <div className="flex flex-wrap gap-3 justify-center">
-              <a href="#gallery" className="sl-btn-primary px-7 py-3.5 text-xs font-bold uppercase tracking-[0.2em] inline-flex items-center gap-2 rounded-full">
-                View Portfolio
+              <a href={heroCtaLink || "#gallery"} className="sl-btn-primary px-7 py-3.5 text-xs font-bold uppercase tracking-[0.2em] inline-flex items-center gap-2 rounded-full">
+                {heroCtaText || "View Portfolio"}
               </a>
               <a href="#contact" className="gx-glass px-7 py-3.5 text-xs font-bold uppercase tracking-[0.2em] rounded-full hover:bg-white/10 transition" style={{ color: C.ink }}>
                 Book Session
@@ -272,8 +282,8 @@ export default function PRDPhotographerTheme({
           <div className="grid md:grid-cols-12 gap-12 items-start">
             <motion.div {...fadeUp} className="md:col-span-5">
               <div className="relative">
-                {profile?.avatar_url ? (
-                  <img src={profile.avatar_url} alt={name} className="w-full aspect-[4/5] object-cover" />
+                {aboutImage ? (
+                  <img src={aboutImage} alt={name} className="w-full aspect-[4/5] object-cover" />
                 ) : (
                   <div className="w-full aspect-[4/5] flex items-center justify-center sl-display text-9xl font-bold"
                     style={{ background: C.surface2, color: C.primary }}>
@@ -297,7 +307,7 @@ export default function PRDPhotographerTheme({
                 <span className="italic" style={{ color: C.primary }}>through light.</span>
               </h2>
               <p className="text-base md:text-lg leading-[1.85] mb-8" style={{ color: C.muted }}>
-                {bio}
+                {aboutText}
               </p>
 
               <div className="grid sm:grid-cols-2 gap-x-8 gap-y-3 text-sm mb-10">
@@ -499,7 +509,7 @@ export default function PRDPhotographerTheme({
             </div>
           </div>
           <div className="border-t pt-6 flex flex-col md:flex-row justify-between items-center gap-3 text-xs opacity-60" style={{ borderColor: C.border }}>
-            <div>© {new Date().getFullYear()} {name}. All rights reserved.</div>
+            <div>{footerText || `© ${new Date().getFullYear()} ${name}. All rights reserved.`}</div>
             <div>Built with Alokchitra</div>
           </div>
         </div>

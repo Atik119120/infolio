@@ -31,7 +31,7 @@ export default function Index() {
           </button>
           <div className="hidden md:flex items-center gap-8">
             <a href="#features" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Features</a>
-            <a href="#themes" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Themes</a>
+            
             <a href="#pricing" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Pricing</a>
             <a href="#faq" className="text-sm text-muted-foreground hover:text-foreground transition-colors">FAQ</a>
           </div>
@@ -178,11 +178,6 @@ export default function Index() {
             <FeatureCard icon={<Sparkles className="w-5 h-5" />} title="SEO Optimized" description="Built-in metadata so clients find you on Google." />
           </div>
         </div>
-      </section>
-
-      {/* THEMES */}
-      <section id="themes" className="border-t border-border/60">
-        <ThemeDemoSection />
       </section>
 
       {/* PRICING */}

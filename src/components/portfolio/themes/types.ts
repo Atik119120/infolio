@@ -77,6 +77,7 @@ export interface ThemeProps {
   experiences: ThemeExperience[];
   education: ThemeEducation[];
   socialLinks: ThemeSocialLink[];
+  services?: ThemeService[];
   userId?: string;
 }
 

@@ -228,7 +228,7 @@ export default function SmallBusinessTheme({
                 Building <span style={{ color: C.primary, fontStyle: "italic" }}>businesses</span> that matter.
               </h2>
               <p className="text-base md:text-lg leading-[1.85] mb-8" style={{ color: C.muted }}>
-                {bio}
+                {aboutText}
               </p>
 
               <div className="grid sm:grid-cols-2 gap-4 mb-8">

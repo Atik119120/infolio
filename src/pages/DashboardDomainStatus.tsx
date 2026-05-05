@@ -33,13 +33,15 @@ interface DnsCheck {
   a: "pending" | "ok" | "fail";
   txtValue?: string[];
   aValue?: string[];
+  cnameValue?: string[];
   checkedAt?: Date;
 }
 
 const ACCEPTED_IPS = ["76.76.21.21", "76.76.21.61", "76.76.21.93"];
+const ACCEPTED_CNAME_TARGETS = ["cname.vercel-dns.com", "cname.vercel-dns.com."];
 const MAIN_DOMAIN = "alokchitra.site";
 
-async function dohQuery(name: string, type: "A" | "TXT"): Promise<string[]> {
+async function dohQuery(name: string, type: "A" | "CNAME" | "TXT"): Promise<string[]> {
   try {
     const res = await fetch(
       `https://cloudflare-dns.com/dns-query?name=${name}&type=${type}`,
@@ -48,8 +50,9 @@ async function dohQuery(name: string, type: "A" | "TXT"): Promise<string[]> {
     if (!res.ok) return [];
     const data = await res.json();
     if (!data.Answer) return [];
+    const recordType = type === "A" ? 1 : type === "CNAME" ? 5 : 16;
     return data.Answer
-      .filter((r: any) => (type === "A" ? r.type === 1 : r.type === 16))
+      .filter((r: any) => r.type === recordType)
       .map((r: any) => String(r.data).replace(/"/g, ""));
   } catch {
     return [];

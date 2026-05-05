@@ -138,13 +138,32 @@ export default function Index() {
         <div className="container mx-auto max-w-5xl">
           <SectionHeader eyebrow="Pricing" title="Simple, honest pricing" subtitle="Start free. Upgrade when you need more power." />
 
-          <div className="grid md:grid-cols-2 gap-6 mt-12">
-            {/* FREE */}
+          {/* Plan toggle */}
+          <div className="mt-8 flex justify-center">
+            <div className="inline-flex p-1 rounded-full border border-border bg-card">
+              <button
+                onClick={() => setPricingPlan("free")}
+                className={`px-5 py-1.5 rounded-full text-sm font-medium transition-all ${pricingPlan === "free" ? "gradient-primary text-white shadow-md shadow-primary/30" : "text-muted-foreground hover:text-foreground"}`}
+              >
+                Free
+              </button>
+              <button
+                onClick={() => setPricingPlan("pro")}
+                className={`px-5 py-1.5 rounded-full text-sm font-medium transition-all inline-flex items-center gap-1.5 ${pricingPlan === "pro" ? "gradient-primary text-white shadow-md shadow-primary/30" : "text-muted-foreground hover:text-foreground"}`}
+              >
+                <Crown className="w-3.5 h-3.5" /> Pro
+              </button>
+            </div>
+          </div>
+
+          <div className="grid md:grid-cols-1 gap-6 mt-8 max-w-xl mx-auto">
+            {pricingPlan === "free" ? (
+            /* FREE */
             <motion.div
+              key="free"
               initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-50px" }}
-              transition={{ duration: 0.4 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.35 }}
               className="bg-card border border-border rounded-3xl p-8 flex flex-col"
             >
               <div className="flex items-center justify-between mb-2">
@@ -173,13 +192,13 @@ export default function Index() {
                 Get started free
               </Button>
             </motion.div>
-
-            {/* PRO */}
+            ) : (
+            /* PRO */
             <motion.div
+              key="pro"
               initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-50px" }}
-              transition={{ duration: 0.4, delay: 0.1 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.35 }}
               className="relative rounded-3xl p-8 flex flex-col text-white overflow-hidden gradient-hero shadow-2xl shadow-primary/30"
             >
               <div
@@ -222,6 +241,7 @@ export default function Index() {
                 <p className="text-xs text-white/70 text-center mt-3">One-time payment via bKash, Nagad or Rocket</p>
               </div>
             </motion.div>
+            )}
           </div>
         </div>
       </section>

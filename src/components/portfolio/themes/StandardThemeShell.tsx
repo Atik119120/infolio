@@ -373,77 +373,56 @@ export function StandardThemeShell({
         </section>
       )}
 
-      {/* SERVICES — asymmetric numbered cards with alternating dark fills */}
+      {/* SERVICES — clean uniform cards */}
       {services.length > 0 && (
-        <section id="services" className="py-20 md:py-28 relative overflow-hidden" style={{ background: s.surface }}>
-          <div className="absolute inset-0 t-bg-deco pointer-events-none opacity-50" />
-          <div className="container mx-auto px-5 relative">
-            <motion.div {...fadeUp} className="grid md:grid-cols-12 gap-6 mb-14">
-              <div className="md:col-span-6">
-                <div className="inline-flex items-center gap-3 mb-4">
-                  <span className="block w-10 h-[3px]" style={{ background: s.primary }} />
-                  <span className="text-xs font-bold tracking-[0.3em] uppercase" style={{ color: s.primary }}>What I Offer</span>
-                </div>
-                <h2 className="t-display text-3xl md:text-5xl font-bold leading-[1.05]">
-                  Services tailored<br />
-                  <span style={{ color: s.primary }}>to your vision.</span>
-                </h2>
-              </div>
-              <div className="md:col-span-6 md:pt-12">
-                <p className="text-base leading-relaxed" style={{ color: s.textMuted }}>
-                  Each engagement is a partnership — strategy first, execution flawless, results measurable. Pick the service that fits your stage of growth.
-                </p>
-              </div>
+        <section id="services" className="py-20 md:py-28" style={{ background: s.surface }}>
+          <div className="container mx-auto px-5">
+            <motion.div {...fadeUp} className="text-center max-w-2xl mx-auto mb-14">
+              <SectionLabel s={s}>Services</SectionLabel>
+              <h2 className="t-display text-3xl md:text-5xl font-bold mt-4 mb-3">
+                What I can <span style={{ color: s.primary }}>do for you</span>
+              </h2>
+              <p className="text-base" style={{ color: s.textMuted }}>
+                Thoughtful, end-to-end services designed around your goals.
+              </p>
             </motion.div>
 
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
-              {services.map((sv, i) => {
-                const dark = i % 3 === 0;
-                return (
-                  <motion.div
-                    key={sv.id}
-                    {...fadeUp}
-                    transition={{ duration: 0.5, delay: i * 0.06 }}
-                    className="relative p-7 group overflow-hidden transition-all duration-300 hover:-translate-y-1"
-                    style={{
-                      background: dark ? s.text : s.background,
-                      color: dark ? s.background : s.text,
-                      borderRadius: s.radius,
-                      border: dark ? "none" : `1px solid ${s.border}`,
-                    }}
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {services.map((sv, i) => (
+                <motion.div
+                  key={sv.id}
+                  {...fadeUp}
+                  transition={{ duration: 0.5, delay: i * 0.06 }}
+                  className="relative p-7 group transition-all duration-300 hover:-translate-y-1"
+                  style={{
+                    background: s.background,
+                    borderRadius: s.radius,
+                    border: `1px solid ${s.border}`,
+                    boxShadow: `0 4px 20px -8px ${s.primary}1a`,
+                  }}
+                >
+                  <div
+                    className="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl mb-5 transition-transform group-hover:scale-110"
+                    style={{ background: `${s.primary}15`, color: s.primary }}
                   >
-                    <div
-                      aria-hidden
-                      className="absolute -bottom-12 -right-12 w-44 h-44 rounded-full opacity-20 transition-transform duration-500 group-hover:scale-125"
-                      style={{ background: s.primary }}
-                    />
-                    <div className="relative">
-                      <div className="flex items-start justify-between mb-6">
-                        <span className="t-display text-4xl font-black opacity-30">0{i + 1}</span>
-                        <div className="w-12 h-12 rounded-full flex items-center justify-center text-2xl"
-                          style={{ background: dark ? `${s.primary}33` : `${s.primary}15` }}>
-                          {sv.icon || "✦"}
-                        </div>
-                      </div>
-                      <h3 className="t-display text-xl md:text-2xl font-bold mb-3 leading-tight">{sv.title}</h3>
-                      {sv.description && (
-                        <p className="text-sm leading-relaxed mb-5 opacity-80">{sv.description}</p>
-                      )}
-                      <div className="flex items-center justify-between pt-5 border-t"
-                        style={{ borderColor: dark ? `${s.background}22` : s.border }}>
-                        {sv.price ? (
-                          <span className="t-display font-bold text-base" style={{ color: s.primary }}>{sv.price}</span>
-                        ) : (
-                          <span className="text-xs uppercase tracking-wider opacity-60">On request</span>
-                        )}
-                        <a href="#contact" className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider group-hover:gap-3 transition-all">
-                          Inquire <ArrowRight className="w-3.5 h-3.5" />
-                        </a>
-                      </div>
-                    </div>
-                  </motion.div>
-                );
-              })}
+                    {sv.icon || "✦"}
+                  </div>
+                  <h3 className="t-display text-xl font-bold mb-3" style={{ color: s.text }}>{sv.title}</h3>
+                  {sv.description && (
+                    <p className="text-sm leading-relaxed mb-5" style={{ color: s.textMuted }}>{sv.description}</p>
+                  )}
+                  <div className="flex items-center justify-between pt-4 border-t" style={{ borderColor: s.border }}>
+                    {sv.price ? (
+                      <span className="t-display font-bold text-base" style={{ color: s.primary }}>{sv.price}</span>
+                    ) : (
+                      <span className="text-xs uppercase tracking-wider" style={{ color: s.textMuted }}>On request</span>
+                    )}
+                    <a href="#contact" className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider transition-all group-hover:gap-2.5" style={{ color: s.primary }}>
+                      Inquire <ArrowRight className="w-3.5 h-3.5" />
+                    </a>
+                  </div>
+                </motion.div>
+              ))}
             </div>
           </div>
         </section>

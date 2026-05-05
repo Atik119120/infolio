@@ -69,13 +69,11 @@ export default function PublicPortfolio() {
     if (p.google_verification) setMeta('google-site-verification', p.google_verification);
 
     // Inject custom <head> HTML (sitemap, analytics, etc.)
-    let customContainer: HTMLDivElement | null = null;
     if (p.custom_head_html) {
-      customContainer = document.createElement('div');
-      customContainer.setAttribute('data-portfolio-custom-head', 'true');
-      customContainer.innerHTML = p.custom_head_html;
-      // Move parsed elements (link, meta, script-as-text) into <head>
-      Array.from(customContainer.children).forEach((node) => {
+      const container = document.createElement('div');
+      container.innerHTML = p.custom_head_html;
+      Array.from(container.children).forEach((node) => {
+        node.setAttribute('data-portfolio-custom', 'true');
         document.head.appendChild(node);
       });
     }

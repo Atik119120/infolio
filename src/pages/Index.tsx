@@ -45,95 +45,64 @@ export default function Index() {
         </div>
       </nav>
 
-      {/* HERO */}
-      <section className="relative pt-32 pb-24 px-6 overflow-hidden">
-        {/* gradient background */}
+      {/* HERO — minimal, centered, premium */}
+      <section className="relative pt-40 pb-32 px-6 overflow-hidden">
+        {/* subtle background */}
         <div aria-hidden className="absolute inset-0 -z-10">
-          <div className="absolute top-1/4 -left-32 w-[500px] h-[500px] rounded-full bg-primary/20 blur-[120px]" />
-          <div className="absolute bottom-0 right-0 w-[600px] h-[600px] rounded-full bg-accent/15 blur-[140px]" />
           <div
-            className="absolute inset-0 opacity-[0.04]"
+            className="absolute inset-0 opacity-[0.035]"
             style={{
               backgroundImage:
                 "linear-gradient(hsl(var(--foreground)) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--foreground)) 1px, transparent 1px)",
-              backgroundSize: "60px 60px",
-              maskImage: "radial-gradient(ellipse 80% 60% at 50% 30%, #000 30%, transparent 80%)",
+              backgroundSize: "72px 72px",
+              maskImage: "radial-gradient(ellipse 70% 50% at 50% 40%, #000 30%, transparent 80%)",
             }}
           />
         </div>
 
-        <div className="container mx-auto grid lg:grid-cols-2 gap-12 items-center relative z-10">
-          {/* LEFT */}
+        <div className="container mx-auto max-w-3xl text-center relative z-10">
           <motion.div
-            initial={{ opacity: 0, y: 24 }}
+            initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
+            transition={{ duration: 0.5 }}
           >
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 text-primary border border-primary/20 mb-6">
-              <Sparkles className="w-3.5 h-3.5" />
-              <span className="text-xs font-semibold tracking-wide uppercase">Your Digital Identity</span>
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-border bg-card/50 text-muted-foreground mb-8">
+              <span className="w-1.5 h-1.5 rounded-full bg-foreground" />
+              <span className="text-[11px] font-semibold tracking-[0.18em] uppercase">Your Digital Identity</span>
             </div>
 
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold leading-[1.05] tracking-tight mb-6">
-              One Profile,
+            <h1 className="text-5xl md:text-7xl font-semibold leading-[1.02] tracking-[-0.03em] mb-6 text-foreground">
+              One profile.
               <br />
-              <span className="gradient-text">Endless Reach.</span>
+              <span className="text-muted-foreground">Endless reach.</span>
             </h1>
 
-            <p className="text-lg text-muted-foreground max-w-xl mb-8 leading-relaxed">
-              Build a beautiful portfolio in minutes. Showcase your work, skills, and links — all in
-              one place that you actually own.
+            <p className="text-base md:text-lg text-muted-foreground max-w-xl mx-auto mb-10 leading-relaxed">
+              A clean, beautiful portfolio in minutes. Showcase your work, links and story in a single place you actually own.
             </p>
 
             {/* Claim username box */}
-            <div className="bg-card border border-border rounded-2xl p-2 flex items-center gap-2 max-w-lg shadow-lg shadow-primary/5">
-              <div className="flex-1 flex items-center pl-4">
-                <span className="text-muted-foreground text-sm font-medium">alphazero.online/</span>
+            <div className="bg-card border border-border rounded-full p-1.5 flex items-center gap-2 max-w-lg mx-auto">
+              <div className="flex-1 flex items-center pl-4 min-w-0">
+                <span className="text-muted-foreground text-sm font-medium hidden sm:inline">alphazero.online/</span>
                 <input
                   value={username}
                   onChange={(e) => setUsername(e.target.value.replace(/[^a-z0-9_-]/gi, "").toLowerCase())}
                   placeholder="username"
-                  className="flex-1 bg-transparent outline-none px-1 py-3 text-sm font-medium placeholder:text-muted-foreground/60"
+                  className="flex-1 bg-transparent outline-none px-2 py-2.5 text-sm font-medium placeholder:text-muted-foreground/60 min-w-0"
                   onKeyDown={(e) => e.key === "Enter" && handleClaim()}
                 />
               </div>
-              <Button onClick={handleClaim} className="gradient-primary hover:opacity-90 text-white rounded-xl">
-                Claim now
+              <Button onClick={handleClaim} size="sm" className="rounded-full bg-foreground text-background hover:bg-foreground/90 px-5">
+                Claim
                 <ArrowRight className="ml-1.5 w-4 h-4" />
               </Button>
             </div>
 
-            <div className="mt-5 flex items-center gap-2 text-sm text-muted-foreground">
-              <Check className="w-4 h-4 text-success" />
+            <div className="mt-5 flex items-center justify-center gap-2 text-sm text-muted-foreground">
+              <Check className="w-4 h-4" />
               <span>Free forever. No credit card required.</span>
             </div>
-
-            {/* trust strip */}
-            <div className="mt-10 flex items-center gap-6 flex-wrap">
-              <div className="flex -space-x-2">
-                {["bg-pink-500", "bg-blue-500", "bg-amber-500", "bg-emerald-500"].map((c, i) => (
-                  <div key={i} className={`w-9 h-9 rounded-full ${c} border-2 border-background grid place-items-center text-white text-xs font-bold`}>
-                    {String.fromCharCode(65 + i)}
-                  </div>
-                ))}
-              </div>
-              <div>
-                <div className="flex items-center gap-1 text-amber-500">
-                  {[...Array(5)].map((_, i) => <Star key={i} className="w-4 h-4 fill-current" />)}
-                </div>
-                <div className="text-xs text-muted-foreground mt-0.5"><b className="text-foreground">10,000+</b> creators trust us</div>
-              </div>
-            </div>
-          </motion.div>
-
-          {/* RIGHT — Phone mockup */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.7, delay: 0.15 }}
-            className="relative flex justify-center lg:justify-end"
-          >
-            <PhonePreview />
           </motion.div>
         </div>
       </section>

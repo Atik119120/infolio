@@ -121,7 +121,7 @@ export default function Index() {
         <div className="container mx-auto max-w-6xl">
           <SectionHeader eyebrow="Features" title="Everything you need" subtitle="A focused toolkit — no bloat." />
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-px bg-border/60 mt-12 rounded-2xl overflow-hidden border border-border/60">
+          <div className="grid grid-cols-2 lg:grid-cols-3 gap-px bg-border/60 mt-12 rounded-2xl overflow-hidden border border-border/60">
             <FeatureCard icon={<Palette className="w-5 h-5" />} title="Beautiful Themes" description="Profession-specific themes for designers, photographers, marketers & more." />
             <FeatureCard icon={<Zap className="w-5 h-5" />} title="No-Code Builder" description="Fill a guided form, watch your portfolio update live." />
             <FeatureCard icon={<Globe className="w-5 h-5" />} title="Custom Domain" description="Free /u/username link or connect your own domain." />

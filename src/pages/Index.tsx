@@ -37,7 +37,7 @@ export default function Index() {
           <div className="flex items-center gap-2">
             <ThemeToggle />
             <Button variant="ghost" size="sm" onClick={() => navigate("/auth")} className="hidden sm:inline-flex text-sm">Login</Button>
-            <Button size="sm" className="rounded-full bg-foreground text-background hover:bg-foreground/90 text-sm" onClick={() => navigate("/auth")}>
+            <Button size="sm" className="rounded-full gradient-primary text-white hover:opacity-90 text-sm shadow-md shadow-primary/20" onClick={() => navigate("/auth")}>
               Get started
             </Button>
           </div>
@@ -47,11 +47,15 @@ export default function Index() {
       {/* HERO */}
       <section className="relative pt-40 pb-28 px-6 overflow-hidden">
         <div aria-hidden className="absolute inset-0 -z-10">
+          {/* cyan blobs */}
+          <div className="absolute top-1/4 -left-32 w-[500px] h-[500px] rounded-full bg-primary/20 blur-[130px]" />
+          <div className="absolute -top-20 right-0 w-[480px] h-[480px] rounded-full bg-accent/25 blur-[140px]" />
+          <div className="absolute bottom-0 left-1/3 w-[420px] h-[420px] rounded-full bg-secondary/15 blur-[120px]" />
           <div
-            className="absolute inset-0 opacity-[0.04]"
+            className="absolute inset-0 opacity-[0.05]"
             style={{
               backgroundImage:
-                "linear-gradient(hsl(var(--foreground)) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--foreground)) 1px, transparent 1px)",
+                "linear-gradient(hsl(var(--primary)) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--primary)) 1px, transparent 1px)",
               backgroundSize: "72px 72px",
               maskImage: "radial-gradient(ellipse 70% 50% at 50% 40%, #000 30%, transparent 80%)",
             }}
@@ -60,22 +64,22 @@ export default function Index() {
 
         <div className="container mx-auto max-w-3xl text-center relative z-10">
           <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-border bg-card/50 text-muted-foreground mb-8">
-              <span className="w-1.5 h-1.5 rounded-full bg-foreground" />
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-primary/30 bg-primary/10 text-primary mb-8">
+              <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
               <span className="text-[11px] font-semibold tracking-[0.18em] uppercase">Your Digital Identity</span>
             </div>
 
             <h1 className="text-5xl md:text-7xl font-semibold leading-[1.02] tracking-[-0.03em] mb-6">
               One profile.
               <br />
-              <span className="text-muted-foreground">Endless reach.</span>
+              <span className="gradient-text">Endless reach.</span>
             </h1>
 
             <p className="text-base md:text-lg text-muted-foreground max-w-xl mx-auto mb-10 leading-relaxed">
               A clean, beautiful portfolio in minutes. Showcase your work, links and story in a single place you actually own.
             </p>
 
-            <div className="bg-card border border-border rounded-full p-1.5 flex items-center gap-2 max-w-lg mx-auto">
+            <div className="bg-card border border-primary/20 rounded-full p-1.5 flex items-center gap-2 max-w-lg mx-auto shadow-lg shadow-primary/10">
               <div className="flex-1 flex items-center pl-4 min-w-0">
                 <span className="text-muted-foreground text-sm font-medium hidden sm:inline">alphazero.online/</span>
                 <input
@@ -86,13 +90,13 @@ export default function Index() {
                   onKeyDown={(e) => e.key === "Enter" && handleClaim()}
                 />
               </div>
-              <Button onClick={handleClaim} size="sm" className="rounded-full bg-foreground text-background hover:bg-foreground/90 px-5">
+              <Button onClick={handleClaim} size="sm" className="rounded-full gradient-primary text-white hover:opacity-90 px-5 shadow-md shadow-primary/30">
                 Claim <ArrowRight className="ml-1.5 w-4 h-4" />
               </Button>
             </div>
 
             <div className="mt-5 flex items-center justify-center gap-2 text-sm text-muted-foreground">
-              <Check className="w-4 h-4" />
+              <Check className="w-4 h-4 text-primary" />
               <span>Free forever. No credit card required.</span>
             </div>
           </motion.div>
@@ -182,13 +186,13 @@ export default function Index() {
                 ))}
               </ul>
 
-              <Button size="lg" variant="outline" className="w-full rounded-full" onClick={() => navigate("/auth")}>
+              <Button size="lg" variant="outline" className="w-full rounded-full border-primary/30 text-primary hover:bg-primary/10 hover:text-primary" onClick={() => navigate("/auth")}>
                 Get Started Free <ArrowRight className="ml-2 w-4 h-4" />
               </Button>
             </div>
 
             {/* PRO */}
-            <div className="bg-foreground text-background rounded-2xl p-8 md:p-10 flex flex-col relative overflow-hidden">
+            <div className="gradient-primary text-white rounded-2xl p-8 md:p-10 flex flex-col relative overflow-hidden shadow-xl shadow-primary/30">
               <div
                 aria-hidden
                 className="absolute inset-0 opacity-[0.05] pointer-events-none"
@@ -203,19 +207,19 @@ export default function Index() {
                 <div className="flex items-start justify-between gap-3">
                   <div>
                     <h3 className="text-xl font-semibold tracking-tight">Pro Plan</h3>
-                    <p className="text-sm text-background/70 mt-1">Premium themes & advanced features for professionals.</p>
+                    <p className="text-sm text-white/80 mt-1">Premium themes & advanced features for professionals.</p>
                   </div>
-                  <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-background/30 text-background/80 text-[11px] font-semibold uppercase tracking-wider shrink-0">
-                    <span className="w-1.5 h-1.5 rounded-full bg-background" /> Popular
+                  <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-white/40 text-white text-[11px] font-semibold uppercase tracking-wider shrink-0 bg-white/10">
+                    <span className="w-1.5 h-1.5 rounded-full bg-white" /> Popular
                   </div>
                 </div>
 
                 <div className="flex items-baseline gap-1 mt-6">
                   <span className="text-5xl font-semibold tracking-tight">৳499</span>
-                  <span className="text-background/70 text-sm ml-1">/one-time</span>
+                  <span className="text-white/80 text-sm ml-1">/one-time</span>
                 </div>
 
-                <div className="my-7 h-px bg-background/15" />
+                <div className="my-7 h-px bg-white/20" />
 
                 <ul className="space-y-3 mb-8 flex-1">
                   {[
@@ -227,13 +231,13 @@ export default function Index() {
                     "Remove Alpha branding",
                   ].map((f) => (
                     <li key={f} className="flex items-start gap-2.5 text-sm">
-                      <Check className="w-4 h-4 mt-0.5 shrink-0 text-background/80" />
-                      <span className="text-background/90">{f}</span>
+                      <Check className="w-4 h-4 mt-0.5 shrink-0 text-white" />
+                      <span className="text-white/95">{f}</span>
                     </li>
                   ))}
                 </ul>
 
-                <Button size="lg" className="w-full rounded-full bg-background text-foreground hover:bg-background/90" onClick={() => navigate("/auth")}>
+                <Button size="lg" className="w-full rounded-full bg-white text-primary hover:bg-white/90 font-semibold" onClick={() => navigate("/auth")}>
                   Upgrade to Pro <ArrowRight className="ml-2 w-4 h-4" />
                 </Button>
               </div>
@@ -254,7 +258,7 @@ export default function Index() {
             It only took me 2 minutes to set up, and now all my clients know exactly where to find my work. The themes look genuinely professional.
           </p>
           <div className="flex items-center justify-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-foreground text-background grid place-items-center font-semibold text-sm">SC</div>
+            <div className="w-10 h-10 rounded-full gradient-primary text-white grid place-items-center font-semibold text-sm shadow-md shadow-primary/30">SC</div>
             <div className="text-left">
               <div className="font-medium text-sm">Sarah C.</div>
               <div className="text-xs text-muted-foreground">Owner · Greek Studio</div>
@@ -266,10 +270,10 @@ export default function Index() {
       {/* CTA */}
       <section className="py-28 px-6 border-t border-border/60">
         <div className="container mx-auto max-w-4xl">
-          <div className="bg-foreground text-background rounded-3xl p-12 md:p-20 text-center relative overflow-hidden">
+          <div className="gradient-hero rounded-3xl p-12 md:p-20 text-center text-white relative overflow-hidden shadow-2xl shadow-primary/40">
             <div
               aria-hidden
-              className="absolute inset-0 opacity-[0.06]"
+              className="absolute inset-0 opacity-[0.1]"
               style={{
                 backgroundImage:
                   "linear-gradient(rgba(255,255,255,1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,1) 1px, transparent 1px)",
@@ -279,10 +283,10 @@ export default function Index() {
             />
             <div className="relative z-10">
               <h2 className="text-4xl md:text-5xl font-semibold mb-4 tracking-[-0.02em]">Ready to claim your space?</h2>
-              <p className="text-base md:text-lg text-background/70 max-w-xl mx-auto mb-8">
+              <p className="text-base md:text-lg text-white/85 max-w-xl mx-auto mb-8">
                 Join thousands of professionals showcasing their work the smart way.
               </p>
-              <Button size="lg" className="rounded-full bg-background text-foreground hover:bg-background/90 text-sm font-semibold px-7" onClick={() => navigate("/auth")}>
+              <Button size="lg" className="rounded-full bg-white text-primary hover:bg-white/90 text-sm font-semibold px-7" onClick={() => navigate("/auth")}>
                 Create your portfolio <ArrowRight className="ml-2 w-4 h-4" />
               </Button>
             </div>
@@ -306,8 +310,8 @@ function SectionHeader({ eyebrow, title, subtitle }: { eyebrow: string; title: s
       transition={{ duration: 0.5 }}
       className="text-center max-w-2xl mx-auto"
     >
-      <div className="inline-flex items-center gap-2 text-[11px] font-semibold tracking-[0.2em] uppercase text-muted-foreground mb-5">
-        <span className="w-6 h-px bg-border" /> {eyebrow} <span className="w-6 h-px bg-border" />
+      <div className="inline-flex items-center gap-2 text-[11px] font-semibold tracking-[0.2em] uppercase text-primary mb-5">
+        <span className="w-6 h-px bg-primary/40" /> {eyebrow} <span className="w-6 h-px bg-primary/40" />
       </div>
       <h2 className="text-3xl md:text-5xl font-semibold tracking-[-0.025em] mb-4">{title}</h2>
       <p className="text-base md:text-lg text-muted-foreground leading-relaxed">{subtitle}</p>
@@ -322,13 +326,13 @@ function StepCard({ num, icon, title, desc }: { num: string; icon: React.ReactNo
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-50px" }}
       transition={{ duration: 0.45 }}
-      className="relative bg-card border border-border rounded-2xl p-7 hover:border-foreground/30 transition-colors"
+      className="relative bg-card border border-border rounded-2xl p-7 hover:border-primary/40 hover:shadow-lg hover:shadow-primary/10 hover:-translate-y-1 transition-all"
     >
       <div className="flex items-center justify-between mb-6">
-        <div className="w-10 h-10 rounded-xl border border-border grid place-items-center text-foreground">
+        <div className="w-11 h-11 rounded-xl gradient-primary text-white grid place-items-center shadow-md shadow-primary/30">
           {icon}
         </div>
-        <span className="text-xs font-mono text-muted-foreground/70 tracking-wider">{num}</span>
+        <span className="text-xs font-mono text-primary/60 tracking-wider">{num}</span>
       </div>
       <h3 className="text-base font-semibold mb-2 tracking-tight">{title}</h3>
       <p className="text-sm text-muted-foreground leading-relaxed">{desc}</p>
@@ -343,14 +347,14 @@ function FeatureCard({ icon, title, description }: { icon: React.ReactNode; titl
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-50px" }}
       transition={{ duration: 0.4 }}
-      className="bg-card p-7 hover:bg-muted/40 transition-colors group relative"
+      className="bg-card p-7 hover:bg-primary/5 transition-colors group relative"
     >
-      <div className="w-10 h-10 rounded-xl border border-border grid place-items-center text-foreground mb-5">
+      <div className="w-11 h-11 rounded-xl bg-primary/10 text-primary grid place-items-center mb-5 group-hover:gradient-primary group-hover:text-white group-hover:shadow-md group-hover:shadow-primary/30 transition-all">
         {icon}
       </div>
       <h3 className="text-base font-semibold mb-2 tracking-tight flex items-center gap-2">
         {title}
-        <ArrowUpRight className="w-4 h-4 text-muted-foreground opacity-0 group-hover:opacity-100 -translate-x-1 group-hover:translate-x-0 transition-all" />
+        <ArrowUpRight className="w-4 h-4 text-primary opacity-0 group-hover:opacity-100 -translate-x-1 group-hover:translate-x-0 transition-all" />
       </h3>
       <p className="text-sm text-muted-foreground leading-relaxed">{description}</p>
     </motion.div>

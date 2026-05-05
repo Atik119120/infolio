@@ -303,9 +303,9 @@ export default function PRDPhotographerTheme({
                   className="relative p-8 group transition-all duration-300 hover:-translate-y-1"
                   style={{ background: C.surface, border: `1px solid ${C.border}` }}
                 >
-                  <div className="w-14 h-14 flex items-center justify-center text-2xl mb-5"
+                  <div className="w-14 h-14 flex items-center justify-center mb-5"
                     style={{ background: C.surface2, color: C.primary, border: `1px solid ${C.primary}33` }}>
-                    {sv.icon || "✦"}
+                    <ServiceIcon icon={sv.icon} className="w-6 h-6" />
                   </div>
                   <h3 className="sl-display text-2xl font-bold mb-3 italic">{sv.title}</h3>
                   {sv.description && (

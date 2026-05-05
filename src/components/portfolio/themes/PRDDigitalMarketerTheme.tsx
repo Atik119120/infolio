@@ -275,8 +275,8 @@ export default function PRDDigitalMarketerTheme({
               <div className="relative">
                 <div aria-hidden className="absolute -inset-4 rounded-3xl opacity-40"
                   style={{ background: `linear-gradient(135deg, ${C.primary}, ${C.accent})`, filter: "blur(40px)" }} />
-                {profile?.avatar_url ? (
-                  <img src={profile.avatar_url} alt={name} className="relative w-full aspect-square object-cover rounded-3xl"
+                {aboutImage ? (
+                  <img src={aboutImage} alt={name} className="relative w-full aspect-square object-cover rounded-3xl"
                     style={{ border: `1px solid ${C.border}` }} />
                 ) : (
                   <div className="relative w-full aspect-square flex items-center justify-center gl-display text-9xl font-bold rounded-3xl"

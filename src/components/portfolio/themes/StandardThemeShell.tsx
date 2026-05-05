@@ -324,44 +324,44 @@ export function StandardThemeShell({
         </div>
       </section>
 
-      {/* SKILLS — editorial big-number layout with circular dials */}
+      {/* SKILLS — clean centered header + animated progress bars */}
       {skills.length > 0 && (
-        <section id="skills" className="py-20 md:py-28 relative overflow-hidden">
-          <div className="container mx-auto px-5 relative">
-            <motion.div {...fadeUp} className="grid md:grid-cols-12 gap-6 items-end mb-14">
-              <div className="md:col-span-7">
-                <div className="t-display text-[80px] md:text-[140px] leading-none font-black opacity-[0.06]" style={{ color: s.primary }}>
-                  01 / SKILLS
-                </div>
-                <h2 className="t-display text-3xl md:text-5xl font-bold -mt-8 md:-mt-16">
-                  Crafted with <span style={{ color: s.primary }}>precision</span>.
-                </h2>
-              </div>
-              <div className="md:col-span-5 md:text-right">
-                <p className="text-sm md:text-base" style={{ color: s.textMuted }}>
-                  A toolkit refined through years of building, breaking and rebuilding ideas into reality.
-                </p>
-              </div>
+        <section id="skills" className="py-20 md:py-28" style={{ background: s.background }}>
+          <div className="container mx-auto px-5">
+            <motion.div {...fadeUp} className="text-center max-w-2xl mx-auto mb-14">
+              <SectionLabel s={s}>My Skills</SectionLabel>
+              <h2 className="t-display text-3xl md:text-5xl font-bold mt-4 mb-3">
+                Tools I work with <span style={{ color: s.primary }}>every day</span>
+              </h2>
+              <p className="text-base" style={{ color: s.textMuted }}>
+                A curated stack refined through years of real-world projects.
+              </p>
             </motion.div>
 
-            <div className="space-y-10">
+            <div className="max-w-5xl mx-auto space-y-12">
               {Object.entries(grouped).map(([cat, list], ci) => (
                 <motion.div key={cat} {...fadeUp} transition={{ duration: 0.5, delay: ci * 0.05 }}>
-                  <div className="flex items-baseline gap-4 mb-5">
-                    <span className="t-display text-xs font-bold tracking-[0.3em] uppercase" style={{ color: s.primary }}>
-                      0{ci + 1}
-                    </span>
-                    <h3 className="t-display text-xl md:text-2xl font-bold">{cat}</h3>
+                  <div className="flex items-center gap-3 mb-6">
+                    <h3 className="t-display text-lg font-bold uppercase tracking-wider">{cat}</h3>
                     <span className="flex-1 h-px" style={{ background: s.border }} />
-                    <span className="text-xs" style={{ color: s.textMuted }}>{list.length} skills</span>
+                    <span className="text-xs font-medium" style={{ color: s.textMuted }}>{list.length}</span>
                   </div>
-                  <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                  <div className="grid sm:grid-cols-2 gap-x-10 gap-y-5">
                     {list.map((sk) => (
-                      <div key={sk.id} className="t-card p-5 flex items-center gap-4 hover:-translate-y-0.5 transition-transform">
-                        <SkillRing value={sk.proficiency || 0} s={s} />
-                        <div className="min-w-0">
-                          <div className="t-display font-semibold truncate" style={{ color: s.text }}>{sk.name}</div>
-                          <div className="text-[11px] uppercase tracking-wider" style={{ color: s.textMuted }}>Proficient</div>
+                      <div key={sk.id}>
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="font-semibold text-sm" style={{ color: s.text }}>{sk.name}</span>
+                          <span className="text-xs font-bold" style={{ color: s.primary }}>{sk.proficiency || 0}%</span>
+                        </div>
+                        <div className="h-1.5 w-full rounded-full overflow-hidden" style={{ background: s.border }}>
+                          <motion.div
+                            initial={{ width: 0 }}
+                            whileInView={{ width: `${sk.proficiency || 0}%` }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 1, ease: "easeOut" }}
+                            className="h-full rounded-full"
+                            style={{ background: `linear-gradient(90deg, ${s.primary}, ${s.accent})` }}
+                          />
                         </div>
                       </div>
                     ))}

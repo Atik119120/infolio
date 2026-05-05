@@ -347,14 +347,14 @@ function FeatureCard({ icon, title, description }: { icon: React.ReactNode; titl
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-50px" }}
       transition={{ duration: 0.4 }}
-      className="bg-card p-7 hover:bg-muted/40 transition-colors group relative"
+      className="bg-card p-7 hover:bg-primary/5 transition-colors group relative"
     >
-      <div className="w-10 h-10 rounded-xl border border-border grid place-items-center text-foreground mb-5">
+      <div className="w-11 h-11 rounded-xl bg-primary/10 text-primary grid place-items-center mb-5 group-hover:gradient-primary group-hover:text-white group-hover:shadow-md group-hover:shadow-primary/30 transition-all">
         {icon}
       </div>
       <h3 className="text-base font-semibold mb-2 tracking-tight flex items-center gap-2">
         {title}
-        <ArrowUpRight className="w-4 h-4 text-muted-foreground opacity-0 group-hover:opacity-100 -translate-x-1 group-hover:translate-x-0 transition-all" />
+        <ArrowUpRight className="w-4 h-4 text-primary opacity-0 group-hover:opacity-100 -translate-x-1 group-hover:translate-x-0 transition-all" />
       </h3>
       <p className="text-sm text-muted-foreground leading-relaxed">{description}</p>
     </motion.div>

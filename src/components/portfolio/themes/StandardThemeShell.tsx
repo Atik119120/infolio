@@ -65,8 +65,15 @@ export function StandardThemeShell({
   useEffect(() => { window.scrollTo(0, 0); }, []);
 
   const name = portfolio?.brand_name || profile?.display_name || "Your Name";
-  const headline = portfolio?.headline || "Creative Professional";
-  const bio = portfolio?.bio || "Tell your story here.";
+  const headline = portfolio?.hero_headline || portfolio?.headline || "Creative Professional";
+  const subheadline = portfolio?.hero_subheadline || s.heroBadge;
+  const heroCtaText = portfolio?.hero_cta_text || s.heroCta;
+  const heroCtaLink = portfolio?.hero_cta_link || "#works";
+  const heroImage = portfolio?.hero_image_url || profile?.avatar_url;
+  const aboutImage = portfolio?.about_image_url || profile?.avatar_url;
+  const aboutText = portfolio?.about_text || portfolio?.bio || "Tell your story here.";
+  const bio = portfolio?.bio || aboutText;
+  const footerText = portfolio?.footer_text;
   const email = profile?.email;
   const phone = portfolio?.phone;
   const location = portfolio?.location;
@@ -179,7 +186,7 @@ export function StandardThemeShell({
             <motion.div {...fadeUp} className="md:col-span-7">
               <span className="inline-block px-3 py-1 text-xs font-semibold tracking-wider uppercase mb-5"
                 style={{ color: s.primary, background: `${s.primary}15`, borderRadius: s.radius }}>
-                {s.heroBadge}
+                {subheadline}
               </span>
               <h1 className="t-display text-4xl md:text-6xl lg:text-7xl font-bold leading-[1.05] mb-5">
                 Hi, I'm {" "}
@@ -192,8 +199,8 @@ export function StandardThemeShell({
                 {bio.length > 220 ? bio.slice(0, 220) + "…" : bio}
               </p>
               <div className="flex flex-wrap gap-3">
-                <a href="#works" className="t-btn-primary px-6 py-3 text-sm font-semibold inline-flex items-center gap-2">
-                  {s.heroCta} <ArrowRight className="w-4 h-4" />
+                <a href={heroCtaLink} className="t-btn-primary px-6 py-3 text-sm font-semibold inline-flex items-center gap-2">
+                  {heroCtaText} <ArrowRight className="w-4 h-4" />
                 </a>
                 <a href="#contact" className="t-btn-outline px-6 py-3 text-sm font-semibold">
                   Get in touch
@@ -202,10 +209,10 @@ export function StandardThemeShell({
             </motion.div>
 
             <motion.div {...fadeUp} transition={{ duration: 0.6, delay: 0.15 }} className="md:col-span-5">
-              {profile?.avatar_url ? (
+              {heroImage ? (
                 <div className="relative">
                   <div className="absolute -inset-3 rounded-full opacity-60" style={{ background: `linear-gradient(135deg, ${s.primary}, ${s.accent})`, filter: "blur(40px)" }} />
-                  <img src={profile.avatar_url} alt={name}
+                  <img src={heroImage} alt={name}
                     className="relative w-full max-w-sm mx-auto aspect-square object-cover"
                     style={{ borderRadius: s.radius, border: `4px solid ${s.surface}`, boxShadow: `0 20px 60px ${s.primary}33` }} />
                 </div>
@@ -236,9 +243,9 @@ export function StandardThemeShell({
                   className="absolute -bottom-4 -right-4 w-full h-full"
                   style={{ background: s.primary, borderRadius: s.radius }}
                 />
-                {profile?.avatar_url ? (
+                {aboutImage ? (
                   <img
-                    src={profile.avatar_url}
+                    src={aboutImage}
                     alt={name}
                     className="relative w-full aspect-[4/5] object-cover"
                     style={{ borderRadius: s.radius }}
@@ -263,7 +270,7 @@ export function StandardThemeShell({
                 </p>
               )}
               <p className="text-base leading-[1.85] mb-8 text-justify" style={{ color: s.textMuted }}>
-                {bio}
+                {aboutText}
               </p>
 
               {/* Ventures (from projects, top 2) */}
@@ -533,7 +540,7 @@ export function StandardThemeShell({
             </div>
           </div>
           <div className="border-t pt-6 flex flex-col md:flex-row justify-between items-center gap-3 text-xs opacity-60" style={{ borderColor: `${s.background}22` }}>
-            <div>© {new Date().getFullYear()} {name}. All rights reserved.</div>
+            <div>{footerText || `© ${new Date().getFullYear()} ${name}. All rights reserved.`}</div>
             <div>Built with Alokchitra</div>
           </div>
         </div>

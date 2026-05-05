@@ -3,7 +3,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { User, Sparkles, Briefcase, GraduationCap, Link2, FolderOpen, Palette, Image, Wrench, Search } from "lucide-react";
+import { User, Sparkles, Briefcase, GraduationCap, Link2, FolderOpen, Palette, Image, Wrench, Search, Wand2 } from "lucide-react";
 import { BasicInfoForm } from "@/components/portfolio/BasicInfoForm";
 import { SkillsForm } from "@/components/portfolio/SkillsForm";
 import { ProjectsForm } from "@/components/portfolio/ProjectsForm";
@@ -15,6 +15,7 @@ import { ThemeSelector } from "@/components/portfolio/ThemeSelector";
 import { LogoUploadForm } from "@/components/portfolio/LogoUploadForm";
 import { FaviconUploadForm } from "@/components/portfolio/FaviconUploadForm";
 import { SeoSettingsForm } from "@/components/portfolio/SeoSettingsForm";
+import { CustomizationForm } from "@/components/portfolio/CustomizationForm";
 
 export interface Profile {
   username: string;
@@ -161,6 +162,7 @@ export default function PortfolioEdit() {
   const allTabs = [
     { value: "theme", label: "Theme", icon: Palette },
     { value: "basic", label: "Basic Info", icon: User },
+    { value: "customize", label: "Customize", icon: Wand2 },
     { value: "branding", label: "Branding", icon: Image },
     { value: "skills", label: "Skills", icon: Sparkles },
     { value: "services", label: "Services", icon: Wrench },
@@ -172,14 +174,14 @@ export default function PortfolioEdit() {
   ];
 
   // Each theme exposes only the sections it actually renders.
-  // Theme → enabled feature tabs (theme/basic/branding/social/seo are universal)
+  // Theme → enabled feature tabs (theme/basic/customize/branding/social/seo are universal)
   const THEME_FEATURES: Record<string, string[]> = {
-    "freelancer":            ["theme", "basic", "branding", "skills", "services", "projects", "experience", "education", "social", "seo"],
-    "small-business":        ["theme", "basic", "branding", "skills", "services", "projects", "experience", "education", "social", "seo"],
-    "prd-graphic-designer":  ["theme", "basic", "branding", "skills", "services", "projects", "experience", "social", "seo"],
-    "prd-photographer":      ["theme", "basic", "branding", "services", "projects", "experience", "education", "social", "seo"],
-    "prd-digital-marketer":  ["theme", "basic", "branding", "services", "projects", "experience", "social", "seo"],
-    "biography":             ["theme", "basic", "branding", "projects", "experience", "education", "social", "seo"],
+    "freelancer":            ["theme", "basic", "customize", "branding", "skills", "services", "projects", "experience", "education", "social", "seo"],
+    "small-business":        ["theme", "basic", "customize", "branding", "skills", "services", "projects", "experience", "education", "social", "seo"],
+    "prd-graphic-designer":  ["theme", "basic", "customize", "branding", "skills", "services", "projects", "experience", "social", "seo"],
+    "prd-photographer":      ["theme", "basic", "customize", "branding", "services", "projects", "experience", "education", "social", "seo"],
+    "prd-digital-marketer":  ["theme", "basic", "customize", "branding", "services", "projects", "experience", "social", "seo"],
+    "biography":             ["theme", "basic", "customize", "branding", "projects", "experience", "education", "social", "seo"],
   };
 
   const activeTheme = portfolio?.theme || "freelancer";
@@ -203,7 +205,7 @@ export default function PortfolioEdit() {
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
         <TabsList
           className="grid h-auto gap-1.5 bg-transparent p-0"
-          style={{ gridTemplateColumns: `repeat(${Math.min(tabs.length, 10)}, minmax(0, 1fr))` }}
+          style={{ gridTemplateColumns: `repeat(${Math.min(tabs.length, 11)}, minmax(0, 1fr))` }}
         >
           {tabs.map((tab) => (
             <TabsTrigger
@@ -233,6 +235,16 @@ export default function PortfolioEdit() {
           <BasicInfoForm
             profile={profile}
             portfolio={portfolio}
+            userId={user?.id || ""}
+            onUpdate={fetchAllData}
+            onSuccess={showSuccess}
+            onError={showError}
+          />
+        </TabsContent>
+
+        <TabsContent value="customize" className="mt-4">
+          <CustomizationForm
+            portfolio={portfolio as any}
             userId={user?.id || ""}
             onUpdate={fetchAllData}
             onSuccess={showSuccess}

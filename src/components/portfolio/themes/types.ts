@@ -16,6 +16,15 @@ export interface ThemePortfolio {
   logo_url: string | null;
   favicon_url: string | null;
   brand_name?: string | null;
+  hero_image_url?: string | null;
+  hero_headline?: string | null;
+  hero_subheadline?: string | null;
+  hero_cta_text?: string | null;
+  hero_cta_link?: string | null;
+  about_image_url?: string | null;
+  about_text?: string | null;
+  footer_text?: string | null;
+  browser_title?: string | null;
 }
 
 export interface ThemeSkill {

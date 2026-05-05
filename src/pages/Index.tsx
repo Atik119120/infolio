@@ -87,7 +87,7 @@ export default function Index() {
             </div>
 
             <h1 className="text-5xl md:text-7xl lg:text-8xl font-semibold leading-[1.02] tracking-[-0.04em] mb-6">
-              Build your <span className="gradient-text">portfolio</span>, the smart way.
+              Build your <span className="gradient-text">portfolio</span>,<br />the smart way.
             </h1>
 
             <p className="text-base md:text-xl text-muted-foreground max-w-2xl mx-auto mb-10 leading-relaxed">

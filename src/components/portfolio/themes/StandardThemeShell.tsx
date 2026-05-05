@@ -324,29 +324,44 @@ export function StandardThemeShell({
         </div>
       </section>
 
-      {/* SKILLS */}
+      {/* SKILLS — editorial big-number layout with circular dials */}
       {skills.length > 0 && (
-        <section id="skills" className="py-20 md:py-24">
-          <div className="container mx-auto px-5">
-            <motion.div {...fadeUp} className="text-center max-w-2xl mx-auto mb-12">
-              <SectionLabel s={s}>My Skills</SectionLabel>
-              <h2 className="t-display text-3xl md:text-5xl font-bold mt-3">Tools & expertise</h2>
+        <section id="skills" className="py-20 md:py-28 relative overflow-hidden">
+          <div className="container mx-auto px-5 relative">
+            <motion.div {...fadeUp} className="grid md:grid-cols-12 gap-6 items-end mb-14">
+              <div className="md:col-span-7">
+                <div className="t-display text-[80px] md:text-[140px] leading-none font-black opacity-[0.06]" style={{ color: s.primary }}>
+                  01 / SKILLS
+                </div>
+                <h2 className="t-display text-3xl md:text-5xl font-bold -mt-8 md:-mt-16">
+                  Crafted with <span style={{ color: s.primary }}>precision</span>.
+                </h2>
+              </div>
+              <div className="md:col-span-5 md:text-right">
+                <p className="text-sm md:text-base" style={{ color: s.textMuted }}>
+                  A toolkit refined through years of building, breaking and rebuilding ideas into reality.
+                </p>
+              </div>
             </motion.div>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
-              {Object.entries(grouped).map(([cat, list], i) => (
-                <motion.div key={cat} {...fadeUp} transition={{ duration: 0.5, delay: i * 0.05 }} className="t-card p-6">
-                  <h3 className="t-display text-lg font-semibold mb-4" style={{ color: s.primary }}>{cat}</h3>
-                  <div className="space-y-3">
+
+            <div className="space-y-10">
+              {Object.entries(grouped).map(([cat, list], ci) => (
+                <motion.div key={cat} {...fadeUp} transition={{ duration: 0.5, delay: ci * 0.05 }}>
+                  <div className="flex items-baseline gap-4 mb-5">
+                    <span className="t-display text-xs font-bold tracking-[0.3em] uppercase" style={{ color: s.primary }}>
+                      0{ci + 1}
+                    </span>
+                    <h3 className="t-display text-xl md:text-2xl font-bold">{cat}</h3>
+                    <span className="flex-1 h-px" style={{ background: s.border }} />
+                    <span className="text-xs" style={{ color: s.textMuted }}>{list.length} skills</span>
+                  </div>
+                  <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
                     {list.map((sk) => (
-                      <div key={sk.id}>
-                        <div className="flex justify-between text-sm mb-1.5">
-                          <span style={{ color: s.text }}>{sk.name}</span>
-                          <span style={{ color: s.textMuted }}>{sk.proficiency}%</span>
-                        </div>
-                        <div className="h-1.5 rounded-full overflow-hidden" style={{ background: s.border }}>
-                          <motion.div initial={{ width: 0 }} whileInView={{ width: `${sk.proficiency || 0}%` }}
-                            viewport={{ once: true }} transition={{ duration: 0.9 }}
-                            style={{ background: `linear-gradient(90deg, ${s.primary}, ${s.accent})`, height: "100%" }} />
+                      <div key={sk.id} className="t-card p-5 flex items-center gap-4 hover:-translate-y-0.5 transition-transform">
+                        <SkillRing value={sk.proficiency || 0} s={s} />
+                        <div className="min-w-0">
+                          <div className="t-display font-semibold truncate" style={{ color: s.text }}>{sk.name}</div>
+                          <div className="text-[11px] uppercase tracking-wider" style={{ color: s.textMuted }}>Proficient</div>
                         </div>
                       </div>
                     ))}
@@ -358,28 +373,77 @@ export function StandardThemeShell({
         </section>
       )}
 
-      {/* SERVICES */}
+      {/* SERVICES — asymmetric numbered cards with alternating dark fills */}
       {services.length > 0 && (
-        <section id="services" className="py-20 md:py-24" style={{ background: s.surface }}>
-          <div className="container mx-auto px-5">
-            <motion.div {...fadeUp} className="text-center max-w-2xl mx-auto mb-12">
-              <SectionLabel s={s}>Services</SectionLabel>
-              <h2 className="t-display text-3xl md:text-5xl font-bold mt-3">What I can do for you</h2>
+        <section id="services" className="py-20 md:py-28 relative overflow-hidden" style={{ background: s.surface }}>
+          <div className="absolute inset-0 t-bg-deco pointer-events-none opacity-50" />
+          <div className="container mx-auto px-5 relative">
+            <motion.div {...fadeUp} className="grid md:grid-cols-12 gap-6 mb-14">
+              <div className="md:col-span-6">
+                <div className="inline-flex items-center gap-3 mb-4">
+                  <span className="block w-10 h-[3px]" style={{ background: s.primary }} />
+                  <span className="text-xs font-bold tracking-[0.3em] uppercase" style={{ color: s.primary }}>What I Offer</span>
+                </div>
+                <h2 className="t-display text-3xl md:text-5xl font-bold leading-[1.05]">
+                  Services tailored<br />
+                  <span style={{ color: s.primary }}>to your vision.</span>
+                </h2>
+              </div>
+              <div className="md:col-span-6 md:pt-12">
+                <p className="text-base leading-relaxed" style={{ color: s.textMuted }}>
+                  Each engagement is a partnership — strategy first, execution flawless, results measurable. Pick the service that fits your stage of growth.
+                </p>
+              </div>
             </motion.div>
+
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
-              {services.map((sv, i) => (
-                <motion.div key={sv.id} {...fadeUp} transition={{ duration: 0.5, delay: i * 0.05 }}
-                  className="t-card p-6 group hover:-translate-y-1 transition-transform">
-                  <div className="text-4xl mb-4">{sv.icon || "✨"}</div>
-                  <h3 className="t-display text-xl font-semibold mb-2">{sv.title}</h3>
-                  {sv.description && <p className="text-sm leading-relaxed mb-4" style={{ color: s.textMuted }}>{sv.description}</p>}
-                  {sv.price && (
-                    <div className="text-sm font-semibold inline-block px-3 py-1 rounded-full" style={{ background: `${s.primary}15`, color: s.primary }}>
-                      {sv.price}
+              {services.map((sv, i) => {
+                const dark = i % 3 === 0;
+                return (
+                  <motion.div
+                    key={sv.id}
+                    {...fadeUp}
+                    transition={{ duration: 0.5, delay: i * 0.06 }}
+                    className="relative p-7 group overflow-hidden transition-all duration-300 hover:-translate-y-1"
+                    style={{
+                      background: dark ? s.text : s.background,
+                      color: dark ? s.background : s.text,
+                      borderRadius: s.radius,
+                      border: dark ? "none" : `1px solid ${s.border}`,
+                    }}
+                  >
+                    <div
+                      aria-hidden
+                      className="absolute -bottom-12 -right-12 w-44 h-44 rounded-full opacity-20 transition-transform duration-500 group-hover:scale-125"
+                      style={{ background: s.primary }}
+                    />
+                    <div className="relative">
+                      <div className="flex items-start justify-between mb-6">
+                        <span className="t-display text-4xl font-black opacity-30">0{i + 1}</span>
+                        <div className="w-12 h-12 rounded-full flex items-center justify-center text-2xl"
+                          style={{ background: dark ? `${s.primary}33` : `${s.primary}15` }}>
+                          {sv.icon || "✦"}
+                        </div>
+                      </div>
+                      <h3 className="t-display text-xl md:text-2xl font-bold mb-3 leading-tight">{sv.title}</h3>
+                      {sv.description && (
+                        <p className="text-sm leading-relaxed mb-5 opacity-80">{sv.description}</p>
+                      )}
+                      <div className="flex items-center justify-between pt-5 border-t"
+                        style={{ borderColor: dark ? `${s.background}22` : s.border }}>
+                        {sv.price ? (
+                          <span className="t-display font-bold text-base" style={{ color: s.primary }}>{sv.price}</span>
+                        ) : (
+                          <span className="text-xs uppercase tracking-wider opacity-60">On request</span>
+                        )}
+                        <a href="#contact" className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider group-hover:gap-3 transition-all">
+                          Inquire <ArrowRight className="w-3.5 h-3.5" />
+                        </a>
+                      </div>
                     </div>
-                  )}
-                </motion.div>
-              ))}
+                  </motion.div>
+                );
+              })}
             </div>
           </div>
         </section>
@@ -426,22 +490,48 @@ export function StandardThemeShell({
         </section>
       )}
 
-      {/* CONTACT */}
-      <section id="contact" className="py-20 md:py-24 relative overflow-hidden" style={{ background: s.surface }}>
-        <div className="absolute inset-0 t-bg-deco pointer-events-none" />
+      {/* CONTACT — split panel: dramatic dark side + clean form side */}
+      <section id="contact" className="py-20 md:py-28 relative overflow-hidden" style={{ background: s.background }}>
         <div className="container mx-auto px-5 relative">
-          <motion.div {...fadeUp} className="text-center max-w-2xl mx-auto mb-10">
-            <SectionLabel s={s}>Get in Touch</SectionLabel>
-            <h2 className="t-display text-3xl md:text-5xl font-bold mt-3">Let's work together</h2>
-            <p className="mt-4" style={{ color: s.textMuted }}>Have a project in mind? Send me a message and I'll get back to you.</p>
-          </motion.div>
-          <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-            <motion.div {...fadeUp} className="space-y-4">
-              {email && <ContactCard icon={<Mail className="w-5 h-5" />} label="Email" value={email} href={`mailto:${email}`} s={s} />}
-              {phone && <ContactCard icon={<Phone className="w-5 h-5" />} label="Phone" value={phone} href={`tel:${phone}`} s={s} />}
-              {location && <ContactCard icon={<MapPin className="w-5 h-5" />} label="Location" value={location} s={s} />}
+          <div
+            className="grid md:grid-cols-2 overflow-hidden"
+            style={{ borderRadius: s.radius, boxShadow: `0 30px 80px -20px ${s.primary}33` }}
+          >
+            <motion.div
+              {...fadeUp}
+              className="p-8 md:p-12 relative overflow-hidden"
+              style={{ background: s.text, color: s.background }}
+            >
+              <div aria-hidden className="absolute -top-20 -left-20 w-80 h-80 rounded-full"
+                style={{ background: `radial-gradient(circle, ${s.primary}55, transparent 70%)` }} />
+              <div aria-hidden className="absolute -bottom-32 -right-20 w-96 h-96 rounded-full"
+                style={{ background: `radial-gradient(circle, ${s.accent}33, transparent 70%)` }} />
+              <div className="relative">
+                <div className="inline-flex items-center gap-2 px-3 py-1 mb-6 text-[11px] font-bold tracking-[0.25em] uppercase rounded-full"
+                  style={{ background: `${s.primary}33`, color: "#fff" }}>
+                  <span className="w-2 h-2 rounded-full animate-pulse" style={{ background: s.primary }} />
+                  Available for Work
+                </div>
+                <h2 className="t-display text-4xl md:text-5xl lg:text-6xl font-bold leading-[1.05] mb-5">
+                  Let's create<br />
+                  <span style={{ color: s.primary }}>something great.</span>
+                </h2>
+                <p className="text-base opacity-80 mb-10 max-w-md">
+                  Whether it's a bold new brand, a digital product, or a creative collaboration — drop a message and let's start the conversation.
+                </p>
+                <div className="space-y-5">
+                  {email && <ContactLine icon={<Mail className="w-4 h-4" />} label="Email" value={email} href={`mailto:${email}`} s={s} />}
+                  {phone && <ContactLine icon={<Phone className="w-4 h-4" />} label="Phone" value={phone} href={`tel:${phone}`} s={s} />}
+                  {location && <ContactLine icon={<MapPin className="w-4 h-4" />} label="Based in" value={location} s={s} />}
+                </div>
+              </div>
             </motion.div>
-            <motion.div {...fadeUp} transition={{ duration: 0.6, delay: 0.1 }} className="t-card p-5">
+
+            <motion.div {...fadeUp} transition={{ duration: 0.6, delay: 0.1 }} className="p-8 md:p-12" style={{ background: s.surface }}>
+              <div className="mb-6">
+                <span className="text-xs font-bold tracking-[0.25em] uppercase" style={{ color: s.primary }}>Send a Message</span>
+                <h3 className="t-display text-2xl md:text-3xl font-bold mt-2">Tell me about your project</h3>
+              </div>
               {userId && <ContactForm portfolioOwnerId={userId} />}
             </motion.div>
           </div>

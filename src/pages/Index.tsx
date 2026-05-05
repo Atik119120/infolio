@@ -270,10 +270,10 @@ export default function Index() {
       {/* CTA */}
       <section className="py-28 px-6 border-t border-border/60">
         <div className="container mx-auto max-w-4xl">
-          <div className="bg-foreground text-background rounded-3xl p-12 md:p-20 text-center relative overflow-hidden">
+          <div className="gradient-hero rounded-3xl p-12 md:p-20 text-center text-white relative overflow-hidden shadow-2xl shadow-primary/40">
             <div
               aria-hidden
-              className="absolute inset-0 opacity-[0.06]"
+              className="absolute inset-0 opacity-[0.1]"
               style={{
                 backgroundImage:
                   "linear-gradient(rgba(255,255,255,1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,1) 1px, transparent 1px)",
@@ -283,10 +283,10 @@ export default function Index() {
             />
             <div className="relative z-10">
               <h2 className="text-4xl md:text-5xl font-semibold mb-4 tracking-[-0.02em]">Ready to claim your space?</h2>
-              <p className="text-base md:text-lg text-background/70 max-w-xl mx-auto mb-8">
+              <p className="text-base md:text-lg text-white/85 max-w-xl mx-auto mb-8">
                 Join thousands of professionals showcasing their work the smart way.
               </p>
-              <Button size="lg" className="rounded-full bg-background text-foreground hover:bg-background/90 text-sm font-semibold px-7" onClick={() => navigate("/auth")}>
+              <Button size="lg" className="rounded-full bg-white text-primary hover:bg-white/90 text-sm font-semibold px-7" onClick={() => navigate("/auth")}>
                 Create your portfolio <ArrowRight className="ml-2 w-4 h-4" />
               </Button>
             </div>

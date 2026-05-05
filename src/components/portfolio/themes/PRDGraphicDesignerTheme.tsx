@@ -225,8 +225,8 @@ export default function PRDGraphicDesignerTheme({
           <div className="grid md:grid-cols-12 gap-12 items-center">
             <motion.div {...fadeUp} className="md:col-span-5">
               <div className="relative rounded-3xl overflow-hidden gx-glass gx-glow-ring p-2">
-                {profile?.avatar_url ? (
-                  <img src={profile.avatar_url} alt={name} className="w-full aspect-square object-cover rounded-[1.25rem]" />
+                {aboutImage ? (
+                  <img src={aboutImage} alt={name} className="w-full aspect-square object-cover rounded-[1.25rem]" />
                 ) : (
                   <div className="w-full aspect-square flex items-center justify-center gd-display text-9xl font-extrabold rounded-[1.25rem]"
                     style={{ background: `linear-gradient(135deg, ${C.primary}, ${C.primary2})`, color: "#fff" }}>

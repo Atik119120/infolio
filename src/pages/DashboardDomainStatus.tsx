@@ -270,9 +270,9 @@ export default function DashboardDomainStatus() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
             <div className="flex items-center gap-2 p-2 rounded border bg-background">
               <StatusDot s={subdomainCheck.a} />
-              <span className="text-muted-foreground">Wildcard A record:</span>
+              <span className="text-muted-foreground">Wildcard DNS:</span>
               <span className="font-mono text-xs ml-auto">
-                {subdomainCheck.aValue?.[0] || "—"}
+                {subdomainCheck.cnameValue?.[0] || subdomainCheck.aValue?.[0] || "—"}
               </span>
             </div>
             <div className="flex items-center gap-2 p-2 rounded border bg-background">
@@ -341,9 +341,9 @@ export default function DashboardDomainStatus() {
                     <div className="flex items-center gap-2 p-2 rounded border bg-background">
                       <StatusDot s={c.a} />
                       <div className="flex-1 min-w-0">
-                        <div className="text-xs text-muted-foreground">A record</div>
+                        <div className="text-xs text-muted-foreground">DNS record</div>
                         <div className="font-mono text-xs truncate">
-                          {c.aValue?.[0] || (c.a === "fail" ? "Wrong/missing" : "Checking…")}
+                          {c.cnameValue?.[0] || c.aValue?.[0] || (c.a === "fail" ? "Wrong/missing" : "Checking…")}
                         </div>
                       </div>
                     </div>

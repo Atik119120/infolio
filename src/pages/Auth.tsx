@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, ArrowRight, Phone, Mail, User, Lock } from "lucide-react";
+import { Loader2, ArrowRight, ArrowLeft, Phone, Mail, User, Lock } from "lucide-react";
 import { z } from "zod";
 import alphaLogo from "@/assets/alpha-portfolio-logo.png";
 import { isDisposableEmail, isAllowedEmailDomain } from "@/lib/tempEmailValidator";

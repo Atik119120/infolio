@@ -104,7 +104,7 @@ export default function Dashboard() {
               <div className="flex items-center gap-2.5">
                 <div className="relative">
                   <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-violet-500 via-purple-500 to-fuchsia-500 flex items-center justify-center shadow-lg shadow-purple-500/25">
-                    <img src={alphaLogo} alt="Alpha" className="w-5 h-5 object-contain invert" />
+                    <img src={alphaLogo} alt="Alpha" className="h-6 w-auto object-contain invert" />
                   </div>
                 </div>
                 <div>

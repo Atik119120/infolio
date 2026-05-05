@@ -469,48 +469,35 @@ export function StandardThemeShell({
         </section>
       )}
 
-      {/* CONTACT — split panel: dramatic dark side + clean form side */}
+      {/* CONTACT — centered modern with info pills + form card */}
       <section id="contact" className="py-20 md:py-28 relative overflow-hidden" style={{ background: s.background }}>
+        <div aria-hidden className="absolute inset-0 pointer-events-none"
+          style={{ background: `radial-gradient(ellipse at top, ${s.primary}10, transparent 60%)` }} />
         <div className="container mx-auto px-5 relative">
-          <div
-            className="grid md:grid-cols-2 overflow-hidden"
-            style={{ borderRadius: s.radius, boxShadow: `0 30px 80px -20px ${s.primary}33` }}
-          >
-            <motion.div
-              {...fadeUp}
-              className="p-8 md:p-12 relative overflow-hidden"
-              style={{ background: s.text, color: s.background }}
-            >
-              <div aria-hidden className="absolute -top-20 -left-20 w-80 h-80 rounded-full"
-                style={{ background: `radial-gradient(circle, ${s.primary}55, transparent 70%)` }} />
-              <div aria-hidden className="absolute -bottom-32 -right-20 w-96 h-96 rounded-full"
-                style={{ background: `radial-gradient(circle, ${s.accent}33, transparent 70%)` }} />
-              <div className="relative">
-                <div className="inline-flex items-center gap-2 px-3 py-1 mb-6 text-[11px] font-bold tracking-[0.25em] uppercase rounded-full"
-                  style={{ background: `${s.primary}33`, color: "#fff" }}>
-                  <span className="w-2 h-2 rounded-full animate-pulse" style={{ background: s.primary }} />
-                  Available for Work
-                </div>
-                <h2 className="t-display text-4xl md:text-5xl lg:text-6xl font-bold leading-[1.05] mb-5">
-                  Let's create<br />
-                  <span style={{ color: s.primary }}>something great.</span>
-                </h2>
-                <p className="text-base opacity-80 mb-10 max-w-md">
-                  Whether it's a bold new brand, a digital product, or a creative collaboration — drop a message and let's start the conversation.
-                </p>
-                <div className="space-y-5">
-                  {email && <ContactLine icon={<Mail className="w-4 h-4" />} label="Email" value={email} href={`mailto:${email}`} s={s} />}
-                  {phone && <ContactLine icon={<Phone className="w-4 h-4" />} label="Phone" value={phone} href={`tel:${phone}`} s={s} />}
-                  {location && <ContactLine icon={<MapPin className="w-4 h-4" />} label="Based in" value={location} s={s} />}
-                </div>
-              </div>
+          <motion.div {...fadeUp} className="text-center max-w-2xl mx-auto mb-12">
+            <SectionLabel s={s}>Get in Touch</SectionLabel>
+            <h2 className="t-display text-3xl md:text-5xl font-bold mt-4 mb-3">
+              Let's <span style={{ color: s.primary }}>work together</span>
+            </h2>
+            <p className="text-base" style={{ color: s.textMuted }}>
+              Have a project in mind? Send a message and I'll get back within 24 hours.
+            </p>
+          </motion.div>
+
+          <div className="max-w-5xl mx-auto grid md:grid-cols-5 gap-6">
+            <motion.div {...fadeUp} className="md:col-span-2 space-y-3">
+              {email && <ContactCard icon={<Mail className="w-5 h-5" />} label="Email" value={email} href={`mailto:${email}`} s={s} />}
+              {phone && <ContactCard icon={<Phone className="w-5 h-5" />} label="Phone" value={phone} href={`tel:${phone}`} s={s} />}
+              {location && <ContactCard icon={<MapPin className="w-5 h-5" />} label="Location" value={location} s={s} />}
+              {website && <ContactCard icon={<Globe className="w-5 h-5" />} label="Website" value={website.replace(/^https?:\/\//, "")} href={website} s={s} />}
             </motion.div>
 
-            <motion.div {...fadeUp} transition={{ duration: 0.6, delay: 0.1 }} className="p-8 md:p-12" style={{ background: s.surface }}>
-              <div className="mb-6">
-                <span className="text-xs font-bold tracking-[0.25em] uppercase" style={{ color: s.primary }}>Send a Message</span>
-                <h3 className="t-display text-2xl md:text-3xl font-bold mt-2">Tell me about your project</h3>
-              </div>
+            <motion.div
+              {...fadeUp}
+              transition={{ duration: 0.6, delay: 0.1 }}
+              className="md:col-span-3 p-8 md:p-10"
+              style={{ background: s.surface, borderRadius: s.radius, border: `1px solid ${s.border}`, boxShadow: `0 20px 50px -20px ${s.primary}22` }}
+            >
               {userId && <ContactForm portfolioOwnerId={userId} />}
             </motion.div>
           </div>

@@ -71,6 +71,7 @@ export default function AdminDashboard() {
     { icon: LayoutDashboard, label: "Overview", path: "/admin" },
     { icon: Users, label: "Users & Portfolios", path: "/admin/users" },
     { icon: Palette, label: "Themes", path: "/admin/themes" },
+    { icon: Crown, label: "Pro Plans", path: "/admin/plans" },
     { icon: MessageSquare, label: "Support Messages", path: "/admin/support" },
     { icon: Settings, label: "Settings", path: "/admin/settings" },
   ];

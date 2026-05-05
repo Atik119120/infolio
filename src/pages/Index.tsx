@@ -150,6 +150,17 @@ export default function Index() {
               <span className="inline-flex items-center gap-1.5"><Check className="w-4 h-4 text-primary" /> No credit card</span>
               <span className="inline-flex items-center gap-1.5"><Check className="w-4 h-4 text-primary" /> Live in 5 min</span>
             </div>
+
+            <div className="mt-6 flex items-center justify-center">
+              <button
+                onClick={() => navigate("/themes")}
+                className="group inline-flex items-center gap-2 px-4 py-2 rounded-full border border-primary/30 bg-primary/5 hover:bg-primary/10 hover:border-primary/50 text-primary text-sm font-medium transition-all"
+              >
+                <Palette className="w-4 h-4" />
+                View all themes
+                <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5" />
+              </button>
+            </div>
           </motion.div>
         </div>
       </section>

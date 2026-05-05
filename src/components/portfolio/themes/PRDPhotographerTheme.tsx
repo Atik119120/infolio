@@ -541,9 +541,8 @@ function Stat({ n, label }: { n: number; label: string }) {
 
 function ContactCard({ icon, label, value, href }: { icon: React.ReactNode; label: string; value: string; href?: string }) {
   const inner = (
-    <div className="flex items-center gap-4 p-5 transition-all hover:-translate-y-0.5"
-      style={{ background: C.surface, border: `1px solid ${C.border}` }}>
-      <div className="w-12 h-12 flex items-center justify-center" style={{ background: C.surface2, color: C.primary, border: `1px solid ${C.primary}33` }}>
+    <div className="flex items-center gap-4 p-5 rounded-2xl gx-glass gx-glow-ring transition-all hover:-translate-y-0.5">
+      <div className="w-12 h-12 flex items-center justify-center rounded-xl gx-glass-strong" style={{ color: C.primary }}>
         {icon}
       </div>
       <div className="min-w-0">

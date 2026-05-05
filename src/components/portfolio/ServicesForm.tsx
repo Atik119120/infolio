@@ -48,7 +48,7 @@ export function ServicesForm({ services, userId, onUpdate, onSuccess, onError }:
     if (error) onError("Failed to add service");
     else {
       onSuccess("Service added");
-      setDraft({ title: "", description: "", icon: "✨", price: "" });
+      setDraft({ title: "", description: "", icon: "sparkles", price: "" });
       onUpdate();
     }
   };

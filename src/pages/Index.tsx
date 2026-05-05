@@ -6,7 +6,7 @@ import { MessageCircle } from "lucide-react";
 import { motion } from "framer-motion";
 import {
   ArrowRight, Zap, Globe, Palette, Users, Sparkles, Check,
-  ShieldCheck, ArrowUpRight, Plus, Minus, Star, BadgeCheck, Crown, X,
+  ShieldCheck, ArrowUpRight, Plus, Minus, Star, BadgeCheck, Crown, X, Menu,
 } from "lucide-react";
 import ThemeDemoSection from "@/components/home/ThemeDemoSection";
 import Footer from "@/components/home/Footer";

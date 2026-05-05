@@ -354,7 +354,7 @@ export default function PRDGraphicDesignerTheme({
               {softwares.map((sw) => (
                 <div key={sw.name} className="aspect-square flex flex-col items-center justify-center gap-3 p-4 transition-all hover:-translate-y-1"
                   style={{ background: C.surface, border: `1px solid ${C.border}` }}>
-                  <span className="text-4xl">{sw.icon}</span>
+                  <ServiceIcon icon={sw.icon} className="w-8 h-8" style={{ color: C.primary } as any} />
                   <span className="gd-display text-sm font-bold text-center">{sw.name}</span>
                 </div>
               ))}

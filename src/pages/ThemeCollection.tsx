@@ -115,12 +115,6 @@ export default function ThemeCollection() {
       {freeThemes && freeThemes.themes.length > 0 && (
         <section className="py-8 px-6">
           <div className="container mx-auto">
-            <div className="flex items-center gap-2 mb-6">
-              <Badge variant="secondary" className="text-lg px-4 py-1.5">
-                🎁 Free Theme
-              </Badge>
-            </div>
-            
             {freeThemes.themes.map((theme) => (
               <motion.div
                 key={theme.value}

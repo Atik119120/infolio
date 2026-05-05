@@ -109,36 +109,36 @@ export default function PRDPhotographerTheme({
         .sl-carousel:hover { animation-play-state: paused; }
       `}</style>
 
-      {/* HEADER */}
-      <header className="sticky top-0 z-40 gx-glass-nav">
-        <div className="container mx-auto px-5 py-4 flex items-center justify-between">
-          <a href="#home" className="sl-display text-2xl font-bold tracking-tight flex items-center gap-2" style={{ color: C.ink }}>
+      {/* HEADER — slim floating pill */}
+      <header className="sticky top-3 z-40 px-3 md:px-5">
+        <div className="container mx-auto gx-glass-nav rounded-full px-4 md:px-5 py-2.5 flex items-center justify-between max-w-6xl">
+          <a href="#home" className="sl-display text-lg font-bold tracking-tight flex items-center gap-2" style={{ color: C.ink }}>
             {portfolio?.logo_url ? (
-              <img src={portfolio.logo_url} alt={name} className="h-9 w-auto object-contain" />
+              <img src={portfolio.logo_url} alt={name} className="h-7 w-auto object-contain" />
             ) : (
               <>
-                <Aperture className="w-6 h-6" style={{ color: C.primary }} />
+                <Aperture className="w-5 h-5" style={{ color: C.primary }} />
                 <span className="italic">{name.split(" ")[0]}</span>
               </>
             )}
           </a>
-          <nav className="hidden md:flex items-center gap-1 text-sm tracking-wider uppercase gx-glass rounded-full px-2 py-1.5">
+          <nav className="hidden md:flex items-center gap-1 text-[11px] tracking-[0.2em] uppercase">
             {NAV.map((n) => (
-              <a key={n.id} href={`#${n.id}`} className="sl-link px-4 py-1.5 rounded-full hover:bg-white/10 transition" style={{ color: C.muted }}>{n.label}</a>
+              <a key={n.id} href={`#${n.id}`} className="sl-link px-3 py-1.5 rounded-full hover:bg-white/10 transition" style={{ color: C.muted }}>{n.label}</a>
             ))}
           </nav>
           <div className="hidden md:block">
-            <a href="#contact" className="sl-btn-primary inline-flex items-center gap-2 px-5 py-2.5 text-xs font-bold uppercase tracking-wider rounded-full">
-              Book a Shoot <ArrowRight className="w-3.5 h-3.5" />
+            <a href="#contact" className="sl-btn-primary inline-flex items-center gap-1.5 px-4 py-1.5 text-[10px] font-bold uppercase tracking-wider rounded-full">
+              Book <ArrowRight className="w-3 h-3" />
             </a>
           </div>
           <button className="md:hidden" onClick={() => setMenuOpen(!menuOpen)} aria-label="Menu">
-            {menuOpen ? <X /> : <Menu />}
+            {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
         </div>
         {menuOpen && (
-          <div className="md:hidden gx-glass-nav">
-            <div className="container mx-auto px-5 py-3 flex flex-col gap-3">
+          <div className="md:hidden mt-2 container mx-auto max-w-6xl gx-glass-nav rounded-2xl">
+            <div className="px-5 py-3 flex flex-col gap-2">
               {NAV.map((n) => (
                 <a key={n.id} href={`#${n.id}`} onClick={() => setMenuOpen(false)} className="py-2 text-sm uppercase tracking-wider">{n.label}</a>
               ))}

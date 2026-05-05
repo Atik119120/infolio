@@ -113,7 +113,7 @@ interface PurchaseStatus {
 }
 
 export function ThemeSelector({ currentTheme, userId, onUpdate }: ThemeSelectorProps) {
-  const [selectedTheme, setSelectedTheme] = useState(currentTheme || 'simple');
+  const [selectedTheme, setSelectedTheme] = useState(currentTheme || 'freelancer');
   const [saving, setSaving] = useState(false);
   const [previewTheme, setPreviewTheme] = useState<string | null>(null);
   const [purchasedThemes, setPurchasedThemes] = useState<PurchaseStatus[]>([]);
@@ -122,6 +122,10 @@ export function ThemeSelector({ currentTheme, userId, onUpdate }: ThemeSelectorP
   const { toast } = useToast();
 
   const groupedThemes = getGroupedThemes();
+
+  useEffect(() => {
+    setSelectedTheme(currentTheme || 'freelancer');
+  }, [currentTheme]);
 
   // Fetch user's purchased themes
   useEffect(() => {
@@ -428,6 +432,33 @@ export function ThemeSelector({ currentTheme, userId, onUpdate }: ThemeSelectorP
                             </Dialog>
                           </div>
                           <p className="text-xs text-muted-foreground line-clamp-2">{theme.description}</p>
+                          <Button
+                            className="mt-4 w-full"
+                            variant={isSelected ? "secondary" : isUnlocked ? "default" : "outline"}
+                            size="sm"
+                            disabled={isSelected || saving}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleThemeChange(theme.value);
+                            }}
+                          >
+                            {isSelected ? (
+                              <>
+                                <Check className="w-4 h-4 mr-2" />
+                                Selected
+                              </>
+                            ) : isUnlocked ? (
+                              <>
+                                <Palette className="w-4 h-4 mr-2" />
+                                Select Theme
+                              </>
+                            ) : (
+                              <>
+                                <Lock className="w-4 h-4 mr-2" />
+                                Unlock
+                              </>
+                            )}
+                          </Button>
                         </div>
                       </div>
                     );

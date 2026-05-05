@@ -310,8 +310,8 @@ function SectionHeader({ eyebrow, title, subtitle }: { eyebrow: string; title: s
       transition={{ duration: 0.5 }}
       className="text-center max-w-2xl mx-auto"
     >
-      <div className="inline-flex items-center gap-2 text-[11px] font-semibold tracking-[0.2em] uppercase text-muted-foreground mb-5">
-        <span className="w-6 h-px bg-border" /> {eyebrow} <span className="w-6 h-px bg-border" />
+      <div className="inline-flex items-center gap-2 text-[11px] font-semibold tracking-[0.2em] uppercase text-primary mb-5">
+        <span className="w-6 h-px bg-primary/40" /> {eyebrow} <span className="w-6 h-px bg-primary/40" />
       </div>
       <h2 className="text-3xl md:text-5xl font-semibold tracking-[-0.025em] mb-4">{title}</h2>
       <p className="text-base md:text-lg text-muted-foreground leading-relaxed">{subtitle}</p>

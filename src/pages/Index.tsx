@@ -32,7 +32,7 @@ export default function Index() {
           </button>
           <div className="hidden md:flex items-center gap-8">
             <a href="#features" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Features</a>
-            
+            <button onClick={() => navigate("/themes")} className="text-sm text-muted-foreground hover:text-foreground transition-colors">Themes</button>
             <a href="#pricing" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Pricing</a>
             <a href="#faq" className="text-sm text-muted-foreground hover:text-foreground transition-colors">FAQ</a>
           </div>

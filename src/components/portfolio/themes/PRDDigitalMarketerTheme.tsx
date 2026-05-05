@@ -292,7 +292,7 @@ export default function PRDDigitalMarketerTheme({
                 Marketing rooted in <span style={{ color: C.accent }}>numbers</span>, not luck.
               </h2>
               <p className="text-base md:text-lg leading-[1.85] mb-8" style={{ color: C.muted }}>
-                {bio}
+                {aboutText}
               </p>
               <div className="grid sm:grid-cols-2 gap-3 mb-8">
                 {[

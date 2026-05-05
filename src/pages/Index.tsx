@@ -47,11 +47,15 @@ export default function Index() {
       {/* HERO */}
       <section className="relative pt-40 pb-28 px-6 overflow-hidden">
         <div aria-hidden className="absolute inset-0 -z-10">
+          {/* cyan blobs */}
+          <div className="absolute top-1/4 -left-32 w-[500px] h-[500px] rounded-full bg-primary/20 blur-[130px]" />
+          <div className="absolute -top-20 right-0 w-[480px] h-[480px] rounded-full bg-accent/25 blur-[140px]" />
+          <div className="absolute bottom-0 left-1/3 w-[420px] h-[420px] rounded-full bg-secondary/15 blur-[120px]" />
           <div
-            className="absolute inset-0 opacity-[0.04]"
+            className="absolute inset-0 opacity-[0.05]"
             style={{
               backgroundImage:
-                "linear-gradient(hsl(var(--foreground)) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--foreground)) 1px, transparent 1px)",
+                "linear-gradient(hsl(var(--primary)) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--primary)) 1px, transparent 1px)",
               backgroundSize: "72px 72px",
               maskImage: "radial-gradient(ellipse 70% 50% at 50% 40%, #000 30%, transparent 80%)",
             }}
@@ -60,22 +64,22 @@ export default function Index() {
 
         <div className="container mx-auto max-w-3xl text-center relative z-10">
           <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-border bg-card/50 text-muted-foreground mb-8">
-              <span className="w-1.5 h-1.5 rounded-full bg-foreground" />
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-primary/30 bg-primary/10 text-primary mb-8">
+              <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
               <span className="text-[11px] font-semibold tracking-[0.18em] uppercase">Your Digital Identity</span>
             </div>
 
             <h1 className="text-5xl md:text-7xl font-semibold leading-[1.02] tracking-[-0.03em] mb-6">
               One profile.
               <br />
-              <span className="text-muted-foreground">Endless reach.</span>
+              <span className="gradient-text">Endless reach.</span>
             </h1>
 
             <p className="text-base md:text-lg text-muted-foreground max-w-xl mx-auto mb-10 leading-relaxed">
               A clean, beautiful portfolio in minutes. Showcase your work, links and story in a single place you actually own.
             </p>
 
-            <div className="bg-card border border-border rounded-full p-1.5 flex items-center gap-2 max-w-lg mx-auto">
+            <div className="bg-card border border-primary/20 rounded-full p-1.5 flex items-center gap-2 max-w-lg mx-auto shadow-lg shadow-primary/10">
               <div className="flex-1 flex items-center pl-4 min-w-0">
                 <span className="text-muted-foreground text-sm font-medium hidden sm:inline">alphazero.online/</span>
                 <input
@@ -86,13 +90,13 @@ export default function Index() {
                   onKeyDown={(e) => e.key === "Enter" && handleClaim()}
                 />
               </div>
-              <Button onClick={handleClaim} size="sm" className="rounded-full bg-foreground text-background hover:bg-foreground/90 px-5">
+              <Button onClick={handleClaim} size="sm" className="rounded-full gradient-primary text-white hover:opacity-90 px-5 shadow-md shadow-primary/30">
                 Claim <ArrowRight className="ml-1.5 w-4 h-4" />
               </Button>
             </div>
 
             <div className="mt-5 flex items-center justify-center gap-2 text-sm text-muted-foreground">
-              <Check className="w-4 h-4" />
+              <Check className="w-4 h-4 text-primary" />
               <span>Free forever. No credit card required.</span>
             </div>
           </motion.div>

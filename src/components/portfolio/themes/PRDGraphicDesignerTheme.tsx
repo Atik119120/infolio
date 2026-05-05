@@ -248,7 +248,7 @@ export default function PRDGraphicDesignerTheme({
                 identities since day one.
               </h2>
               <p className="text-base md:text-lg leading-[1.85] mb-8" style={{ color: C.muted }}>
-                {bio}
+                {aboutText}
               </p>
               <div className="grid sm:grid-cols-2 gap-3 mb-8 text-sm">
                 {phone && <FactPill label="Phone" value={phone} />}

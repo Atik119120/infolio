@@ -243,9 +243,9 @@ export function StandardThemeShell({
                   className="absolute -bottom-4 -right-4 w-full h-full"
                   style={{ background: s.primary, borderRadius: s.radius }}
                 />
-                {profile?.avatar_url ? (
+                {aboutImage ? (
                   <img
-                    src={profile.avatar_url}
+                    src={aboutImage}
                     alt={name}
                     className="relative w-full aspect-[4/5] object-cover"
                     style={{ borderRadius: s.radius }}

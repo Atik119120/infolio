@@ -41,14 +41,6 @@ export default function Index() {
             <a href="#faq" className="text-sm text-muted-foreground hover:text-foreground transition-colors">FAQ</a>
           </div>
           <div className="flex items-center gap-2">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => openWhatsApp("Hi! I have a question about Alokchitra.")}
-              className="hidden sm:inline-flex text-sm gap-1.5 text-[#25D366] hover:text-[#1fbb59]"
-            >
-              <MessageCircle className="w-4 h-4" /> Support
-            </Button>
             <Button variant="ghost" size="sm" onClick={() => navigate("/auth")} className="hidden sm:inline-flex text-sm">Login</Button>
             <Button size="sm" className="hidden sm:inline-flex rounded-full gradient-primary text-white hover:opacity-90 text-sm shadow-md shadow-primary/20" onClick={() => navigate("/auth")}>
               Get started

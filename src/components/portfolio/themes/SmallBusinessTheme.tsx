@@ -202,8 +202,8 @@ export default function SmallBusinessTheme({
           <div className="grid md:grid-cols-12 gap-12 items-center">
             <motion.div {...fadeUp} className="md:col-span-5">
               <div className="relative">
-                {profile?.avatar_url ? (
-                  <img src={profile.avatar_url} alt={name}
+                {aboutImage ? (
+                  <img src={aboutImage} alt={name}
                     className="w-full aspect-square object-cover rounded-3xl"
                     style={{ boxShadow: `0 20px 60px -20px ${C.ink}22` }} />
                 ) : (

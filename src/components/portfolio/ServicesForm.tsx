@@ -116,7 +116,7 @@ export function ServicesForm({ services, userId, onUpdate, onSuccess, onError }:
           {services.map((s) => (
             <Card key={s.id}>
               <CardContent className="p-4 flex items-start gap-3">
-                <div className="text-2xl">{s.icon || "✨"}</div>
+                <div className="w-10 h-10 rounded-lg grid place-items-center bg-primary/10 text-primary shrink-0"><ServiceIcon icon={s.icon} className="w-5 h-5" /></div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between gap-2">
                     <h4 className="font-semibold truncate">{s.title}</h4>

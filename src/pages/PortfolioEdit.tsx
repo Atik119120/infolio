@@ -155,7 +155,8 @@ export default function PortfolioEdit() {
     );
   }
 
-  const tabs = [
+  // All available tabs
+  const allTabs = [
     { value: "theme", label: "Theme", icon: Palette },
     { value: "basic", label: "Basic Info", icon: User },
     { value: "branding", label: "Branding", icon: Image },
@@ -167,22 +168,47 @@ export default function PortfolioEdit() {
     { value: "social", label: "Social Links", icon: Link2 },
   ];
 
+  // Each theme exposes only the sections it actually renders.
+  // Theme → enabled feature tabs (theme/basic/branding/social are universal)
+  const THEME_FEATURES: Record<string, string[]> = {
+    "freelancer":            ["theme", "basic", "branding", "skills", "services", "projects", "experience", "education", "social"],
+    "small-business":        ["theme", "basic", "branding", "skills", "services", "projects", "experience", "education", "social"],
+    "prd-graphic-designer":  ["theme", "basic", "branding", "skills", "services", "projects", "experience", "social"],
+    "prd-photographer":      ["theme", "basic", "branding", "services", "projects", "experience", "education", "social"],
+    "prd-digital-marketer":  ["theme", "basic", "branding", "services", "projects", "experience", "social"],
+    "biography":             ["theme", "basic", "branding", "projects", "experience", "education", "social"],
+  };
+
+  const activeTheme = portfolio?.theme || "freelancer";
+  const enabled = THEME_FEATURES[activeTheme] || allTabs.map((t) => t.value);
+  const tabs = allTabs.filter((t) => enabled.includes(t.value));
+
+  // If active tab not enabled by current theme, jump back to theme tab
+  if (!enabled.includes(activeTab)) {
+    setTimeout(() => setActiveTab("theme"), 0);
+  }
+
   return (
     <div className="space-y-4 animate-fade-in">
       <div>
         <h1 className="text-xl font-bold">Edit Portfolio</h1>
-        <p className="text-sm text-muted-foreground">Choose theme and customize content</p>
+        <p className="text-sm text-muted-foreground">
+          Choose theme and customize content — sections shown match your selected theme
+        </p>
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
-        <TabsList className="grid grid-cols-4 lg:grid-cols-8 h-auto gap-1.5 bg-transparent p-0">
+        <TabsList
+          className="grid h-auto gap-1.5 bg-transparent p-0"
+          style={{ gridTemplateColumns: `repeat(${Math.min(tabs.length, 9)}, minmax(0, 1fr))` }}
+        >
           {tabs.map((tab) => (
             <TabsTrigger
               key={tab.value}
               value={tab.value}
               className={`flex items-center gap-1.5 px-3 py-2 rounded-lg border text-xs font-medium transition-all ${
-                tab.value === 'theme' 
-                  ? 'data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-accent data-[state=active]:text-white border-primary/30' 
+                tab.value === 'theme'
+                  ? 'data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-accent data-[state=active]:text-white border-primary/30'
                   : 'data-[state=active]:bg-primary data-[state=active]:text-primary-foreground'
               }`}
             >

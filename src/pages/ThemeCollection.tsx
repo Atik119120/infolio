@@ -111,24 +111,19 @@ export default function ThemeCollection() {
         </div>
       </section>
 
-      {/* Free Theme Section */}
+      {/* Theme Section */}
       {freeThemes && freeThemes.themes.length > 0 && (
         <section className="py-8 px-6">
           <div className="container mx-auto">
-            {/* Category Header (matches premium style) */}
+            {/* Category Header */}
             <div className="flex items-center gap-3 mb-6">
               <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${categoryColors['free']} flex items-center justify-center shadow-lg`}>
                 <Star className="w-5 h-5 text-white" />
               </div>
               <div>
-                <h3 className="text-xl font-bold flex items-center gap-2">
-                  Free Themes
-                  <span className="text-[10px] font-bold tracking-[0.18em] uppercase px-2 py-0.5 rounded-full bg-primary/15 text-primary border border-primary/30">
-                    No payment
-                  </span>
-                </h3>
+                <h3 className="text-xl font-bold">Themes</h3>
                 <p className="text-sm text-muted-foreground">
-                  {freeThemes.themes.length} theme{freeThemes.themes.length > 1 ? "s" : ""} — free forever
+                  {freeThemes.themes.length} theme{freeThemes.themes.length > 1 ? "s" : ""} available
                 </p>
               </div>
             </div>
@@ -144,11 +139,6 @@ export default function ThemeCollection() {
                   onClick={() => navigate(`/demo/${theme.value}`)}
                 >
                   <div className="relative overflow-hidden rounded-2xl bg-card border border-primary/30 shadow-lg hover:shadow-2xl hover:shadow-primary/20 transition-all duration-300 group-hover:scale-[1.02] group-hover:-translate-y-1">
-                    {/* FREE corner ribbon */}
-                    <div className="absolute -right-10 top-4 z-20 rotate-45 bg-gradient-to-r from-primary to-accent text-white text-[10px] font-bold tracking-widest px-12 py-1 shadow-md">
-                      FREE
-                    </div>
-
                     {/* Theme Preview */}
                     <div className={`h-36 md:h-44 bg-gradient-to-br ${categoryColors['free']} relative overflow-hidden`}>
                       <div className="absolute inset-0 bg-black/10" />

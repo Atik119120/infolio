@@ -217,10 +217,6 @@ export function ThemeSelector({ currentTheme, userId, onUpdate }: ThemeSelectorP
           <div className="flex flex-wrap items-center gap-4 text-sm p-4 bg-muted/50 rounded-lg">
             <span className="font-medium">Tiers:</span>
             <span className="flex items-center gap-1.5">
-              <div className="w-3 h-3 rounded bg-green-500" />
-              Free
-            </span>
-            <span className="flex items-center gap-1.5">
               <div className="w-3 h-3 rounded bg-blue-500" />
               Standard ৳200
             </span>
@@ -298,11 +294,7 @@ export function ThemeSelector({ currentTheme, userId, onUpdate }: ThemeSelectorP
                                 Active
                               </Badge>
                             )}
-                            {isFree ? (
-                              <Badge variant="secondary" className="bg-green-500/90 text-white border-0">
-                                Free
-                              </Badge>
-                            ) : isUnlocked ? (
+                            {isFree ? null : isUnlocked ? (
                               <Badge variant="secondary" className="bg-amber-500/90 text-white border-0">
                                 <Sparkles className="w-3 h-3 mr-1" />
                                 Owned
@@ -353,11 +345,7 @@ export function ThemeSelector({ currentTheme, userId, onUpdate }: ThemeSelectorP
                                       <Icon className="w-5 h-5 text-white" />
                                     </div>
                                     {theme.label} Theme
-                                    {isFree ? (
-                                      <Badge variant="secondary" className="bg-green-500 text-white ml-2">
-                                        Free
-                                      </Badge>
-                                    ) : (
+                                    {isFree ? null : (
                                       <Badge className={`${theme.tier === 'pro' ? 'bg-gradient-to-r from-amber-500 to-orange-500' : theme.tier === 'elite' ? 'bg-gradient-to-r from-purple-500 to-fuchsia-500' : 'bg-blue-500'} text-white ml-2 capitalize`}>
                                         {theme.tier} - ৳{theme.price}
                                       </Badge>

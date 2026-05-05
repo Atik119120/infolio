@@ -37,7 +37,7 @@ interface DnsCheck {
   checkedAt?: Date;
 }
 
-const ACCEPTED_IPS = ["76.76.21.21", "76.76.21.61", "76.76.21.93"];
+const ACCEPTED_IPS = ["76.76.21.21", "76.76.21.61", "76.76.21.93", "216.198.79.1", "216.198.79.193"];
 const MAIN_DOMAIN = "alokchitra.site";
 
 function isVercelDnsTarget(target: string): boolean {
@@ -305,10 +305,15 @@ export default function DashboardDomainStatus() {
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-3">
+          <div className="flex justify-end">
+            <Button size="sm" onClick={() => (window.location.href = "/dashboard/settings#custom-domain")}>
+              <Globe2 className="w-4 h-4 mr-2" /> Add Custom Domain
+            </Button>
+          </div>
           {domains.length === 0 ? (
             <div className="text-center py-8 text-muted-foreground text-sm">
               <Globe2 className="w-10 h-10 mx-auto mb-2 opacity-30" />
-              No custom domains added yet. Add one from Settings.
+              No custom domains added yet. Click "Add Custom Domain" above.
             </div>
           ) : (
             domains.map((d) => {

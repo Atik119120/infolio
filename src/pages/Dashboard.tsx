@@ -75,7 +75,6 @@ export default function Dashboard() {
     { icon: LayoutDashboard, label: "Overview", path: "/dashboard" },
     { icon: User, label: "Profile", path: "/dashboard/edit", hash: "basic" },
     { icon: FileEdit, label: "Edit Portfolio", path: "/dashboard/edit" },
-    { icon: ShoppingBag, label: "My Purchases", path: "/dashboard/purchases" },
     { icon: Globe2, label: "Domain Status", path: "/dashboard/domain-status" },
     { icon: Settings, label: "Settings", path: "/dashboard/settings" },
   ];

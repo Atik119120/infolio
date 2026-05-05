@@ -29,7 +29,7 @@ async function sendToTelegram(type: string, data: Record<string, unknown>) {
 }
 
 interface NotificationRequest {
-  type: "welcome" | "publish_request" | "support" | "account_approved" | "account_rejected" | "publish_approved" | "theme_purchase" | "support_message" | "support_reply";
+  type: "welcome" | "publish_request" | "support" | "account_approved" | "account_rejected" | "publish_approved" | "theme_purchase" | "plan_purchase" | "support_message" | "support_reply";
   userId?: string;
   userEmail?: string;
   // Allow alternate field names (some callers/bots may send these)

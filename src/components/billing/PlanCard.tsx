@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Crown, Check, Sparkles } from "lucide-react";
 import { usePlan } from "@/hooks/usePlan";
 import { useAuth } from "@/contexts/AuthContext";
-import { PlanPurchaseDialog } from "./PlanPurchaseDialog";
+import { WhatsAppUpgradeDialog } from "./WhatsAppUpgradeDialog";
 
 export function PlanCard() {
   const { plan, isPro, expiresAt, storageLimitBytes, loading } = usePlan();

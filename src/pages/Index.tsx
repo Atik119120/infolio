@@ -64,56 +64,6 @@ export default function Index() {
           aria-hidden
           className="absolute inset-x-0 top-0 h-40 -z-10 pointer-events-none bg-gradient-to-b from-background to-transparent"
         />
-        {/* cyan ambient + grid */}
-        <div aria-hidden className="absolute inset-0 -z-10 pointer-events-none">
-          <div className="absolute top-1/4 -left-40 w-[420px] h-[420px] rounded-full bg-primary/15 blur-[140px]" />
-          <div className="absolute -top-32 right-0 w-[420px] h-[420px] rounded-full bg-accent/15 blur-[140px]" />
-
-          <div
-            className="absolute inset-0 opacity-[0.05]"
-            style={{
-              backgroundImage:
-                "linear-gradient(hsl(var(--primary)) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--primary)) 1px, transparent 1px)",
-              backgroundSize: "64px 64px",
-              maskImage: "radial-gradient(ellipse 80% 60% at 50% 30%, #000 30%, transparent 80%)",
-            }}
-          />
-        </div>
-
-        {/* Decorative background orbs & rings */}
-        <div aria-hidden className="absolute inset-0 -z-10 pointer-events-none">
-          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] rounded-full border border-primary/10" />
-          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[1000px] h-[1000px] rounded-full border border-primary/5" />
-          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[1300px] h-[1300px] rounded-full border border-primary/5" />
-          <motion.div
-            animate={{ y: [0, -18, 0] }}
-            transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-            className="absolute top-[18%] left-[12%] w-14 h-14 rounded-2xl gradient-primary shadow-xl shadow-primary/40 grid place-items-center rotate-12"
-          >
-            <Sparkles className="w-6 h-6 text-white" />
-          </motion.div>
-          <motion.div
-            animate={{ y: [0, 14, 0] }}
-            transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 0.6 }}
-            className="absolute bottom-[16%] right-[10%] w-16 h-16 rounded-2xl gradient-accent shadow-xl shadow-accent/40 grid place-items-center -rotate-6"
-          >
-            <Star className="w-7 h-7 text-white fill-white" />
-          </motion.div>
-          <motion.div
-            animate={{ y: [0, -12, 0] }}
-            transition={{ duration: 7, repeat: Infinity, ease: "easeInOut", delay: 0.3 }}
-            className="absolute top-[28%] right-[14%] w-12 h-12 rounded-full bg-card border border-primary/30 shadow-xl shadow-primary/20 grid place-items-center"
-          >
-            <BadgeCheck className="w-5 h-5 text-primary" />
-          </motion.div>
-          <motion.div
-            animate={{ y: [0, 10, 0] }}
-            transition={{ duration: 6.5, repeat: Infinity, ease: "easeInOut", delay: 0.9 }}
-            className="absolute bottom-[22%] left-[14%] w-12 h-12 rounded-full bg-card border border-primary/30 shadow-xl shadow-primary/20 grid place-items-center"
-          >
-            <Globe className="w-5 h-5 text-primary" />
-          </motion.div>
-        </div>
 
         <div className="container mx-auto relative z-10">
           <motion.div

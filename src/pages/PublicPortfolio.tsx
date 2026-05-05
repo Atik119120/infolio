@@ -59,7 +59,12 @@ export default function PublicPortfolio() {
     };
 
     const p: any = portfolio || {};
-    const title = p.meta_title || (profile?.display_name ? `${profile.display_name} | Portfolio` : 'Portfolio');
+    // Browser title fallback chain: custom browser_title → SEO meta_title → brand_name → display_name + headline → "Portfolio"
+    const title =
+      p.browser_title ||
+      p.meta_title ||
+      (p.brand_name && (p.headline ? `${p.brand_name} — ${p.headline}` : p.brand_name)) ||
+      (profile?.display_name ? (p.headline ? `${profile.display_name} — ${p.headline}` : `${profile.display_name} | Portfolio`) : 'Portfolio');
     document.title = title;
     setMeta('description', p.meta_description || p.bio || '');
     setMeta('keywords', p.meta_keywords || '');

@@ -7,18 +7,15 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   Palette, 
   Eye, 
-  Code, 
   Camera, 
-  Video, 
   TrendingUp, 
   Briefcase, 
-  Heart,
-  Sparkles,
+  Store,
+  BookOpen,
   ExternalLink,
   Clock,
   CheckCircle2,
   XCircle,
-  Star,
   CreditCard,
   Loader2
 } from "lucide-react";
@@ -28,76 +25,52 @@ import { format } from "date-fns";
 
 const themes = [
   { 
-    id: "simple", 
-    name: "Simple", 
-    icon: Star, 
-    color: "from-slate-500 to-slate-700",
-    description: "Free minimal theme",
+    id: "freelancer", 
+    name: "Freelancer", 
+    icon: Briefcase, 
+    color: "from-blue-500 to-indigo-600",
+    description: "Bold corporate-clean conversion-focused theme",
     isPremium: false
   },
   { 
-    id: "web-developer", 
-    name: "Web Developer", 
-    icon: Code, 
-    color: "from-green-500 to-emerald-600",
-    description: "VS Code-inspired terminal aesthetic",
-    isPremium: true
+    id: "small-business", 
+    name: "Small Business", 
+    icon: Store, 
+    color: "from-amber-500 to-orange-600",
+    description: "Warm friendly local business theme",
+    isPremium: false
   },
   { 
-    id: "graphic-designer", 
+    id: "prd-graphic-designer", 
     name: "Graphic Designer", 
     icon: Palette, 
     color: "from-pink-500 to-rose-600",
-    description: "Adobe Creative Suite inspired",
-    isPremium: true
+    description: "Bold designer portfolio with Pinterest-style gallery",
+    isPremium: false
   },
   { 
-    id: "photographer", 
+    id: "prd-photographer", 
     name: "Photographer", 
     icon: Camera, 
-    color: "from-amber-500 to-orange-600",
-    description: "Camera viewfinder frames",
-    isPremium: true
+    color: "from-amber-600 to-yellow-700",
+    description: "Luxury studio cinematic photographer theme",
+    isPremium: false
   },
   { 
-    id: "video-editor", 
-    name: "Video Editor", 
-    icon: Video, 
-    color: "from-purple-500 to-violet-600",
-    description: "Premiere Pro timeline style",
-    isPremium: true
-  },
-  { 
-    id: "digital-marketer", 
-    name: "Digital Marketer", 
+    id: "prd-digital-marketer", 
+    name: "Growth Lab", 
     icon: TrendingUp, 
-    color: "from-blue-500 to-cyan-600",
-    description: "Dashboard metrics aesthetic",
-    isPremium: true
+    color: "from-cyan-500 to-blue-600",
+    description: "SaaS dashboard data-driven marketer theme",
+    isPremium: false
   },
   { 
-    id: "official", 
-    name: "Official", 
-    icon: Briefcase, 
-    color: "from-slate-600 to-slate-800",
-    description: "Apple-style minimalist corporate",
-    isPremium: true
-  },
-  { 
-    id: "personal", 
-    name: "Personal", 
-    icon: Heart, 
-    color: "from-rose-400 to-pink-500",
-    description: "Story-driven polaroid style",
-    isPremium: true
-  },
-  { 
-    id: "cosmic", 
-    name: "Cosmic", 
-    icon: Sparkles, 
-    color: "from-indigo-600 via-purple-600 to-pink-500",
-    description: "Luxury space universe theme",
-    isPremium: true
+    id: "biography", 
+    name: "Biography", 
+    icon: BookOpen, 
+    color: "from-violet-500 to-purple-700",
+    description: "Facebook-style profile page for writers and personalities",
+    isPremium: false
   },
 ];
 
@@ -440,13 +413,6 @@ export default function AdminThemes() {
                   <div className={`h-24 bg-gradient-to-br ${theme.color} relative`}>
                     <div className="absolute inset-0 flex items-center justify-center">
                       <theme.icon className="w-12 h-12 text-white/80" />
-                    </div>
-                    <div className="absolute top-2 right-2">
-                      {theme.isPremium ? (
-                        <Badge className="bg-amber-500 text-white">৳200</Badge>
-                      ) : (
-                        <Badge className="bg-green-500 text-white">Free</Badge>
-                      )}
                     </div>
                   </div>
                   <CardHeader className="pb-2">

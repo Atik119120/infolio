@@ -22,6 +22,10 @@ export default function Index() {
     navigate(`/auth${username ? `?username=${encodeURIComponent(username)}` : ""}`);
   };
 
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const closeMenu = () => setMobileMenuOpen(false);
+
   return (
     <div className="min-h-screen bg-background overflow-x-hidden text-foreground">
       {/* NAV */}
@@ -46,11 +50,43 @@ export default function Index() {
               <MessageCircle className="w-4 h-4" /> Support
             </Button>
             <Button variant="ghost" size="sm" onClick={() => navigate("/auth")} className="hidden sm:inline-flex text-sm">Login</Button>
-            <Button size="sm" className="rounded-full gradient-primary text-white hover:opacity-90 text-sm shadow-md shadow-primary/20" onClick={() => navigate("/auth")}>
+            <Button size="sm" className="hidden sm:inline-flex rounded-full gradient-primary text-white hover:opacity-90 text-sm shadow-md shadow-primary/20" onClick={() => navigate("/auth")}>
               Get started
             </Button>
+            <button
+              onClick={() => setMobileMenuOpen((v) => !v)}
+              aria-label="Toggle menu"
+              className="md:hidden inline-flex items-center justify-center w-9 h-9 rounded-lg border border-border/60 bg-background/60 hover:bg-muted transition-colors"
+            >
+              {mobileMenuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
+            </button>
           </div>
         </div>
+
+        {/* Mobile dropdown */}
+        {mobileMenuOpen && (
+          <div className="md:hidden px-3 pb-3 pt-1 border-t border-border/60">
+            <div className="flex flex-col gap-1">
+              <a onClick={closeMenu} href="#features" className="px-3 py-2 rounded-lg text-sm text-muted-foreground hover:text-foreground hover:bg-muted transition-colors">Features</a>
+              <button onClick={() => { closeMenu(); navigate("/themes"); }} className="text-left px-3 py-2 rounded-lg text-sm text-muted-foreground hover:text-foreground hover:bg-muted transition-colors">Themes</button>
+              <a onClick={closeMenu} href="#pricing" className="px-3 py-2 rounded-lg text-sm text-muted-foreground hover:text-foreground hover:bg-muted transition-colors">Pricing</a>
+              <a onClick={closeMenu} href="#faq" className="px-3 py-2 rounded-lg text-sm text-muted-foreground hover:text-foreground hover:bg-muted transition-colors">FAQ</a>
+              <div className="h-px bg-border/60 my-2" />
+              <button
+                onClick={() => { closeMenu(); openWhatsApp("Hi! I have a question about Alokchitra."); }}
+                className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-[#25D366] hover:bg-muted transition-colors"
+              >
+                <MessageCircle className="w-4 h-4" /> Support
+              </button>
+              <button onClick={() => { closeMenu(); navigate("/auth"); }} className="text-left px-3 py-2 rounded-lg text-sm text-muted-foreground hover:text-foreground hover:bg-muted transition-colors">
+                Login
+              </button>
+              <Button size="sm" className="mt-1 w-full rounded-full gradient-primary text-white hover:opacity-90 text-sm shadow-md shadow-primary/20" onClick={() => { closeMenu(); navigate("/auth"); }}>
+                Get started
+              </Button>
+            </div>
+          </div>
+        )}
       </nav>
 
       {/* HERO — unique split: text left, layered cards right */}

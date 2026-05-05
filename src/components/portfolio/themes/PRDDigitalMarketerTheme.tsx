@@ -37,7 +37,7 @@ export default function PRDDigitalMarketerTheme({
 
   useEffect(() => { window.scrollTo(0, 0); }, []);
 
-  const name = profile?.display_name || "Your Name";
+  const name = portfolio?.brand_name || profile?.display_name || "Your Name";
   const headline = portfolio?.headline || "Digital Marketer & SEO Expert";
   const bio = portfolio?.bio || "I help brands grow with data-driven marketing.";
   const email = profile?.email;

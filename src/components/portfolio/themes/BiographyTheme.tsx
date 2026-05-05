@@ -30,7 +30,7 @@ export default function BiographyTheme({
 }: ThemeProps) {
   useEffect(() => { window.scrollTo(0, 0); }, []);
 
-  const name = profile?.display_name || "Your Name";
+  const name = portfolio?.brand_name || profile?.display_name || "Your Name";
   const headline = portfolio?.headline || "Creator";
   const bio = portfolio?.bio || "Welcome to my page.";
   const avatar = profile?.avatar_url;

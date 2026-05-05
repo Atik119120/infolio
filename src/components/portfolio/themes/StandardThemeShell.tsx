@@ -64,7 +64,7 @@ export function StandardThemeShell({
 
   useEffect(() => { window.scrollTo(0, 0); }, []);
 
-  const name = profile?.display_name || "Your Name";
+  const name = portfolio?.brand_name || profile?.display_name || "Your Name";
   const headline = portfolio?.headline || "Creative Professional";
   const bio = portfolio?.bio || "Tell your story here.";
   const email = profile?.email;

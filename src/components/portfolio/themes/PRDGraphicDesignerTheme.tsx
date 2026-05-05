@@ -47,7 +47,7 @@ export default function PRDGraphicDesignerTheme({
     return () => { document.body.style.overflow = ""; };
   }, [activeProject]);
 
-  const name = profile?.display_name || "Your Name";
+  const name = portfolio?.brand_name || profile?.display_name || "Your Name";
   const headline = portfolio?.headline || "Graphic Designer";
   const bio = portfolio?.bio || "Crafting visual stories that move people.";
   const email = profile?.email;

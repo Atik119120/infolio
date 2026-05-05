@@ -15,6 +15,7 @@ export interface ThemePortfolio {
   theme: string | null;
   logo_url: string | null;
   favicon_url: string | null;
+  brand_name?: string | null;
 }
 
 export interface ThemeSkill {

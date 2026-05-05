@@ -263,6 +263,7 @@ export type Database = {
       portfolios: {
         Row: {
           bio: string | null
+          brand_name: string | null
           created_at: string
           custom_head_html: string | null
           favicon_url: string | null
@@ -286,6 +287,7 @@ export type Database = {
         }
         Insert: {
           bio?: string | null
+          brand_name?: string | null
           created_at?: string
           custom_head_html?: string | null
           favicon_url?: string | null
@@ -309,6 +311,7 @@ export type Database = {
         }
         Update: {
           bio?: string | null
+          brand_name?: string | null
           created_at?: string
           custom_head_html?: string | null
           favicon_url?: string | null

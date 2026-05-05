@@ -3,23 +3,38 @@ import { usePlan } from "@/hooks/usePlan";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Loader2, Upload, Image, Trash2 } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Loader2, Upload, Image, Trash2, Type } from "lucide-react";
 import { compressImage } from "@/lib/imageCompression";
 
 interface LogoUploadFormProps {
   logoUrl: string | null;
+  brandName?: string | null;
   userId: string;
   onUpdate: () => void;
   onSuccess: (message: string) => void;
   onError: (message: string) => void;
 }
 
-export function LogoUploadForm({ logoUrl, userId, onUpdate, onSuccess, onError }: LogoUploadFormProps) {
+export function LogoUploadForm({ logoUrl, brandName, userId, onUpdate, onSuccess, onError }: LogoUploadFormProps) {
   const { perFileLimitBytes, isPro } = usePlan();
   const [uploading, setUploading] = useState(false);
   const [removing, setRemoving] = useState(false);
+  const [savingName, setSavingName] = useState(false);
+  const [name, setName] = useState(brandName || "");
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleSaveName = async () => {
+    setSavingName(true);
+    const { error } = await supabase
+      .from("portfolios")
+      .update({ brand_name: name.trim() || null })
+      .eq("user_id", userId);
+    setSavingName(false);
+    if (error) onError("Failed to save brand name");
+    else { onSuccess("Brand name saved"); onUpdate(); }
+  };
 
   const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -172,6 +187,30 @@ export function LogoUploadForm({ logoUrl, userId, onUpdate, onSuccess, onError }
                 </Button>
               )}
             </div>
+          </div>
+        </div>
+
+        {/* Brand name fallback */}
+        <div className="border-t pt-4 space-y-2">
+          <Label htmlFor="brand_name" className="flex items-center gap-2">
+            <Type className="w-4 h-4 text-muted-foreground" />
+            Brand Name (text fallback)
+          </Label>
+          <p className="text-xs text-muted-foreground">
+            Shown in your portfolio header & footer when no logo image is uploaded.
+            Leave empty to use your display name.
+          </p>
+          <div className="flex gap-2">
+            <Input
+              id="brand_name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              maxLength={40}
+              placeholder="e.g., John Doe Studio"
+            />
+            <Button onClick={handleSaveName} disabled={savingName} variant="secondary">
+              {savingName ? <Loader2 className="w-4 h-4 animate-spin" /> : "Save"}
+            </Button>
           </div>
         </div>
       </CardContent>

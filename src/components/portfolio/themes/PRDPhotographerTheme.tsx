@@ -41,7 +41,7 @@ export default function PRDPhotographerTheme({
     return () => { document.body.style.overflow = ""; };
   }, [activePhoto]);
 
-  const name = profile?.display_name || "Your Name";
+  const name = portfolio?.brand_name || profile?.display_name || "Your Name";
   const headline = portfolio?.headline || "Visual Storyteller";
   const bio = portfolio?.bio || "I capture moments that words can't tell.";
   const email = profile?.email;

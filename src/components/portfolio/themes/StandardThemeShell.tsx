@@ -219,26 +219,106 @@ export function StandardThemeShell({
         </div>
       </section>
 
-      {/* ABOUT */}
-      <section id="about" className="py-20 md:py-24" style={{ background: s.surface }}>
+      {/* ABOUT — editorial split layout: photo left, typography-rich info right */}
+      <section id="about" className="py-20 md:py-28" style={{ background: s.surface }}>
         <div className="container mx-auto px-5">
-          <motion.div {...fadeUp} className="max-w-3xl mb-10">
-            <SectionLabel s={s}>About Me</SectionLabel>
-            <h2 className="t-display text-3xl md:text-5xl font-bold mt-3">A bit about my journey</h2>
-          </motion.div>
-          <div className="grid md:grid-cols-3 gap-8">
-            <motion.div {...fadeUp} className="md:col-span-2">
-              <p className="text-base md:text-lg leading-relaxed" style={{ color: s.textMuted }}>{bio}</p>
-            </motion.div>
-            <motion.div {...fadeUp} transition={{ duration: 0.6, delay: 0.1 }} className="space-y-4 text-sm">
-              {location && <Info icon={<MapPin className="w-4 h-4" />} label="Location" value={location} s={s} />}
-              {email && <Info icon={<Mail className="w-4 h-4" />} label="Email" value={email} s={s} />}
-              {phone && <Info icon={<Phone className="w-4 h-4" />} label="Phone" value={phone} s={s} />}
-              {website && <Info icon={<Globe className="w-4 h-4" />} label="Website" value={website} s={s} />}
-              <div className="pt-4 grid grid-cols-2 gap-3">
-                <Stat n={projects.length} label="Projects" s={s} />
-                <Stat n={experiences.length} label="Experience" s={s} />
+          <motion.h2 {...fadeUp} className="t-display text-4xl md:text-6xl font-bold tracking-tight mb-12 md:mb-16">
+            About <span style={{ color: s.primary }}>Me</span>
+          </motion.h2>
+
+          <div className="grid md:grid-cols-12 gap-10 md:gap-14 items-start">
+            {/* PHOTO with offset accent frame */}
+            <motion.div {...fadeUp} className="md:col-span-5 lg:col-span-5">
+              <div className="relative w-full max-w-md mx-auto md:mx-0">
+                <div
+                  aria-hidden
+                  className="absolute -bottom-4 -right-4 w-full h-full"
+                  style={{ background: s.primary, borderRadius: s.radius }}
+                />
+                {profile?.avatar_url ? (
+                  <img
+                    src={profile.avatar_url}
+                    alt={name}
+                    className="relative w-full aspect-[4/5] object-cover"
+                    style={{ borderRadius: s.radius }}
+                  />
+                ) : (
+                  <div
+                    className="relative w-full aspect-[4/5] flex items-center justify-center t-display text-8xl font-bold"
+                    style={{ background: `linear-gradient(135deg, ${s.primary}, ${s.accent})`, color: "#fff", borderRadius: s.radius }}
+                  >
+                    {name.charAt(0)}
+                  </div>
+                )}
               </div>
+            </motion.div>
+
+            {/* INFO column */}
+            <motion.div {...fadeUp} transition={{ duration: 0.6, delay: 0.1 }} className="md:col-span-7 lg:col-span-7">
+              <h3 className="t-display text-2xl md:text-3xl font-bold mb-2">I'm {name}</h3>
+              {headline && (
+                <p className="t-display text-base md:text-lg font-semibold mb-5" style={{ color: s.text }}>
+                  {headline}
+                </p>
+              )}
+              <p className="text-base leading-[1.85] mb-8 text-justify" style={{ color: s.textMuted }}>
+                {bio}
+              </p>
+
+              {/* Ventures (from projects, top 2) */}
+              {projects.length > 0 && (
+                <>
+                  <div className="flex items-center gap-3 mb-4">
+                    <span className="block w-8 h-[3px]" style={{ background: s.primary }} />
+                    <h4 className="t-display text-base font-bold uppercase tracking-wider">My Professional Ventures</h4>
+                  </div>
+                  <div className="grid sm:grid-cols-2 gap-4 mb-8">
+                    {projects.slice(0, 2).map((p) => (
+                      <a
+                        key={p.id}
+                        href={p.live_url || "#"}
+                        target={p.live_url ? "_blank" : undefined}
+                        rel="noreferrer"
+                        className="t-card p-5 relative overflow-hidden group"
+                      >
+                        <div
+                          aria-hidden
+                          className="absolute -top-8 -right-8 w-28 h-28 rounded-full opacity-30 transition-transform group-hover:scale-125"
+                          style={{ background: `${s.primary}33` }}
+                        />
+                        <div className="relative flex items-start justify-between">
+                          <div>
+                            <div className="w-10 h-10 rounded-md flex items-center justify-center mb-4" style={{ background: `${s.primary}15`, color: s.primary }}>
+                              <Globe className="w-5 h-5" />
+                            </div>
+                            <h5 className="t-display text-lg font-bold leading-tight">{p.title}</h5>
+                            {p.description && (
+                              <p className="text-[11px] uppercase tracking-wider mt-1 font-medium" style={{ color: s.textMuted }}>
+                                {p.description.slice(0, 40)}
+                              </p>
+                            )}
+                          </div>
+                          <ArrowRight className="w-4 h-4 -rotate-45" style={{ color: s.textMuted }} />
+                        </div>
+                      </a>
+                    ))}
+                  </div>
+                </>
+              )}
+
+              {/* Personal info grid */}
+              <div className="grid sm:grid-cols-2 gap-x-8 gap-y-3 text-sm mb-8">
+                {phone && <FactRow label="Phone" value={phone} s={s} />}
+                {location && <FactRow label="Residence" value={location} s={s} />}
+                {email && <FactRow label="Email" value={email} s={s} />}
+                <FactRow label="Freelance" value="Available" s={s} />
+                <FactRow label="Projects" value={String(projects.length)} s={s} />
+                <FactRow label="Experience" value={`${experiences.length}+ Roles`} s={s} />
+              </div>
+
+              <a href="#contact" className="t-btn-primary inline-flex items-center gap-2 px-7 py-3.5 text-xs font-bold tracking-wider uppercase">
+                Get a Custom Quote
+              </a>
             </motion.div>
           </div>
         </div>

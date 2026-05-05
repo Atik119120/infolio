@@ -192,7 +192,7 @@ export default function Index() {
             </div>
 
             {/* PRO */}
-            <div className="bg-foreground text-background rounded-2xl p-8 md:p-10 flex flex-col relative overflow-hidden">
+            <div className="gradient-primary text-white rounded-2xl p-8 md:p-10 flex flex-col relative overflow-hidden shadow-xl shadow-primary/30">
               <div
                 aria-hidden
                 className="absolute inset-0 opacity-[0.05] pointer-events-none"

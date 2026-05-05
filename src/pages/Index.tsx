@@ -10,6 +10,7 @@ import {
 import ThemeDemoSection from "@/components/home/ThemeDemoSection";
 import Footer from "@/components/home/Footer";
 import alphaLogo from "@/assets/alpha-portfolio-logo.png";
+import { GradientBars } from "@/components/ui/gradient-bars-background";
 
 export default function Index() {
   const navigate = useNavigate();

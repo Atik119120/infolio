@@ -294,11 +294,7 @@ export function ThemeSelector({ currentTheme, userId, onUpdate }: ThemeSelectorP
                                 Active
                               </Badge>
                             )}
-                            {isFree ? (
-                              <Badge variant="secondary" className="bg-green-500/90 text-white border-0">
-                                Free
-                              </Badge>
-                            ) : isUnlocked ? (
+                            {isFree ? null : isUnlocked ? (
                               <Badge variant="secondary" className="bg-amber-500/90 text-white border-0">
                                 <Sparkles className="w-3 h-3 mr-1" />
                                 Owned

@@ -37,7 +37,7 @@ export default function SmallBusinessTheme({
     window.scrollTo(0, 0);
   }, []);
 
-  const name = profile?.display_name || "Your Name";
+  const name = portfolio?.brand_name || profile?.display_name || "Your Name";
   const headline = portfolio?.headline || "Founder & Entrepreneur";
   const bio = portfolio?.bio || "Building businesses that solve real problems.";
   const email = profile?.email;

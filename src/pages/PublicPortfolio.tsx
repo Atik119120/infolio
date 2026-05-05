@@ -31,6 +31,7 @@ export default function PublicPortfolio() {
   const [experiences, setExperiences] = useState<ThemeExperience[]>([]);
   const [education, setEducation] = useState<ThemeEducation[]>([]);
   const [socialLinks, setSocialLinks] = useState<ThemeSocialLink[]>([]);
+  const [services, setServices] = useState<any[]>([]);
 
   useEffect(() => {
     if (portfolio?.favicon_url) {
@@ -86,12 +87,13 @@ export default function PublicPortfolio() {
       return;
     }
 
-    const [skillsRes, projectsRes, experiencesRes, educationRes, socialRes] = await Promise.all([
+    const [skillsRes, projectsRes, experiencesRes, educationRes, socialRes, servicesRes] = await Promise.all([
       supabase.from("skills").select("*").eq("user_id", fetchedUserId).order("created_at"),
       supabase.from("projects").select("*").eq("user_id", fetchedUserId).order("display_order"),
       supabase.from("experiences").select("*").eq("user_id", fetchedUserId).order("display_order"),
       supabase.from("education").select("*").eq("user_id", fetchedUserId).order("display_order"),
       supabase.from("social_links").select("*").eq("user_id", fetchedUserId).order("display_order"),
+      (supabase as any).from("services").select("*").eq("user_id", fetchedUserId).order("display_order"),
     ]);
 
     setProfile(profileData);
@@ -101,6 +103,7 @@ export default function PublicPortfolio() {
     if (experiencesRes.data) setExperiences(experiencesRes.data);
     if (educationRes.data) setEducation(educationRes.data);
     if (socialRes.data) setSocialLinks(socialRes.data);
+    if (servicesRes.data) setServices(servicesRes.data);
 
     setLoading(false);
   };
@@ -135,6 +138,7 @@ export default function PublicPortfolio() {
     experiences,
     education,
     socialLinks,
+    services,
     userId: userId || undefined,
   };
 

@@ -61,6 +61,14 @@ export interface ThemeSocialLink {
   url: string;
 }
 
+export interface ThemeService {
+  id: string;
+  title: string;
+  description: string | null;
+  icon: string | null;
+  price: string | null;
+}
+
 export interface ThemeProps {
   profile: ThemeProfile | null;
   portfolio: ThemePortfolio | null;
@@ -69,6 +77,7 @@ export interface ThemeProps {
   experiences: ThemeExperience[];
   education: ThemeEducation[];
   socialLinks: ThemeSocialLink[];
+  services?: ThemeService[];
   userId?: string;
 }
 

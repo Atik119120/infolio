@@ -52,6 +52,11 @@ const demoData: ThemeProps = {
     { id: "2", platform: "github", url: "https://github.com" },
     { id: "3", platform: "twitter", url: "https://twitter.com" },
   ],
+  services: [
+    { id: "s1", title: "Brand Identity", description: "Logo, color system, type, and full visual language for your brand.", icon: "🎨", price: "From $800" },
+    { id: "s2", title: "Web Design", description: "Conversion-focused websites that look gorgeous and load fast.", icon: "💻", price: "From $1500" },
+    { id: "s3", title: "Consulting", description: "1-on-1 strategy sessions to level up your design and growth.", icon: "💡", price: "$120 / hr" },
+  ],
 };
 
 export default function ThemeDemo() {

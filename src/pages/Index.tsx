@@ -155,7 +155,7 @@ export default function Index() {
           <div className="bg-card border border-border rounded-2xl p-8 md:p-10 mt-12">
             <div className="flex items-start justify-between flex-wrap gap-4 mb-2">
               <div>
-                <h3 className="text-xl font-semibold tracking-tight">Basic Plan</h3>
+                <h3 className="text-xl font-semibold tracking-tight">Pro Plan</h3>
                 <p className="text-sm text-muted-foreground mt-1">Essential tools to start building your brand online.</p>
               </div>
               <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-border text-foreground/70 text-[11px] font-semibold uppercase tracking-wider">

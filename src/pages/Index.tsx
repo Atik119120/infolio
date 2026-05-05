@@ -47,20 +47,24 @@ export default function Index() {
 
       {/* HERO — unique split: text left, layered cards right */}
       <section className="relative pt-32 md:pt-36 pb-20 px-6 overflow-hidden">
-        {/* video background */}
-        <video
-          src="/hero-bg.mp4"
-          autoPlay
-          muted
-          loop
-          playsInline
-          className="absolute inset-0 w-full h-full object-cover -z-20"
+        {/* Gradient bars background */}
+        <div aria-hidden className="absolute inset-0 -z-20 bg-background">
+          <GradientBars
+            numBars={15}
+            gradientFrom="hsl(var(--primary))"
+            gradientTo="transparent"
+            animationDuration={2.4}
+          />
+        </div>
+        {/* readability overlay */}
+        <div
+          aria-hidden
+          className="absolute inset-0 -z-10 bg-gradient-to-b from-background/30 via-background/60 to-background"
         />
-        <div aria-hidden className="absolute inset-0 -z-10 bg-background/40" />
-        {/* cyan ambient */}
-        <div aria-hidden className="absolute inset-0 -z-10">
-          <div className="absolute top-1/4 -left-40 w-[520px] h-[520px] rounded-full bg-primary/25 blur-[140px]" />
-          <div className="absolute -top-32 right-0 w-[520px] h-[520px] rounded-full bg-accent/30 blur-[140px]" />
+        {/* cyan ambient + grid */}
+        <div aria-hidden className="absolute inset-0 -z-10 pointer-events-none">
+          <div className="absolute top-1/4 -left-40 w-[520px] h-[520px] rounded-full bg-primary/20 blur-[140px]" />
+          <div className="absolute -top-32 right-0 w-[520px] h-[520px] rounded-full bg-accent/25 blur-[140px]" />
           <div
             className="absolute inset-0 opacity-[0.05]"
             style={{

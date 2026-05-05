@@ -322,9 +322,9 @@ export default function PRDGraphicDesignerTheme({
                 {services.map((sv) => (
                   <div key={sv.id} className="p-7 group transition-all hover:-translate-y-1"
                     style={{ background: C.surface, border: `1px solid ${C.border}` }}>
-                    <div className="w-12 h-12 flex items-center justify-center text-2xl mb-4"
+                    <div className="w-12 h-12 flex items-center justify-center mb-4"
                       style={{ background: C.cream, color: C.primary }}>
-                      {sv.icon || "✦"}
+                      <ServiceIcon icon={sv.icon} className="w-6 h-6" />
                     </div>
                     <h4 className="gd-display text-xl font-bold mb-2">{sv.title}</h4>
                     {sv.description && <p className="text-sm leading-relaxed mb-4" style={{ color: C.muted }}>{sv.description}</p>}

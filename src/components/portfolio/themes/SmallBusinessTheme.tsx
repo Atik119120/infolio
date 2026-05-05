@@ -447,11 +447,6 @@ export default function SmallBusinessTheme({
               )}
             </motion.div>
 
-            <motion.div {...fadeUp} transition={{ duration: 0.6, delay: 0.1 }}
-              className="md:col-span-3 p-8 md:p-10 rounded-3xl"
-              style={{ background: C.surface, border: `1px solid ${C.border}`, boxShadow: `0 20px 50px -20px ${C.primary}33` }}>
-              {userId && <ContactForm portfolioOwnerId={userId} />}
-            </motion.div>
           </div>
         </div>
       </section>

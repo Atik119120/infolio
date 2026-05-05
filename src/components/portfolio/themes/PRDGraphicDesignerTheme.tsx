@@ -469,18 +469,11 @@ export default function PRDGraphicDesignerTheme({
             </p>
           </motion.div>
 
-          <div className="max-w-5xl mx-auto grid md:grid-cols-5 gap-5">
-            <motion.div {...fadeUp} className="md:col-span-2 space-y-3">
-              {email && <ContactCard icon={<Mail className="w-5 h-5" />} label="Email" value={email} href={`mailto:${email}`} />}
-              {phone && <ContactCard icon={<Phone className="w-5 h-5" />} label="Phone" value={phone} href={`tel:${phone}`} />}
-              {location && <ContactCard icon={<MapPin className="w-5 h-5" />} label="Studio" value={location} />}
-              {website && <ContactCard icon={<Globe className="w-5 h-5" />} label="Website" value={website.replace(/^https?:\/\//, "")} href={website} />}
-            </motion.div>
-            <motion.div {...fadeUp} transition={{ duration: 0.6, delay: 0.1 }}
-              className="md:col-span-3 p-8 md:p-10"
-              style={{ background: C.surface, border: `1px solid ${C.border}` }}>
-              {userId && <ContactForm portfolioOwnerId={userId} />}
-            </motion.div>
+          <div className="max-w-3xl mx-auto grid sm:grid-cols-2 gap-3">
+            {email && <ContactCard icon={<Mail className="w-5 h-5" />} label="Email" value={email} href={`mailto:${email}`} />}
+            {phone && <ContactCard icon={<Phone className="w-5 h-5" />} label="Phone" value={phone} href={`tel:${phone}`} />}
+            {location && <ContactCard icon={<MapPin className="w-5 h-5" />} label="Studio" value={location} />}
+            {website && <ContactCard icon={<Globe className="w-5 h-5" />} label="Website" value={website.replace(/^https?:\/\//, "")} href={website} />}
           </div>
         </div>
       </section>

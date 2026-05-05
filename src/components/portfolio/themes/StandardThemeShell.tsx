@@ -492,14 +492,6 @@ export function StandardThemeShell({
               {website && <ContactCard icon={<Globe className="w-5 h-5" />} label="Website" value={website.replace(/^https?:\/\//, "")} href={website} s={s} />}
             </motion.div>
 
-            <motion.div
-              {...fadeUp}
-              transition={{ duration: 0.6, delay: 0.1 }}
-              className="md:col-span-3 p-8 md:p-10"
-              style={{ background: s.surface, borderRadius: s.radius, border: `1px solid ${s.border}`, boxShadow: `0 20px 50px -20px ${s.primary}22` }}
-            >
-              {userId && <ContactForm portfolioOwnerId={userId} />}
-            </motion.div>
           </div>
         </div>
       </section>

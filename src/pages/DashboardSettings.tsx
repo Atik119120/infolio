@@ -129,49 +129,8 @@ export default function DashboardSettings() {
   };
 
   const handleRequestPublish = async () => {
-    if (!user || !profile) return;
-
-    setRequestingPublish(true);
-
-    try {
-      // Update portfolio with pending_publish flag
-      const { error: portfolioError } = await supabase
-        .from("portfolios")
-        .update({ 
-          pending_publish: true, 
-          publish_requested_at: new Date().toISOString() 
-        })
-        .eq("user_id", user.id);
-
-      if (portfolioError) throw portfolioError;
-
-      // Send notification email
-      await supabase.functions.invoke("send-notification", {
-        body: {
-          type: "publish_request",
-          userId: user.id,
-          userEmail: user.email,
-          userName: profile.username,
-          username: profile.username,
-        },
-      });
-
-      toast({
-        title: "Publish Request Sent",
-        description: "Admin will review your portfolio and approve it soon. You'll receive an email notification.",
-      });
-
-      fetchData();
-    } catch (error) {
-      console.error("Error requesting publish:", error);
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Failed to send publish request",
-      });
-    } finally {
-      setRequestingPublish(false);
-    }
+    // Auto-publish enabled — kept as no-op for backward compatibility
+    return;
   };
 
   const handleSendSupport = async () => {

@@ -13,6 +13,7 @@ import { z } from "zod";
 import alphaLogo from "@/assets/alpha-portfolio-logo.png";
 import { isDisposableEmail, isAllowedEmailDomain } from "@/lib/tempEmailValidator";
 import { lovable } from "@/integrations/lovable";
+import { OTPVerification } from "@/components/auth/OTPVerification";
 
 const loginSchema = z.object({
   email: z.string().trim().email({ message: "Invalid email address" }),
@@ -47,6 +48,7 @@ export default function Auth() {
   const [phone, setPhone] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [showOTP, setShowOTP] = useState(false);
 
   const { signIn, signUp, user } = useAuth();
   const navigate = useNavigate();
@@ -132,7 +134,30 @@ export default function Auth() {
     }
 
     setIsLoading(true);
-    
+    // Send OTP code instead of creating account immediately
+    const { data, error } = await supabase.functions.invoke("otp-verification", {
+      body: { action: "send", email, userName: username },
+    });
+    setIsLoading(false);
+
+    if (error || (data && data.error)) {
+      toast({
+        variant: "destructive",
+        title: "Failed to send code",
+        description: (data && data.error) || error?.message || "Try again later.",
+      });
+      return;
+    }
+
+    toast({
+      title: "Code sent! 📧",
+      description: "Check your Gmail inbox for a 6-digit verification code.",
+    });
+    setShowOTP(true);
+  };
+
+  const handleOTPVerified = async () => {
+    setIsLoading(true);
     const { error } = await signUp(email, password, username, phone);
     setIsLoading(false);
 
@@ -144,6 +169,7 @@ export default function Auth() {
           title: "Account exists",
           description: "This email is already registered. Please login instead.",
         });
+        setShowOTP(false);
         setActiveTab("login");
       } else if (errorMsg.includes("username") || errorMsg.includes("duplicate key") || errorMsg.includes("profiles_username_key")) {
         toast({
@@ -152,20 +178,22 @@ export default function Auth() {
           description: "This username is already in use. Please choose a different one.",
         });
         setErrors({ username: "This username is already taken" });
+        setShowOTP(false);
       } else {
         toast({
           variant: "destructive",
           title: "Signup failed",
           description: error.message,
         });
+        setShowOTP(false);
       }
     } else {
       toast({
         title: "Account Created! 🎉",
-        description: "Your account is pending admin approval. You can login and start building your portfolio.",
+        description: "Your account is pending admin approval. You can login once approved.",
       });
+      setShowOTP(false);
       setActiveTab("login");
-      // Clear form
       setUsername("");
       setEmail("");
       setPassword("");
@@ -222,6 +250,14 @@ export default function Auth() {
             <img src={alphaLogo} alt="Alokchitra" className="h-10 w-auto object-contain invert" />
           </div>
 
+          {showOTP ? (
+            <OTPVerification
+              email={email}
+              userName={username}
+              onVerified={handleOTPVerified}
+              onBack={() => setShowOTP(false)}
+            />
+          ) : (
           <Card className="border-0 shadow-xl">
             <CardHeader className="space-y-1 pb-6">
               <CardTitle className="text-2xl font-bold text-center">
@@ -443,6 +479,7 @@ export default function Auth() {
               </Tabs>
             </CardContent>
           </Card>
+          )}
 
           <p className="text-center text-sm text-muted-foreground mt-6">
             By continuing, you agree to our Terms of Service and Privacy Policy.

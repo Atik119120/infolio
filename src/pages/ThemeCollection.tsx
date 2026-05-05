@@ -24,7 +24,7 @@ import {
 import { THEME_OPTIONS, getGroupedThemes, ThemeCategory } from "@/components/portfolio/themes/types";
 
 // Category icons mapping
-const categoryIcons: Record<ThemeCategory, React.ElementType> = {
+const categoryIcons: Record<string, React.ElementType> = {
   'free': Star,
   'web-developer': Code,
   'graphic-designer': Palette,
@@ -37,7 +37,7 @@ const categoryIcons: Record<ThemeCategory, React.ElementType> = {
 };
 
 // Category colors mapping
-const categoryColors: Record<ThemeCategory, string> = {
+const categoryColors: Record<string, string> = {
   'free': 'from-gray-500 to-gray-700',
   'web-developer': 'from-green-500 to-emerald-600',
   'graphic-designer': 'from-pink-500 to-rose-600',

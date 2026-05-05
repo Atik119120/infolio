@@ -11,7 +11,7 @@ export default function Footer() {
       { label: "Features", href: "#features" },
       { label: "Themes", href: "#themes" },
       { label: "Pricing", href: "#pricing" },
-      { label: "Demo", href: "/demo/web-developer" },
+      { label: "Demo", href: "/demo/freelancer" },
     ],
     company: [
       { label: "About Us", href: "#about" },

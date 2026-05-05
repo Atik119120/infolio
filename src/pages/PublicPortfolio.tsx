@@ -4,21 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-// Theme imports
 import {
-  PhotographerTheme,
-  GraphicDesignerTheme,
-  GraphicDesignerProTheme,
-  GraphicDesignerEliteTheme,
-  VideoEditorTheme,
-  DigitalMarketerTheme,
-  WebDeveloperTheme,
-  WebDeveloperProTheme,
-  WebDeveloperEliteTheme,
-  OfficialTheme,
-  PersonalTheme,
-  CosmicTheme,
-  SimpleTheme,
   FreelancerTheme,
   SmallBusinessTheme,
   PRDGraphicDesignerTheme,
@@ -46,7 +32,6 @@ export default function PublicPortfolio() {
   const [education, setEducation] = useState<ThemeEducation[]>([]);
   const [socialLinks, setSocialLinks] = useState<ThemeSocialLink[]>([]);
 
-  // Set favicon when portfolio loads
   useEffect(() => {
     if (portfolio?.favicon_url) {
       const link = document.querySelector("link[rel~='icon']") as HTMLLinkElement | null;
@@ -59,31 +44,21 @@ export default function PublicPortfolio() {
         document.head.appendChild(newLink);
       }
     }
-    
-    // Set page title
     if (profile?.display_name) {
       document.title = `${profile.display_name} | Portfolio`;
     }
-
-    // Cleanup - restore default favicon on unmount
     return () => {
       const link = document.querySelector("link[rel~='icon']") as HTMLLinkElement | null;
-      if (link) {
-        link.href = '/favicon.ico';
-      }
+      if (link) link.href = '/favicon.ico';
       document.title = 'Alpha Portfolio';
     };
   }, [portfolio?.favicon_url, profile?.display_name]);
 
   useEffect(() => {
-    if (username) {
-      fetchPortfolio();
-    }
+    if (username) fetchPortfolio();
   }, [username]);
 
   const fetchPortfolio = async () => {
-    // Only select non-sensitive profile fields for public view
-    // Excludes email and phone_number to prevent PII exposure
     const { data: profileData, error: profileError } = await supabase
       .from("profiles")
       .select("user_id, display_name, avatar_url")
@@ -163,15 +138,9 @@ export default function PublicPortfolio() {
     userId: userId || undefined,
   };
 
-  // Get theme from portfolio or default to 'simple'
-  const selectedTheme = portfolio?.theme || 'simple';
+  const selectedTheme = portfolio?.theme || 'freelancer';
 
-  // Render the appropriate theme
   switch (selectedTheme) {
-    case 'simple':
-      return <SimpleTheme {...themeProps} />;
-    case 'freelancer':
-      return <FreelancerTheme {...themeProps} />;
     case 'small-business':
       return <SmallBusinessTheme {...themeProps} />;
     case 'prd-graphic-designer':
@@ -180,30 +149,8 @@ export default function PublicPortfolio() {
       return <PRDPhotographerTheme {...themeProps} />;
     case 'prd-digital-marketer':
       return <PRDDigitalMarketerTheme {...themeProps} />;
-    case 'photographer':
-      return <PhotographerTheme {...themeProps} />;
-    case 'graphic-designer':
-      return <GraphicDesignerTheme {...themeProps} />;
-    case 'graphic-designer-pro':
-      return <GraphicDesignerProTheme {...themeProps} />;
-    case 'graphic-designer-elite':
-      return <GraphicDesignerEliteTheme {...themeProps} />;
-    case 'video-editor':
-      return <VideoEditorTheme {...themeProps} />;
-    case 'digital-marketer':
-      return <DigitalMarketerTheme {...themeProps} />;
-    case 'web-developer':
-      return <WebDeveloperTheme {...themeProps} />;
-    case 'web-developer-pro':
-      return <WebDeveloperProTheme {...themeProps} />;
-    case 'web-developer-elite':
-      return <WebDeveloperEliteTheme {...themeProps} />;
-    case 'official':
-      return <OfficialTheme {...themeProps} />;
-    case 'cosmic':
-      return <CosmicTheme {...themeProps} />;
-    case 'personal':
+    case 'freelancer':
     default:
-      return <PersonalTheme {...themeProps} />;
+      return <FreelancerTheme {...themeProps} />;
   }
 }

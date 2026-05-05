@@ -37,7 +37,7 @@ export default function Index() {
           <div className="flex items-center gap-2">
             <ThemeToggle />
             <Button variant="ghost" size="sm" onClick={() => navigate("/auth")} className="hidden sm:inline-flex text-sm">Login</Button>
-            <Button size="sm" className="rounded-full bg-foreground text-background hover:bg-foreground/90 text-sm" onClick={() => navigate("/auth")}>
+            <Button size="sm" className="rounded-full gradient-primary text-white hover:opacity-90 text-sm shadow-md shadow-primary/20" onClick={() => navigate("/auth")}>
               Get started
             </Button>
           </div>

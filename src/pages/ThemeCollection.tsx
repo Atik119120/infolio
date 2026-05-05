@@ -115,71 +115,66 @@ export default function ThemeCollection() {
       {freeThemes && freeThemes.themes.length > 0 && (
         <section className="py-8 px-6">
           <div className="container mx-auto">
-            {freeThemes.themes.map((theme) => (
-              <motion.div
-                key={theme.value}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-              >
-                <Card className="overflow-hidden border-2 border-primary/30 bg-gradient-to-br from-primary/5 to-transparent">
-                  <CardContent className="p-0">
-                    <div className="flex flex-col md:flex-row">
-                      {/* Theme Preview */}
-                      <div className={`h-48 md:h-auto md:w-1/3 bg-gradient-to-br ${categoryColors['free']} relative overflow-hidden`}>
-                        <div className="absolute inset-0 bg-black/10" />
-                        <div className="absolute inset-0 flex items-center justify-center">
-                          <Star className="w-20 h-20 text-white/80" />
-                        </div>
+            {/* Category Header (matches premium style) */}
+            <div className="flex items-center gap-3 mb-6">
+              <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${categoryColors['free']} flex items-center justify-center shadow-lg`}>
+                <Star className="w-5 h-5 text-white" />
+              </div>
+              <div>
+                <h3 className="text-xl font-bold flex items-center gap-2">
+                  Free Themes
+                  <span className="text-[10px] font-bold tracking-[0.18em] uppercase px-2 py-0.5 rounded-full bg-primary/15 text-primary border border-primary/30">
+                    No payment
+                  </span>
+                </h3>
+                <p className="text-sm text-muted-foreground">
+                  {freeThemes.themes.length} theme{freeThemes.themes.length > 1 ? "s" : ""} — free forever
+                </p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+              {freeThemes.themes.map((theme, index) => (
+                <motion.div
+                  key={theme.value}
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.05 }}
+                  className="group cursor-pointer"
+                  onClick={() => navigate(`/demo/${theme.value}`)}
+                >
+                  <div className="relative overflow-hidden rounded-2xl bg-card border border-primary/30 shadow-lg hover:shadow-2xl hover:shadow-primary/20 transition-all duration-300 group-hover:scale-[1.02] group-hover:-translate-y-1">
+                    {/* FREE corner ribbon */}
+                    <div className="absolute -right-10 top-4 z-20 rotate-45 bg-gradient-to-r from-primary to-accent text-white text-[10px] font-bold tracking-widest px-12 py-1 shadow-md">
+                      FREE
+                    </div>
+
+                    {/* Theme Preview */}
+                    <div className={`h-36 md:h-44 bg-gradient-to-br ${categoryColors['free']} relative overflow-hidden`}>
+                      <div className="absolute inset-0 bg-black/10" />
+                      <div className="absolute top-4 left-4 w-2 h-2 rounded-full bg-white/40" />
+                      <div className="absolute top-4 left-8 w-2 h-2 rounded-full bg-white/30" />
+                      <div className="absolute top-4 left-12 w-2 h-2 rounded-full bg-white/20" />
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <Star className="w-16 h-16 md:w-20 md:h-20 text-white/80 group-hover:scale-110 transition-transform duration-300" />
                       </div>
-                      
-                      {/* Theme Info */}
-                      <div className="flex-1 p-6 md:p-8 flex flex-col justify-center">
-                        <div className="flex items-center gap-3 mb-3">
-                          <h2 className="text-2xl font-bold">{theme.label} Theme</h2>
-                          <Badge className="bg-primary/20 text-primary">Free Forever</Badge>
-                        </div>
-                        <p className="text-muted-foreground mb-4">{theme.description}</p>
-                        <ul className="space-y-2 mb-6">
-                          <li className="flex items-center gap-2 text-sm">
-                            <Check className="w-4 h-4 text-primary" />
-                            Clean, minimal design
-                          </li>
-                          <li className="flex items-center gap-2 text-sm">
-                            <Check className="w-4 h-4 text-primary" />
-                            All basic sections included
-                          </li>
-                          <li className="flex items-center gap-2 text-sm">
-                            <Check className="w-4 h-4 text-primary" />
-                            Mobile responsive
-                          </li>
-                          <li className="flex items-center gap-2 text-sm">
-                            <Check className="w-4 h-4 text-primary" />
-                            No payment required
-                          </li>
-                        </ul>
-                        <div className="flex gap-3">
-                          <Button 
-                            size="lg"
-                            className="gradient-primary"
-                            onClick={() => navigate("/auth")}
-                          >
-                            Use This Theme Free
-                          </Button>
-                          <Button 
-                            size="lg"
-                            variant="outline"
-                            onClick={() => navigate(`/demo/${theme.value}`)}
-                          >
-                            <Eye className="w-4 h-4 mr-2" />
-                            Preview
-                          </Button>
+                      <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                        <div className="flex items-center gap-2 text-white font-medium">
+                          <Eye className="w-5 h-5" />
+                          View Demo
                         </div>
                       </div>
                     </div>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            ))}
+
+                    {/* Theme Info */}
+                    <div className="p-4">
+                      <h3 className="font-semibold text-base mb-1">{theme.label}</h3>
+                      <p className="text-xs text-muted-foreground line-clamp-2">{theme.description}</p>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
           </div>
         </section>
       )}

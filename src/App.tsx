@@ -74,6 +74,7 @@ const App = () => (
                   <Route index element={<AdminOverview />} />
                   <Route path="users" element={<AdminUsers />} />
                   <Route path="themes" element={<AdminThemes />} />
+                  <Route path="plans" element={<AdminPlans />} />
                   <Route path="support" element={<AdminSupport />} />
                   <Route path="settings" element={<AdminSettings />} />
                 </Route>

@@ -373,8 +373,6 @@ function FeatureCard({ icon, title, description, gradient }: { icon: React.React
 function PhonePreview() {
   return (
     <div className="relative w-[300px] md:w-[340px] aspect-[9/19] rounded-[3rem] bg-gradient-to-br from-foreground to-foreground/80 p-3 shadow-2xl shadow-primary/30 ring-1 ring-foreground/20 animate-float">
-      {/* glow */}
-      <div className="absolute -inset-8 bg-primary/30 blur-3xl rounded-full -z-10" />
 
       <div className="w-full h-full rounded-[2.5rem] bg-background overflow-hidden relative">
         {/* notch */}

@@ -88,6 +88,11 @@ export interface ThemeOption {
 export const THEME_OPTIONS: ThemeOption[] = [
   // Free Theme
   { value: 'simple', label: 'Simple', description: 'Clean minimal free theme', isPremium: false, price: 0, category: 'free', tier: 'free' },
+  { value: 'freelancer', label: 'Freelancer', description: 'Bold corporate-clean conversion-focused theme', isPremium: false, price: 0, category: 'free', tier: 'free' },
+  { value: 'small-business', label: 'Small Business', description: 'Warm friendly local business theme', isPremium: false, price: 0, category: 'free', tier: 'free' },
+  { value: 'prd-graphic-designer', label: 'GD Editorial', description: 'Editorial magazine aesthetic with bold typography', isPremium: false, price: 0, category: 'free', tier: 'free' },
+  { value: 'prd-photographer', label: 'Studio Lens', description: 'Luxury studio cinematic photographer theme', isPremium: false, price: 0, category: 'free', tier: 'free' },
+  { value: 'prd-digital-marketer', label: 'Growth Lab', description: 'SaaS dashboard data-driven marketer theme', isPremium: false, price: 0, category: 'free', tier: 'free' },
   
   // Web Developer Category
   { value: 'web-developer', label: 'Web Developer', description: 'Tech-focused theme with code aesthetics', isPremium: true, price: 200, category: 'web-developer', tier: 'standard' },

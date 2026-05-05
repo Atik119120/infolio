@@ -19,6 +19,11 @@ import {
   PersonalTheme,
   CosmicTheme,
   SimpleTheme,
+  FreelancerTheme,
+  SmallBusinessTheme,
+  PRDGraphicDesignerTheme,
+  PRDPhotographerTheme,
+  PRDDigitalMarketerTheme,
   ThemeProfile,
   ThemePortfolio,
   ThemeSkill,
@@ -165,6 +170,16 @@ export default function PublicPortfolio() {
   switch (selectedTheme) {
     case 'simple':
       return <SimpleTheme {...themeProps} />;
+    case 'freelancer':
+      return <FreelancerTheme {...themeProps} />;
+    case 'small-business':
+      return <SmallBusinessTheme {...themeProps} />;
+    case 'prd-graphic-designer':
+      return <PRDGraphicDesignerTheme {...themeProps} />;
+    case 'prd-photographer':
+      return <PRDPhotographerTheme {...themeProps} />;
+    case 'prd-digital-marketer':
+      return <PRDDigitalMarketerTheme {...themeProps} />;
     case 'photographer':
       return <PhotographerTheme {...themeProps} />;
     case 'graphic-designer':

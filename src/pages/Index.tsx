@@ -47,7 +47,7 @@ export default function Index() {
       </nav>
 
       {/* HERO — unique split: text left, layered cards right */}
-      <section className="relative pt-32 md:pt-36 pb-20 px-6 overflow-hidden">
+      <section className="relative isolate pt-32 md:pt-36 pb-20 px-6 overflow-hidden">
         {/* Gradient bars background */}
         <div aria-hidden className="absolute inset-0 -z-20 bg-background" />
         {/* Gradient bars sit above bg, below content */}

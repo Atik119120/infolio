@@ -22,6 +22,7 @@ import {
   Zap
 } from "lucide-react";
 import { THEME_OPTIONS, getGroupedThemes, ThemeCategory } from "@/components/portfolio/themes/types";
+import SiteHeader from "@/components/home/SiteHeader";
 
 // Category icons mapping
 const categoryIcons: Record<string, React.ElementType> = {
@@ -73,26 +74,7 @@ export default function ThemeCollection() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 glass border-b">
-        <div className="container mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Button variant="ghost" size="icon" onClick={() => navigate("/")}>
-              <ArrowLeft className="w-5 h-5" />
-            </Button>
-            <img src={alphaLogo} alt="Alokchitra" className="h-10 w-auto object-contain invert" />
-            <span className="text-xl font-bold hidden sm:block">Theme Collection</span>
-          </div>
-          <div className="flex items-center gap-4">
-            <Button 
-              className="gradient-primary hover:opacity-90 transition-opacity"
-              onClick={() => navigate("/auth")}
-            >
-              Get Started
-            </Button>
-          </div>
-        </div>
-      </nav>
+      <SiteHeader />
 
       {/* Hero */}
       <section className="pt-28 pb-12 px-6">

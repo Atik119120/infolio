@@ -47,6 +47,9 @@ import {
 } from "lucide-react";
 import { THEME_OPTIONS } from "@/components/portfolio/themes/types";
 import CustomDomainManager from "@/components/settings/CustomDomainManager";
+import { PlanCard } from "@/components/billing/PlanCard";
+import { ProGate } from "@/components/billing/ProGate";
+import { SeoSettingsCard } from "@/components/settings/SeoSettingsCard";
 
 interface Profile {
   username: string;

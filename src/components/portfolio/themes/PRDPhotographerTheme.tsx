@@ -104,7 +104,7 @@ export default function PRDPhotographerTheme({
       `}</style>
 
       {/* HEADER */}
-      <header className="sticky top-0 z-40 backdrop-blur-md" style={{ background: `${C.bg}cc`, borderBottom: `1px solid ${C.border}` }}>
+      <header className="sticky top-0 z-40 gx-glass-nav">
         <div className="container mx-auto px-5 py-4 flex items-center justify-between">
           <a href="#home" className="sl-display text-2xl font-bold tracking-tight flex items-center gap-2" style={{ color: C.ink }}>
             {portfolio?.logo_url ? (
@@ -116,13 +116,13 @@ export default function PRDPhotographerTheme({
               </>
             )}
           </a>
-          <nav className="hidden md:flex items-center gap-8 text-sm tracking-wider uppercase">
+          <nav className="hidden md:flex items-center gap-1 text-sm tracking-wider uppercase gx-glass rounded-full px-2 py-1.5">
             {NAV.map((n) => (
-              <a key={n.id} href={`#${n.id}`} className="sl-link" style={{ color: C.muted }}>{n.label}</a>
+              <a key={n.id} href={`#${n.id}`} className="sl-link px-4 py-1.5 rounded-full hover:bg-white/10 transition" style={{ color: C.muted }}>{n.label}</a>
             ))}
           </nav>
           <div className="hidden md:block">
-            <a href="#contact" className="sl-btn-primary inline-flex items-center gap-2 px-5 py-2.5 text-xs font-bold uppercase tracking-wider">
+            <a href="#contact" className="sl-btn-primary inline-flex items-center gap-2 px-5 py-2.5 text-xs font-bold uppercase tracking-wider rounded-full">
               Book a Shoot <ArrowRight className="w-3.5 h-3.5" />
             </a>
           </div>
@@ -131,7 +131,7 @@ export default function PRDPhotographerTheme({
           </button>
         </div>
         {menuOpen && (
-          <div className="md:hidden border-t" style={{ borderColor: C.border, background: C.surface }}>
+          <div className="md:hidden gx-glass-nav">
             <div className="container mx-auto px-5 py-3 flex flex-col gap-3">
               {NAV.map((n) => (
                 <a key={n.id} href={`#${n.id}`} onClick={() => setMenuOpen(false)} className="py-2 text-sm uppercase tracking-wider">{n.label}</a>

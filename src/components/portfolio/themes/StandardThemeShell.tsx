@@ -540,7 +540,7 @@ export function StandardThemeShell({
             </div>
           </div>
           <div className="border-t pt-6 flex flex-col md:flex-row justify-between items-center gap-3 text-xs opacity-60" style={{ borderColor: `${s.background}22` }}>
-            <div>© {new Date().getFullYear()} {name}. All rights reserved.</div>
+            <div>{footerText || `© ${new Date().getFullYear()} ${name}. All rights reserved.`}</div>
             <div>Built with Alokchitra</div>
           </div>
         </div>

@@ -64,14 +64,19 @@ export default function PRDPhotographerTheme({
     { id: "contact", label: "Contact" },
   ];
 
-  // Hero carousel: featured (or all) projects with images
+  // Hero banner: featured (or all) projects with images — landscape auto-slideshow
   const heroPhotos = useMemo(() => {
     const withImg = projects.filter((p) => p.image_url);
     const featured = withImg.filter((p) => p.featured);
-    const list = featured.length > 0 ? featured : withImg;
-    // duplicate for seamless marquee
-    return list.length > 0 ? [...list, ...list] : [];
+    return featured.length > 0 ? featured : withImg;
   }, [projects]);
+
+  // Auto-advance banner
+  useEffect(() => {
+    if (heroPhotos.length < 2) return;
+    const t = setInterval(() => setBannerIdx((i) => (i + 1) % heroPhotos.length), 5000);
+    return () => clearInterval(t);
+  }, [heroPhotos.length]);
 
   // Awards = combine education honors + featured projects + experience milestones
   const awards = useMemo(() => {

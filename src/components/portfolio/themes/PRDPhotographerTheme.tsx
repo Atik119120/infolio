@@ -143,10 +143,11 @@ export default function PRDPhotographerTheme({
 
       {/* HERO */}
       <section id="home" className="relative pt-12 md:pt-16 pb-20 overflow-hidden">
-        <div className="container mx-auto px-5 mb-10 md:mb-14">
+        <div className="gx-mesh gx-blob" />
+        <div className="container mx-auto px-5 mb-10 md:mb-14 relative">
           <motion.div {...fadeUp} className="text-center max-w-3xl mx-auto">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 mb-6 text-[11px] font-medium tracking-[0.3em] uppercase rounded-full"
-              style={{ border: `1px solid ${C.primary}`, color: C.primary }}>
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 mb-6 text-[11px] font-medium tracking-[0.3em] uppercase rounded-full gx-glass"
+              style={{ color: C.primary }}>
               <Camera className="w-3 h-3" /> Photographer · Booking 2026
             </div>
             <h1 className="sl-display text-5xl md:text-7xl lg:text-8xl font-bold leading-[0.95] mb-5">
@@ -157,10 +158,10 @@ export default function PRDPhotographerTheme({
               {headline}
             </p>
             <div className="flex flex-wrap gap-3 justify-center">
-              <a href="#gallery" className="sl-btn-primary px-7 py-3.5 text-xs font-bold uppercase tracking-[0.2em] inline-flex items-center gap-2">
+              <a href="#gallery" className="sl-btn-primary px-7 py-3.5 text-xs font-bold uppercase tracking-[0.2em] inline-flex items-center gap-2 rounded-full">
                 View Portfolio
               </a>
-              <a href="#contact" className="sl-btn-outline px-7 py-3.5 text-xs font-bold uppercase tracking-[0.2em]">
+              <a href="#contact" className="gx-glass px-7 py-3.5 text-xs font-bold uppercase tracking-[0.2em] rounded-full hover:bg-white/10 transition" style={{ color: C.ink }}>
                 Book Session
               </a>
             </div>

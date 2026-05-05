@@ -1,6 +1,7 @@
 import { useEffect, useState, useMemo } from "react";
 import { motion } from "framer-motion";
 import { Menu, X, ArrowRight, ArrowUpRight, Mail, Phone, MapPin, Globe, TrendingUp, BarChart3, Search, Target, Zap, LineChart, Users } from "lucide-react";
+import { ServiceIcon } from "@/lib/serviceIcons";
 import { ThemeProps } from "./types";
 import { ContactForm } from "@/components/portfolio/ContactForm";
 import { getSocialIcon } from "./utils";

@@ -9,17 +9,31 @@ import { compressImage } from "@/lib/imageCompression";
 
 interface LogoUploadFormProps {
   logoUrl: string | null;
+  brandName?: string | null;
   userId: string;
   onUpdate: () => void;
   onSuccess: (message: string) => void;
   onError: (message: string) => void;
 }
 
-export function LogoUploadForm({ logoUrl, userId, onUpdate, onSuccess, onError }: LogoUploadFormProps) {
+export function LogoUploadForm({ logoUrl, brandName, userId, onUpdate, onSuccess, onError }: LogoUploadFormProps) {
   const { perFileLimitBytes, isPro } = usePlan();
   const [uploading, setUploading] = useState(false);
   const [removing, setRemoving] = useState(false);
+  const [savingName, setSavingName] = useState(false);
+  const [name, setName] = useState(brandName || "");
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleSaveName = async () => {
+    setSavingName(true);
+    const { error } = await supabase
+      .from("portfolios")
+      .update({ brand_name: name.trim() || null })
+      .eq("user_id", userId);
+    setSavingName(false);
+    if (error) onError("Failed to save brand name");
+    else { onSuccess("Brand name saved"); onUpdate(); }
+  };
 
   const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];

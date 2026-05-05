@@ -104,7 +104,7 @@ export default function PRDPhotographerTheme({
       `}</style>
 
       {/* HEADER */}
-      <header className="sticky top-0 z-40 backdrop-blur-md" style={{ background: `${C.bg}cc`, borderBottom: `1px solid ${C.border}` }}>
+      <header className="sticky top-0 z-40 gx-glass-nav">
         <div className="container mx-auto px-5 py-4 flex items-center justify-between">
           <a href="#home" className="sl-display text-2xl font-bold tracking-tight flex items-center gap-2" style={{ color: C.ink }}>
             {portfolio?.logo_url ? (
@@ -116,13 +116,13 @@ export default function PRDPhotographerTheme({
               </>
             )}
           </a>
-          <nav className="hidden md:flex items-center gap-8 text-sm tracking-wider uppercase">
+          <nav className="hidden md:flex items-center gap-1 text-sm tracking-wider uppercase gx-glass rounded-full px-2 py-1.5">
             {NAV.map((n) => (
-              <a key={n.id} href={`#${n.id}`} className="sl-link" style={{ color: C.muted }}>{n.label}</a>
+              <a key={n.id} href={`#${n.id}`} className="sl-link px-4 py-1.5 rounded-full hover:bg-white/10 transition" style={{ color: C.muted }}>{n.label}</a>
             ))}
           </nav>
           <div className="hidden md:block">
-            <a href="#contact" className="sl-btn-primary inline-flex items-center gap-2 px-5 py-2.5 text-xs font-bold uppercase tracking-wider">
+            <a href="#contact" className="sl-btn-primary inline-flex items-center gap-2 px-5 py-2.5 text-xs font-bold uppercase tracking-wider rounded-full">
               Book a Shoot <ArrowRight className="w-3.5 h-3.5" />
             </a>
           </div>
@@ -131,7 +131,7 @@ export default function PRDPhotographerTheme({
           </button>
         </div>
         {menuOpen && (
-          <div className="md:hidden border-t" style={{ borderColor: C.border, background: C.surface }}>
+          <div className="md:hidden gx-glass-nav">
             <div className="container mx-auto px-5 py-3 flex flex-col gap-3">
               {NAV.map((n) => (
                 <a key={n.id} href={`#${n.id}`} onClick={() => setMenuOpen(false)} className="py-2 text-sm uppercase tracking-wider">{n.label}</a>
@@ -143,10 +143,11 @@ export default function PRDPhotographerTheme({
 
       {/* HERO */}
       <section id="home" className="relative pt-12 md:pt-16 pb-20 overflow-hidden">
-        <div className="container mx-auto px-5 mb-10 md:mb-14">
+        <div className="gx-mesh gx-blob" />
+        <div className="container mx-auto px-5 mb-10 md:mb-14 relative">
           <motion.div {...fadeUp} className="text-center max-w-3xl mx-auto">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 mb-6 text-[11px] font-medium tracking-[0.3em] uppercase rounded-full"
-              style={{ border: `1px solid ${C.primary}`, color: C.primary }}>
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 mb-6 text-[11px] font-medium tracking-[0.3em] uppercase rounded-full gx-glass"
+              style={{ color: C.primary }}>
               <Camera className="w-3 h-3" /> Photographer · Booking 2026
             </div>
             <h1 className="sl-display text-5xl md:text-7xl lg:text-8xl font-bold leading-[0.95] mb-5">
@@ -157,10 +158,10 @@ export default function PRDPhotographerTheme({
               {headline}
             </p>
             <div className="flex flex-wrap gap-3 justify-center">
-              <a href="#gallery" className="sl-btn-primary px-7 py-3.5 text-xs font-bold uppercase tracking-[0.2em] inline-flex items-center gap-2">
+              <a href="#gallery" className="sl-btn-primary px-7 py-3.5 text-xs font-bold uppercase tracking-[0.2em] inline-flex items-center gap-2 rounded-full">
                 View Portfolio
               </a>
-              <a href="#contact" className="sl-btn-outline px-7 py-3.5 text-xs font-bold uppercase tracking-[0.2em]">
+              <a href="#contact" className="gx-glass px-7 py-3.5 text-xs font-bold uppercase tracking-[0.2em] rounded-full hover:bg-white/10 transition" style={{ color: C.ink }}>
                 Book Session
               </a>
             </div>
@@ -301,11 +302,10 @@ export default function PRDPhotographerTheme({
                   key={sv.id}
                   {...fadeUp}
                   transition={{ duration: 0.5, delay: i * 0.06 }}
-                  className="relative p-8 group transition-all duration-300 hover:-translate-y-1"
-                  style={{ background: C.surface, border: `1px solid ${C.border}` }}
+                  className="relative p-8 rounded-2xl gx-glass gx-glow-ring group transition-all duration-300 hover:-translate-y-1"
                 >
-                  <div className="w-14 h-14 flex items-center justify-center mb-5"
-                    style={{ background: C.surface2, color: C.primary, border: `1px solid ${C.primary}33` }}>
+                  <div className="w-14 h-14 flex items-center justify-center mb-5 rounded-xl gx-glass-strong"
+                    style={{ color: C.primary }}>
                     <ServiceIcon icon={sv.icon} className="w-6 h-6" />
                   </div>
                   <h3 className="sl-display text-2xl font-bold mb-3 italic">{sv.title}</h3>
@@ -541,9 +541,8 @@ function Stat({ n, label }: { n: number; label: string }) {
 
 function ContactCard({ icon, label, value, href }: { icon: React.ReactNode; label: string; value: string; href?: string }) {
   const inner = (
-    <div className="flex items-center gap-4 p-5 transition-all hover:-translate-y-0.5"
-      style={{ background: C.surface, border: `1px solid ${C.border}` }}>
-      <div className="w-12 h-12 flex items-center justify-center" style={{ background: C.surface2, color: C.primary, border: `1px solid ${C.primary}33` }}>
+    <div className="flex items-center gap-4 p-5 rounded-2xl gx-glass gx-glow-ring transition-all hover:-translate-y-0.5">
+      <div className="w-12 h-12 flex items-center justify-center rounded-xl gx-glass-strong" style={{ color: C.primary }}>
         {icon}
       </div>
       <div className="min-w-0">

@@ -99,7 +99,7 @@ export default function PRDDigitalMarketerTheme({
         .gl-btn-outline:hover { border-color: ${C.primary}; color: ${C.primary}; }
         .gl-link { transition: color .2s; }
         .gl-link:hover { color: ${C.primary}; }
-        .gl-card { background: ${C.surface}; border: 1px solid ${C.border}; border-radius: 16px; }
+        .gl-card { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 16px; backdrop-filter: blur(18px) saturate(160%); -webkit-backdrop-filter: blur(18px) saturate(160%); box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), 0 10px 40px -10px rgba(0,0,0,0.5); }
         .gl-grid-bg {
           background-image: linear-gradient(${C.border}55 1px, transparent 1px), linear-gradient(90deg, ${C.border}55 1px, transparent 1px);
           background-size: 40px 40px;
@@ -110,7 +110,7 @@ export default function PRDDigitalMarketerTheme({
       `}</style>
 
       {/* HEADER */}
-      <header className="sticky top-0 z-40 backdrop-blur-md" style={{ background: `${C.bg}cc`, borderBottom: `1px solid ${C.border}` }}>
+      <header className="sticky top-0 z-40 gx-glass-nav">
         <div className="container mx-auto px-5 py-4 flex items-center justify-between">
           <a href="#home" className="gl-display text-xl font-bold tracking-tight flex items-center gap-2">
             {portfolio?.logo_url ? (
@@ -125,13 +125,13 @@ export default function PRDDigitalMarketerTheme({
               </>
             )}
           </a>
-          <nav className="hidden md:flex items-center gap-7 text-sm font-medium">
+          <nav className="hidden md:flex items-center gap-1 text-sm font-medium gx-glass rounded-full px-2 py-1.5">
             {NAV.map((n) => (
-              <a key={n.id} href={`#${n.id}`} className="gl-link" style={{ color: C.muted }}>{n.label}</a>
+              <a key={n.id} href={`#${n.id}`} className="gl-link px-4 py-1.5 rounded-full hover:bg-white/10 transition" style={{ color: C.muted }}>{n.label}</a>
             ))}
           </nav>
           <div className="hidden md:block">
-            <a href="#contact" className="gl-btn-primary inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold rounded-lg">
+            <a href="#contact" className="gl-btn-primary inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold rounded-full">
               Free Audit <ArrowRight className="w-4 h-4" />
             </a>
           </div>
@@ -140,7 +140,7 @@ export default function PRDDigitalMarketerTheme({
           </button>
         </div>
         {menuOpen && (
-          <div className="md:hidden border-t" style={{ borderColor: C.border, background: C.surface }}>
+          <div className="md:hidden gx-glass-nav">
             <div className="container mx-auto px-5 py-3 flex flex-col gap-3">
               {NAV.map((n) => (
                 <a key={n.id} href={`#${n.id}`} onClick={() => setMenuOpen(false)} className="py-2 text-sm">{n.label}</a>

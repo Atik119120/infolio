@@ -28,6 +28,7 @@ import {
   Zap,
   ShoppingBag,
   MessageSquare,
+  Globe2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import alphaLogo from "@/assets/alpha-portfolio-logo.png";
@@ -76,6 +77,7 @@ export default function Dashboard() {
     { icon: FileEdit, label: "Edit Portfolio", path: "/dashboard/edit" },
     { icon: MessageSquare, label: "Support", path: "/dashboard/support" },
     { icon: ShoppingBag, label: "My Purchases", path: "/dashboard/purchases" },
+    { icon: Globe2, label: "Domain Status", path: "/dashboard/domain-status" },
     { icon: Settings, label: "Settings", path: "/dashboard/settings" },
   ];
 

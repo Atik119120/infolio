@@ -150,6 +150,17 @@ export default function Index() {
               <span className="inline-flex items-center gap-1.5"><Check className="w-4 h-4 text-primary" /> No credit card</span>
               <span className="inline-flex items-center gap-1.5"><Check className="w-4 h-4 text-primary" /> Live in 5 min</span>
             </div>
+
+            <div className="mt-6 flex items-center justify-center">
+              <button
+                onClick={() => navigate("/themes")}
+                className="group inline-flex items-center gap-2 px-4 py-2 rounded-full border border-primary/30 bg-primary/5 hover:bg-primary/10 hover:border-primary/50 text-primary text-sm font-medium transition-all"
+              >
+                <Palette className="w-4 h-4" />
+                View all themes
+                <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5" />
+              </button>
+            </div>
           </motion.div>
         </div>
       </section>
@@ -318,33 +329,6 @@ export default function Index() {
                 </div>
               );
             })}
-          </div>
-        </div>
-      </section>
-
-      {/* CTA */}
-      <section className="py-20 px-6 border-t border-border/60">
-        <div className="container mx-auto max-w-4xl">
-          <div className="gradient-hero rounded-3xl p-10 md:p-16 text-center text-white relative overflow-hidden shadow-2xl shadow-primary/40">
-            <div
-              aria-hidden
-              className="absolute inset-0 opacity-[0.1]"
-              style={{
-                backgroundImage:
-                  "linear-gradient(rgba(255,255,255,1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,1) 1px, transparent 1px)",
-                backgroundSize: "48px 48px",
-                maskImage: "radial-gradient(ellipse at center, #000 30%, transparent 75%)",
-              }}
-            />
-            <div className="relative z-10">
-              <h2 className="text-3xl md:text-5xl font-semibold mb-3 tracking-[-0.02em]">Claim your space today.</h2>
-              <p className="text-base md:text-lg text-white/85 max-w-xl mx-auto mb-7">
-                Join thousands of professionals showcasing their work the smart way.
-              </p>
-              <Button size="lg" className="rounded-full bg-white text-primary hover:bg-white/90 text-sm font-semibold px-7" onClick={() => navigate("/auth")}>
-                Create your portfolio <ArrowRight className="ml-2 w-4 h-4" />
-              </Button>
-            </div>
           </div>
         </div>
       </section>

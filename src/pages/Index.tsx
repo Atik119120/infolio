@@ -149,51 +149,100 @@ export default function Index() {
 
       {/* PRICING */}
       <section id="pricing" className="py-28 px-6 border-t border-border/60">
-        <div className="container mx-auto max-w-3xl">
-          <SectionHeader eyebrow="Pricing" title="Simple, transparent pricing" subtitle="Start free. Upgrade only when you need premium themes." />
+        <div className="container mx-auto max-w-5xl">
+          <SectionHeader eyebrow="Pricing" title="Simple, transparent pricing" subtitle="Start free. Upgrade when you need premium themes & power features." />
 
-          <div className="bg-card border border-border rounded-2xl p-8 md:p-10 mt-12">
-            <div className="flex items-start justify-between flex-wrap gap-4 mb-2">
+          <div className="grid md:grid-cols-2 gap-5 mt-12">
+            {/* BASIC */}
+            <div className="bg-card border border-border rounded-2xl p-8 md:p-10 flex flex-col">
               <div>
-                <h3 className="text-xl font-semibold tracking-tight">Pro Plan</h3>
-                <p className="text-sm text-muted-foreground mt-1">Essential tools to start building your brand online.</p>
+                <h3 className="text-xl font-semibold tracking-tight">Basic Plan</h3>
+                <p className="text-sm text-muted-foreground mt-1">Everything to get your portfolio live for free.</p>
               </div>
-              <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-border text-foreground/70 text-[11px] font-semibold uppercase tracking-wider">
-                <span className="w-1.5 h-1.5 rounded-full bg-foreground" /> Most Popular
+
+              <div className="flex items-baseline gap-1 mt-6">
+                <span className="text-5xl font-semibold tracking-tight">৳0</span>
+                <span className="text-muted-foreground text-sm ml-1">/forever</span>
               </div>
+
+              <div className="my-7 h-px bg-border" />
+
+              <ul className="space-y-3 mb-8 flex-1">
+                {[
+                  "Unlimited portfolio sections",
+                  "Free Simple theme",
+                  "Custom /u/username public URL",
+                  "Contact inquiries inbox",
+                  "Mobile-optimized layouts",
+                ].map((f) => (
+                  <li key={f} className="flex items-start gap-2.5 text-sm">
+                    <Check className="w-4 h-4 mt-0.5 shrink-0 text-foreground/70" />
+                    <span className="text-foreground/80">{f}</span>
+                  </li>
+                ))}
+              </ul>
+
+              <Button size="lg" variant="outline" className="w-full rounded-full" onClick={() => navigate("/auth")}>
+                Get Started Free <ArrowRight className="ml-2 w-4 h-4" />
+              </Button>
             </div>
 
-            <div className="flex items-baseline gap-1 mt-6">
-              <span className="text-5xl font-semibold tracking-tight">৳0</span>
-              <span className="text-muted-foreground text-sm ml-1">/forever</span>
+            {/* PRO */}
+            <div className="bg-foreground text-background rounded-2xl p-8 md:p-10 flex flex-col relative overflow-hidden">
+              <div
+                aria-hidden
+                className="absolute inset-0 opacity-[0.05] pointer-events-none"
+                style={{
+                  backgroundImage:
+                    "linear-gradient(rgba(255,255,255,1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,1) 1px, transparent 1px)",
+                  backgroundSize: "40px 40px",
+                  maskImage: "radial-gradient(ellipse at top right, #000 30%, transparent 75%)",
+                }}
+              />
+              <div className="relative z-10 flex flex-col flex-1">
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <h3 className="text-xl font-semibold tracking-tight">Pro Plan</h3>
+                    <p className="text-sm text-background/70 mt-1">Premium themes & advanced features for professionals.</p>
+                  </div>
+                  <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-background/30 text-background/80 text-[11px] font-semibold uppercase tracking-wider shrink-0">
+                    <span className="w-1.5 h-1.5 rounded-full bg-background" /> Popular
+                  </div>
+                </div>
+
+                <div className="flex items-baseline gap-1 mt-6">
+                  <span className="text-5xl font-semibold tracking-tight">৳499</span>
+                  <span className="text-background/70 text-sm ml-1">/one-time</span>
+                </div>
+
+                <div className="my-7 h-px bg-background/15" />
+
+                <ul className="space-y-3 mb-8 flex-1">
+                  {[
+                    "Everything in Basic",
+                    "All premium themes unlocked",
+                    "Custom domain support",
+                    "Advanced analytics",
+                    "Priority support",
+                    "Remove Alpha branding",
+                  ].map((f) => (
+                    <li key={f} className="flex items-start gap-2.5 text-sm">
+                      <Check className="w-4 h-4 mt-0.5 shrink-0 text-background/80" />
+                      <span className="text-background/90">{f}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                <Button size="lg" className="w-full rounded-full bg-background text-foreground hover:bg-background/90" onClick={() => navigate("/auth")}>
+                  Upgrade to Pro <ArrowRight className="ml-2 w-4 h-4" />
+                </Button>
+              </div>
             </div>
-
-            <div className="my-7 h-px bg-border" />
-
-            <ul className="grid sm:grid-cols-2 gap-3 mb-8">
-              {[
-                "Unlimited portfolio sections",
-                "Free Simple theme",
-                "Custom /u/username public URL",
-                "Contact inquiries inbox",
-                "Basic analytics",
-                "Mobile-optimized layouts",
-              ].map((f) => (
-                <li key={f} className="flex items-start gap-2.5 text-sm">
-                  <Check className="w-4 h-4 mt-0.5 shrink-0 text-foreground/70" />
-                  <span className="text-foreground/80">{f}</span>
-                </li>
-              ))}
-            </ul>
-
-            <Button size="lg" className="w-full rounded-full bg-foreground text-background hover:bg-foreground/90" onClick={() => navigate("/auth")}>
-              Get Started Free <ArrowRight className="ml-2 w-4 h-4" />
-            </Button>
-
-            <p className="text-center text-xs text-muted-foreground mt-4">
-              Premium themes available as one-time purchase from your dashboard.
-            </p>
           </div>
+
+          <p className="text-center text-xs text-muted-foreground mt-6">
+            One-time payment via bKash / Nagad / Rocket — no subscriptions.
+          </p>
         </div>
       </section>
 

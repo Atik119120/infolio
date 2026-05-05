@@ -165,24 +165,6 @@ export default function Index() {
         </div>
       </section>
 
-      {/* WHY US — compact 4-stat row */}
-      <section id="why" className="py-16 px-6 border-y border-border/60 bg-muted/30">
-        <div className="container mx-auto max-w-6xl">
-          <div className="text-center mb-10">
-            <Eyebrow text="Why Alpha Portfolio" />
-            <h2 className="text-3xl md:text-4xl font-semibold tracking-[-0.025em] mt-4">
-              Built for people, <span className="gradient-text">not coders.</span>
-            </h2>
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <WhyCard icon={<Zap className="w-5 h-5" />} title="5-min setup" desc="Live portfolio without code." />
-            <WhyCard icon={<Palette className="w-5 h-5" />} title="Pro themes" desc="Profession-specific designs." />
-            <WhyCard icon={<Globe className="w-5 h-5" />} title="Custom domain" desc="Use your own URL." />
-            <WhyCard icon={<ShieldCheck className="w-5 h-5" />} title="You own it" desc="Privacy-first by default." />
-          </div>
-        </div>
-      </section>
-
       {/* FEATURES */}
       <section id="features" className="py-20 px-6">
         <div className="container mx-auto max-w-6xl">

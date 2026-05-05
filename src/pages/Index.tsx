@@ -326,13 +326,13 @@ function StepCard({ num, icon, title, desc }: { num: string; icon: React.ReactNo
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-50px" }}
       transition={{ duration: 0.45 }}
-      className="relative bg-card border border-border rounded-2xl p-7 hover:border-foreground/30 transition-colors"
+      className="relative bg-card border border-border rounded-2xl p-7 hover:border-primary/40 hover:shadow-lg hover:shadow-primary/10 hover:-translate-y-1 transition-all"
     >
       <div className="flex items-center justify-between mb-6">
-        <div className="w-10 h-10 rounded-xl border border-border grid place-items-center text-foreground">
+        <div className="w-11 h-11 rounded-xl gradient-primary text-white grid place-items-center shadow-md shadow-primary/30">
           {icon}
         </div>
-        <span className="text-xs font-mono text-muted-foreground/70 tracking-wider">{num}</span>
+        <span className="text-xs font-mono text-primary/60 tracking-wider">{num}</span>
       </div>
       <h3 className="text-base font-semibold mb-2 tracking-tight">{title}</h3>
       <p className="text-sm text-muted-foreground leading-relaxed">{desc}</p>

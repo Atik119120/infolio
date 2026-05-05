@@ -57,7 +57,7 @@ export default function WildcardDomainInstructions() {
           </div>
         </div>
 
-        {/* Step 1: Wildcard DNS */}
+        {/* Step 1: Wildcard CNAME (Vercel) */}
         <div className="space-y-3">
           <div className="flex items-center gap-2">
             <div className="w-6 h-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-medium">
@@ -65,42 +65,42 @@ export default function WildcardDomainInstructions() {
             </div>
             <h4 className="font-medium flex items-center gap-2">
               <Server className="w-4 h-4" />
-              Wildcard A Record সেটআপ করুন
+              Wildcard CNAME (Vercel) সেটআপ করুন
             </h4>
           </div>
-          
+
           <div className="ml-8 space-y-2">
             <p className="text-sm text-muted-foreground">
-              আপনার DNS provider এ গিয়ে এই record যোগ করুন:
+              Vercel এ deploy করার পর আপনার DNS provider এ এই record যোগ করুন:
             </p>
-            
+
             <div className="flex items-center gap-2 bg-background rounded p-3 border">
               <code className="flex-1 text-sm">
-                Type: <span className="text-primary font-medium">A</span> | 
-                Name: <span className="text-primary font-medium">*</span> | 
-                Value: <span className="text-primary font-medium">185.158.133.1</span>
+                Type: <span className="text-primary font-medium">CNAME</span> |
+                Name: <span className="text-primary font-medium">*</span> |
+                Value: <span className="text-primary font-medium">cname.vercel-dns.com</span>
               </code>
               <Button
                 variant="ghost"
                 size="icon"
                 className="h-8 w-8 shrink-0"
-                onClick={() => copyToClipboard("185.158.133.1", "wildcard-a")}
+                onClick={() => copyToClipboard("cname.vercel-dns.com", "wildcard-cname")}
               >
-                {copiedItem === "wildcard-a" ? (
+                {copiedItem === "wildcard-cname" ? (
                   <CheckCircle2 className="w-4 h-4 text-green-500" />
                 ) : (
                   <Copy className="w-4 h-4" />
                 )}
               </Button>
             </div>
-            
+
             <p className="text-xs text-muted-foreground">
-              <strong>Note:</strong> * (asterisk) মানে সব subdomain এই IP তে যাবে
+              <strong>Note:</strong> * (asterisk) মানে সব subdomain Vercel এ যাবে। Vercel dashboard এ <code className="bg-muted px-1 rounded">*.yourdomain.com</code> domain add করতে হবে।
             </p>
           </div>
         </div>
 
-        {/* Step 2: Root Domain */}
+        {/* Step 2: Root Domain A Record (Vercel) */}
         <div className="space-y-3">
           <div className="flex items-center gap-2">
             <div className="w-6 h-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-medium">
@@ -108,26 +108,26 @@ export default function WildcardDomainInstructions() {
             </div>
             <h4 className="font-medium flex items-center gap-2">
               <Globe2 className="w-4 h-4" />
-              Root Domain A Record
+              Root Domain A Record (Vercel)
             </h4>
           </div>
-          
+
           <div className="ml-8 space-y-2">
             <p className="text-sm text-muted-foreground">
-              Main domain এর জন্য আলাদা A record:
+              Main domain এর জন্য Vercel এর A record:
             </p>
-            
+
             <div className="flex items-center gap-2 bg-background rounded p-3 border">
               <code className="flex-1 text-sm">
-                Type: <span className="text-primary font-medium">A</span> | 
-                Name: <span className="text-primary font-medium">@</span> | 
-                Value: <span className="text-primary font-medium">185.158.133.1</span>
+                Type: <span className="text-primary font-medium">A</span> |
+                Name: <span className="text-primary font-medium">@</span> |
+                Value: <span className="text-primary font-medium">76.76.21.21</span>
               </code>
               <Button
                 variant="ghost"
                 size="icon"
                 className="h-8 w-8 shrink-0"
-                onClick={() => copyToClipboard("185.158.133.1", "root-a")}
+                onClick={() => copyToClipboard("76.76.21.21", "root-a")}
               >
                 {copiedItem === "root-a" ? (
                   <CheckCircle2 className="w-4 h-4 text-green-500" />
@@ -136,6 +136,10 @@ export default function WildcardDomainInstructions() {
                 )}
               </Button>
             </div>
+
+            <p className="text-xs text-muted-foreground">
+              www এর জন্য আলাদা CNAME record: <code className="bg-muted px-1 rounded">www → cname.vercel-dns.com</code>
+            </p>
           </div>
         </div>
 

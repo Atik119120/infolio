@@ -100,7 +100,7 @@ export function CustomizationForm({ portfolio, userId, onUpdate, onSuccess, onEr
 
   const removeImage = async (key: "hero_image_url" | "about_image_url") => {
     setData((d) => ({ ...d, [key]: "" }));
-    const { error } = await supabase.from("portfolios").update({ [key]: null }).eq("user_id", userId);
+    const { error } = await supabase.from("portfolios").update({ [key]: null } as any).eq("user_id", userId);
     if (error) onError("Failed to remove image");
     else { onSuccess("Image removed"); onUpdate(); }
   };

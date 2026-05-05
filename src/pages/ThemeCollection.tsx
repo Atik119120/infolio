@@ -22,6 +22,7 @@ import {
   Zap
 } from "lucide-react";
 import { THEME_OPTIONS, getGroupedThemes, ThemeCategory } from "@/components/portfolio/themes/types";
+import SiteHeader from "@/components/home/SiteHeader";
 
 // Category icons mapping
 const categoryIcons: Record<string, React.ElementType> = {

@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Plus, X, Loader2, Briefcase } from "lucide-react";
+import { ServiceIcon, SERVICE_ICON_KEYS } from "@/lib/serviceIcons";
 
 export interface Service {
   id: string;

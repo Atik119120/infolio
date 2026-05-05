@@ -23,7 +23,7 @@ export default function Index() {
   return (
     <div className="min-h-screen bg-background overflow-x-hidden text-foreground">
       {/* NAV */}
-      <nav className="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[min(1180px,calc(100%-2rem))] bg-background/70 backdrop-blur-xl border border-border/60 rounded-full shadow-lg shadow-primary/5">
+      <nav className="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[min(1180px,calc(100%-2rem))] bg-background/70 backdrop-blur-xl border border-border/60 rounded-2xl shadow-lg shadow-primary/5">
         <div className="px-5 py-2.5 flex items-center justify-between">
           <button onClick={() => navigate("/")} className="flex items-center gap-2.5">
             <img src={alphaLogo} alt="Alpha Portfolio" className="w-8 h-8 object-contain dark:invert" />

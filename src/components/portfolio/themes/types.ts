@@ -97,7 +97,7 @@ export const THEME_OPTIONS: ThemeOption[] = [
   { value: 'freelancer', label: 'Freelancer', description: 'Bold corporate-clean conversion-focused theme', isPremium: false, price: 0, category: 'free', tier: 'free' },
   { value: 'small-business', label: 'Small Business', description: 'Warm friendly local business theme', isPremium: false, price: 0, category: 'free', tier: 'free' },
   { value: 'prd-graphic-designer', label: 'Graphic Designer', description: 'Bold designer portfolio with Pinterest-style gallery', isPremium: false, price: 0, category: 'free', tier: 'free' },
-  { value: 'prd-photographer', label: 'Studio Lens', description: 'Luxury studio cinematic photographer theme', isPremium: false, price: 0, category: 'free', tier: 'free' },
+  { value: 'prd-photographer', label: 'Photographer Theme', description: 'Luxury studio cinematic photographer theme', isPremium: false, price: 0, category: 'free', tier: 'free' },
   { value: 'prd-digital-marketer', label: 'Growth Lab', description: 'SaaS dashboard data-driven marketer theme', isPremium: false, price: 0, category: 'free', tier: 'free' },
   { value: 'biography', label: 'Biography', description: 'Facebook-style profile page for writers and personalities', isPremium: false, price: 0, category: 'free', tier: 'free' },
 ];

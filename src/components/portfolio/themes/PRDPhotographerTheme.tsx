@@ -147,7 +147,7 @@ export default function PRDPhotographerTheme({
           <motion.div {...fadeUp} className="text-center max-w-3xl mx-auto">
             <div className="inline-flex items-center gap-2 px-4 py-1.5 mb-6 text-[11px] font-medium tracking-[0.3em] uppercase rounded-full"
               style={{ border: `1px solid ${C.primary}`, color: C.primary }}>
-              <Camera className="w-3 h-3" /> Studio Lens · Booking 2026
+              <Camera className="w-3 h-3" /> Photographer · Booking 2026
             </div>
             <h1 className="sl-display text-5xl md:text-7xl lg:text-8xl font-bold leading-[0.95] mb-5">
               {name.split(" ")[0]}

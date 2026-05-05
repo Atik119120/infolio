@@ -408,10 +408,12 @@ export default function PRDGraphicDesignerTheme({
                           <Palette className="w-16 h-16 text-white/80" />
                         </div>
                       )}
-                      <div className="absolute inset-0 flex flex-col justify-end p-5 opacity-0 group-hover:opacity-100 transition-opacity"
-                        style={{ background: "linear-gradient(to top, rgba(0,0,0,0.85), transparent 60%)" }}>
-                        <div className="text-[10px] uppercase tracking-[0.25em] mb-1" style={{ color: C.primary }}>View Case</div>
-                        <h3 className="gd-display text-xl font-bold text-white leading-tight">{p.title}</h3>
+                      <div className="absolute inset-0 flex flex-col justify-end p-5 transition-opacity"
+                        style={{ background: "linear-gradient(to top, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.45) 45%, transparent 75%)" }}>
+                        {(p.tech_stack && p.tech_stack[0]) && (
+                          <div className="text-[10px] font-bold uppercase tracking-[0.3em] mb-1.5" style={{ color: C.primary }}>{p.tech_stack[0]}</div>
+                        )}
+                        <h3 className="gd-display text-xl md:text-2xl font-bold text-white leading-tight">{p.title}</h3>
                       </div>
                     </motion.button>
                   ))}

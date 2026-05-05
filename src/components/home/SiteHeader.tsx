@@ -28,17 +28,16 @@ export default function SiteHeader() {
 
   const handleNav = (item: NavItem) => {
     close();
-    if (item.to) navigate(item.to);
-    else if (item.href) {
-      if (item.href.startsWith("/#")) {
-        if (window.location.pathname !== "/") {
-          navigate(item.href.slice(1)); // navigate to / with hash
-          navigate(item.href === "/#" ? "/" : item.href.replace("/", ""));
-          window.location.href = item.href;
-        } else {
-          const id = item.href.slice(2);
-          document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
-        }
+    if (item.to) {
+      navigate(item.to);
+      return;
+    }
+    if (item.href?.startsWith("/#")) {
+      const id = item.href.slice(2);
+      if (window.location.pathname !== "/") {
+        navigate(`/#${id}`);
+      } else {
+        document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
       }
     }
   };

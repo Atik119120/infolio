@@ -217,10 +217,6 @@ export function ThemeSelector({ currentTheme, userId, onUpdate }: ThemeSelectorP
           <div className="flex flex-wrap items-center gap-4 text-sm p-4 bg-muted/50 rounded-lg">
             <span className="font-medium">Tiers:</span>
             <span className="flex items-center gap-1.5">
-              <div className="w-3 h-3 rounded bg-green-500" />
-              Free
-            </span>
-            <span className="flex items-center gap-1.5">
               <div className="w-3 h-3 rounded bg-blue-500" />
               Standard ৳200
             </span>

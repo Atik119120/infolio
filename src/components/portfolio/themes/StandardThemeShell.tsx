@@ -270,7 +270,7 @@ export function StandardThemeShell({
                 </p>
               )}
               <p className="text-base leading-[1.85] mb-8 text-justify" style={{ color: s.textMuted }}>
-                {bio}
+                {aboutText}
               </p>
 
               {/* Ventures (from projects, top 2) */}

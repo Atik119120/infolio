@@ -119,7 +119,7 @@ export default function Index() {
               <span className="text-[11px] font-semibold tracking-[0.18em] uppercase">Build in minutes</span>
             </div>
 
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-semibold leading-[1.05] tracking-[-0.03em] mb-5">
+            <h1 className="text-5xl md:text-6xl font-semibold leading-[1.05] tracking-[-0.03em] mb-5">
               Your <span className="gradient-text">portfolio</span>,
               <br />done right.
             </h1>

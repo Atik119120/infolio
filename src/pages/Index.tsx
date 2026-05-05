@@ -86,28 +86,28 @@ export default function Index() {
               <span className="text-[11px] font-semibold tracking-[0.18em] uppercase">Build in minutes</span>
             </div>
 
-            <h1 className="text-5xl font-semibold leading-[1.05] tracking-[-0.03em] mb-5 md:text-9xl">
+            <h1 className="text-6xl font-semibold leading-[1.02] tracking-[-0.04em] mb-6 md:text-[10rem] lg:text-[12rem]">
               Your <span className="gradient-text">portfolio</span>,
               <br />done right.
             </h1>
 
-            <p className="text-lg md:text-2xl text-muted-foreground max-w-2xl mx-auto mb-10 leading-relaxed">
+            <p className="text-base md:text-xl text-muted-foreground max-w-2xl mx-auto mb-10 leading-relaxed">
               Pick a theme, fill a form, share your link. Beautiful portfolios for creators, developers and freelancers — without writing a single line of code.
             </p>
 
-            <div className="bg-card border border-primary/20 rounded-full p-2 flex items-center gap-2 max-w-2xl mx-auto shadow-xl shadow-primary/10">
-              <div className="flex-1 flex items-center pl-5 min-w-0">
-                <span className="text-muted-foreground text-base md:text-lg font-medium hidden sm:inline">alphazero.online/</span>
+            <div className="bg-card border border-primary/20 rounded-full p-1.5 flex items-center gap-2 max-w-xl mx-auto shadow-lg shadow-primary/10">
+              <div className="flex-1 flex items-center pl-4 min-w-0">
+                <span className="text-muted-foreground text-sm font-medium hidden sm:inline">alphazero.online/</span>
                 <input
                   value={username}
                   onChange={(e) => setUsername(e.target.value.replace(/[^a-z0-9_-]/gi, "").toLowerCase())}
                   placeholder="username"
-                  className="flex-1 bg-transparent outline-none px-2 py-3.5 text-base md:text-lg font-medium placeholder:text-muted-foreground/60 min-w-0"
+                  className="flex-1 bg-transparent outline-none px-2 py-2.5 text-sm font-medium placeholder:text-muted-foreground/60 min-w-0"
                   onKeyDown={(e) => e.key === "Enter" && handleClaim()}
                 />
               </div>
-              <Button onClick={handleClaim} className="rounded-full gradient-primary text-white hover:opacity-90 px-7 py-6 text-base shadow-md shadow-primary/30">
-                Claim <ArrowRight className="ml-1.5 w-5 h-5" />
+              <Button onClick={handleClaim} size="sm" className="rounded-full gradient-primary text-white hover:opacity-90 px-5 shadow-md shadow-primary/30">
+                Claim <ArrowRight className="ml-1.5 w-4 h-4" />
               </Button>
             </div>
 

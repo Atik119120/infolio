@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Crown, Lock } from "lucide-react";
 import { usePlan } from "@/hooks/usePlan";
 import { useAuth } from "@/contexts/AuthContext";
-import { PlanPurchaseDialog } from "./PlanPurchaseDialog";
+import { WhatsAppUpgradeDialog } from "./WhatsAppUpgradeDialog";
 
 interface ProGateProps {
   title: string;

@@ -5,7 +5,7 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { motion } from "framer-motion";
 import {
   ArrowRight, Zap, Globe, Palette, Users, Sparkles, Check,
-  ShieldCheck, ArrowUpRight, Plus, Minus, Star,
+  ShieldCheck, ArrowUpRight, Plus, Minus, Star, BadgeCheck,
 } from "lucide-react";
 import ThemeDemoSection from "@/components/home/ThemeDemoSection";
 import Footer from "@/components/home/Footer";

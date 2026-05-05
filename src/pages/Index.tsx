@@ -18,6 +18,7 @@ export default function Index() {
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [openFaq, setOpenFaq] = useState<number | null>(0);
+  const [pricingPlan, setPricingPlan] = useState<"free" | "pro">("free");
 
   const handleClaim = () => {
     navigate(`/auth${username ? `?username=${encodeURIComponent(username)}` : ""}`);

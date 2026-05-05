@@ -303,7 +303,7 @@ export default function PRDPhotographerTheme({
                 <span className="italic" style={{ color: C.primary }}>through light.</span>
               </h2>
               <p className="text-base md:text-lg leading-[1.85] mb-8" style={{ color: C.muted }}>
-                {bio}
+                {aboutText}
               </p>
 
               <div className="grid sm:grid-cols-2 gap-x-8 gap-y-3 text-sm mb-10">

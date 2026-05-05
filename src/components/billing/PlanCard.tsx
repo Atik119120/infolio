@@ -54,7 +54,7 @@ export function PlanCard() {
         </CardContent>
       </Card>
 
-      {user && <PlanPurchaseDialog open={open} onOpenChange={setOpen} userId={user.id} />}
+      {user && <WhatsAppUpgradeDialog open={open} onOpenChange={setOpen} reason="Upgrade to Pro Plan" title="Upgrade to Pro" description="One-time payment for 1 year of Pro access." />}
     </>
   );
 }

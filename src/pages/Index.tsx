@@ -29,63 +29,7 @@ export default function Index() {
   return (
     <div className="min-h-screen bg-background overflow-x-hidden text-foreground">
       {/* NAV */}
-      <nav className="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[min(1180px,calc(100%-2rem))] bg-background/70 backdrop-blur-xl border border-border/60 rounded-2xl shadow-lg shadow-primary/5">
-        <div className="px-5 py-2.5 flex items-center justify-between">
-          <button onClick={() => navigate("/")} className="flex items-center gap-2.5">
-            <img src={alphaLogo} alt="Alokchitra" className="h-8 w-auto object-contain invert" />
-          </button>
-          <div className="hidden md:flex items-center gap-8">
-            <a href="#features" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Features</a>
-            <button onClick={() => navigate("/themes")} className="text-sm text-muted-foreground hover:text-foreground transition-colors">Themes</button>
-            <a href="#pricing" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Pricing</a>
-            <a href="#faq" className="text-sm text-muted-foreground hover:text-foreground transition-colors">FAQ</a>
-          </div>
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => openWhatsApp("Hi! I have a question about Alokchitra.")}
-              className="hidden sm:inline-flex items-center gap-1.5 text-sm text-[#25D366] hover:text-[#1fbb59] bg-transparent hover:bg-transparent px-3 py-1.5"
-            >
-              <MessageCircle className="w-4 h-4" /> Support
-            </button>
-            <Button variant="ghost" size="sm" onClick={() => navigate("/auth")} className="hidden sm:inline-flex text-sm">Login</Button>
-            <Button size="sm" className="hidden sm:inline-flex rounded-full gradient-primary text-white hover:opacity-90 text-sm shadow-md shadow-primary/20" onClick={() => navigate("/auth")}>
-              Get started
-            </Button>
-            <button
-              onClick={() => setMobileMenuOpen((v) => !v)}
-              aria-label="Toggle menu"
-              className="md:hidden inline-flex items-center justify-center w-9 h-9 rounded-lg border border-border/60 bg-background/60 hover:bg-muted transition-colors"
-            >
-              {mobileMenuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
-            </button>
-          </div>
-        </div>
-
-        {/* Mobile dropdown */}
-        {mobileMenuOpen && (
-          <div className="md:hidden px-3 pb-3 pt-1 border-t border-border/60">
-            <div className="flex flex-col gap-1">
-              <a onClick={closeMenu} href="#features" className="px-3 py-2 rounded-lg text-sm text-muted-foreground hover:text-foreground hover:bg-muted transition-colors">Features</a>
-              <button onClick={() => { closeMenu(); navigate("/themes"); }} className="text-left px-3 py-2 rounded-lg text-sm text-muted-foreground hover:text-foreground hover:bg-muted transition-colors">Themes</button>
-              <a onClick={closeMenu} href="#pricing" className="px-3 py-2 rounded-lg text-sm text-muted-foreground hover:text-foreground hover:bg-muted transition-colors">Pricing</a>
-              <a onClick={closeMenu} href="#faq" className="px-3 py-2 rounded-lg text-sm text-muted-foreground hover:text-foreground hover:bg-muted transition-colors">FAQ</a>
-              <div className="h-px bg-border/60 my-2" />
-              <button
-                onClick={() => { closeMenu(); openWhatsApp("Hi! I have a question about Alokchitra."); }}
-                className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-[#25D366] hover:bg-muted transition-colors"
-              >
-                <MessageCircle className="w-4 h-4" /> Support
-              </button>
-              <button onClick={() => { closeMenu(); navigate("/auth"); }} className="text-left px-3 py-2 rounded-lg text-sm text-muted-foreground hover:text-foreground hover:bg-muted transition-colors">
-                Login
-              </button>
-              <Button size="sm" className="mt-1 w-full rounded-full gradient-primary text-white hover:opacity-90 text-sm shadow-md shadow-primary/20" onClick={() => { closeMenu(); navigate("/auth"); }}>
-                Get started
-              </Button>
-            </div>
-          </div>
-        )}
-      </nav>
+      <SiteHeader />
 
       {/* HERO — unique split: text left, layered cards right */}
       <section className="relative isolate min-h-screen flex items-center pt-32 md:pt-36 pb-20 px-6 overflow-hidden">

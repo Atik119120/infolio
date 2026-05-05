@@ -4,7 +4,6 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
-import { ThemeProvider } from "@/components/ThemeProvider";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { AdminRoute } from "@/components/AdminRoute";
 import SubdomainRouter from "@/components/SubdomainRouter";
@@ -15,7 +14,6 @@ import DashboardOverview from "./pages/DashboardOverview";
 import PortfolioEdit from "./pages/PortfolioEdit";
 import DashboardSettings from "./pages/DashboardSettings";
 import DashboardPurchases from "./pages/DashboardPurchases";
-import DashboardSupport from "./pages/DashboardSupport";
 import DashboardDomainStatus from "./pages/DashboardDomainStatus";
 import PublicPortfolio from "./pages/PublicPortfolio";
 import ThemeDemo from "./pages/ThemeDemo";
@@ -29,64 +27,57 @@ import AdminUsers from "./pages/admin/AdminUsers";
 import AdminThemes from "./pages/admin/AdminThemes";
 import AdminPlans from "./pages/admin/AdminPlans";
 import AdminSettings from "./pages/admin/AdminSettings";
-import AdminSupport from "./pages/admin/AdminSupport";
 
 const queryClient = new QueryClient();
 
-// Configure your main domain here when you deploy
-// Example: "alokchitra.site" or "yoursite.com"
-// Users will get subdomains like: username.alokchitra.site
 const MAIN_DOMAIN = "alokchitra.site";
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-      <AuthProvider>
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-            <SubdomainRouter mainDomain={MAIN_DOMAIN}>
-              <Routes>
-                <Route path="/" element={<Index />} />
-                <Route path="/auth" element={<Auth />} />
-                <Route path="/reset-password" element={<ResetPassword />} />
-                <Route path="/themes" element={<ThemeCollection />} />
-                <Route path="/admin/login" element={<AdminAuth />} />
-                <Route path="/u/:username" element={<PublicPortfolio />} />
-                <Route path="/demo/:themeName" element={<ThemeDemo />} />
-                <Route path="/dashboard" element={
-                  <ProtectedRoute>
-                    <Dashboard />
-                  </ProtectedRoute>
-                }>
-                  <Route index element={<DashboardOverview />} />
-                  <Route path="edit" element={<PortfolioEdit />} />
-                  <Route path="support" element={<DashboardSupport />} />
-                  <Route path="purchases" element={<DashboardPurchases />} />
-                  <Route path="settings" element={<DashboardSettings />} />
-                  <Route path="domain-status" element={<DashboardDomainStatus />} />
-                </Route>
-                {/* Admin Routes */}
-                <Route path="/admin" element={
-                  <AdminRoute>
-                    <AdminDashboard />
-                  </AdminRoute>
-                }>
-                  <Route index element={<AdminOverview />} />
-                  <Route path="users" element={<AdminUsers />} />
-                  <Route path="themes" element={<AdminThemes />} />
-                  <Route path="plans" element={<AdminPlans />} />
-                  <Route path="support" element={<AdminSupport />} />
-                  <Route path="settings" element={<AdminSettings />} />
-                </Route>
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </SubdomainRouter>
-          </BrowserRouter>
-        </TooltipProvider>
-      </AuthProvider>
-    </ThemeProvider>
+    <AuthProvider>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <SubdomainRouter mainDomain={MAIN_DOMAIN}>
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/auth" element={<Auth />} />
+              <Route path="/reset-password" element={<ResetPassword />} />
+              <Route path="/themes" element={<ThemeCollection />} />
+              <Route path="/admin/login" element={<AdminAuth />} />
+              <Route path="/demo/:themeName" element={<ThemeDemo />} />
+              <Route path="/u/:username" element={<PublicPortfolio />} />
+              <Route path="/dashboard" element={
+                <ProtectedRoute>
+                  <Dashboard />
+                </ProtectedRoute>
+              }>
+                <Route index element={<DashboardOverview />} />
+                <Route path="edit" element={<PortfolioEdit />} />
+                <Route path="purchases" element={<DashboardPurchases />} />
+                <Route path="settings" element={<DashboardSettings />} />
+                <Route path="domain-status" element={<DashboardDomainStatus />} />
+              </Route>
+              <Route path="/admin" element={
+                <AdminRoute>
+                  <AdminDashboard />
+                </AdminRoute>
+              }>
+                <Route index element={<AdminOverview />} />
+                <Route path="users" element={<AdminUsers />} />
+                <Route path="themes" element={<AdminThemes />} />
+                <Route path="plans" element={<AdminPlans />} />
+                <Route path="settings" element={<AdminSettings />} />
+              </Route>
+              {/* Public portfolio at root: /:username (must be LAST) */}
+              <Route path="/:username" element={<PublicPortfolio />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </SubdomainRouter>
+        </BrowserRouter>
+      </TooltipProvider>
+    </AuthProvider>
   </QueryClientProvider>
 );
 

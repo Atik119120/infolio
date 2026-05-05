@@ -207,19 +207,19 @@ export default function Index() {
                 <div className="flex items-start justify-between gap-3">
                   <div>
                     <h3 className="text-xl font-semibold tracking-tight">Pro Plan</h3>
-                    <p className="text-sm text-background/70 mt-1">Premium themes & advanced features for professionals.</p>
+                    <p className="text-sm text-white/80 mt-1">Premium themes & advanced features for professionals.</p>
                   </div>
-                  <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-background/30 text-background/80 text-[11px] font-semibold uppercase tracking-wider shrink-0">
-                    <span className="w-1.5 h-1.5 rounded-full bg-background" /> Popular
+                  <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border border-white/40 text-white text-[11px] font-semibold uppercase tracking-wider shrink-0 bg-white/10">
+                    <span className="w-1.5 h-1.5 rounded-full bg-white" /> Popular
                   </div>
                 </div>
 
                 <div className="flex items-baseline gap-1 mt-6">
                   <span className="text-5xl font-semibold tracking-tight">৳499</span>
-                  <span className="text-background/70 text-sm ml-1">/one-time</span>
+                  <span className="text-white/80 text-sm ml-1">/one-time</span>
                 </div>
 
-                <div className="my-7 h-px bg-background/15" />
+                <div className="my-7 h-px bg-white/20" />
 
                 <ul className="space-y-3 mb-8 flex-1">
                   {[
@@ -231,13 +231,13 @@ export default function Index() {
                     "Remove Alpha branding",
                   ].map((f) => (
                     <li key={f} className="flex items-start gap-2.5 text-sm">
-                      <Check className="w-4 h-4 mt-0.5 shrink-0 text-background/80" />
-                      <span className="text-background/90">{f}</span>
+                      <Check className="w-4 h-4 mt-0.5 shrink-0 text-white" />
+                      <span className="text-white/95">{f}</span>
                     </li>
                   ))}
                 </ul>
 
-                <Button size="lg" className="w-full rounded-full bg-background text-foreground hover:bg-background/90" onClick={() => navigate("/auth")}>
+                <Button size="lg" className="w-full rounded-full bg-white text-primary hover:bg-white/90 font-semibold" onClick={() => navigate("/auth")}>
                   Upgrade to Pro <ArrowRight className="ml-2 w-4 h-4" />
                 </Button>
               </div>

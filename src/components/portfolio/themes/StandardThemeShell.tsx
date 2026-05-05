@@ -130,7 +130,7 @@ export function StandardThemeShell({
       `}</style>
 
       {/* MODERN HEADER */}
-      <header className="sticky top-0 z-50 backdrop-blur-md" style={{ background: `${s.background}cc`, borderBottom: `1px solid ${s.border}` }}>
+      <header className="sticky top-0 z-50 gx-glass-nav-light">
         <div className="container mx-auto px-5 py-4 flex items-center justify-between">
           <a href="#home" className="t-display text-xl font-bold tracking-tight" style={{ color: s.text }}>
             {portfolio?.logo_url ? (
@@ -143,9 +143,9 @@ export function StandardThemeShell({
             )}
           </a>
 
-          <nav className="hidden md:flex items-center gap-7 text-sm font-medium">
+          <nav className="hidden md:flex items-center gap-1 text-sm font-medium gx-glass-light rounded-full px-2 py-1.5">
             {NAV.map((n) => (
-              <a key={n.id} href={`#${n.id}`} className="t-link" style={{ color: s.textMuted }}>{n.label}</a>
+              <a key={n.id} href={`#${n.id}`} className="t-link px-4 py-1.5 rounded-full hover:bg-black/5 transition" style={{ color: s.textMuted }}>{n.label}</a>
             ))}
           </nav>
 
@@ -161,7 +161,7 @@ export function StandardThemeShell({
         </div>
 
         {menuOpen && (
-          <div className="md:hidden border-t" style={{ borderColor: s.border, background: s.surface }}>
+          <div className="md:hidden gx-glass-nav-light">
             <div className="container mx-auto px-5 py-3 flex flex-col gap-3">
               {NAV.map((n) => (
                 <a key={n.id} href={`#${n.id}`} onClick={() => setMenuOpen(false)} className="py-2 text-sm" style={{ color: s.text }}>{n.label}</a>

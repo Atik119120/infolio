@@ -76,9 +76,10 @@ async function checkARecord(domain: string): Promise<boolean> {
       return false;
     }
 
-    const lovableIP = "185.158.133.1";
+    // Accept Vercel IPs (deploy target). Add more if needed.
+    const acceptedIPs = ["76.76.21.21", "76.76.21.61", "76.76.21.93"];
     const hasCorrectIP = data.Answer.some(
-      (record: any) => record.type === 1 && record.data === lovableIP
+      (record: any) => record.type === 1 && acceptedIPs.includes(record.data)
     );
 
     console.log(`A record check for ${domain}: ${hasCorrectIP ? "correct" : "incorrect"}`);

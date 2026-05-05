@@ -10,7 +10,7 @@ import {
   Eye, Check, Palette, ExternalLink, Lock, Sparkles, Clock, Star, Crown, Zap
 } from "lucide-react";
 import { THEME_OPTIONS, getGroupedThemes, ThemeCategory } from "./themes/types";
-import { ThemePurchaseDialog } from "./ThemePurchaseDialog";
+import { WhatsAppUpgradeDialog } from "@/components/billing/WhatsAppUpgradeDialog";
 
 interface ThemeSelectorProps {
   currentTheme: string | null;

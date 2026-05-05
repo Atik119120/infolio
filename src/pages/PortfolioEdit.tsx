@@ -243,6 +243,7 @@ export default function PortfolioEdit() {
         <TabsContent value="branding" className="mt-4 space-y-4">
           <LogoUploadForm
             logoUrl={portfolio?.logo_url || null}
+            brandName={(portfolio as any)?.brand_name || null}
             userId={user?.id || ""}
             onUpdate={fetchAllData}
             onSuccess={showSuccess}

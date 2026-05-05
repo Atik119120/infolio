@@ -37,7 +37,7 @@ interface DnsCheck {
   checkedAt?: Date;
 }
 
-const ACCEPTED_IPS = ["76.76.21.21", "76.76.21.61", "76.76.21.93"];
+const ACCEPTED_IPS = ["76.76.21.21", "76.76.21.61", "76.76.21.93", "216.198.79.1", "216.198.79.193"];
 const MAIN_DOMAIN = "alokchitra.site";
 
 function isVercelDnsTarget(target: string): boolean {

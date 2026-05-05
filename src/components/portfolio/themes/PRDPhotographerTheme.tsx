@@ -174,8 +174,8 @@ export default function PRDPhotographerTheme({
               {headline}
             </p>
             <div className="flex flex-wrap gap-3 justify-center">
-              <a href="#gallery" className="sl-btn-primary px-7 py-3.5 text-xs font-bold uppercase tracking-[0.2em] inline-flex items-center gap-2 rounded-full">
-                View Portfolio
+              <a href={heroCtaLink || "#gallery"} className="sl-btn-primary px-7 py-3.5 text-xs font-bold uppercase tracking-[0.2em] inline-flex items-center gap-2 rounded-full">
+                {heroCtaText || "View Portfolio"}
               </a>
               <a href="#contact" className="gx-glass px-7 py-3.5 text-xs font-bold uppercase tracking-[0.2em] rounded-full hover:bg-white/10 transition" style={{ color: C.ink }}>
                 Book Session

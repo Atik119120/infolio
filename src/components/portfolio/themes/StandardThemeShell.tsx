@@ -525,6 +525,17 @@ function Stat({ n, label, s }: { n: number; label: string; s: ThemeStyle }) {
   );
 }
 
+function FactRow({ label, value, s }: { label: string; value: string; s: ThemeStyle }) {
+  return (
+    <div className="flex items-center gap-3 min-w-0">
+      <span className="font-bold shrink-0" style={{ color: s.text }}>{label}</span>
+      <span style={{ color: s.border }}>|</span>
+      <span className="truncate" style={{ color: s.textMuted }}>{value}</span>
+    </div>
+  );
+}
+
+
 function ContactCard({ icon, label, value, href, s }: { icon: React.ReactNode; label: string; value: string; href?: string; s: ThemeStyle }) {
   const inner = (
     <div className="t-card p-5 flex items-center gap-4">

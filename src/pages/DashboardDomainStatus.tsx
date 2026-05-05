@@ -38,8 +38,12 @@ interface DnsCheck {
 }
 
 const ACCEPTED_IPS = ["76.76.21.21", "76.76.21.61", "76.76.21.93"];
-const ACCEPTED_CNAME_TARGETS = ["cname.vercel-dns.com", "cname.vercel-dns.com."];
 const MAIN_DOMAIN = "alokchitra.site";
+
+function isVercelDnsTarget(target: string): boolean {
+  const normalized = target.toLowerCase().replace(/\.$/, "");
+  return normalized === "cname.vercel-dns.com" || /(^|\.)vercel-dns-\d+\.com$/.test(normalized);
+}
 
 async function dohQuery(name: string, type: "A" | "CNAME" | "TXT"): Promise<string[]> {
   try {
@@ -124,7 +128,7 @@ export default function DashboardDomainStatus() {
       dohQuery(d.domain, "CNAME"),
     ]);
     const txtOk = !!d.verification_token && txt.includes(d.verification_token);
-    const dnsOk = a.some((ip) => ACCEPTED_IPS.includes(ip)) || cname.some((target) => ACCEPTED_CNAME_TARGETS.includes(target.toLowerCase()));
+    const dnsOk = a.some((ip) => ACCEPTED_IPS.includes(ip)) || cname.some(isVercelDnsTarget);
     setDnsChecks((prev) => ({
       ...prev,
       [d.id]: {
@@ -142,7 +146,7 @@ export default function DashboardDomainStatus() {
     setSubdomainCheck({ txt: "ok", a: "pending" });
     const host = `${username || "test"}.${MAIN_DOMAIN}`;
     const [a, cname] = await Promise.all([dohQuery(host, "A"), dohQuery(host, "CNAME")]);
-    const dnsOk = a.some((ip) => ACCEPTED_IPS.includes(ip)) || cname.some((target) => ACCEPTED_CNAME_TARGETS.includes(target.toLowerCase()));
+    const dnsOk = a.some((ip) => ACCEPTED_IPS.includes(ip)) || cname.some(isVercelDnsTarget);
     setSubdomainCheck({ txt: "ok", a: dnsOk ? "ok" : "fail", aValue: a, cnameValue: cname, checkedAt: new Date() });
   }, [username]);
 

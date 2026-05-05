@@ -47,13 +47,22 @@ export default function Index() {
       </nav>
 
       {/* HERO — unique split: text left, layered cards right */}
-      <section className="relative isolate pt-32 md:pt-36 pb-20 px-6 overflow-hidden">
+      <section className="relative isolate min-h-screen flex items-center pt-32 md:pt-36 pb-20 px-6 overflow-hidden">
         {/* Gradient bars background */}
         <div aria-hidden className="absolute inset-0 -z-20 bg-background" />
+        {/* base radial fill so vertical seams between bars don't read as gaps */}
+        <div
+          aria-hidden
+          className="absolute inset-0 -z-10 pointer-events-none"
+          style={{
+            background:
+              "radial-gradient(ellipse 90% 70% at 50% 100%, hsl(187 90% 35% / 0.55), transparent 70%)",
+          }}
+        />
         {/* Gradient bars sit above bg, below content */}
         <div aria-hidden className="absolute inset-0 -z-10 pointer-events-none">
           <GradientBars
-            numBars={15}
+            numBars={28}
             gradientFrom="hsl(187 90% 55%)"
             gradientTo="transparent"
             animationDuration={2.4}

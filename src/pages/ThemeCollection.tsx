@@ -99,13 +99,13 @@ export default function ThemeCollection() {
         <div className="container mx-auto text-center">
           <Badge className="mb-4 px-4 py-1.5 bg-primary/10 text-primary border-primary/20">
             <Sparkles className="w-3.5 h-3.5 mr-1.5" />
-            {totalThemes} Premium Themes
+            {totalThemes} Themes
           </Badge>
           <h1 className="text-4xl md:text-5xl font-bold mb-4">
             Choose Your Perfect <span className="gradient-text">Theme</span>
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Start free or unlock premium themes. Pro & Elite tiers with advanced features!
+            Beautifully crafted themes for every profession.
           </p>
         </div>
       </section>
@@ -167,132 +167,6 @@ export default function ThemeCollection() {
           </div>
         </section>
       )}
-
-      {/* Premium Themes by Category */}
-      <section className="py-12 px-6">
-        <div className="container mx-auto">
-          {/* Theme Categories */}
-
-          {/* Theme Categories */}
-          <div className="space-y-12">
-            {premiumGroups.map((group) => {
-              const CategoryIcon = categoryIcons[group.category];
-              const categoryColor = categoryColors[group.category];
-              
-              return (
-                <div key={group.category}>
-                  {/* Category Header */}
-                  <div className="flex items-center gap-3 mb-6">
-                    <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${categoryColor} flex items-center justify-center`}>
-                      <CategoryIcon className="w-5 h-5 text-white" />
-                    </div>
-                    <div>
-                      <h3 className="text-xl font-bold">{group.label}</h3>
-                      <p className="text-sm text-muted-foreground">{group.themes.length} theme{group.themes.length > 1 ? 's' : ''} available</p>
-                    </div>
-                  </div>
-
-                  {/* Theme Cards Grid */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-                    {group.themes.map((theme, index) => {
-                      const tierColor = tierColors[theme.tier] || categoryColor;
-                      const tierBadge = tierBadgeColors[theme.tier];
-                      
-                      return (
-                        <motion.div
-                          key={theme.value}
-                          initial={{ opacity: 0, y: 30 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ delay: index * 0.05 }}
-                          className="group cursor-pointer"
-                          onClick={() => navigate(`/demo/${theme.value}`)}
-                        >
-                          <div className="relative overflow-hidden rounded-2xl bg-card border shadow-lg hover:shadow-2xl transition-all duration-300 group-hover:scale-[1.02] group-hover:-translate-y-1">
-                            {/* Tier & Price Badge */}
-                            <div className="absolute top-3 right-3 z-10 flex flex-col gap-1">
-                              <Badge className={`${tierBadge} text-white border-0 text-xs capitalize`}>
-                                {theme.tier === 'elite' && <Crown className="w-3 h-3 mr-1" />}
-                                {theme.tier === 'pro' && <Zap className="w-3 h-3 mr-1" />}
-                                {theme.tier}
-                              </Badge>
-                              <Badge className="bg-black/60 text-white border-0 text-xs">
-                                ৳{theme.price}
-                              </Badge>
-                            </div>
-
-                            {/* Theme Preview Header */}
-                            <div className={`h-36 md:h-44 bg-gradient-to-br ${tierColor} relative overflow-hidden`}>
-                              <div className="absolute inset-0 bg-black/10" />
-                              <div className="absolute top-4 left-4 w-2 h-2 rounded-full bg-white/40" />
-                              <div className="absolute top-4 left-8 w-2 h-2 rounded-full bg-white/30" />
-                              <div className="absolute top-4 left-12 w-2 h-2 rounded-full bg-white/20" />
-                              
-                              <div className="absolute inset-0 flex items-center justify-center">
-                                <CategoryIcon className="w-16 h-16 md:w-20 md:h-20 text-white/80 group-hover:scale-110 transition-transform duration-300" />
-                              </div>
-
-                              <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                <div className="flex items-center gap-2 text-white font-medium">
-                                  <Eye className="w-5 h-5" />
-                                  View Demo
-                                </div>
-                              </div>
-                            </div>
-
-                            {/* Theme Info */}
-                            <div className="p-4">
-                              <h3 className="font-semibold text-base mb-1">{theme.label}</h3>
-                              <p className="text-xs text-muted-foreground line-clamp-2">{theme.description}</p>
-                            </div>
-                          </div>
-                        </motion.div>
-                      );
-                    })}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* Info Section */}
-      <section className="py-12 px-6 bg-muted/30">
-        <div className="container mx-auto">
-          <Card className="p-8">
-            <h3 className="text-xl font-bold mb-4">How Premium Themes Work</h3>
-            <div className="grid md:grid-cols-3 gap-6">
-              <div className="flex gap-4">
-                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                  <span className="font-bold text-primary">1</span>
-                </div>
-                <div>
-                  <h4 className="font-semibold mb-1">Choose a Theme</h4>
-                  <p className="text-sm text-muted-foreground">Preview and select your preferred premium theme</p>
-                </div>
-              </div>
-              <div className="flex gap-4">
-                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                  <span className="font-bold text-primary">2</span>
-                </div>
-                <div>
-                  <h4 className="font-semibold mb-1">Pay via bKash/Nagad</h4>
-                  <p className="text-sm text-muted-foreground">Standard ৳200, Pro ৳300, Elite ৳400</p>
-                </div>
-              </div>
-              <div className="flex gap-4">
-                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                  <span className="font-bold text-primary">3</span>
-                </div>
-                <div>
-                  <h4 className="font-semibold mb-1">Admin Approval</h4>
-                  <p className="text-sm text-muted-foreground">Get approved and unlock your theme forever</p>
-                </div>
-              </div>
-            </div>
-          </Card>
-        </div>
-      </section>
 
       {/* CTA */}
       <section className="py-16 px-6">

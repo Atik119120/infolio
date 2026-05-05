@@ -30,7 +30,6 @@ export default function Index() {
             <span className="text-[15px] font-semibold tracking-tight">Alpha Portfolio</span>
           </button>
           <div className="hidden md:flex items-center gap-8">
-            <a href="#why" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Why us</a>
             <a href="#features" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Features</a>
             <a href="#themes" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Themes</a>
             <a href="#pricing" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Pricing</a>

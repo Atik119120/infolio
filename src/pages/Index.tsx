@@ -180,11 +180,6 @@ export default function Index() {
         </div>
       </section>
 
-      {/* THEMES */}
-      <section id="themes" className="border-t border-border/60">
-        <ThemeDemoSection />
-      </section>
-
       {/* PRICING */}
       <section id="pricing" className="py-20 px-6 border-t border-border/60">
         <div className="container mx-auto max-w-5xl">

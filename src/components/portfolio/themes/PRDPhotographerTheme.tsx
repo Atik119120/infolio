@@ -371,9 +371,9 @@ export default function PRDPhotographerTheme({
                       <Camera className="w-12 h-12" style={{ color: C.primary }} />
                     </div>
                   )}
-                  <div className="absolute inset-0 flex flex-col justify-end p-4 opacity-0 group-hover:opacity-100 transition-opacity"
-                    style={{ background: "linear-gradient(to top, rgba(0,0,0,0.9), transparent 60%)" }}>
-                    <div className="text-[9px] tracking-[0.3em] uppercase mb-1" style={{ color: C.primary }}>View</div>
+                  <div className="absolute inset-0 flex flex-col justify-end p-4 transition-opacity"
+                    style={{ background: "linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.4) 45%, transparent 75%)" }}>
+                    <div className="text-[9px] tracking-[0.3em] uppercase mb-1" style={{ color: C.primary }}>{(p as any).category || "Photo"}</div>
                     <h3 className="sl-display text-base md:text-lg font-bold text-white leading-tight">{p.title}</h3>
                   </div>
                 </motion.button>

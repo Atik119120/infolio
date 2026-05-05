@@ -175,8 +175,8 @@ export default function PRDGraphicDesignerTheme({
                 Hi, I'm <strong style={{ color: C.ink }}>{name}</strong> — {headline.toLowerCase()}.
               </p>
               <div className="flex flex-wrap gap-3">
-                <a href="#projects" className="gd-btn-primary px-7 py-3.5 text-xs font-bold uppercase tracking-wider inline-flex items-center gap-2 rounded-full">
-                  See Portfolio <ArrowRight className="w-4 h-4" />
+                <a href={heroCtaLink || "#projects"} className="gd-btn-primary px-7 py-3.5 text-xs font-bold uppercase tracking-wider inline-flex items-center gap-2 rounded-full">
+                  {heroCtaText || "See Portfolio"} <ArrowRight className="w-4 h-4" />
                 </a>
                 <a href="#contact" className="gd-btn-glass gx-glass px-7 py-3.5 text-xs font-bold uppercase tracking-wider rounded-full" style={{ color: C.ink }}>
                   Start a Project

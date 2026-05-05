@@ -3,7 +3,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { User, Sparkles, Briefcase, GraduationCap, Link2, FolderOpen, Palette, Image, Wrench, Search } from "lucide-react";
+import { User, Sparkles, Briefcase, GraduationCap, Link2, FolderOpen, Palette, Image, Wrench, Search, Wand2 } from "lucide-react";
 import { BasicInfoForm } from "@/components/portfolio/BasicInfoForm";
 import { SkillsForm } from "@/components/portfolio/SkillsForm";
 import { ProjectsForm } from "@/components/portfolio/ProjectsForm";
@@ -15,6 +15,7 @@ import { ThemeSelector } from "@/components/portfolio/ThemeSelector";
 import { LogoUploadForm } from "@/components/portfolio/LogoUploadForm";
 import { FaviconUploadForm } from "@/components/portfolio/FaviconUploadForm";
 import { SeoSettingsForm } from "@/components/portfolio/SeoSettingsForm";
+import { CustomizationForm } from "@/components/portfolio/CustomizationForm";
 
 export interface Profile {
   username: string;

@@ -38,7 +38,7 @@ export default function SubdomainRouter({ children, mainDomain }: SubdomainRoute
   useEffect(() => {
     const hostname = window.location.hostname;
 
-    // Skip subdomain detection for localhost and Lovable preview/staging URLs
+    // Skip detection for localhost and Lovable preview/staging URLs
     if (
       hostname === "localhost" ||
       hostname === "127.0.0.1" ||
@@ -52,21 +52,41 @@ export default function SubdomainRouter({ children, mainDomain }: SubdomainRoute
     const mainDomainLower = mainDomain.toLowerCase();
     const hostnameLower = hostname.toLowerCase();
 
-    // Match: <prefix>.maindomain.tld
+    // 1) Subdomain match: <prefix>.maindomain.tld
     if (hostnameLower.endsWith("." + mainDomainLower)) {
-      const prefix = hostnameLower
-        .slice(0, hostnameLower.length - mainDomainLower.length - 1);
-
-      // Ignore www and empty prefixes; only single-level subdomains
-      if (prefix && prefix !== "www" && !prefix.includes(".")) {
-        // Only allow valid username characters
-        if (/^[a-z0-9-]+$/.test(prefix)) {
-          setSubdomain(prefix);
-        }
+      const prefix = hostnameLower.slice(0, hostnameLower.length - mainDomainLower.length - 1);
+      if (prefix && prefix !== "www" && !prefix.includes(".") && /^[a-z0-9-]+$/.test(prefix)) {
+        setSubdomain(prefix);
+        setIsChecking(false);
+        return;
       }
+      // Root domain (or www) — show normal app
+      setIsChecking(false);
+      return;
     }
 
-    setIsChecking(false);
+    // 2) Custom domain: lookup verified domain → username
+    (async () => {
+      const candidates = [hostnameLower, hostnameLower.replace(/^www\./, "")];
+      const { data: domainRow } = await supabase
+        .from("domains")
+        .select("user_id")
+        .in("domain", candidates)
+        .eq("is_verified", true)
+        .maybeSingle();
+
+      if (domainRow?.user_id) {
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("username")
+          .eq("user_id", domainRow.user_id)
+          .maybeSingle();
+        if (profile?.username) {
+          setSubdomain(profile.username);
+        }
+      }
+      setIsChecking(false);
+    })();
   }, [mainDomain]);
 
   // While checking, show nothing (prevents flash)

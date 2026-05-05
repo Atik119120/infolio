@@ -278,8 +278,8 @@ export default function PRDPhotographerTheme({
           <div className="grid md:grid-cols-12 gap-12 items-start">
             <motion.div {...fadeUp} className="md:col-span-5">
               <div className="relative">
-                {profile?.avatar_url ? (
-                  <img src={profile.avatar_url} alt={name} className="w-full aspect-[4/5] object-cover" />
+                {aboutImage ? (
+                  <img src={aboutImage} alt={name} className="w-full aspect-[4/5] object-cover" />
                 ) : (
                   <div className="w-full aspect-[4/5] flex items-center justify-center sl-display text-9xl font-bold"
                     style={{ background: C.surface2, color: C.primary }}>

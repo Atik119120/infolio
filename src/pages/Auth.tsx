@@ -12,6 +12,7 @@ import { Loader2, ArrowRight, Phone, Mail, User, Lock } from "lucide-react";
 import { z } from "zod";
 import alphaLogo from "@/assets/alpha-portfolio-logo.png";
 import { isDisposableEmail, isAllowedEmailDomain } from "@/lib/tempEmailValidator";
+import { lovable } from "@/integrations/lovable";
 
 const loginSchema = z.object({
   email: z.string().trim().email({ message: "Invalid email address" }),

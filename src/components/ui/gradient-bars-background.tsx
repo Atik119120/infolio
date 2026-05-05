@@ -34,7 +34,7 @@ export const GradientBars: React.FC<GradientBarsProps> = ({
         }
       `}</style>
       <div
-        className={`absolute inset-0 flex items-end justify-between overflow-hidden pointer-events-none ${className}`}
+        className={`absolute inset-0 flex items-end overflow-hidden pointer-events-none ${className}`}
         aria-hidden
       >
         {Array.from({ length: numBars }).map((_, index) => {
@@ -42,15 +42,17 @@ export const GradientBars: React.FC<GradientBarsProps> = ({
           return (
             <div
               key={index}
-              className="flex-1 origin-bottom"
+              className="origin-bottom"
               style={
                 {
+                  flex: "1 1 0",
                   height: "100%",
+                  marginRight: index === numBars - 1 ? 0 : -1,
                   background: `linear-gradient(to top, ${gradientFrom}, ${gradientTo})`,
                   transform: `scaleY(${heightPct / 100})`,
                   animation: `gb-pulseBar ${animationDuration}s ease-in-out ${index * 0.1}s infinite alternate`,
                   ["--initial-scale" as any]: heightPct / 100,
-                  opacity: 0.6,
+                  opacity: 0.55,
                 } as React.CSSProperties
               }
             />

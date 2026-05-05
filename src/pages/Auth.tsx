@@ -250,6 +250,14 @@ export default function Auth() {
             <img src={alphaLogo} alt="Alokchitra" className="h-10 w-auto object-contain invert" />
           </div>
 
+          {showOTP ? (
+            <OTPVerification
+              email={email}
+              userName={username}
+              onVerified={handleOTPVerified}
+              onBack={() => setShowOTP(false)}
+            />
+          ) : (
           <Card className="border-0 shadow-xl">
             <CardHeader className="space-y-1 pb-6">
               <CardTitle className="text-2xl font-bold text-center">

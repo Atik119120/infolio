@@ -3,13 +3,14 @@ import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { User, Sparkles, Briefcase, GraduationCap, Link2, FolderOpen, Palette, Image } from "lucide-react";
+import { User, Sparkles, Briefcase, GraduationCap, Link2, FolderOpen, Palette, Image, Wrench } from "lucide-react";
 import { BasicInfoForm } from "@/components/portfolio/BasicInfoForm";
 import { SkillsForm } from "@/components/portfolio/SkillsForm";
 import { ProjectsForm } from "@/components/portfolio/ProjectsForm";
 import { ExperienceForm } from "@/components/portfolio/ExperienceForm";
 import { EducationForm } from "@/components/portfolio/EducationForm";
 import { SocialLinksForm } from "@/components/portfolio/SocialLinksForm";
+import { ServicesForm, Service } from "@/components/portfolio/ServicesForm";
 import { ThemeSelector } from "@/components/portfolio/ThemeSelector";
 import { LogoUploadForm } from "@/components/portfolio/LogoUploadForm";
 import { FaviconUploadForm } from "@/components/portfolio/FaviconUploadForm";
@@ -90,6 +91,7 @@ export default function PortfolioEdit() {
   const [experiences, setExperiences] = useState<Experience[]>([]);
   const [education, setEducation] = useState<Education[]>([]);
   const [socialLinks, setSocialLinks] = useState<SocialLink[]>([]);
+  const [services, setServices] = useState<Service[]>([]);
   const [loading, setLoading] = useState(true);
 
   const { user } = useAuth();
@@ -112,7 +114,7 @@ export default function PortfolioEdit() {
   const fetchAllData = async () => {
     if (!user) return;
 
-    const [profileRes, portfolioRes, skillsRes, projectsRes, experiencesRes, educationRes, socialRes] = 
+    const [profileRes, portfolioRes, skillsRes, projectsRes, experiencesRes, educationRes, socialRes, servicesRes] = 
       await Promise.all([
         supabase.from("profiles").select("*").eq("user_id", user.id).maybeSingle(),
         supabase.from("portfolios").select("*").eq("user_id", user.id).maybeSingle(),
@@ -121,6 +123,7 @@ export default function PortfolioEdit() {
         supabase.from("experiences").select("*").eq("user_id", user.id).order("display_order"),
         supabase.from("education").select("*").eq("user_id", user.id).order("display_order"),
         supabase.from("social_links").select("*").eq("user_id", user.id).order("display_order"),
+        (supabase as any).from("services").select("*").eq("user_id", user.id).order("display_order"),
       ]);
 
     if (profileRes.data) setProfile(profileRes.data);
@@ -130,6 +133,7 @@ export default function PortfolioEdit() {
     if (experiencesRes.data) setExperiences(experiencesRes.data);
     if (educationRes.data) setEducation(educationRes.data);
     if (socialRes.data) setSocialLinks(socialRes.data);
+    if (servicesRes.data) setServices(servicesRes.data);
 
     setLoading(false);
   };
@@ -156,6 +160,7 @@ export default function PortfolioEdit() {
     { value: "basic", label: "Basic Info", icon: User },
     { value: "branding", label: "Branding", icon: Image },
     { value: "skills", label: "Skills", icon: Sparkles },
+    { value: "services", label: "Services", icon: Wrench },
     { value: "projects", label: "Projects", icon: FolderOpen },
     { value: "experience", label: "Experience", icon: Briefcase },
     { value: "education", label: "Education", icon: GraduationCap },
@@ -226,6 +231,16 @@ export default function PortfolioEdit() {
         <TabsContent value="skills" className="mt-4">
           <SkillsForm
             skills={skills}
+            userId={user?.id || ""}
+            onUpdate={fetchAllData}
+            onSuccess={showSuccess}
+            onError={showError}
+          />
+        </TabsContent>
+
+        <TabsContent value="services" className="mt-4">
+          <ServicesForm
+            services={services}
             userId={user?.id || ""}
             onUpdate={fetchAllData}
             onSuccess={showSuccess}

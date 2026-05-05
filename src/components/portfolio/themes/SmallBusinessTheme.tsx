@@ -38,8 +38,14 @@ export default function SmallBusinessTheme({
   }, []);
 
   const name = portfolio?.brand_name || profile?.display_name || "Your Name";
-  const headline = portfolio?.headline || "Founder & Entrepreneur";
+  const headline = portfolio?.hero_headline || portfolio?.headline || "Founder & Entrepreneur";
   const bio = portfolio?.bio || "Building businesses that solve real problems.";
+  const aboutText = portfolio?.about_text || bio;
+  const heroImage = portfolio?.hero_image_url || profile?.avatar_url;
+  const aboutImage = portfolio?.about_image_url || profile?.avatar_url;
+  const heroCtaText = portfolio?.hero_cta_text;
+  const heroCtaLink = portfolio?.hero_cta_link;
+  const footerText = portfolio?.footer_text;
   const email = profile?.email;
   const phone = portfolio?.phone;
   const location = portfolio?.location;

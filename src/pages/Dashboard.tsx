@@ -4,7 +4,8 @@ import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { ThemeToggle } from "@/components/ThemeToggle";
+import { openWhatsApp } from "@/lib/whatsapp";
+import { MessageCircle } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -27,7 +28,6 @@ import {
   ChevronRight,
   Zap,
   ShoppingBag,
-  MessageSquare,
   Globe2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -75,7 +75,6 @@ export default function Dashboard() {
     { icon: LayoutDashboard, label: "Overview", path: "/dashboard" },
     { icon: User, label: "Profile", path: "/dashboard/edit", hash: "basic" },
     { icon: FileEdit, label: "Edit Portfolio", path: "/dashboard/edit" },
-    { icon: MessageSquare, label: "Support", path: "/dashboard/support" },
     { icon: ShoppingBag, label: "My Purchases", path: "/dashboard/purchases" },
     { icon: Globe2, label: "Domain Status", path: "/dashboard/domain-status" },
     { icon: Settings, label: "Settings", path: "/dashboard/settings" },
@@ -173,12 +172,19 @@ export default function Dashboard() {
           {profile && (
             <div className="px-3 pb-2">
               <button
-                onClick={() => window.open(`/u/${profile.username}`, "_blank")}
+                onClick={() => window.open(`/${profile.username}`, "_blank")}
                 className="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm font-medium bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white shadow-lg shadow-violet-500/25 hover:shadow-violet-500/40 transition-all duration-200"
               >
                 <Eye className="w-4 h-4" />
                 <span className="flex-1 text-left">View Portfolio</span>
                 <ExternalLink className="w-3.5 h-3.5 opacity-75" />
+              </button>
+              <button
+                onClick={() => openWhatsApp("Hi! I need help with my Alokchitra account.")}
+                className="mt-2 w-full flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm font-medium bg-[#25D366] text-white hover:bg-[#1fbb59] transition-all duration-200"
+              >
+                <MessageCircle className="w-4 h-4" />
+                <span className="flex-1 text-left">WhatsApp Support</span>
               </button>
             </div>
           )}
@@ -249,11 +255,10 @@ export default function Dashboard() {
           </div>
 
           <div className="flex items-center gap-2">
-            <ThemeToggle />
             {profile && (
               <Button
                 size="sm"
-                onClick={() => window.open(`/u/${profile.username}`, "_blank")}
+                onClick={() => window.open(`/${profile.username}`, "_blank")}
                 className="hidden sm:flex gap-1.5 h-8 text-xs bg-gradient-to-r from-violet-500 to-fuchsia-500 hover:from-violet-600 hover:to-fuchsia-600 text-white shadow-md shadow-violet-500/20"
               >
                 <Eye className="w-3.5 h-3.5" />

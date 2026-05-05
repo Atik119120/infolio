@@ -61,8 +61,6 @@ interface Profile {
 interface Portfolio {
   is_published: boolean | null;
   theme: string | null;
-  pending_publish: boolean | null;
-  publish_requested_at: string | null;
 }
 
 const themeIcons: Record<string, typeof Camera> = {
@@ -102,49 +100,29 @@ export default function DashboardSettings() {
 
     const [profileRes, portfolioRes] = await Promise.all([
       supabase.from("profiles").select("username, is_approved, approved_at, phone_number").eq("user_id", user.id).maybeSingle(),
-      supabase.from("portfolios").select("is_published, theme, pending_publish, publish_requested_at").eq("user_id", user.id).maybeSingle(),
+      supabase.from("portfolios").select("is_published, theme").eq("user_id", user.id).maybeSingle(),
     ]);
 
     if (profileRes.data) setProfile(profileRes.data);
-    if (portfolioRes.data) setPortfolio(portfolioRes.data);
+    if (portfolioRes.data) setPortfolio(portfolioRes.data as Portfolio);
 
     setLoading(false);
   };
 
   const handleTogglePublish = async () => {
-    if (!user || !profile) return;
-
-    // Check if user is approved
-    if (!profile.is_approved) {
-      toast({
-        variant: "destructive",
-        title: "Account Not Approved",
-        description: "Your account needs admin approval before you can publish your portfolio.",
-      });
-      return;
-    }
-
+    if (!user) return;
     setSaving(true);
-
     const { error } = await supabase
       .from("portfolios")
       .update({ is_published: !portfolio?.is_published })
       .eq("user_id", user.id);
-
     setSaving(false);
-
     if (error) {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Failed to update publish status",
-      });
+      toast({ variant: "destructive", title: "Error", description: "Failed to update publish status" });
     } else {
       toast({
         title: portfolio?.is_published ? "Portfolio Unpublished" : "Portfolio Published",
-        description: portfolio?.is_published
-          ? "Your portfolio is now private"
-          : "Your portfolio is now live!",
+        description: portfolio?.is_published ? "Your portfolio is now private" : "Your portfolio is now live!",
       });
       fetchData();
     }

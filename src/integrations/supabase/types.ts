@@ -277,9 +277,7 @@ export type Database = {
           meta_keywords: string | null
           meta_title: string | null
           og_image_url: string | null
-          pending_publish: boolean | null
           phone: string | null
-          publish_requested_at: string | null
           theme: string | null
           updated_at: string
           user_id: string
@@ -301,9 +299,7 @@ export type Database = {
           meta_keywords?: string | null
           meta_title?: string | null
           og_image_url?: string | null
-          pending_publish?: boolean | null
           phone?: string | null
-          publish_requested_at?: string | null
           theme?: string | null
           updated_at?: string
           user_id: string
@@ -325,9 +321,7 @@ export type Database = {
           meta_keywords?: string | null
           meta_title?: string | null
           og_image_url?: string | null
-          pending_publish?: boolean | null
           phone?: string | null
-          publish_requested_at?: string | null
           theme?: string | null
           updated_at?: string
           user_id?: string
@@ -520,48 +514,6 @@ export type Database = {
           id?: string
           platform?: string
           url?: string
-          user_id?: string
-        }
-        Relationships: []
-      }
-      support_messages: {
-        Row: {
-          admin_reply: string | null
-          created_at: string
-          id: string
-          issue_type: string
-          message: string
-          replied_at: string | null
-          replied_by: string | null
-          status: string
-          subject: string
-          updated_at: string
-          user_id: string
-        }
-        Insert: {
-          admin_reply?: string | null
-          created_at?: string
-          id?: string
-          issue_type: string
-          message: string
-          replied_at?: string | null
-          replied_by?: string | null
-          status?: string
-          subject: string
-          updated_at?: string
-          user_id: string
-        }
-        Update: {
-          admin_reply?: string | null
-          created_at?: string
-          id?: string
-          issue_type?: string
-          message?: string
-          replied_at?: string | null
-          replied_by?: string | null
-          status?: string
-          subject?: string
-          updated_at?: string
           user_id?: string
         }
         Relationships: []

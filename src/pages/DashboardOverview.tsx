@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { useNavigate } from "react-router-dom";
+import { useToast } from "@/hooks/use-toast";
 import {
   Eye,
   FileEdit,
@@ -14,25 +15,20 @@ import {
   ArrowRight,
   CheckCircle2,
   Circle,
-  Clock,
-  Shield,
+  MessageCircle,
 } from "lucide-react";
-import RecentPurchasesWidget from "@/components/dashboard/RecentPurchasesWidget";
-import SupportMessageDialog from "@/components/dashboard/SupportMessageDialog";
-import UserSupportMessages from "@/components/dashboard/UserSupportMessages";
+import { openWhatsApp } from "@/lib/whatsapp";
 
 interface Portfolio {
   is_published: boolean;
   headline: string | null;
   bio: string | null;
-  pending_publish: boolean | null;
 }
 
 interface Profile {
   username: string;
   display_name: string | null;
   avatar_url: string | null;
-  is_approved: boolean | null;
 }
 
 interface Stats {
@@ -46,36 +42,50 @@ export default function DashboardOverview() {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [stats, setStats] = useState<Stats>({ skills: 0, projects: 0, experiences: 0 });
   const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
   const { user } = useAuth();
   const navigate = useNavigate();
+  const { toast } = useToast();
 
   useEffect(() => {
-    if (user) {
-      fetchData();
-    }
+    if (user) fetchData();
   }, [user]);
 
   const fetchData = async () => {
     if (!user) return;
-
     const [portfolioRes, profileRes, skillsRes, projectsRes, experiencesRes] = await Promise.all([
-      supabase.from("portfolios").select("is_published, headline, bio, pending_publish").eq("user_id", user.id).single(),
-      supabase.from("profiles").select("username, display_name, avatar_url, is_approved").eq("user_id", user.id).single(),
+      supabase.from("portfolios").select("is_published, headline, bio").eq("user_id", user.id).single(),
+      supabase.from("profiles").select("username, display_name, avatar_url").eq("user_id", user.id).single(),
       supabase.from("skills").select("id").eq("user_id", user.id),
       supabase.from("projects").select("id").eq("user_id", user.id),
       supabase.from("experiences").select("id").eq("user_id", user.id),
     ]);
 
-    if (portfolioRes.data) setPortfolio(portfolioRes.data);
+    if (portfolioRes.data) setPortfolio(portfolioRes.data as Portfolio);
     if (profileRes.data) setProfile(profileRes.data);
-    
     setStats({
       skills: skillsRes.data?.length || 0,
       projects: projectsRes.data?.length || 0,
       experiences: experiencesRes.data?.length || 0,
     });
-
     setLoading(false);
+  };
+
+  const togglePublish = async () => {
+    if (!user) return;
+    setSaving(true);
+    const next = !portfolio?.is_published;
+    const { error } = await supabase
+      .from("portfolios")
+      .update({ is_published: next })
+      .eq("user_id", user.id);
+    setSaving(false);
+    if (error) {
+      toast({ variant: "destructive", title: "Error", description: error.message });
+    } else {
+      toast({ title: next ? "Portfolio published" : "Portfolio unpublished" });
+      fetchData();
+    }
   };
 
   const getCompletionScore = () => {
@@ -100,20 +110,6 @@ export default function DashboardOverview() {
     { label: "Experience", done: stats.experiences > 0 },
   ];
 
-  const togglePublish = async () => {
-    if (!user || !profile?.is_approved) {
-      navigate("/dashboard/settings");
-      return;
-    }
-    
-    await supabase
-      .from("portfolios")
-      .update({ is_published: !portfolio?.is_published })
-      .eq("user_id", user.id);
-    
-    fetchData();
-  };
-
   if (loading) {
     return (
       <div className="space-y-4 animate-pulse">
@@ -122,42 +118,15 @@ export default function DashboardOverview() {
           <div className="h-32 bg-muted rounded-lg" />
           <div className="h-32 bg-muted rounded-lg" />
           <div className="h-32 bg-muted rounded-lg" />
-          <div className="h-32 bg-muted rounded-lg" />
         </div>
       </div>
     );
   }
 
+  const portfolioUrl = profile ? `${window.location.origin}/${profile.username}` : "";
+
   return (
     <div className="space-y-4 animate-fade-in">
-      {/* Account Status Alert - Compact */}
-      {!profile?.is_approved && (
-        <Card className="border-amber-500/50 bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/10 dark:to-orange-900/10">
-          <CardContent className="p-3">
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center flex-shrink-0">
-                <Clock className="w-4 h-4 text-amber-600" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="font-medium text-sm text-amber-800 dark:text-amber-200">Pending Approval</p>
-                <p className="text-xs text-amber-700 dark:text-amber-300 truncate">
-                  Build your portfolio while we review your account
-                </p>
-              </div>
-              <Button 
-                variant="outline" 
-                size="sm"
-                onClick={() => navigate("/dashboard/settings")}
-                className="border-amber-500 text-amber-700 dark:text-amber-300 h-8 text-xs"
-              >
-                Status
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      )}
-
-      {/* Welcome Banner - Compact & Bold */}
       <Card className="gradient-hero text-white overflow-hidden relative shadow-glow">
         <div className="absolute inset-0 bg-gradient-to-r from-black/10 to-transparent" />
         <CardContent className="p-5 relative z-10">
@@ -167,29 +136,16 @@ export default function DashboardOverview() {
                 Welcome, {profile?.display_name || "there"}! 👋
               </h1>
               <p className="text-white/80 text-sm">
-                {!profile?.is_approved 
-                  ? "Build your portfolio while we review your account"
-                  : portfolio?.is_published 
-                    ? "Your portfolio is live!"
-                    : "Complete and publish your portfolio"}
+                {portfolio?.is_published ? "Your portfolio is live!" : "Publish your portfolio whenever you're ready."}
               </p>
             </div>
             <div className="flex gap-2">
-              <Button
-                variant="secondary"
-                size="sm"
-                className="bg-white/20 hover:bg-white/30 text-white border-0 h-9"
-                onClick={() => navigate("/dashboard/edit")}
-              >
+              <Button variant="secondary" size="sm" className="bg-white/20 hover:bg-white/30 text-white border-0 h-9" onClick={() => navigate("/dashboard/edit")}>
                 <FileEdit className="w-4 h-4 mr-1.5" />
                 Edit
               </Button>
               {profile && (
-                <Button
-                  size="sm"
-                  className="bg-white text-primary hover:bg-white/90 h-9"
-                  onClick={() => window.open(`/u/${profile.username}`, "_blank")}
-                >
+                <Button size="sm" className="bg-white text-primary hover:bg-white/90 h-9" onClick={() => window.open(portfolioUrl, "_blank")}>
                   <Eye className="w-4 h-4 mr-1.5" />
                   Preview
                 </Button>
@@ -199,95 +155,45 @@ export default function DashboardOverview() {
         </CardContent>
       </Card>
 
-      {/* Stats Grid - Compact */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        {/* Account Status */}
-        <Card className="bg-gradient-to-br from-card to-primary/5 border-primary/10">
-          <CardHeader className="flex flex-row items-center justify-between pb-1 pt-3 px-3">
-            <CardTitle className="text-xs font-medium text-muted-foreground">
-              Status
-            </CardTitle>
-            <Shield className="w-4 h-4 text-primary" />
-          </CardHeader>
-          <CardContent className="px-3 pb-3">
-            <div className="flex items-center gap-1.5">
-              {profile?.is_approved ? (
-                <Badge variant="default" className="bg-green-500 text-xs h-5">
-                  <CheckCircle2 className="w-3 h-3 mr-1" />
-                  Approved
-                </Badge>
-              ) : (
-                <Badge variant="secondary" className="bg-amber-500/20 text-amber-700 dark:text-amber-400 text-xs h-5">
-                  <Clock className="w-3 h-3 mr-1" />
-                  Pending
-                </Badge>
-              )}
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="bg-gradient-to-br from-card to-secondary/5 border-secondary/10">
-          <CardHeader className="flex flex-row items-center justify-between pb-1 pt-3 px-3">
-            <CardTitle className="text-xs font-medium text-muted-foreground">
-              Skills
-            </CardTitle>
+        <Card>
+          <CardHeader className="pb-1 pt-3 px-3 flex-row items-center justify-between">
+            <CardTitle className="text-xs font-medium text-muted-foreground">Skills</CardTitle>
             <Sparkles className="w-4 h-4 text-secondary" />
           </CardHeader>
-          <CardContent className="px-3 pb-3">
-            <div className="text-2xl font-bold">{stats.skills}</div>
-          </CardContent>
+          <CardContent className="px-3 pb-3"><div className="text-2xl font-bold">{stats.skills}</div></CardContent>
         </Card>
-
-        <Card className="bg-gradient-to-br from-card to-accent/5 border-accent/10">
-          <CardHeader className="flex flex-row items-center justify-between pb-1 pt-3 px-3">
-            <CardTitle className="text-xs font-medium text-muted-foreground">
-              Projects
-            </CardTitle>
+        <Card>
+          <CardHeader className="pb-1 pt-3 px-3 flex-row items-center justify-between">
+            <CardTitle className="text-xs font-medium text-muted-foreground">Projects</CardTitle>
             <FileEdit className="w-4 h-4 text-accent" />
           </CardHeader>
-          <CardContent className="px-3 pb-3">
-            <div className="text-2xl font-bold">{stats.projects}</div>
-          </CardContent>
+          <CardContent className="px-3 pb-3"><div className="text-2xl font-bold">{stats.projects}</div></CardContent>
         </Card>
-
-        <Card className="bg-gradient-to-br from-card to-success/5 border-success/10">
-          <CardHeader className="flex flex-row items-center justify-between pb-1 pt-3 px-3">
-            <CardTitle className="text-xs font-medium text-muted-foreground">
-              Portfolio
-            </CardTitle>
+        <Card>
+          <CardHeader className="pb-1 pt-3 px-3 flex-row items-center justify-between">
+            <CardTitle className="text-xs font-medium text-muted-foreground">Experience</CardTitle>
+            <FileEdit className="w-4 h-4 text-accent" />
+          </CardHeader>
+          <CardContent className="px-3 pb-3"><div className="text-2xl font-bold">{stats.experiences}</div></CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="pb-1 pt-3 px-3 flex-row items-center justify-between">
+            <CardTitle className="text-xs font-medium text-muted-foreground">Portfolio</CardTitle>
             <Globe className="w-4 h-4 text-green-600" />
           </CardHeader>
           <CardContent className="px-3 pb-3">
-            <div className="flex items-center gap-1.5">
-              {portfolio?.is_published ? (
-                <Badge variant="default" className="bg-green-500 text-xs h-5">
-                  Live
-                </Badge>
-              ) : portfolio?.pending_publish ? (
-                <Badge variant="secondary" className="bg-blue-500/20 text-blue-700 text-xs h-5">
-                  Pending
-                </Badge>
-              ) : (
-                <Badge variant="secondary" className="text-xs h-5">Draft</Badge>
-              )}
-            </div>
-            <Button 
-              variant="link" 
-              className="px-0 mt-1 h-auto text-xs"
-              onClick={togglePublish}
-            >
-              {!profile?.is_approved 
-                ? "Request" 
-                : portfolio?.is_published 
-                  ? "Unpublish" 
-                  : "Publish"}
+            <Badge variant={portfolio?.is_published ? "default" : "secondary"} className={portfolio?.is_published ? "bg-green-500 text-xs h-5" : "text-xs h-5"}>
+              {portfolio?.is_published ? "Live" : "Draft"}
+            </Badge>
+            <Button variant="link" className="px-0 mt-1 h-auto text-xs" disabled={saving} onClick={togglePublish}>
+              {portfolio?.is_published ? "Unpublish" : "Publish"}
               <ArrowRight className="w-3 h-3 ml-0.5" />
             </Button>
           </CardContent>
         </Card>
       </div>
 
-      {/* Completion Progress - Compact */}
       <Card>
         <CardHeader className="pb-2 pt-4 px-4">
           <div className="flex items-center justify-between">
@@ -299,73 +205,49 @@ export default function DashboardOverview() {
           <Progress value={getCompletionScore()} className="h-2" />
           <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
             {completionItems.map((item) => (
-              <div 
-                key={item.label} 
-                className="flex items-center gap-1.5 text-xs"
-              >
-                {item.done ? (
-                  <CheckCircle2 className="w-3.5 h-3.5 text-green-500 flex-shrink-0" />
-                ) : (
-                  <Circle className="w-3.5 h-3.5 text-muted-foreground flex-shrink-0" />
-                )}
-                <span className={item.done ? "text-foreground" : "text-muted-foreground"}>
-                  {item.label}
-                </span>
+              <div key={item.label} className="flex items-center gap-1.5 text-xs">
+                {item.done ? <CheckCircle2 className="w-3.5 h-3.5 text-green-500" /> : <Circle className="w-3.5 h-3.5 text-muted-foreground" />}
+                <span className={item.done ? "text-foreground" : "text-muted-foreground"}>{item.label}</span>
               </div>
             ))}
           </div>
           {getCompletionScore() < 100 && (
-            <Button 
-              className="w-full mt-2 gradient-primary h-9 text-sm"
-              onClick={() => navigate("/dashboard/edit")}
-            >
-              Complete Portfolio
-              <ArrowRight className="w-4 h-4 ml-1.5" />
+            <Button className="w-full mt-2 gradient-primary h-9 text-sm" onClick={() => navigate("/dashboard/edit")}>
+              Complete Portfolio <ArrowRight className="w-4 h-4 ml-1.5" />
             </Button>
           )}
         </CardContent>
       </Card>
 
-      {/* Recent Purchases & Support Section */}
-      <div className="grid md:grid-cols-2 gap-4">
-        {/* Recent Purchases Widget */}
-        <RecentPurchasesWidget />
-
-        {/* Support Message */}
-        <SupportMessageDialog />
-      </div>
-
-      {/* User Support Messages */}
-      <UserSupportMessages />
-
-      {/* Quick Link - Compact */}
       {profile && (
         <Card className="border-dashed border-primary/30 bg-gradient-to-r from-primary/5 to-secondary/5">
           <CardContent className="p-4 flex items-center justify-between gap-3">
             <div className="flex items-center gap-3 min-w-0">
-              <div className="w-10 h-10 rounded-lg gradient-primary flex items-center justify-center flex-shrink-0">
-                <Globe className="w-5 h-5 text-white" />
-              </div>
+              <div className="w-10 h-10 rounded-lg gradient-primary flex items-center justify-center"><Globe className="w-5 h-5 text-white" /></div>
               <div className="min-w-0">
                 <p className="font-medium text-sm">Your Portfolio</p>
-                <p className="text-xs text-muted-foreground truncate">
-                  {window.location.origin}/u/{profile.username}
-                </p>
+                <p className="text-xs text-muted-foreground truncate">{portfolioUrl}</p>
               </div>
             </div>
-            <Button 
-              variant="outline"
-              size="sm"
-              className="h-8 text-xs"
-              onClick={() => {
-                navigator.clipboard.writeText(`${window.location.origin}/u/${profile.username}`);
-              }}
-            >
-              Copy
-            </Button>
+            <Button variant="outline" size="sm" className="h-8 text-xs" onClick={() => navigator.clipboard.writeText(portfolioUrl)}>Copy</Button>
           </CardContent>
         </Card>
       )}
+
+      <Card className="border-[#25D366]/40 bg-[#25D366]/5">
+        <CardContent className="p-4 flex items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-[#25D366] flex items-center justify-center"><MessageCircle className="w-5 h-5 text-white" /></div>
+            <div>
+              <p className="font-medium text-sm">Need help?</p>
+              <p className="text-xs text-muted-foreground">Chat with us directly on WhatsApp</p>
+            </div>
+          </div>
+          <Button className="bg-[#25D366] hover:bg-[#1fbb59] text-white h-9" onClick={() => openWhatsApp("Hi! I need help with my Alokchitra account.")}>
+            <MessageCircle className="w-4 h-4 mr-1.5" /> WhatsApp
+          </Button>
+        </CardContent>
+      </Card>
     </div>
   );
 }

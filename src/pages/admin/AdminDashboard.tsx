@@ -4,7 +4,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { ThemeToggle } from "@/components/ThemeToggle";
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -24,7 +24,6 @@ import {
   X,
   Sparkles,
   ChevronRight,
-  MessageSquare,
   Crown,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -72,7 +71,6 @@ export default function AdminDashboard() {
     { icon: Users, label: "Users & Portfolios", path: "/admin/users" },
     { icon: Palette, label: "Themes", path: "/admin/themes" },
     { icon: Crown, label: "Pro Plans", path: "/admin/plans" },
-    { icon: MessageSquare, label: "Support Messages", path: "/admin/support" },
     { icon: Settings, label: "Settings", path: "/admin/settings" },
   ];
 
@@ -226,9 +224,7 @@ export default function AdminDashboard() {
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
-            <ThemeToggle />
-          </div>
+          <div className="flex items-center gap-2" />
         </header>
 
         {/* Scrollable Page Content */}

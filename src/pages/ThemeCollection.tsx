@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { motion } from "framer-motion";
-import { ThemeToggle } from "@/components/ThemeToggle";
+
 import alphaLogo from "@/assets/alpha-portfolio-logo.png";
 import { 
   Code, 
@@ -84,7 +84,6 @@ export default function ThemeCollection() {
             <span className="text-xl font-bold hidden sm:block">Theme Collection</span>
           </div>
           <div className="flex items-center gap-4">
-            <ThemeToggle />
             <Button 
               className="gradient-primary hover:opacity-90 transition-opacity"
               onClick={() => navigate("/auth")}

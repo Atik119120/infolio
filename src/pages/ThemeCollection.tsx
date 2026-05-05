@@ -80,7 +80,7 @@ export default function ThemeCollection() {
             <Button variant="ghost" size="icon" onClick={() => navigate("/")}>
               <ArrowLeft className="w-5 h-5" />
             </Button>
-            <img src={alphaLogo} alt="Alpha Portfolio" className="w-10 h-10 object-contain dark:invert" />
+            <img src={alphaLogo} alt="Alokchitra" className="w-10 h-10 object-contain dark:invert" />
             <span className="text-xl font-bold hidden sm:block">Theme Collection</span>
           </div>
           <div className="flex items-center gap-4">

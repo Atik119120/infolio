@@ -179,8 +179,8 @@ export default function Auth() {
         <div className="absolute inset-0 bg-black/20" />
         <div className="relative z-10 flex flex-col justify-center px-16 text-white">
           <div className="flex items-center gap-3 mb-8">
-            <img src={alphaLogo} alt="Alpha Portfolio" className="w-12 h-12 object-contain invert" />
-            <span className="text-3xl font-bold">Alpha Portfolio</span>
+            <img src={alphaLogo} alt="Alokchitra" className="w-12 h-12 object-contain invert" />
+            <span className="text-3xl font-bold">Alokchitra</span>
           </div>
           <h1 className="text-5xl font-bold leading-tight mb-6">
             Build Your Professional Portfolio in Minutes
@@ -219,8 +219,8 @@ export default function Auth() {
         <div className="w-full max-w-md">
           {/* Mobile Logo */}
           <div className="lg:hidden flex items-center justify-center gap-3 mb-8">
-            <img src={alphaLogo} alt="Alpha Portfolio" className="w-10 h-10 object-contain dark:invert" />
-            <span className="text-2xl font-bold gradient-text">Alpha Portfolio</span>
+            <img src={alphaLogo} alt="Alokchitra" className="w-10 h-10 object-contain dark:invert" />
+            <span className="text-2xl font-bold gradient-text">Alokchitra</span>
           </div>
 
           <Card className="border-0 shadow-xl">
@@ -326,7 +326,7 @@ export default function Auth() {
                         <p className="text-sm text-destructive">{errors.username}</p>
                       )}
                       <p className="text-xs text-muted-foreground">
-                        This will be your portfolio URL: yourname.alphaportfolio.com
+                        This will be your portfolio URL: yourname.alokchitra.site
                       </p>
                     </div>
                     <div className="space-y-2">

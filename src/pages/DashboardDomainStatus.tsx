@@ -37,7 +37,7 @@ interface DnsCheck {
 }
 
 const ACCEPTED_IPS = ["76.76.21.21", "76.76.21.61", "76.76.21.93"];
-const MAIN_DOMAIN = "alphazero.online";
+const MAIN_DOMAIN = "alokchitra.site";
 
 async function dohQuery(name: string, type: "A" | "TXT"): Promise<string[]> {
   try {

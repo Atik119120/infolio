@@ -81,7 +81,7 @@ export default function PublicPortfolio() {
     return () => {
       const link = document.querySelector("link[rel~='icon']") as HTMLLinkElement | null;
       if (link) link.href = '/favicon.ico';
-      document.title = 'Alpha Portfolio';
+      document.title = 'Alokchitra';
       // Remove injected custom head nodes
       document.head.querySelectorAll('[data-portfolio-custom]').forEach((n) => n.remove());
     };

@@ -33,13 +33,15 @@ interface DnsCheck {
   a: "pending" | "ok" | "fail";
   txtValue?: string[];
   aValue?: string[];
+  cnameValue?: string[];
   checkedAt?: Date;
 }
 
 const ACCEPTED_IPS = ["76.76.21.21", "76.76.21.61", "76.76.21.93"];
+const ACCEPTED_CNAME_TARGETS = ["cname.vercel-dns.com", "cname.vercel-dns.com."];
 const MAIN_DOMAIN = "alokchitra.site";
 
-async function dohQuery(name: string, type: "A" | "TXT"): Promise<string[]> {
+async function dohQuery(name: string, type: "A" | "CNAME" | "TXT"): Promise<string[]> {
   try {
     const res = await fetch(
       `https://cloudflare-dns.com/dns-query?name=${name}&type=${type}`,
@@ -48,8 +50,9 @@ async function dohQuery(name: string, type: "A" | "TXT"): Promise<string[]> {
     if (!res.ok) return [];
     const data = await res.json();
     if (!data.Answer) return [];
+    const recordType = type === "A" ? 1 : type === "CNAME" ? 5 : 16;
     return data.Answer
-      .filter((r: any) => (type === "A" ? r.type === 1 : r.type === 16))
+      .filter((r: any) => r.type === recordType)
       .map((r: any) => String(r.data).replace(/"/g, ""));
   } catch {
     return [];
@@ -115,19 +118,21 @@ export default function DashboardDomainStatus() {
   // Run DNS checks for a domain
   const checkDomainDns = useCallback(async (d: DomainRow) => {
     setDnsChecks((prev) => ({ ...prev, [d.id]: { txt: "pending", a: "pending" } }));
-    const [txt, a] = await Promise.all([
+    const [txt, a, cname] = await Promise.all([
       dohQuery(`_lovable.${d.domain}`, "TXT"),
       dohQuery(d.domain, "A"),
+      dohQuery(d.domain, "CNAME"),
     ]);
     const txtOk = !!d.verification_token && txt.includes(d.verification_token);
-    const aOk = a.some((ip) => ACCEPTED_IPS.includes(ip));
+    const dnsOk = a.some((ip) => ACCEPTED_IPS.includes(ip)) || cname.some((target) => ACCEPTED_CNAME_TARGETS.includes(target.toLowerCase()));
     setDnsChecks((prev) => ({
       ...prev,
       [d.id]: {
         txt: txtOk ? "ok" : "fail",
-        a: aOk ? "ok" : "fail",
+        a: dnsOk ? "ok" : "fail",
         txtValue: txt,
         aValue: a,
+        cnameValue: cname,
         checkedAt: new Date(),
       },
     }));
@@ -135,9 +140,10 @@ export default function DashboardDomainStatus() {
 
   const checkSubdomain = useCallback(async () => {
     setSubdomainCheck({ txt: "ok", a: "pending" });
-    const a = await dohQuery(`${username || "test"}.${MAIN_DOMAIN}`, "A");
-    const aOk = a.some((ip) => ACCEPTED_IPS.includes(ip));
-    setSubdomainCheck({ txt: "ok", a: aOk ? "ok" : "fail", aValue: a, checkedAt: new Date() });
+    const host = `${username || "test"}.${MAIN_DOMAIN}`;
+    const [a, cname] = await Promise.all([dohQuery(host, "A"), dohQuery(host, "CNAME")]);
+    const dnsOk = a.some((ip) => ACCEPTED_IPS.includes(ip)) || cname.some((target) => ACCEPTED_CNAME_TARGETS.includes(target.toLowerCase()));
+    setSubdomainCheck({ txt: "ok", a: dnsOk ? "ok" : "fail", aValue: a, cnameValue: cname, checkedAt: new Date() });
   }, [username]);
 
   // Auto-run DNS checks on load
@@ -264,9 +270,9 @@ export default function DashboardDomainStatus() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
             <div className="flex items-center gap-2 p-2 rounded border bg-background">
               <StatusDot s={subdomainCheck.a} />
-              <span className="text-muted-foreground">Wildcard A record:</span>
+              <span className="text-muted-foreground">Wildcard DNS:</span>
               <span className="font-mono text-xs ml-auto">
-                {subdomainCheck.aValue?.[0] || "—"}
+                {subdomainCheck.cnameValue?.[0] || subdomainCheck.aValue?.[0] || "—"}
               </span>
             </div>
             <div className="flex items-center gap-2 p-2 rounded border bg-background">
@@ -335,9 +341,9 @@ export default function DashboardDomainStatus() {
                     <div className="flex items-center gap-2 p-2 rounded border bg-background">
                       <StatusDot s={c.a} />
                       <div className="flex-1 min-w-0">
-                        <div className="text-xs text-muted-foreground">A record</div>
+                        <div className="text-xs text-muted-foreground">DNS record</div>
                         <div className="font-mono text-xs truncate">
-                          {c.aValue?.[0] || (c.a === "fail" ? "Wrong/missing" : "Checking…")}
+                          {c.cnameValue?.[0] || c.aValue?.[0] || (c.a === "fail" ? "Wrong/missing" : "Checking…")}
                         </div>
                       </div>
                     </div>

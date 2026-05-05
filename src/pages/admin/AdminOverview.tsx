@@ -49,13 +49,12 @@ export default function AdminOverview() {
 
   const fetchStats = async () => {
     try {
-      const [usersRes, portfoliosRes, publishedRes, projectsRes, pendingRes, pendingPublishRes, domainsRes] = await Promise.all([
+      const [usersRes, portfoliosRes, publishedRes, projectsRes, pendingRes, domainsRes] = await Promise.all([
         supabase.from("profiles").select("id", { count: "exact", head: true }),
         supabase.from("portfolios").select("id", { count: "exact", head: true }),
         supabase.from("portfolios").select("id", { count: "exact", head: true }).eq("is_published", true),
         supabase.from("projects").select("id", { count: "exact", head: true }),
         supabase.from("profiles").select("id", { count: "exact", head: true }).eq("is_approved", false),
-        supabase.from("portfolios").select("id", { count: "exact", head: true }).eq("pending_publish", true),
         supabase.from("domains").select("id", { count: "exact", head: true }).eq("is_verified", true),
       ]);
 
@@ -65,7 +64,7 @@ export default function AdminOverview() {
         publishedPortfolios: publishedRes.count || 0,
         totalProjects: projectsRes.count || 0,
         pendingApprovals: pendingRes.count || 0,
-        pendingPublish: pendingPublishRes.count || 0,
+        pendingPublish: 0,
         customDomains: domainsRes.count || 0,
       });
     } catch (error) {

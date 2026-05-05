@@ -84,7 +84,6 @@ export default function ThemeCollection() {
             <span className="text-xl font-bold hidden sm:block">Theme Collection</span>
           </div>
           <div className="flex items-center gap-4">
-            <ThemeToggle />
             <Button 
               className="gradient-primary hover:opacity-90 transition-opacity"
               onClick={() => navigate("/auth")}

@@ -62,7 +62,6 @@ interface UserWithPortfolio {
   created_at: string;
   portfolio?: {
     is_published: boolean;
-    pending_publish: boolean;
     theme: string | null;
   };
 }
@@ -114,7 +113,7 @@ export default function AdminUsers() {
         nonAdminProfiles.map(async (profile) => {
           const { data: portfolio } = await supabase
             .from("portfolios")
-            .select("is_published, pending_publish, theme")
+            .select("is_published, theme")
             .eq("user_id", profile.user_id)
             .single();
 
@@ -472,7 +471,6 @@ export default function AdminUsers() {
         .from("portfolios")
         .update({
           is_published: true,
-          pending_publish: false,
         })
         .eq("user_id", user.user_id);
 

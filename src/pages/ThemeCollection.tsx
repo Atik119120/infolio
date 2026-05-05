@@ -99,13 +99,13 @@ export default function ThemeCollection() {
         <div className="container mx-auto text-center">
           <Badge className="mb-4 px-4 py-1.5 bg-primary/10 text-primary border-primary/20">
             <Sparkles className="w-3.5 h-3.5 mr-1.5" />
-            {totalThemes} Premium Themes
+            {totalThemes} Themes
           </Badge>
           <h1 className="text-4xl md:text-5xl font-bold mb-4">
             Choose Your Perfect <span className="gradient-text">Theme</span>
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Start free or unlock premium themes. Pro & Elite tiers with advanced features!
+            Beautifully crafted themes for every profession.
           </p>
         </div>
       </section>

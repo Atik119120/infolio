@@ -427,3 +427,20 @@ function FeatureCard({ icon, title, description }: { icon: React.ReactNode; titl
     </motion.div>
   );
 }
+
+function PriceRow({ children, ok = false, light = false }: { children: React.ReactNode; ok?: boolean; light?: boolean }) {
+  return (
+    <li className="flex items-start gap-2.5">
+      <span className={`shrink-0 w-5 h-5 rounded-full grid place-items-center mt-0.5 ${
+        ok
+          ? (light ? "bg-white/20 text-white" : "bg-primary/15 text-primary")
+          : (light ? "bg-white/10 text-white/50" : "bg-muted text-muted-foreground/60")
+      }`}>
+        {ok ? <Check className="w-3 h-3" strokeWidth={3} /> : <X className="w-3 h-3" strokeWidth={3} />}
+      </span>
+      <span className={ok ? (light ? "text-white" : "text-foreground") : (light ? "text-white/60 line-through" : "text-muted-foreground line-through")}>
+        {children}
+      </span>
+    </li>
+  );
+}

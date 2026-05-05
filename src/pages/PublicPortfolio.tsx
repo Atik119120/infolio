@@ -31,6 +31,7 @@ export default function PublicPortfolio() {
   const [experiences, setExperiences] = useState<ThemeExperience[]>([]);
   const [education, setEducation] = useState<ThemeEducation[]>([]);
   const [socialLinks, setSocialLinks] = useState<ThemeSocialLink[]>([]);
+  const [services, setServices] = useState<any[]>([]);
 
   useEffect(() => {
     if (portfolio?.favicon_url) {

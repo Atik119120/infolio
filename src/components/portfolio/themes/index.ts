@@ -3,6 +3,7 @@ export { default as SmallBusinessTheme } from "./SmallBusinessTheme";
 export { default as PRDGraphicDesignerTheme } from "./PRDGraphicDesignerTheme";
 export { default as PRDPhotographerTheme } from "./PRDPhotographerTheme";
 export { default as PRDDigitalMarketerTheme } from "./PRDDigitalMarketerTheme";
+export { StandardThemeShell } from "./StandardThemeShell";
 
 export * from "./types";
 export * from "./utils";

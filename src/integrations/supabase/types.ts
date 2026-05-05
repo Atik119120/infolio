@@ -215,16 +215,66 @@ export type Database = {
         }
         Relationships: []
       }
+      plan_purchases: {
+        Row: {
+          amount: number
+          approved_at: string | null
+          approved_by: string | null
+          created_at: string
+          id: string
+          payment_method: string
+          plan: string
+          rejected_reason: string | null
+          status: string
+          transaction_id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          amount?: number
+          approved_at?: string | null
+          approved_by?: string | null
+          created_at?: string
+          id?: string
+          payment_method: string
+          plan?: string
+          rejected_reason?: string | null
+          status?: string
+          transaction_id: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          approved_at?: string | null
+          approved_by?: string | null
+          created_at?: string
+          id?: string
+          payment_method?: string
+          plan?: string
+          rejected_reason?: string | null
+          status?: string
+          transaction_id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       portfolios: {
         Row: {
           bio: string | null
           created_at: string
           favicon_url: string | null
+          google_verification: string | null
           headline: string | null
           id: string
           is_published: boolean | null
           location: string | null
           logo_url: string | null
+          meta_description: string | null
+          meta_keywords: string | null
+          meta_title: string | null
+          og_image_url: string | null
           pending_publish: boolean | null
           phone: string | null
           publish_requested_at: string | null
@@ -237,11 +287,16 @@ export type Database = {
           bio?: string | null
           created_at?: string
           favicon_url?: string | null
+          google_verification?: string | null
           headline?: string | null
           id?: string
           is_published?: boolean | null
           location?: string | null
           logo_url?: string | null
+          meta_description?: string | null
+          meta_keywords?: string | null
+          meta_title?: string | null
+          og_image_url?: string | null
           pending_publish?: boolean | null
           phone?: string | null
           publish_requested_at?: string | null
@@ -254,11 +309,16 @@ export type Database = {
           bio?: string | null
           created_at?: string
           favicon_url?: string | null
+          google_verification?: string | null
           headline?: string | null
           id?: string
           is_published?: boolean | null
           location?: string | null
           logo_url?: string | null
+          meta_description?: string | null
+          meta_keywords?: string | null
+          meta_title?: string | null
+          og_image_url?: string | null
           pending_publish?: boolean | null
           phone?: string | null
           publish_requested_at?: string | null
@@ -280,6 +340,9 @@ export type Database = {
           id: string
           is_approved: boolean | null
           phone_number: string | null
+          plan: string
+          plan_expires_at: string | null
+          plan_purchased_at: string | null
           updated_at: string
           user_id: string
           username: string
@@ -294,6 +357,9 @@ export type Database = {
           id?: string
           is_approved?: boolean | null
           phone_number?: string | null
+          plan?: string
+          plan_expires_at?: string | null
+          plan_purchased_at?: string | null
           updated_at?: string
           user_id: string
           username: string
@@ -308,6 +374,9 @@ export type Database = {
           id?: string
           is_approved?: boolean | null
           phone_number?: string | null
+          plan?: string
+          plan_expires_at?: string | null
+          plan_purchased_at?: string | null
           updated_at?: string
           user_id?: string
           username?: string

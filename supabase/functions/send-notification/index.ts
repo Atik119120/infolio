@@ -29,7 +29,7 @@ async function sendToTelegram(type: string, data: Record<string, unknown>) {
 }
 
 interface NotificationRequest {
-  type: "welcome" | "publish_request" | "support" | "account_approved" | "account_rejected" | "publish_approved" | "theme_purchase" | "support_message" | "support_reply";
+  type: "welcome" | "publish_request" | "support" | "account_approved" | "account_rejected" | "publish_approved" | "theme_purchase" | "plan_purchase" | "support_message" | "support_reply";
   userId?: string;
   userEmail?: string;
   // Allow alternate field names (some callers/bots may send these)
@@ -359,7 +359,26 @@ const handler = async (req: Request): Promise<Response> => {
         `;
         break;
 
-      case "support_message":
+      case "plan_purchase":
+        emailTo = ADMIN_EMAIL;
+        emailSubject = `👑 New Pro Plan Purchase Request`;
+        emailHtml = `
+          <div style="font-family:Segoe UI,Arial,sans-serif;max-width:600px;margin:0 auto;padding:20px;color:#333">
+            <div style="background:linear-gradient(135deg,#f59e0b,#ef4444);color:#fff;padding:24px;border-radius:10px 10px 0 0;text-align:center">
+              <h1 style="margin:0">👑 Pro Plan Purchase</h1>
+            </div>
+            <div style="background:#f9fafb;padding:24px;border-radius:0 0 10px 10px">
+              <p><strong>User:</strong> ${userName} (${userEmail})</p>
+              <p><strong>Plan:</strong> Pro (1 year)</p>
+              <p><strong>Amount:</strong> ৳${amount}</p>
+              <p><strong>Payment Method:</strong> ${paymentMethod?.toUpperCase()}</p>
+              <p><strong>Transaction ID:</strong> ${transactionId}</p>
+              <p>Verify the payment and approve in the admin panel.</p>
+            </div>
+          </div>
+        `;
+        break;
+
         // Send support message to admin from user dashboard
         emailTo = ADMIN_EMAIL;
         emailSubject = `📩 Support: ${issueType} - ${subject}`;
@@ -472,7 +491,7 @@ const handler = async (req: Request): Promise<Response> => {
     console.log("Email sent successfully:", emailResponse);
 
     // Also send to Telegram for important notifications
-    const telegramTypes = ['new_user', 'publish_request', 'theme_purchase', 'support_message'];
+    const telegramTypes = ['new_user', 'publish_request', 'theme_purchase', 'plan_purchase', 'support_message'];
     if (type && telegramTypes.includes(type)) {
       const resolvedEmail = userEmail || email;
       const resolvedName = userName || displayName;

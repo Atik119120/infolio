@@ -1,4 +1,5 @@
 import { useState, useRef } from "react";
+import { usePlan } from "@/hooks/usePlan";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -30,6 +31,7 @@ const emptyProject = {
 };
 
 export function ProjectsForm({ projects, userId, onUpdate, onSuccess, onError }: ProjectsFormProps) {
+  const { perFileLimitBytes, isPro } = usePlan();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingProject, setEditingProject] = useState<Project | null>(null);
   const [formData, setFormData] = useState(emptyProject);
@@ -80,8 +82,8 @@ export function ProjectsForm({ projects, userId, onUpdate, onSuccess, onError }:
     }
 
     // 1MB limit
-    if (file.size > 1 * 1024 * 1024) {
-      onError("Image must be less than 1MB");
+    if (file.size > perFileLimitBytes) {
+      onError(`Image must be less than ${Math.round(perFileLimitBytes/1024/1024)}MB${isPro ? "" : " (upgrade to Pro for 3MB)"}`);
       return;
     }
 

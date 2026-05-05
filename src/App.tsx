@@ -26,6 +26,7 @@ import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminOverview from "./pages/admin/AdminOverview";
 import AdminUsers from "./pages/admin/AdminUsers";
 import AdminThemes from "./pages/admin/AdminThemes";
+import AdminPlans from "./pages/admin/AdminPlans";
 import AdminSettings from "./pages/admin/AdminSettings";
 import AdminSupport from "./pages/admin/AdminSupport";
 
@@ -73,6 +74,7 @@ const App = () => (
                   <Route index element={<AdminOverview />} />
                   <Route path="users" element={<AdminUsers />} />
                   <Route path="themes" element={<AdminThemes />} />
+                  <Route path="plans" element={<AdminPlans />} />
                   <Route path="support" element={<AdminSupport />} />
                   <Route path="settings" element={<AdminSettings />} />
                 </Route>

@@ -1,4 +1,5 @@
 import { useState, useRef } from "react";
+import { usePlan } from "@/hooks/usePlan";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -14,6 +15,7 @@ interface FaviconUploadFormProps {
 }
 
 export function FaviconUploadForm({ faviconUrl, userId, onUpdate, onSuccess, onError }: FaviconUploadFormProps) {
+  const { perFileLimitBytes, isPro } = usePlan();
   const [uploading, setUploading] = useState(false);
   const [removing, setRemoving] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -27,8 +29,8 @@ export function FaviconUploadForm({ faviconUrl, userId, onUpdate, onSuccess, onE
       return;
     }
 
-    if (file.size > 1 * 1024 * 1024) {
-      onError("Favicon must be less than 1MB");
+    if (file.size > perFileLimitBytes) {
+      onError(`Favicon must be less than ${Math.round(perFileLimitBytes/1024/1024)}MB${isPro ? "" : " (upgrade to Pro for 3MB)"}`);
       return;
     }
 

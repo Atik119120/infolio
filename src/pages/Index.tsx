@@ -5,7 +5,7 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { motion } from "framer-motion";
 import {
   ArrowRight, Zap, Globe, Palette, Users, Sparkles, Check,
-  ShieldCheck, ArrowUpRight, Plus, Minus, Star, BadgeCheck,
+  ShieldCheck, ArrowUpRight, Plus, Minus, Star, BadgeCheck, Crown, X,
 } from "lucide-react";
 import ThemeDemoSection from "@/components/home/ThemeDemoSection";
 import Footer from "@/components/home/Footer";
@@ -33,6 +33,7 @@ export default function Index() {
             <a href="#why" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Why us</a>
             <a href="#features" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Features</a>
             <a href="#themes" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Themes</a>
+            <a href="#pricing" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Pricing</a>
             <a href="#faq" className="text-sm text-muted-foreground hover:text-foreground transition-colors">FAQ</a>
           </div>
           <div className="flex items-center gap-2">
@@ -192,6 +193,99 @@ export default function Index() {
         <ThemeDemoSection />
       </section>
 
+      {/* PRICING */}
+      <section id="pricing" className="py-20 px-6 border-t border-border/60">
+        <div className="container mx-auto max-w-5xl">
+          <SectionHeader eyebrow="Pricing" title="Simple, honest pricing" subtitle="Start free. Upgrade when you need more power." />
+
+          <div className="grid md:grid-cols-2 gap-6 mt-12">
+            {/* FREE */}
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ duration: 0.4 }}
+              className="bg-card border border-border rounded-3xl p-8 flex flex-col"
+            >
+              <div className="flex items-center justify-between mb-2">
+                <h3 className="text-xl font-semibold tracking-tight">Free</h3>
+                <span className="text-xs px-2.5 py-1 rounded-full bg-muted text-muted-foreground font-medium">Forever</span>
+              </div>
+              <p className="text-sm text-muted-foreground mb-5">Everything to launch your first portfolio.</p>
+              <div className="mb-6">
+                <span className="text-5xl font-semibold tracking-tight">৳0</span>
+                <span className="text-muted-foreground ml-1">/forever</span>
+              </div>
+
+              <ul className="space-y-3 text-sm flex-1">
+                <PriceRow ok>1 website with subdomain</PriceRow>
+                <PriceRow ok>100 MB image storage</PriceRow>
+                <PriceRow ok>Free Simple theme</PriceRow>
+                <PriceRow ok>Basic editor</PriceRow>
+                <PriceRow ok>Ad-free experience</PriceRow>
+                <PriceRow>Custom domain</PriceRow>
+                <PriceRow>SEO meta tags</PriceRow>
+                <PriceRow>Google verification</PriceRow>
+                <PriceRow>Auto sitemap</PriceRow>
+              </ul>
+
+              <Button variant="outline" className="w-full rounded-full mt-7" onClick={() => navigate("/auth")}>
+                Get started free
+              </Button>
+            </motion.div>
+
+            {/* PRO */}
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ duration: 0.4, delay: 0.1 }}
+              className="relative rounded-3xl p-8 flex flex-col text-white overflow-hidden gradient-hero shadow-2xl shadow-primary/30"
+            >
+              <div
+                aria-hidden
+                className="absolute inset-0 opacity-[0.08]"
+                style={{
+                  backgroundImage:
+                    "linear-gradient(rgba(255,255,255,1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,1) 1px, transparent 1px)",
+                  backgroundSize: "44px 44px",
+                  maskImage: "radial-gradient(ellipse at top right, #000 30%, transparent 75%)",
+                }}
+              />
+              <div className="relative z-10 flex flex-col flex-1">
+                <div className="flex items-center justify-between mb-2">
+                  <h3 className="text-xl font-semibold tracking-tight inline-flex items-center gap-2">
+                    <Crown className="w-5 h-5 text-amber-300 fill-amber-300" /> Pro
+                  </h3>
+                  <span className="text-xs px-2.5 py-1 rounded-full bg-white/20 backdrop-blur font-medium">Most popular</span>
+                </div>
+                <p className="text-sm text-white/85 mb-5">Full control + SEO power for serious creators.</p>
+                <div className="mb-6">
+                  <span className="text-5xl font-semibold tracking-tight">৳200</span>
+                  <span className="text-white/80 ml-1">/year</span>
+                </div>
+
+                <ul className="space-y-3 text-sm flex-1">
+                  <PriceRow ok light>Everything in Free</PriceRow>
+                  <PriceRow ok light><strong>Custom domain</strong> support</PriceRow>
+                  <PriceRow ok light><strong>300 MB</strong> image storage</PriceRow>
+                  <PriceRow ok light>Advanced editor &amp; layout</PriceRow>
+                  <PriceRow ok light>SEO meta tags editing</PriceRow>
+                  <PriceRow ok light>Google Search Console verification</PriceRow>
+                  <PriceRow ok light>Auto sitemap generation</PriceRow>
+                  <PriceRow ok light>Priority performance</PriceRow>
+                </ul>
+
+                <Button className="w-full rounded-full mt-7 bg-white text-primary hover:bg-white/90 font-semibold" onClick={() => navigate("/auth")}>
+                  Upgrade to Pro <ArrowRight className="ml-1.5 w-4 h-4" />
+                </Button>
+                <p className="text-xs text-white/70 text-center mt-3">One-time payment via bKash, Nagad or Rocket</p>
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
       {/* FAQ */}
       <section id="faq" className="py-20 px-6 border-t border-border/60">
         <div className="container mx-auto max-w-3xl">
@@ -331,5 +425,22 @@ function FeatureCard({ icon, title, description }: { icon: React.ReactNode; titl
       </h3>
       <p className="text-sm text-muted-foreground leading-relaxed">{description}</p>
     </motion.div>
+  );
+}
+
+function PriceRow({ children, ok = false, light = false }: { children: React.ReactNode; ok?: boolean; light?: boolean }) {
+  return (
+    <li className="flex items-start gap-2.5">
+      <span className={`shrink-0 w-5 h-5 rounded-full grid place-items-center mt-0.5 ${
+        ok
+          ? (light ? "bg-white/20 text-white" : "bg-primary/15 text-primary")
+          : (light ? "bg-white/10 text-white/50" : "bg-muted text-muted-foreground/60")
+      }`}>
+        {ok ? <Check className="w-3 h-3" strokeWidth={3} /> : <X className="w-3 h-3" strokeWidth={3} />}
+      </span>
+      <span className={ok ? (light ? "text-white" : "text-foreground") : (light ? "text-white/60 line-through" : "text-muted-foreground line-through")}>
+        {children}
+      </span>
+    </li>
   );
 }

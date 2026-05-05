@@ -47,6 +47,9 @@ import {
 } from "lucide-react";
 import { THEME_OPTIONS } from "@/components/portfolio/themes/types";
 import CustomDomainManager from "@/components/settings/CustomDomainManager";
+import { PlanCard } from "@/components/billing/PlanCard";
+import { ProGate } from "@/components/billing/ProGate";
+import { SeoSettingsCard } from "@/components/settings/SeoSettingsCard";
 
 interface Profile {
   username: string;
@@ -402,8 +405,19 @@ export default function DashboardSettings() {
         </CardContent>
       </Card>
 
-      {/* Custom Domains */}
-      <CustomDomainManager />
+      {/* Plan */}
+      <PlanCard />
+
+      {/* Custom Domains — Pro only */}
+      <ProGate
+        title="Custom Domain"
+        description="Connect your own domain (e.g. yourname.com) to your portfolio."
+      >
+        <CustomDomainManager />
+      </ProGate>
+
+      {/* SEO — Pro only */}
+      <SeoSettingsCard />
 
       {/* Theme Selection */}
       <Card>

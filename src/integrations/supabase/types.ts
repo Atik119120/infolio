@@ -264,6 +264,7 @@ export type Database = {
         Row: {
           bio: string | null
           created_at: string
+          custom_head_html: string | null
           favicon_url: string | null
           google_verification: string | null
           headline: string | null
@@ -286,6 +287,7 @@ export type Database = {
         Insert: {
           bio?: string | null
           created_at?: string
+          custom_head_html?: string | null
           favicon_url?: string | null
           google_verification?: string | null
           headline?: string | null
@@ -308,6 +310,7 @@ export type Database = {
         Update: {
           bio?: string | null
           created_at?: string
+          custom_head_html?: string | null
           favicon_url?: string | null
           google_verification?: string | null
           headline?: string | null

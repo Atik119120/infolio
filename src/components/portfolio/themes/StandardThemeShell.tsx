@@ -186,7 +186,7 @@ export function StandardThemeShell({
             <motion.div {...fadeUp} className="md:col-span-7">
               <span className="inline-block px-3 py-1 text-xs font-semibold tracking-wider uppercase mb-5"
                 style={{ color: s.primary, background: `${s.primary}15`, borderRadius: s.radius }}>
-                {s.heroBadge}
+                {subheadline}
               </span>
               <h1 className="t-display text-4xl md:text-6xl lg:text-7xl font-bold leading-[1.05] mb-5">
                 Hi, I'm {" "}
@@ -199,8 +199,8 @@ export function StandardThemeShell({
                 {bio.length > 220 ? bio.slice(0, 220) + "…" : bio}
               </p>
               <div className="flex flex-wrap gap-3">
-                <a href="#works" className="t-btn-primary px-6 py-3 text-sm font-semibold inline-flex items-center gap-2">
-                  {s.heroCta} <ArrowRight className="w-4 h-4" />
+                <a href={heroCtaLink} className="t-btn-primary px-6 py-3 text-sm font-semibold inline-flex items-center gap-2">
+                  {heroCtaText} <ArrowRight className="w-4 h-4" />
                 </a>
                 <a href="#contact" className="t-btn-outline px-6 py-3 text-sm font-semibold">
                   Get in touch
@@ -209,10 +209,10 @@ export function StandardThemeShell({
             </motion.div>
 
             <motion.div {...fadeUp} transition={{ duration: 0.6, delay: 0.15 }} className="md:col-span-5">
-              {profile?.avatar_url ? (
+              {heroImage ? (
                 <div className="relative">
                   <div className="absolute -inset-3 rounded-full opacity-60" style={{ background: `linear-gradient(135deg, ${s.primary}, ${s.accent})`, filter: "blur(40px)" }} />
-                  <img src={profile.avatar_url} alt={name}
+                  <img src={heroImage} alt={name}
                     className="relative w-full max-w-sm mx-auto aspect-square object-cover"
                     style={{ borderRadius: s.radius, border: `4px solid ${s.surface}`, boxShadow: `0 20px 60px ${s.primary}33` }} />
                 </div>

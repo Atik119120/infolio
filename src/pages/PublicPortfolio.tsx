@@ -37,24 +37,43 @@ export default function PublicPortfolio() {
   useEffect(() => {
     if (portfolio?.favicon_url) {
       const link = document.querySelector("link[rel~='icon']") as HTMLLinkElement | null;
-      if (link) {
-        link.href = portfolio.favicon_url;
-      } else {
+      if (link) link.href = portfolio.favicon_url;
+      else {
         const newLink = document.createElement('link');
         newLink.rel = 'icon';
         newLink.href = portfolio.favicon_url;
         document.head.appendChild(newLink);
       }
     }
-    if (profile?.display_name) {
-      document.title = `${profile.display_name} | Portfolio`;
-    }
+
+    // SEO meta tags (Pro fields)
+    const setMeta = (name: string, content: string, attr: 'name' | 'property' = 'name') => {
+      if (!content) return;
+      let el = document.querySelector(`meta[${attr}="${name}"]`) as HTMLMetaElement | null;
+      if (!el) {
+        el = document.createElement('meta');
+        el.setAttribute(attr, name);
+        document.head.appendChild(el);
+      }
+      el.content = content;
+    };
+
+    const p: any = portfolio || {};
+    const title = p.meta_title || (profile?.display_name ? `${profile.display_name} | Portfolio` : 'Portfolio');
+    document.title = title;
+    setMeta('description', p.meta_description || p.bio || '');
+    setMeta('keywords', p.meta_keywords || '');
+    setMeta('og:title', title, 'property');
+    setMeta('og:description', p.meta_description || p.bio || '', 'property');
+    if (p.og_image_url) setMeta('og:image', p.og_image_url, 'property');
+    if (p.google_verification) setMeta('google-site-verification', p.google_verification);
+
     return () => {
       const link = document.querySelector("link[rel~='icon']") as HTMLLinkElement | null;
       if (link) link.href = '/favicon.ico';
       document.title = 'Alpha Portfolio';
     };
-  }, [portfolio?.favicon_url, profile?.display_name]);
+  }, [portfolio, profile?.display_name]);
 
   useEffect(() => {
     if (username) fetchPortfolio();

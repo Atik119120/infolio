@@ -167,17 +167,18 @@ export default function PortfolioEdit() {
     { value: "experience", label: "Experience", icon: Briefcase },
     { value: "education", label: "Education", icon: GraduationCap },
     { value: "social", label: "Social Links", icon: Link2 },
+    { value: "seo", label: "SEO", icon: Search },
   ];
 
   // Each theme exposes only the sections it actually renders.
-  // Theme → enabled feature tabs (theme/basic/branding/social are universal)
+  // Theme → enabled feature tabs (theme/basic/branding/social/seo are universal)
   const THEME_FEATURES: Record<string, string[]> = {
-    "freelancer":            ["theme", "basic", "branding", "skills", "services", "projects", "experience", "education", "social"],
-    "small-business":        ["theme", "basic", "branding", "skills", "services", "projects", "experience", "education", "social"],
-    "prd-graphic-designer":  ["theme", "basic", "branding", "skills", "services", "projects", "experience", "social"],
-    "prd-photographer":      ["theme", "basic", "branding", "services", "projects", "experience", "education", "social"],
-    "prd-digital-marketer":  ["theme", "basic", "branding", "services", "projects", "experience", "social"],
-    "biography":             ["theme", "basic", "branding", "projects", "experience", "education", "social"],
+    "freelancer":            ["theme", "basic", "branding", "skills", "services", "projects", "experience", "education", "social", "seo"],
+    "small-business":        ["theme", "basic", "branding", "skills", "services", "projects", "experience", "education", "social", "seo"],
+    "prd-graphic-designer":  ["theme", "basic", "branding", "skills", "services", "projects", "experience", "social", "seo"],
+    "prd-photographer":      ["theme", "basic", "branding", "services", "projects", "experience", "education", "social", "seo"],
+    "prd-digital-marketer":  ["theme", "basic", "branding", "services", "projects", "experience", "social", "seo"],
+    "biography":             ["theme", "basic", "branding", "projects", "experience", "education", "social", "seo"],
   };
 
   const activeTheme = portfolio?.theme || "freelancer";

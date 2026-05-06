@@ -500,6 +500,9 @@ export function StandardThemeShell({
               {website && <ContactCard icon={<Globe className="w-5 h-5" />} label="Website" value={website.replace(/^https?:\/\//, "")} href={website} s={s} />}
             </motion.div>
 
+            <motion.div {...fadeUp} className="md:col-span-3 p-6 md:p-7 rounded-2xl" style={{ background: s.surface, border: `1px solid ${s.border}` }}>
+              <ContactForm portfolioOwnerId={userId} />
+            </motion.div>
           </div>
         </div>
       </section>

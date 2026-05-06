@@ -462,11 +462,16 @@ export default function PRDPhotographerTheme({
             </p>
           </motion.div>
 
-          <div className="max-w-3xl mx-auto grid sm:grid-cols-2 gap-3">
-            {email && <ContactCard icon={<Mail className="w-5 h-5" />} label="Email" value={email} href={`mailto:${email}`} />}
-            {phone && <ContactCard icon={<Phone className="w-5 h-5" />} label="Phone" value={phone} href={`tel:${phone}`} />}
-            {location && <ContactCard icon={<MapPin className="w-5 h-5" />} label="Studio" value={location} />}
-            {website && <ContactCard icon={<Globe className="w-5 h-5" />} label="Website" value={website.replace(/^https?:\/\//, "")} href={website} />}
+          <div className="max-w-5xl mx-auto grid md:grid-cols-5 gap-6">
+            <div className="md:col-span-2 space-y-3">
+              {email && <ContactCard icon={<Mail className="w-5 h-5" />} label="Email" value={email} href={`mailto:${email}`} />}
+              {phone && <ContactCard icon={<Phone className="w-5 h-5" />} label="Phone" value={phone} href={`tel:${phone}`} />}
+              {location && <ContactCard icon={<MapPin className="w-5 h-5" />} label="Studio" value={location} />}
+              {website && <ContactCard icon={<Globe className="w-5 h-5" />} label="Website" value={website.replace(/^https?:\/\//, "")} href={website} />}
+            </div>
+            <div className="md:col-span-3 p-6 md:p-7 rounded-2xl" style={{ background: C.surface, border: `1px solid ${C.border}` }}>
+              <ContactForm portfolioOwnerId={userId} />
+            </div>
           </div>
         </div>
       </section>

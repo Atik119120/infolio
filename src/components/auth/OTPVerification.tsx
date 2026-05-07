@@ -23,7 +23,6 @@ export function OTPVerification({ email, userName, onVerified, onBack }: OTPVeri
   const { toast } = useToast();
 
   useEffect(() => {
-    // Focus first input on mount
     inputRefs.current[0]?.focus();
   }, []);
 
@@ -35,20 +34,12 @@ export function OTPVerification({ email, userName, onVerified, onBack }: OTPVeri
   }, [countdown]);
 
   const handleChange = (index: number, value: string) => {
-    // Only allow numbers
     if (value && !/^\d$/.test(value)) return;
-
     const newOtp = [...otp];
     newOtp[index] = value;
     setOtp(newOtp);
-
-    // Auto-focus next input
-    if (value && index < 5) {
-      inputRefs.current[index + 1]?.focus();
-    }
-
-    // Auto-verify when all digits entered
-    if (newOtp.every((digit) => digit !== "") && newOtp.join("").length === 6) {
+    if (value && index < 5) inputRefs.current[index + 1]?.focus();
+    if (newOtp.every((d) => d !== "") && newOtp.join("").length === 6) {
       verifyOTP(newOtp.join(""));
     }
   };
@@ -61,42 +52,39 @@ export function OTPVerification({ email, userName, onVerified, onBack }: OTPVeri
 
   const handlePaste = (e: React.ClipboardEvent) => {
     e.preventDefault();
-    const pastedData = e.clipboardData.getData("text").replace(/\D/g, "").slice(0, 6);
-    if (pastedData.length === 6) {
-      const newOtp = pastedData.split("");
-      setOtp(newOtp);
-      verifyOTP(pastedData);
+    const pasted = e.clipboardData.getData("text").replace(/\D/g, "").slice(0, 6);
+    if (pasted.length === 6) {
+      setOtp(pasted.split(""));
+      verifyOTP(pasted);
     }
   };
 
   const verifyOTP = async (code: string) => {
     setIsLoading(true);
     try {
-      const { data, error } = await supabase.functions.invoke("otp-verification", {
-        body: { action: "verify", email, code },
+      const { error } = await supabase.auth.verifyOtp({
+        email,
+        token: code,
+        type: "signup",
       });
 
-      if (error) throw error;
-
-      if (data.success) {
-        setIsVerified(true);
-        toast({
-          title: "Email Verified! ✅",
-          description: "Your email has been verified successfully.",
-        });
-        // Small delay to show success state
-        setTimeout(() => {
-          onVerified();
-        }, 1500);
-      } else {
+      if (error) {
         toast({
           variant: "destructive",
           title: "Invalid Code",
-          description: data.error || "Please check your code and try again.",
+          description: error.message || "Please check your code and try again.",
         });
         setOtp(["", "", "", "", "", ""]);
         inputRefs.current[0]?.focus();
+        return;
       }
+
+      setIsVerified(true);
+      toast({
+        title: "Email Verified! ✅",
+        description: "Your email has been verified successfully.",
+      });
+      setTimeout(() => onVerified(), 1200);
     } catch (error: any) {
       console.error("Verification error:", error);
       toast({
@@ -114,10 +102,10 @@ export function OTPVerification({ email, userName, onVerified, onBack }: OTPVeri
   const resendOTP = async () => {
     setIsResending(true);
     try {
-      const { data, error } = await supabase.functions.invoke("otp-verification", {
-        body: { action: "send", email, userName },
+      const { error } = await supabase.auth.resend({
+        type: "signup",
+        email,
       });
-
       if (error) throw error;
 
       toast({
@@ -155,18 +143,11 @@ export function OTPVerification({ email, userName, onVerified, onBack }: OTPVeri
   return (
     <Card className="border-0 shadow-xl">
       <CardHeader className="space-y-1 pb-4">
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={onBack}
-          className="w-fit -ml-2 mb-2"
-        >
+        <Button variant="ghost" size="sm" onClick={onBack} className="w-fit -ml-2 mb-2">
           <ArrowLeft className="w-4 h-4 mr-2" />
           Back
         </Button>
-        <CardTitle className="text-2xl font-bold text-center">
-          Verify Your Email
-        </CardTitle>
+        <CardTitle className="text-2xl font-bold text-center">Verify Your Email</CardTitle>
         <CardDescription className="text-center">
           We've sent a 6-digit code to
           <br />
@@ -174,14 +155,12 @@ export function OTPVerification({ email, userName, onVerified, onBack }: OTPVeri
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
-        {/* Email Icon */}
         <div className="flex justify-center">
           <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
             <Mail className="w-8 h-8 text-primary" />
           </div>
         </div>
 
-        {/* OTP Input Grid */}
         <div className="flex justify-center gap-2 sm:gap-3">
           {otp.map((digit, index) => (
             <Input
@@ -200,7 +179,6 @@ export function OTPVerification({ email, userName, onVerified, onBack }: OTPVeri
           ))}
         </div>
 
-        {/* Loading State */}
         {isLoading && (
           <div className="flex items-center justify-center gap-2 text-primary">
             <Loader2 className="w-5 h-5 animate-spin" />
@@ -208,11 +186,8 @@ export function OTPVerification({ email, userName, onVerified, onBack }: OTPVeri
           </div>
         )}
 
-        {/* Resend Button */}
         <div className="text-center space-y-2">
-          <p className="text-sm text-muted-foreground">
-            Didn't receive the code?
-          </p>
+          <p className="text-sm text-muted-foreground">Didn't receive the code?</p>
           <Button
             variant="link"
             onClick={resendOTP}
@@ -232,7 +207,6 @@ export function OTPVerification({ email, userName, onVerified, onBack }: OTPVeri
           </Button>
         </div>
 
-        {/* Help Text */}
         <p className="text-xs text-center text-muted-foreground">
           Check your spam folder if you don't see the email
         </p>

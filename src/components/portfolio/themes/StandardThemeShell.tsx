@@ -501,7 +501,17 @@ export function StandardThemeShell({
             </motion.div>
 
             <motion.div {...fadeUp} className="md:col-span-3 p-6 md:p-7 rounded-2xl" style={{ background: s.surface, border: `1px solid ${s.border}` }}>
-              <ContactForm portfolioOwnerId={userId} />
+              <ContactForm
+                portfolioOwnerId={userId}
+                themeStyle={{
+                  surface: s.bg,
+                  border: s.border,
+                  text: s.text,
+                  textMuted: s.textMuted,
+                  accent: s.accent,
+                  accentText: "#ffffff",
+                }}
+              />
             </motion.div>
           </div>
         </div>

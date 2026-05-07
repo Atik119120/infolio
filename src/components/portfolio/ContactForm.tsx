@@ -20,13 +20,23 @@ const contactSchema = z.object({
     .max(1000, { message: "Message must be less than 1000 characters" }),
 });
 
+interface ThemeStyle {
+  surface?: string;
+  border?: string;
+  text?: string;
+  textMuted?: string;
+  accent?: string;
+  accentText?: string;
+}
+
 interface ContactFormProps {
   portfolioOwnerId: string;
   className?: string;
   variant?: "default" | "personal" | "cosmic" | "official";
+  themeStyle?: ThemeStyle;
 }
 
-export function ContactForm({ portfolioOwnerId, className = "", variant = "default" }: ContactFormProps) {
+export function ContactForm({ portfolioOwnerId, className = "", variant = "default", themeStyle }: ContactFormProps) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
@@ -163,7 +173,11 @@ export function ContactForm({ portfolioOwnerId, className = "", variant = "defau
           >
             <div className="grid sm:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="contact-name" className={getLabelStyles()}>
+                <Label
+                  htmlFor="contact-name"
+                  className={getLabelStyles()}
+                  style={themeStyle ? { color: themeStyle.text } : undefined}
+                >
                   Name
                 </Label>
                 <Input
@@ -172,7 +186,16 @@ export function ContactForm({ portfolioOwnerId, className = "", variant = "defau
                   placeholder="Your name"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className={`${getInputStyles()} ${errors.name ? "border-destructive" : ""}`}
+                  className={`${themeStyle ? "rounded-lg" : getInputStyles()} ${errors.name ? "border-destructive" : ""}`}
+                  style={
+                    themeStyle
+                      ? {
+                          background: themeStyle.surface,
+                          border: `1px solid ${themeStyle.border}`,
+                          color: themeStyle.text,
+                        }
+                      : undefined
+                  }
                   disabled={isSubmitting}
                   maxLength={100}
                 />
@@ -181,7 +204,11 @@ export function ContactForm({ portfolioOwnerId, className = "", variant = "defau
                 )}
               </div>
               <div className="space-y-2">
-                <Label htmlFor="contact-email" className={getLabelStyles()}>
+                <Label
+                  htmlFor="contact-email"
+                  className={getLabelStyles()}
+                  style={themeStyle ? { color: themeStyle.text } : undefined}
+                >
                   Email
                 </Label>
                 <Input
@@ -190,7 +217,16 @@ export function ContactForm({ portfolioOwnerId, className = "", variant = "defau
                   placeholder="your@email.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className={`${getInputStyles()} ${errors.email ? "border-destructive" : ""}`}
+                  className={`${themeStyle ? "rounded-lg" : getInputStyles()} ${errors.email ? "border-destructive" : ""}`}
+                  style={
+                    themeStyle
+                      ? {
+                          background: themeStyle.surface,
+                          border: `1px solid ${themeStyle.border}`,
+                          color: themeStyle.text,
+                        }
+                      : undefined
+                  }
                   disabled={isSubmitting}
                   maxLength={255}
                 />
@@ -201,7 +237,11 @@ export function ContactForm({ portfolioOwnerId, className = "", variant = "defau
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="contact-message" className={getLabelStyles()}>
+              <Label
+                htmlFor="contact-message"
+                className={getLabelStyles()}
+                style={themeStyle ? { color: themeStyle.text } : undefined}
+              >
                 Message
               </Label>
               <Textarea
@@ -209,7 +249,16 @@ export function ContactForm({ portfolioOwnerId, className = "", variant = "defau
                 placeholder="Write your message here..."
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
-                className={`min-h-[120px] resize-none ${getInputStyles()} ${errors.message ? "border-destructive" : ""}`}
+                className={`min-h-[120px] resize-none ${themeStyle ? "rounded-lg" : getInputStyles()} ${errors.message ? "border-destructive" : ""}`}
+                style={
+                  themeStyle
+                    ? {
+                        background: themeStyle.surface,
+                        border: `1px solid ${themeStyle.border}`,
+                        color: themeStyle.text,
+                      }
+                    : undefined
+                }
                 disabled={isSubmitting}
                 maxLength={1000}
               />
@@ -219,7 +268,10 @@ export function ContactForm({ portfolioOwnerId, className = "", variant = "defau
                 ) : (
                   <span />
                 )}
-                <span className={`text-xs ${variant === "cosmic" ? "text-white/50" : "text-muted-foreground"}`}>
+                <span
+                  className={`text-xs ${variant === "cosmic" ? "text-white/50" : "text-muted-foreground"}`}
+                  style={themeStyle ? { color: themeStyle.textMuted } : undefined}
+                >
                   {message.length}/1000
                 </span>
               </div>
@@ -232,7 +284,16 @@ export function ContactForm({ portfolioOwnerId, className = "", variant = "defau
             <Button
               type="submit"
               size="lg"
-              className={`w-full ${getButtonStyles()}`}
+              className={`w-full ${themeStyle ? "rounded-lg" : getButtonStyles()}`}
+              style={
+                themeStyle
+                  ? {
+                      background: themeStyle.accent,
+                      color: themeStyle.accentText || "#fff",
+                      border: "none",
+                    }
+                  : undefined
+              }
               disabled={isSubmitting}
             >
               {isSubmitting ? (

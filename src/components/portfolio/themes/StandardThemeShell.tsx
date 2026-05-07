@@ -504,7 +504,7 @@ export function StandardThemeShell({
               <ContactForm
                 portfolioOwnerId={userId}
                 themeStyle={{
-                  surface: s.bg,
+                  surface: s.background,
                   border: s.border,
                   text: s.text,
                   textMuted: s.textMuted,

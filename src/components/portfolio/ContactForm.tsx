@@ -20,13 +20,23 @@ const contactSchema = z.object({
     .max(1000, { message: "Message must be less than 1000 characters" }),
 });
 
+interface ThemeStyle {
+  surface?: string;
+  border?: string;
+  text?: string;
+  textMuted?: string;
+  accent?: string;
+  accentText?: string;
+}
+
 interface ContactFormProps {
   portfolioOwnerId: string;
   className?: string;
   variant?: "default" | "personal" | "cosmic" | "official";
+  themeStyle?: ThemeStyle;
 }
 
-export function ContactForm({ portfolioOwnerId, className = "", variant = "default" }: ContactFormProps) {
+export function ContactForm({ portfolioOwnerId, className = "", variant = "default", themeStyle }: ContactFormProps) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");

@@ -472,7 +472,17 @@ export default function PRDGraphicDesignerTheme({
               {website && <ContactCard icon={<Globe className="w-5 h-5" />} label="Website" value={website.replace(/^https?:\/\//, "")} href={website} />}
             </div>
             <div className="md:col-span-3 p-6 md:p-7 rounded-2xl gx-glass" style={{ border: `1px solid ${C.border}` }}>
-              <ContactForm portfolioOwnerId={userId} />
+              <ContactForm
+                portfolioOwnerId={userId}
+                themeStyle={{
+                  surface: "rgba(255,255,255,0.05)",
+                  border: C.border,
+                  text: C.ink,
+                  textMuted: C.muted,
+                  accent: C.accent,
+                  accentText: "#0b0815",
+                }}
+              />
             </div>
           </div>
         </div>

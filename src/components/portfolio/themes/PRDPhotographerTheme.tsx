@@ -470,7 +470,17 @@ export default function PRDPhotographerTheme({
               {website && <ContactCard icon={<Globe className="w-5 h-5" />} label="Website" value={website.replace(/^https?:\/\//, "")} href={website} />}
             </div>
             <div className="md:col-span-3 p-6 md:p-7 rounded-2xl" style={{ background: C.surface, border: `1px solid ${C.border}` }}>
-              <ContactForm portfolioOwnerId={userId} />
+              <ContactForm
+                portfolioOwnerId={userId}
+                themeStyle={{
+                  surface: C.bg,
+                  border: C.border,
+                  text: C.ink,
+                  textMuted: C.muted,
+                  accent: C.primary,
+                  accentText: "#0a0a0a",
+                }}
+              />
             </div>
           </div>
         </div>

@@ -455,7 +455,17 @@ export default function SmallBusinessTheme({
             </motion.div>
 
             <motion.div {...fadeUp} className="md:col-span-3 p-6 md:p-7 rounded-2xl" style={{ background: C.surface, border: `1px solid ${C.border}` }}>
-              <ContactForm portfolioOwnerId={userId} />
+              <ContactForm
+                portfolioOwnerId={userId}
+                themeStyle={{
+                  surface: C.bg,
+                  border: C.border,
+                  text: C.ink,
+                  textMuted: C.muted,
+                  accent: C.primary,
+                  accentText: "#ffffff",
+                }}
+              />
             </motion.div>
           </div>
         </div>

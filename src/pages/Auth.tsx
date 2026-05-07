@@ -12,7 +12,6 @@ import { Loader2, ArrowRight, ArrowLeft, Phone, Mail, User, Lock } from "lucide-
 import { z } from "zod";
 import alphaLogo from "@/assets/alpha-portfolio-logo.png";
 import { isDisposableEmail, isAllowedEmailDomain } from "@/lib/tempEmailValidator";
-import { lovable } from "@/integrations/lovable";
 import { OTPVerification } from "@/components/auth/OTPVerification";
 
 const loginSchema = z.object({
@@ -134,18 +133,33 @@ export default function Auth() {
     }
 
     setIsLoading(true);
-    // Send OTP code instead of creating account immediately
-    const { data, error } = await supabase.functions.invoke("otp-verification", {
-      body: { action: "send", email, userName: username },
-    });
+    // Create the account — Supabase will send a 6-digit OTP email automatically
+    const { error } = await signUp(email, password, username, phone);
     setIsLoading(false);
 
-    if (error || (data && data.error)) {
-      toast({
-        variant: "destructive",
-        title: "Failed to send code",
-        description: (data && data.error) || error?.message || "Try again later.",
-      });
+    if (error) {
+      const errorMsg = error.message.toLowerCase();
+      if (errorMsg.includes("already registered") || errorMsg.includes("already been registered")) {
+        toast({
+          variant: "destructive",
+          title: "Account exists",
+          description: "This email is already registered. Please login instead.",
+        });
+        setActiveTab("login");
+      } else if (errorMsg.includes("username") || errorMsg.includes("duplicate key") || errorMsg.includes("profiles_username_key")) {
+        toast({
+          variant: "destructive",
+          title: "Username taken",
+          description: "This username is already in use. Please choose a different one.",
+        });
+        setErrors({ username: "This username is already taken" });
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Signup failed",
+          description: error.message,
+        });
+      }
       return;
     }
 
@@ -157,48 +171,18 @@ export default function Auth() {
   };
 
   const handleOTPVerified = async () => {
-    setIsLoading(true);
-    const { error } = await signUp(email, password, username, phone);
-    setIsLoading(false);
-
-    if (error) {
-      const errorMsg = error.message.toLowerCase();
-      if (errorMsg.includes("already registered")) {
-        toast({
-          variant: "destructive",
-          title: "Account exists",
-          description: "This email is already registered. Please login instead.",
-        });
-        setShowOTP(false);
-        setActiveTab("login");
-      } else if (errorMsg.includes("username") || errorMsg.includes("duplicate key") || errorMsg.includes("profiles_username_key")) {
-        toast({
-          variant: "destructive",
-          title: "Username taken",
-          description: "This username is already in use. Please choose a different one.",
-        });
-        setErrors({ username: "This username is already taken" });
-        setShowOTP(false);
-      } else {
-        toast({
-          variant: "destructive",
-          title: "Signup failed",
-          description: error.message,
-        });
-        setShowOTP(false);
-      }
-    } else {
-      toast({
-        title: "Account Created! 🎉",
-        description: "Your account is pending admin approval. You can login once approved.",
-      });
-      setShowOTP(false);
-      setActiveTab("login");
-      setUsername("");
-      setEmail("");
-      setPassword("");
-      setPhone("");
-    }
+    toast({
+      title: "Account Created! 🎉",
+      description: "Your account is pending admin approval. You can login once approved.",
+    });
+    // Sign out the just-verified session so user must login after approval
+    await supabase.auth.signOut();
+    setShowOTP(false);
+    setActiveTab("login");
+    setUsername("");
+    setEmail("");
+    setPassword("");
+    setPhone("");
   };
 
   return (

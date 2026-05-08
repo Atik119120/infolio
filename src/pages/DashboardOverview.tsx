@@ -123,7 +123,7 @@ export default function DashboardOverview() {
     );
   }
 
-  const portfolioUrl = profile ? `${window.location.origin}/${profile.username}` : "";
+  const portfolioUrl = getPortfolioUrl(profile?.username);
 
   return (
     <div className="space-y-4 animate-fade-in">

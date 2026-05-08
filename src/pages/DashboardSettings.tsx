@@ -252,7 +252,7 @@ export default function DashboardSettings() {
     );
   }
 
-  const portfolioUrl = `${window.location.origin}/u/${profile?.username}`;
+  const portfolioUrl = getPortfolioUrl(profile?.username);
   const subdomainUrl = `${profile?.username}.alokchitra.site`;
 
   return (

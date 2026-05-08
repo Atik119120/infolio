@@ -50,6 +50,7 @@ import CustomDomainManager from "@/components/settings/CustomDomainManager";
 import { PlanCard } from "@/components/billing/PlanCard";
 import { ProGate } from "@/components/billing/ProGate";
 import { SeoSettingsCard } from "@/components/settings/SeoSettingsCard";
+import { getPortfolioUrl } from "@/lib/portfolioUrl";
 
 interface Profile {
   username: string;

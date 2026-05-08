@@ -62,17 +62,15 @@ export function OTPVerification({ email, userName, onVerified, onBack }: OTPVeri
   const verifyOTP = async (code: string) => {
     setIsLoading(true);
     try {
-      const { error } = await supabase.auth.verifyOtp({
-        email,
-        token: code,
-        type: "signup",
+      const { data, error } = await supabase.functions.invoke("otp-verification", {
+        body: { action: "verify", email, code },
       });
 
-      if (error) {
+      if (error || !data?.success) {
         toast({
           variant: "destructive",
           title: "Invalid Code",
-          description: error.message || "Please check your code and try again.",
+          description: data?.error || error?.message || "Please check your code and try again.",
         });
         setOtp(["", "", "", "", "", ""]);
         inputRefs.current[0]?.focus();
@@ -102,11 +100,10 @@ export function OTPVerification({ email, userName, onVerified, onBack }: OTPVeri
   const resendOTP = async () => {
     setIsResending(true);
     try {
-      const { error } = await supabase.auth.resend({
-        type: "signup",
-        email,
+      const { data, error } = await supabase.functions.invoke("otp-verification", {
+        body: { action: "send", email, userName },
       });
-      if (error) throw error;
+      if (error || data?.error) throw new Error(data?.error || error?.message);
 
       toast({
         title: "Code Resent! 📧",

@@ -194,7 +194,7 @@ export default function DashboardSettings() {
   };
 
   const copyUrl = () => {
-    const url = `${window.location.origin}/u/${profile?.username}`;
+    const url = getPortfolioUrl(profile?.username);
     navigator.clipboard.writeText(url);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);

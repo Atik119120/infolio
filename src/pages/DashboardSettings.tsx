@@ -50,6 +50,7 @@ import CustomDomainManager from "@/components/settings/CustomDomainManager";
 import { PlanCard } from "@/components/billing/PlanCard";
 import { ProGate } from "@/components/billing/ProGate";
 import { SeoSettingsCard } from "@/components/settings/SeoSettingsCard";
+import { getPortfolioUrl } from "@/lib/portfolioUrl";
 
 interface Profile {
   username: string;
@@ -194,7 +195,7 @@ export default function DashboardSettings() {
   };
 
   const copyUrl = () => {
-    const url = `${window.location.origin}/u/${profile?.username}`;
+    const url = getPortfolioUrl(profile?.username);
     navigator.clipboard.writeText(url);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
@@ -252,7 +253,7 @@ export default function DashboardSettings() {
     );
   }
 
-  const portfolioUrl = `${window.location.origin}/u/${profile?.username}`;
+  const portfolioUrl = getPortfolioUrl(profile?.username);
   const subdomainUrl = `${profile?.username}.alokchitra.site`;
 
   return (

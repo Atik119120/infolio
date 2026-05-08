@@ -18,6 +18,7 @@ import {
   MessageCircle,
 } from "lucide-react";
 import { openWhatsApp } from "@/lib/whatsapp";
+import { getPortfolioUrl } from "@/lib/portfolioUrl";
 
 interface Portfolio {
   is_published: boolean;

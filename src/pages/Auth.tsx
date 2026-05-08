@@ -133,33 +133,19 @@ export default function Auth() {
     }
 
     setIsLoading(true);
-    // Create the account — Supabase will send a 6-digit OTP email automatically
-    const { error } = await signUp(email, password, username, phone);
+    // Step 1: Send OTP code via Resend (no account created yet)
+    const { data, error: otpError } = await supabase.functions.invoke("otp-verification", {
+      body: { action: "send", email, userName: username },
+    });
     setIsLoading(false);
 
-    if (error) {
-      const errorMsg = error.message.toLowerCase();
-      if (errorMsg.includes("already registered") || errorMsg.includes("already been registered")) {
-        toast({
-          variant: "destructive",
-          title: "Account exists",
-          description: "This email is already registered. Please login instead.",
-        });
-        setActiveTab("login");
-      } else if (errorMsg.includes("username") || errorMsg.includes("duplicate key") || errorMsg.includes("profiles_username_key")) {
-        toast({
-          variant: "destructive",
-          title: "Username taken",
-          description: "This username is already in use. Please choose a different one.",
-        });
-        setErrors({ username: "This username is already taken" });
-      } else {
-        toast({
-          variant: "destructive",
-          title: "Signup failed",
-          description: error.message,
-        });
-      }
+    if (otpError || (data && data.error)) {
+      const msg = (data?.error || otpError?.message || "").toString();
+      toast({
+        variant: "destructive",
+        title: "Could not send code",
+        description: msg || "Please try again in a moment.",
+      });
       return;
     }
 
@@ -171,11 +157,38 @@ export default function Auth() {
   };
 
   const handleOTPVerified = async () => {
+    // Step 2: After OTP verified, actually create the account
+    const { error } = await signUp(email, password, username, phone);
+
+    if (error) {
+      const errorMsg = error.message.toLowerCase();
+      if (errorMsg.includes("already registered") || errorMsg.includes("already been registered")) {
+        toast({
+          variant: "destructive",
+          title: "Account exists",
+          description: "This email is already registered. Please login instead.",
+        });
+      } else if (errorMsg.includes("username") || errorMsg.includes("duplicate key") || errorMsg.includes("profiles_username_key")) {
+        toast({
+          variant: "destructive",
+          title: "Username taken",
+          description: "This username is already in use. Please choose a different one.",
+        });
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Signup failed",
+          description: error.message,
+        });
+      }
+      setShowOTP(false);
+      return;
+    }
+
     toast({
       title: "Account Created! 🎉",
       description: "Your account is pending admin approval. You can login once approved.",
     });
-    // Sign out the just-verified session so user must login after approval
     await supabase.auth.signOut();
     setShowOTP(false);
     setActiveTab("login");

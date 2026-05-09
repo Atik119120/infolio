@@ -566,9 +566,9 @@ const handler = async (req: Request): Promise<Response> => {
       const emailHtml = getPasswordResetEmailTemplate(otpCode, profile.display_name || "");
 
       const emailResponse = await resend.emails.send({
-        from: "Alpha Portfolio <onboarding@resend.dev>",
+        from: "Alokchitra <noreply@alokchitra.site>",
         to: [email],
-        subject: `${otpCode} - Reset Your Alpha Portfolio Password`,
+        subject: `${otpCode} - Reset Your Alokchitra Password`,
         html: emailHtml,
       });
 

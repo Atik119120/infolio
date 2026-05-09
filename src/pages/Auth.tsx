@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, ArrowRight, ArrowLeft, Phone, Mail, User, Lock } from "lucide-react";
+import { Loader2, ArrowRight, ArrowLeft, Phone, Mail, User, Lock, Eye, EyeOff, Check, X } from "lucide-react";
 import { z } from "zod";
 import alphaLogo from "@/assets/alpha-portfolio-logo.png";
 import { isDisposableEmail, isAllowedEmailDomain } from "@/lib/tempEmailValidator";
@@ -18,6 +18,14 @@ const loginSchema = z.object({
   email: z.string().trim().email({ message: "Invalid email address" }),
   password: z.string().min(6, { message: "Password must be at least 6 characters" }),
 });
+
+const passwordRules = [
+  { label: "At least 8 characters", test: (p: string) => p.length >= 8 },
+  { label: "One uppercase letter (A-Z)", test: (p: string) => /[A-Z]/.test(p) },
+  { label: "One lowercase letter (a-z)", test: (p: string) => /[a-z]/.test(p) },
+  { label: "One number (0-9)", test: (p: string) => /[0-9]/.test(p) },
+  { label: "One special character (!@#$...)", test: (p: string) => /[^A-Za-z0-9]/.test(p) },
+];
 
 const signupSchema = z.object({
   username: z.string().trim()
@@ -32,22 +40,35 @@ const signupSchema = z.object({
     .refine((email) => isAllowedEmailDomain(email), {
       message: "Only Gmail addresses are allowed (e.g., yourname@gmail.com)",
     }),
-  password: z.string().min(6, { message: "Password must be at least 6 characters" }),
+  password: z.string()
+    .min(8, { message: "Password must be at least 8 characters" })
+    .regex(/[A-Z]/, { message: "Must include an uppercase letter" })
+    .regex(/[a-z]/, { message: "Must include a lowercase letter" })
+    .regex(/[0-9]/, { message: "Must include a number" })
+    .regex(/[^A-Za-z0-9]/, { message: "Must include a special character" }),
+  confirmPassword: z.string(),
   phone: z.string().trim()
     .min(10, { message: "Phone number must be at least 10 digits" })
     .max(15, { message: "Phone number must be less than 15 digits" })
     .regex(/^[+]?[0-9]+$/, { message: "Phone number can only contain numbers and optional + prefix" }),
+}).refine((d) => d.password === d.confirmPassword, {
+  message: "Passwords do not match",
+  path: ["confirmPassword"],
 });
 
 export default function Auth() {
   const [activeTab, setActiveTab] = useState("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [username, setUsername] = useState("");
   const [phone, setPhone] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [showOTP, setShowOTP] = useState(false);
+  const [showLoginPwd, setShowLoginPwd] = useState(false);
+  const [showSignupPwd, setShowSignupPwd] = useState(false);
+  const [showConfirmPwd, setShowConfirmPwd] = useState(false);
 
   const { signIn, signUp, user } = useAuth();
   const navigate = useNavigate();
@@ -120,7 +141,7 @@ export default function Auth() {
     e.preventDefault();
     setErrors({});
 
-    const result = signupSchema.safeParse({ username, email, password, phone });
+    const result = signupSchema.safeParse({ username, email, password, confirmPassword, phone });
     if (!result.success) {
       const fieldErrors: Record<string, string> = {};
       result.error.errors.forEach((err) => {
@@ -195,6 +216,7 @@ export default function Auth() {
     setUsername("");
     setEmail("");
     setPassword("");
+    setConfirmPassword("");
     setPhone("");
   };
 
@@ -315,15 +337,26 @@ export default function Auth() {
                           Forgot password?
                         </Button>
                       </div>
-                      <Input
-                        id="login-password"
-                        type="password"
-                        placeholder="••••••••"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        className={errors.password ? "border-destructive" : ""}
-                        disabled={isLoading}
-                      />
+                      <div className="relative">
+                        <Input
+                          id="login-password"
+                          type={showLoginPwd ? "text" : "password"}
+                          placeholder="••••••••"
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                          className={`pr-10 ${errors.password ? "border-destructive" : ""}`}
+                          disabled={isLoading}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowLoginPwd((s) => !s)}
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                          tabIndex={-1}
+                          aria-label={showLoginPwd ? "Hide password" : "Show password"}
+                        >
+                          {showLoginPwd ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                        </button>
+                      </div>
                       {errors.password && (
                         <p className="text-sm text-destructive">{errors.password}</p>
                       )}
@@ -412,17 +445,88 @@ export default function Auth() {
                         <Lock className="w-4 h-4" />
                         Password
                       </Label>
-                      <Input
-                        id="signup-password"
-                        type="password"
-                        placeholder="••••••••"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        className={errors.password ? "border-destructive" : ""}
-                        disabled={isLoading}
-                      />
+                      <div className="relative">
+                        <Input
+                          id="signup-password"
+                          type={showSignupPwd ? "text" : "password"}
+                          placeholder="••••••••"
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                          className={`pr-10 ${errors.password ? "border-destructive" : ""}`}
+                          disabled={isLoading}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowSignupPwd((s) => !s)}
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                          tabIndex={-1}
+                          aria-label={showSignupPwd ? "Hide password" : "Show password"}
+                        >
+                          {showSignupPwd ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                        </button>
+                      </div>
+                      {password.length > 0 && (
+                        <ul className="mt-2 space-y-1 rounded-md bg-muted/40 p-2.5">
+                          {passwordRules.map((rule) => {
+                            const ok = rule.test(password);
+                            return (
+                              <li
+                                key={rule.label}
+                                className={`flex items-center gap-2 text-xs transition-colors ${
+                                  ok ? "text-green-600" : "text-muted-foreground"
+                                }`}
+                              >
+                                {ok ? (
+                                  <Check className="w-3.5 h-3.5" />
+                                ) : (
+                                  <X className="w-3.5 h-3.5" />
+                                )}
+                                {rule.label}
+                              </li>
+                            );
+                          })}
+                        </ul>
+                      )}
                       {errors.password && (
                         <p className="text-sm text-destructive">{errors.password}</p>
+                      )}
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="signup-confirm-password" className="flex items-center gap-2">
+                        <Lock className="w-4 h-4" />
+                        Confirm Password
+                      </Label>
+                      <div className="relative">
+                        <Input
+                          id="signup-confirm-password"
+                          type={showConfirmPwd ? "text" : "password"}
+                          placeholder="••••••••"
+                          value={confirmPassword}
+                          onChange={(e) => setConfirmPassword(e.target.value)}
+                          className={`pr-10 ${errors.confirmPassword ? "border-destructive" : ""}`}
+                          disabled={isLoading}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowConfirmPwd((s) => !s)}
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                          tabIndex={-1}
+                          aria-label={showConfirmPwd ? "Hide password" : "Show password"}
+                        >
+                          {showConfirmPwd ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                        </button>
+                      </div>
+                      {confirmPassword.length > 0 && password !== confirmPassword && !errors.confirmPassword && (
+                        <p className="text-sm text-destructive">Passwords do not match</p>
+                      )}
+                      {confirmPassword.length > 0 && password === confirmPassword && (
+                        <p className="text-sm text-green-600 flex items-center gap-1">
+                          <Check className="w-3.5 h-3.5" /> Passwords match
+                        </p>
+                      )}
+                      {errors.confirmPassword && (
+                        <p className="text-sm text-destructive">{errors.confirmPassword}</p>
                       )}
                     </div>
                     <Button 

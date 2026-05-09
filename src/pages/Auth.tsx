@@ -141,7 +141,7 @@ export default function Auth() {
     e.preventDefault();
     setErrors({});
 
-    const result = signupSchema.safeParse({ username, email, password, phone });
+    const result = signupSchema.safeParse({ username, email, password, confirmPassword, phone });
     if (!result.success) {
       const fieldErrors: Record<string, string> = {};
       result.error.errors.forEach((err) => {
@@ -216,6 +216,7 @@ export default function Auth() {
     setUsername("");
     setEmail("");
     setPassword("");
+    setConfirmPassword("");
     setPhone("");
   };
 
@@ -336,15 +337,26 @@ export default function Auth() {
                           Forgot password?
                         </Button>
                       </div>
-                      <Input
-                        id="login-password"
-                        type="password"
-                        placeholder="••••••••"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        className={errors.password ? "border-destructive" : ""}
-                        disabled={isLoading}
-                      />
+                      <div className="relative">
+                        <Input
+                          id="login-password"
+                          type={showLoginPwd ? "text" : "password"}
+                          placeholder="••••••••"
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                          className={`pr-10 ${errors.password ? "border-destructive" : ""}`}
+                          disabled={isLoading}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowLoginPwd((s) => !s)}
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                          tabIndex={-1}
+                          aria-label={showLoginPwd ? "Hide password" : "Show password"}
+                        >
+                          {showLoginPwd ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                        </button>
+                      </div>
                       {errors.password && (
                         <p className="text-sm text-destructive">{errors.password}</p>
                       )}
@@ -433,17 +445,88 @@ export default function Auth() {
                         <Lock className="w-4 h-4" />
                         Password
                       </Label>
-                      <Input
-                        id="signup-password"
-                        type="password"
-                        placeholder="••••••••"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        className={errors.password ? "border-destructive" : ""}
-                        disabled={isLoading}
-                      />
+                      <div className="relative">
+                        <Input
+                          id="signup-password"
+                          type={showSignupPwd ? "text" : "password"}
+                          placeholder="••••••••"
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                          className={`pr-10 ${errors.password ? "border-destructive" : ""}`}
+                          disabled={isLoading}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowSignupPwd((s) => !s)}
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                          tabIndex={-1}
+                          aria-label={showSignupPwd ? "Hide password" : "Show password"}
+                        >
+                          {showSignupPwd ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                        </button>
+                      </div>
+                      {password.length > 0 && (
+                        <ul className="mt-2 space-y-1 rounded-md bg-muted/40 p-2.5">
+                          {passwordRules.map((rule) => {
+                            const ok = rule.test(password);
+                            return (
+                              <li
+                                key={rule.label}
+                                className={`flex items-center gap-2 text-xs transition-colors ${
+                                  ok ? "text-green-600" : "text-muted-foreground"
+                                }`}
+                              >
+                                {ok ? (
+                                  <Check className="w-3.5 h-3.5" />
+                                ) : (
+                                  <X className="w-3.5 h-3.5" />
+                                )}
+                                {rule.label}
+                              </li>
+                            );
+                          })}
+                        </ul>
+                      )}
                       {errors.password && (
                         <p className="text-sm text-destructive">{errors.password}</p>
+                      )}
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="signup-confirm-password" className="flex items-center gap-2">
+                        <Lock className="w-4 h-4" />
+                        Confirm Password
+                      </Label>
+                      <div className="relative">
+                        <Input
+                          id="signup-confirm-password"
+                          type={showConfirmPwd ? "text" : "password"}
+                          placeholder="••••••••"
+                          value={confirmPassword}
+                          onChange={(e) => setConfirmPassword(e.target.value)}
+                          className={`pr-10 ${errors.confirmPassword ? "border-destructive" : ""}`}
+                          disabled={isLoading}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowConfirmPwd((s) => !s)}
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                          tabIndex={-1}
+                          aria-label={showConfirmPwd ? "Hide password" : "Show password"}
+                        >
+                          {showConfirmPwd ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                        </button>
+                      </div>
+                      {confirmPassword.length > 0 && password !== confirmPassword && !errors.confirmPassword && (
+                        <p className="text-sm text-destructive">Passwords do not match</p>
+                      )}
+                      {confirmPassword.length > 0 && password === confirmPassword && (
+                        <p className="text-sm text-green-600 flex items-center gap-1">
+                          <Check className="w-3.5 h-3.5" /> Passwords match
+                        </p>
+                      )}
+                      {errors.confirmPassword && (
+                        <p className="text-sm text-destructive">{errors.confirmPassword}</p>
                       )}
                     </div>
                     <Button 

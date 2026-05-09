@@ -455,9 +455,9 @@ const handler = async (req: Request): Promise<Response> => {
       const emailHtml = getSignupEmailTemplate(otpCode, userName || "");
 
       const emailResponse = await resend.emails.send({
-        from: "Alpha Portfolio <onboarding@resend.dev>",
+        from: "Alokchitra <noreply@alokchitra.site>",
         to: [email],
-        subject: `${otpCode} - Your Alpha Portfolio Verification Code`,
+        subject: `${otpCode} - Your Alokchitra Verification Code`,
         html: emailHtml,
       });
 

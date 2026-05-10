@@ -402,8 +402,8 @@ export default function PRDDigitalMarketerTheme({
                   style={{ background: C.surface, border: `1px solid ${C.border}`, boxShadow: `0 10px 40px -20px ${C.primary}66` }}
                 >
                   {p.image_url && (
-                    <div className="aspect-[16/9] overflow-hidden" style={{ background: C.bg }}>
-                      <img src={p.image_url} alt={p.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                    <div className="aspect-[16/9] overflow-hidden flex items-center justify-center" style={{ background: C.bg }}>
+                      <img src={p.image_url} alt={p.title} className="w-full h-full object-contain transition-transform duration-700 group-hover:scale-105" />
                     </div>
                   )}
                   <div className="p-6">

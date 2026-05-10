@@ -116,6 +116,8 @@ function SubdomainPortfolio({ username }: { username: string }) {
   const [education, setEducation] = useState<ThemeEducation[]>([]);
   const [socialLinks, setSocialLinks] = useState<ThemeSocialLink[]>([]);
 
+  usePortfolioHead({ portfolio, displayName: profile?.display_name });
+
   useEffect(() => {
     if (username) {
       fetchPortfolio();

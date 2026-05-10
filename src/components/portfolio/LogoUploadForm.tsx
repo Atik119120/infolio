@@ -54,19 +54,21 @@ export function LogoUploadForm({ logoUrl, brandName, userId, onUpdate, onSuccess
     setUploading(true);
 
     try {
-      // Compress logo image
+      // Compress logo image — preserve transparency for PNG/SVG/WebP
       const compressedFile = await compressImage(file, {
         maxWidth: 500,
         maxHeight: 500,
-        quality: 0.85,
+        quality: 0.92,
         maxSizeKB: 150,
+        preserveTransparency: true,
       });
 
-      const fileName = `${userId}/logo.jpg`;
+      const ext = compressedFile.type === "image/png" ? "png" : "jpg";
+      const fileName = `${userId}/logo.${ext}`;
 
       const { error: uploadError } = await supabase.storage
         .from("avatars")
-        .upload(fileName, compressedFile, { upsert: true });
+        .upload(fileName, compressedFile, { upsert: true, contentType: compressedFile.type });
 
       if (uploadError) {
         throw uploadError;

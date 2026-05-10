@@ -37,19 +37,20 @@ export function FaviconUploadForm({ faviconUrl, userId, onUpdate, onSuccess, onE
     setUploading(true);
 
     try {
-      // Compress favicon image - smaller size for favicon
+      // Compress favicon image - smaller size for favicon, keep transparency
       const compressedFile = await compressImage(file, {
         maxWidth: 180,
         maxHeight: 180,
-        quality: 0.9,
+        quality: 0.92,
         maxSizeKB: 50,
+        preserveTransparency: true,
       });
 
       const fileName = `${userId}/favicon.png`;
 
       const { error: uploadError } = await supabase.storage
         .from("avatars")
-        .upload(fileName, compressedFile, { upsert: true });
+        .upload(fileName, compressedFile, { upsert: true, contentType: "image/png" });
 
       if (uploadError) {
         throw uploadError;

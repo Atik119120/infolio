@@ -394,12 +394,13 @@ export default function PRDGraphicDesignerTheme({
                       className="group relative block w-full text-left overflow-hidden rounded-2xl gx-glass gx-glow-ring"
                     >
                       {p.image_url ? (
-                        <img
-                          src={p.image_url}
-                          alt={p.title}
-                          className="w-full h-auto block transition-transform duration-700 group-hover:scale-105"
-                          style={{ aspectRatio: ci % 3 === 0 ? "4/5" : ci % 3 === 1 ? "1/1" : "3/4" }}
-                        />
+                        <div className="w-full flex items-center justify-center" style={{ aspectRatio: ci % 3 === 0 ? "4/5" : ci % 3 === 1 ? "1/1" : "3/4", background: "rgba(255,255,255,0.04)" }}>
+                          <img
+                            src={p.image_url}
+                            alt={p.title}
+                            className="w-full h-full object-contain transition-transform duration-700 group-hover:scale-105"
+                          />
+                        </div>
                       ) : (
                         <div className="w-full aspect-[4/5] flex items-center justify-center" style={{ background: `linear-gradient(135deg, ${C.primary}, ${C.primary2})` }}>
                           <Palette className="w-16 h-16 text-white/80" />

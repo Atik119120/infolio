@@ -8,6 +8,8 @@ interface CompressionOptions {
   maxHeight?: number;
   quality?: number;
   maxSizeKB?: number;
+  /** Preserve transparency by encoding as PNG instead of JPEG. Auto-enabled for PNG/WebP/SVG inputs. */
+  preserveTransparency?: boolean;
 }
 
 const defaultOptions: CompressionOptions = {
@@ -22,8 +24,18 @@ export async function compressImage(
   options: CompressionOptions = {}
 ): Promise<File> {
   const opts = { ...defaultOptions, ...options };
-  
-  // Skip compression for small files
+
+  // Auto-detect transparency-needing formats
+  const isTransparentFormat =
+    opts.preserveTransparency ||
+    file.type === "image/png" ||
+    file.type === "image/webp" ||
+    file.type === "image/svg+xml" ||
+    /\.(png|webp|svg)$/i.test(file.name);
+  const outputType = isTransparentFormat ? "image/png" : "image/jpeg";
+  const outputExt = isTransparentFormat ? "png" : "jpg";
+
+  // Skip compression for small files (but still re-encode if format conversion would change extension)
   if (file.size < (opts.maxSizeKB! * 1024)) {
     return file;
   }
@@ -31,54 +43,56 @@ export async function compressImage(
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.readAsDataURL(file);
-    
+
     reader.onload = (event) => {
       const img = new Image();
       img.src = event.target?.result as string;
-      
+
       img.onload = () => {
         const canvas = document.createElement("canvas");
         let { width, height } = img;
-        
-        // Calculate new dimensions while maintaining aspect ratio
+
         if (width > opts.maxWidth! || height > opts.maxHeight!) {
           const ratio = Math.min(opts.maxWidth! / width, opts.maxHeight! / height);
           width = Math.round(width * ratio);
           height = Math.round(height * ratio);
         }
-        
+
         canvas.width = width;
         canvas.height = height;
-        
+
         const ctx = canvas.getContext("2d");
         if (!ctx) {
           reject(new Error("Failed to get canvas context"));
           return;
         }
-        
-        // Use better quality settings
+
         ctx.imageSmoothingEnabled = true;
         ctx.imageSmoothingQuality = "high";
+        // For JPEG (no alpha), fill white so transparent areas don't go black
+        if (outputType === "image/jpeg") {
+          ctx.fillStyle = "#ffffff";
+          ctx.fillRect(0, 0, width, height);
+        }
         ctx.drawImage(img, 0, 0, width, height);
-        
-        // Convert to blob with compression
+
         canvas.toBlob(
           (blob) => {
             if (!blob) {
               reject(new Error("Failed to compress image"));
               return;
             }
-            
-            // Create new file with compressed data
-            const compressedFile = new File([blob], file.name, {
-              type: "image/jpeg",
+
+            const baseName = file.name.replace(/\.[^.]+$/, "");
+            const compressedFile = new File([blob], `${baseName}.${outputExt}`, {
+              type: outputType,
               lastModified: Date.now(),
             });
-            
-            console.log(`Image compressed: ${(file.size / 1024).toFixed(1)}KB → ${(compressedFile.size / 1024).toFixed(1)}KB`);
+
+            console.log(`Image compressed: ${(file.size / 1024).toFixed(1)}KB → ${(compressedFile.size / 1024).toFixed(1)}KB (${outputType})`);
             resolve(compressedFile);
           },
-          "image/jpeg",
+          outputType,
           opts.quality
         );
       };

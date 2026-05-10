@@ -289,9 +289,9 @@ export default function SmallBusinessTheme({
                   style={{ background: C.surface, border: `1px solid ${C.border}`, boxShadow: `0 4px 20px -10px ${C.ink}1a` }}
                 >
                   <div className="grid md:grid-cols-12 items-stretch">
-                    <div className="md:col-span-5 aspect-[16/10] md:aspect-auto overflow-hidden" style={{ background: C.cream }}>
+                    <div className="md:col-span-5 aspect-[16/10] md:aspect-auto overflow-hidden flex items-center justify-center" style={{ background: C.cream }}>
                       {p.image_url ? (
-                        <img src={p.image_url} alt={p.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                        <img src={p.image_url} alt={p.title} className="w-full h-full object-contain transition-transform duration-700 group-hover:scale-105" />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center">
                           <Building2 className="w-20 h-20" style={{ color: `${C.primary}66` }} />

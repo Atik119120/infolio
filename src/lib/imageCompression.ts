@@ -8,6 +8,8 @@ interface CompressionOptions {
   maxHeight?: number;
   quality?: number;
   maxSizeKB?: number;
+  /** Preserve transparency by encoding as PNG instead of JPEG. Auto-enabled for PNG/WebP/SVG inputs. */
+  preserveTransparency?: boolean;
 }
 
 const defaultOptions: CompressionOptions = {

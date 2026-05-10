@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { usePortfolioHead } from "@/hooks/usePortfolioHead";
 import {
   FreelancerTheme,
   SmallBusinessTheme,

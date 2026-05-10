@@ -493,7 +493,11 @@ export default function PRDGraphicDesignerTheme({
         <div className="container mx-auto px-5">
           <div className="grid md:grid-cols-4 gap-10 mb-12">
             <div className="md:col-span-2">
-              <div className="gd-display text-2xl font-bold mb-3">{name}<span className="gd-grad-text">®</span></div>
+              {portfolio?.logo_url ? (
+                <img src={portfolio.logo_url} alt={name} className="h-9 w-auto object-contain mb-3" style={{ background: "transparent" }} />
+              ) : (
+                <div className="gd-display text-2xl font-bold mb-3">{name}<span className="gd-grad-text">®</span></div>
+              )}
               <p className="text-sm mb-5 max-w-md" style={{ color: C.muted }}>{headline}</p>
               <div className="flex gap-2">
                 {socialLinks.map((sl) => {

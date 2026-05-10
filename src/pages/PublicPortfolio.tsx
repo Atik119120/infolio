@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { usePortfolioHead } from "@/hooks/usePortfolioHead";
 
 import {
   FreelancerTheme,
@@ -34,63 +35,7 @@ export default function PublicPortfolio() {
   const [socialLinks, setSocialLinks] = useState<ThemeSocialLink[]>([]);
   const [services, setServices] = useState<any[]>([]);
 
-  useEffect(() => {
-    if (portfolio?.favicon_url) {
-      const link = document.querySelector("link[rel~='icon']") as HTMLLinkElement | null;
-      if (link) link.href = portfolio.favicon_url;
-      else {
-        const newLink = document.createElement('link');
-        newLink.rel = 'icon';
-        newLink.href = portfolio.favicon_url;
-        document.head.appendChild(newLink);
-      }
-    }
-
-    // SEO meta tags (Pro fields)
-    const setMeta = (name: string, content: string, attr: 'name' | 'property' = 'name') => {
-      if (!content) return;
-      let el = document.querySelector(`meta[${attr}="${name}"]`) as HTMLMetaElement | null;
-      if (!el) {
-        el = document.createElement('meta');
-        el.setAttribute(attr, name);
-        document.head.appendChild(el);
-      }
-      el.content = content;
-    };
-
-    const p: any = portfolio || {};
-    // Browser title fallback chain: custom browser_title → SEO meta_title → brand_name → display_name + headline → "Portfolio"
-    const title =
-      p.browser_title ||
-      p.meta_title ||
-      (p.brand_name && (p.headline ? `${p.brand_name} — ${p.headline}` : p.brand_name)) ||
-      (profile?.display_name ? (p.headline ? `${profile.display_name} — ${p.headline}` : `${profile.display_name} | Portfolio`) : 'Portfolio');
-    document.title = title;
-    setMeta('description', p.meta_description || p.bio || '');
-    setMeta('keywords', p.meta_keywords || '');
-    setMeta('og:title', title, 'property');
-    setMeta('og:description', p.meta_description || p.bio || '', 'property');
-    if (p.og_image_url) setMeta('og:image', p.og_image_url, 'property');
-    if (p.google_verification) setMeta('google-site-verification', p.google_verification);
-
-    // Inject custom <head> HTML (sitemap, analytics, etc.)
-    if (p.custom_head_html) {
-      const container = document.createElement('div');
-      container.innerHTML = p.custom_head_html;
-      Array.from(container.children).forEach((node) => {
-        node.setAttribute('data-portfolio-custom', 'true');
-        document.head.appendChild(node);
-      });
-    }
-
-    return () => {
-      const link = document.querySelector("link[rel~='icon']") as HTMLLinkElement | null;
-      if (link) link.href = '/favicon.ico';
-      document.title = 'Alokchitra';
-      // Remove injected custom head nodes
-      document.head.querySelectorAll('[data-portfolio-custom]').forEach((n) => n.remove());
-    };
-  }, [portfolio, profile?.display_name]);
+  usePortfolioHead({ portfolio, displayName: profile?.display_name });
 
   useEffect(() => {
     if (username) fetchPortfolio();

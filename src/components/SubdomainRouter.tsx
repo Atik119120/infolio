@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { usePortfolioHead } from "@/hooks/usePortfolioHead";
 import {
   FreelancerTheme,
   SmallBusinessTheme,
@@ -114,6 +115,8 @@ function SubdomainPortfolio({ username }: { username: string }) {
   const [experiences, setExperiences] = useState<ThemeExperience[]>([]);
   const [education, setEducation] = useState<ThemeEducation[]>([]);
   const [socialLinks, setSocialLinks] = useState<ThemeSocialLink[]>([]);
+
+  usePortfolioHead({ portfolio, displayName: profile?.display_name });
 
   useEffect(() => {
     if (username) {

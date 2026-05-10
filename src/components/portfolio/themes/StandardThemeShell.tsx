@@ -452,8 +452,8 @@ export function StandardThemeShell({
                   {...fadeUp} transition={{ duration: 0.5, delay: i * 0.05 }}
                   className="t-card overflow-hidden group block">
                   {p.image_url && (
-                    <div className="aspect-[16/10] overflow-hidden" style={{ background: s.border }}>
-                      <img src={p.image_url} alt={p.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                    <div className="aspect-[16/10] overflow-hidden flex items-center justify-center" style={{ background: s.surface }}>
+                      <img src={p.image_url} alt={p.title} className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-700" />
                     </div>
                   )}
                   <div className="p-6">

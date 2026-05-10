@@ -508,7 +508,7 @@ export function StandardThemeShell({
                   border: s.border,
                   text: s.text,
                   textMuted: s.textMuted,
-                  accent: s.accent,
+                  accent: s.primary,
                   accentText: "#ffffff",
                 }}
               />

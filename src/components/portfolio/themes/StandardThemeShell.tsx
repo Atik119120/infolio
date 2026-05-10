@@ -522,7 +522,11 @@ export function StandardThemeShell({
         <div className="container mx-auto px-5">
           <div className="grid md:grid-cols-4 gap-10 mb-12">
             <div className="md:col-span-2">
-              <div className="t-display text-2xl font-bold mb-3">{name}</div>
+              {portfolio?.logo_url ? (
+                <img src={portfolio.logo_url} alt={name} className="h-9 w-auto object-contain mb-3" style={{ background: "transparent" }} />
+              ) : (
+                <div className="t-display text-2xl font-bold mb-3">{name}</div>
+              )}
               <p className="text-sm opacity-70 mb-5 max-w-md">{headline}</p>
               <div className="flex gap-2">
                 {socialLinks.map((sl) => {

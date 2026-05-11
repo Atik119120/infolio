@@ -319,7 +319,7 @@ function getPasswordResetEmailTemplate(otpCode: string, userName: string): strin
     <body>
       <div class="container">
         <div class="header">
-          <div class="logo">🔑</div>
+          <img src="https://infolio.online/favicon.png" alt="Infolio" class="logo" />
           <h1>Password Reset</h1>
           <p>Infolio</p>
         </div>

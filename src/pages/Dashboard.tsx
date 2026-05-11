@@ -102,11 +102,11 @@ export default function Dashboard() {
               <div className="flex items-center gap-2.5">
                 <div className="relative">
                   <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-violet-500 via-purple-500 to-fuchsia-500 flex items-center justify-center shadow-lg shadow-purple-500/25">
-                    <img src={alphaLogo} alt="Infolio" className="h-6 w-auto object-contain" />
+                    <img src={alphaLogo} alt="Alpha" className="h-6 w-auto object-contain" />
                   </div>
                 </div>
                 <div>
-                  <h1 className="font-bold text-slate-900 dark:text-white tracking-tight">Infolio</h1>
+                  <h1 className="font-bold text-slate-900 dark:text-white tracking-tight">Alpha</h1>
                   <p className="text-[10px] text-slate-500 uppercase tracking-wider">Portfolio</p>
                 </div>
               </div>

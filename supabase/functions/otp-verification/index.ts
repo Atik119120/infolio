@@ -54,14 +54,15 @@ function getSignupEmailTemplate(otpCode: string, userName: string): string {
           text-align: center; 
         }
         .logo {
-          width: 64px;
-          height: 64px;
-          background: #ffffff;
-          border-radius: 16px;
+          width: 60px;
+          height: 60px;
+          background: rgba(255,255,255,0.2);
+          border-radius: 15px;
           margin: 0 auto 15px;
-          padding: 8px;
-          display: block;
-          object-fit: contain;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 28px;
         }
         .header h1 { 
           font-size: 24px; 
@@ -148,7 +149,7 @@ function getSignupEmailTemplate(otpCode: string, userName: string): string {
     <body>
       <div class="container">
         <div class="header">
-          <img src="https://infolio.online/favicon.png" alt="Infolio" class="logo" />
+          <div class="logo">α</div>
           <h1>Infolio</h1>
           <p>Professional Portfolio Builder</p>
         </div>
@@ -213,14 +214,15 @@ function getPasswordResetEmailTemplate(otpCode: string, userName: string): strin
           text-align: center; 
         }
         .logo {
-          width: 64px;
-          height: 64px;
-          background: #ffffff;
-          border-radius: 16px;
+          width: 60px;
+          height: 60px;
+          background: rgba(255,255,255,0.2);
+          border-radius: 15px;
           margin: 0 auto 15px;
-          padding: 8px;
-          display: block;
-          object-fit: contain;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 28px;
         }
         .header h1 { 
           font-size: 24px; 
@@ -319,7 +321,7 @@ function getPasswordResetEmailTemplate(otpCode: string, userName: string): strin
     <body>
       <div class="container">
         <div class="header">
-          <img src="https://infolio.online/favicon.png" alt="Infolio" class="logo" />
+          <div class="logo">🔑</div>
           <h1>Password Reset</h1>
           <p>Infolio</p>
         </div>

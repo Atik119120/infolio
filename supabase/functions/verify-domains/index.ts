@@ -101,7 +101,7 @@ async function sendVerificationEmail(
     const name = displayName || "there";
     
     const { error } = await resend.emails.send({
-      from: "Infolio <noreply@resend.dev>",
+      from: "Infolio <noreply@infolio.online>",
       to: [email],
       subject: `🎉 Your domain ${domain} is now verified!`,
       html: `

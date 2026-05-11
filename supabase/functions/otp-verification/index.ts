@@ -455,7 +455,7 @@ const handler = async (req: Request): Promise<Response> => {
       const emailHtml = getSignupEmailTemplate(otpCode, userName || "");
 
       const emailResponse = await resend.emails.send({
-        from: "Infolio <onboarding@resend.dev>",
+        from: "Infolio <noreply@infolio.online>",
         to: [email],
         subject: `${otpCode} - Your Infolio Verification Code`,
         html: emailHtml,
@@ -566,7 +566,7 @@ const handler = async (req: Request): Promise<Response> => {
       const emailHtml = getPasswordResetEmailTemplate(otpCode, profile.display_name || "");
 
       const emailResponse = await resend.emails.send({
-        from: "Infolio <onboarding@resend.dev>",
+        from: "Infolio <noreply@infolio.online>",
         to: [email],
         subject: `${otpCode} - Reset Your Infolio Password`,
         html: emailHtml,

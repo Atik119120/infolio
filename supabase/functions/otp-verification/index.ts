@@ -148,7 +148,7 @@ function getSignupEmailTemplate(otpCode: string, userName: string): string {
     <body>
       <div class="container">
         <div class="header">
-          <div class="logo">α</div>
+          <img src="https://infolio.online/favicon.png" alt="Infolio" class="logo" />
           <h1>Infolio</h1>
           <p>Professional Portfolio Builder</p>
         </div>

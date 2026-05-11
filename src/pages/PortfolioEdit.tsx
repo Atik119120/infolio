@@ -183,6 +183,7 @@ export default function PortfolioEdit() {
     "prd-photographer":      ["theme", "basic", "customize", "branding", "services", "projects", "experience", "education", "social", "seo"],
     "prd-digital-marketer":  ["theme", "basic", "customize", "branding", "services", "projects", "experience", "social", "seo"],
     "biography":             ["theme", "basic", "customize", "branding", "projects", "experience", "education", "social", "seo"],
+    "custom-code":           ["theme", "customize"],
   };
 
   const activeTheme = portfolio?.theme || "freelancer";

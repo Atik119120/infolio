@@ -110,6 +110,7 @@ export const THEME_OPTIONS: ThemeOption[] = [
   { value: 'prd-photographer', label: 'Photographer Theme', description: 'Luxury studio cinematic photographer theme', isPremium: false, price: 0, category: 'free', tier: 'free' },
   { value: 'prd-digital-marketer', label: 'Growth Lab', description: 'SaaS dashboard data-driven marketer theme', isPremium: false, price: 0, category: 'free', tier: 'free' },
   { value: 'biography', label: 'Biography', description: 'Facebook-style profile page for writers and personalities', isPremium: false, price: 0, category: 'free', tier: 'free' },
+  { value: 'custom-code', label: 'Custom Code', description: 'Publish your own HTML, CSS and JS — full design freedom', isPremium: false, price: 0, category: 'free', tier: 'free' },
 ];
 
 export const getThemesByCategory = (_category: ThemeCategory): ThemeOption[] => {

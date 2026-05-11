@@ -123,7 +123,7 @@ async function handleNotification(type: string, data: Record<string, unknown>) {
               { text: '❌ Reject Publish', callback_data: `reject_publish:${userId}` }
             ],
             [
-              { text: '👁 View Portfolio', url: `https://alphaportfolio0.lovable.app/u/${username}` }
+              { text: '👁 View Portfolio', url: `https://infolio.online/u/${username}` }
             ]
           ]
         };
@@ -458,7 +458,7 @@ async function handleTextMessage(message: Record<string, unknown>) {
     if (text === '/start') {
       await sendTelegramMessage(
         (message.chat as Record<string, unknown>).id as string,
-        `🤖 <b>Alpha Portfolio Admin Bot</b>\n\n` +
+        `🤖 <b>Infolio Admin Bot</b>\n\n` +
         `এই বটের মাধ্যমে আপনি ওয়েবসাইটের সব notifications পাবেন এবং Telegram থেকেই:\n\n` +
         `✅ User approve/reject করতে পারবেন\n` +
         `📤 Portfolio publish approve করতে পারবেন\n` +

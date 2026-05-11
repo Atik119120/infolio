@@ -150,7 +150,7 @@ function getSignupEmailTemplate(otpCode: string, userName: string): string {
       <div class="container">
         <div class="header">
           <div class="logo">α</div>
-          <h1>Alpha Portfolio</h1>
+          <h1>Infolio</h1>
           <p>Professional Portfolio Builder</p>
         </div>
         <div class="content">
@@ -167,13 +167,13 @@ function getSignupEmailTemplate(otpCode: string, userName: string): string {
           
           <div class="warning">
             <p class="warning-text">
-              🔒 Never share this code with anyone. Alpha Portfolio team will never ask for your verification code.
+              🔒 Never share this code with anyone. Infolio team will never ask for your verification code.
             </p>
           </div>
         </div>
         <div class="footer">
           <p class="footer-text">
-            © ${new Date().getFullYear()} <a href="https://alphaportfolio.com" class="footer-brand">Alpha Portfolio</a>. All rights reserved.
+            © ${new Date().getFullYear()} <a href="https://infolio.online" class="footer-brand">Infolio</a>. All rights reserved.
           </p>
         </div>
       </div>
@@ -323,7 +323,7 @@ function getPasswordResetEmailTemplate(otpCode: string, userName: string): strin
         <div class="header">
           <div class="logo">🔑</div>
           <h1>Password Reset</h1>
-          <p>Alpha Portfolio</p>
+          <p>Infolio</p>
         </div>
         <div class="content">
           <h2 class="greeting">Hi ${userName || 'there'}! 👋</h2>
@@ -345,13 +345,13 @@ function getPasswordResetEmailTemplate(otpCode: string, userName: string): strin
           
           <div class="warning">
             <p class="warning-text">
-              🔒 Never share this code with anyone. Alpha Portfolio team will never ask for your reset code.
+              🔒 Never share this code with anyone. Infolio team will never ask for your reset code.
             </p>
           </div>
         </div>
         <div class="footer">
           <p class="footer-text">
-            © ${new Date().getFullYear()} <a href="https://alphaportfolio.com" class="footer-brand">Alpha Portfolio</a>. All rights reserved.
+            © ${new Date().getFullYear()} <a href="https://infolio.online" class="footer-brand">Infolio</a>. All rights reserved.
           </p>
         </div>
       </div>
@@ -455,9 +455,9 @@ const handler = async (req: Request): Promise<Response> => {
       const emailHtml = getSignupEmailTemplate(otpCode, userName || "");
 
       const emailResponse = await resend.emails.send({
-        from: "Alokchitra <noreply@alokchitra.site>",
+        from: "Infolio <noreply@infolio.online>",
         to: [email],
-        subject: `${otpCode} - Your Alokchitra Verification Code`,
+        subject: `${otpCode} - Your Infolio Verification Code`,
         html: emailHtml,
       });
 
@@ -566,9 +566,9 @@ const handler = async (req: Request): Promise<Response> => {
       const emailHtml = getPasswordResetEmailTemplate(otpCode, profile.display_name || "");
 
       const emailResponse = await resend.emails.send({
-        from: "Alokchitra <noreply@alokchitra.site>",
+        from: "Infolio <noreply@infolio.online>",
         to: [email],
-        subject: `${otpCode} - Reset Your Alokchitra Password`,
+        subject: `${otpCode} - Reset Your Infolio Password`,
         html: emailHtml,
       });
 

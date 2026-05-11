@@ -46,7 +46,7 @@ export default function SiteHeader() {
     <nav className="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[min(1180px,calc(100%-2rem))] bg-background/70 backdrop-blur-xl border border-border/60 rounded-2xl shadow-lg shadow-primary/5">
       <div className="px-5 py-2.5 flex items-center justify-between">
         <button onClick={() => navigate("/")} className="flex items-center gap-2.5">
-          <img src={alphaLogo} alt="Alokchitra" className="h-8 w-auto object-contain invert" />
+          <img src={alphaLogo} alt="Infolio" className="h-8 w-auto object-contain invert" />
         </button>
         <div className="hidden md:flex items-center gap-6">
           {NAV_ITEMS.map((item) => {
@@ -65,7 +65,7 @@ export default function SiteHeader() {
         </div>
         <div className="flex items-center gap-2">
           <button
-            onClick={() => openWhatsApp("Hi! I have a question about Alokchitra.")}
+            onClick={() => openWhatsApp("Hi! I have a question about Infolio.")}
             className="hidden sm:inline-flex items-center gap-1.5 text-sm text-[#25D366] hover:text-[#1fbb59] px-3 py-1.5"
           >
             <MessageCircle className="w-4 h-4" /> Support
@@ -103,7 +103,7 @@ export default function SiteHeader() {
             })}
             <div className="h-px bg-border/60 my-2" />
             <button
-              onClick={() => { close(); openWhatsApp("Hi! I have a question about Alokchitra."); }}
+              onClick={() => { close(); openWhatsApp("Hi! I have a question about Infolio."); }}
               className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-[#25D366] hover:bg-muted transition-colors"
             >
               <MessageCircle className="w-4 h-4" /> Support

@@ -41,14 +41,14 @@ export default function Footer() {
           {/* Brand */}
           <div className="md:col-span-5">
             <button onClick={() => navigate("/")} className="flex items-center gap-3 mb-5">
-              <img src={alphaLogo} alt="Alokchitra" className="h-9 w-auto object-contain invert" />
+              <img src={alphaLogo} alt="Infolio" className="h-9 w-auto object-contain invert" />
             </button>
             <p className="text-muted-foreground text-sm leading-relaxed mb-6 max-w-sm">
               Beautiful portfolios for creators, developers and freelancers — built without writing a single line of code.
             </p>
             <div className="flex flex-wrap items-center gap-3">
               <button
-                onClick={() => openWhatsApp("Hi! I have a question about Alokchitra.")}
+                onClick={() => openWhatsApp("Hi! I have a question about Infolio.")}
                 className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[#25D366]/30 bg-[#25D366]/10 text-[#25D366] hover:bg-[#25D366]/15 text-sm font-medium transition"
               >
                 <MessageCircle className="w-4 h-4" /> WhatsApp
@@ -81,7 +81,7 @@ export default function Footer() {
               <li><button onClick={() => navigate("/auth")} className="text-foreground/80 hover:text-primary transition-colors">Create account</button></li>
               <li>
                 <button
-                  onClick={() => openWhatsApp("Hi! I need support with Alokchitra.")}
+                  onClick={() => openWhatsApp("Hi! I need support with Infolio.")}
                   className="text-foreground/80 hover:text-primary transition-colors"
                 >
                   Support
@@ -96,10 +96,10 @@ export default function Footer() {
       <div className="relative border-t border-border/60">
         <div className="container mx-auto px-6 py-5 flex flex-col md:flex-row items-center justify-between gap-3">
           <p className="text-xs text-muted-foreground">
-            © {currentYear} Alokchitra. All rights reserved.
+            © {currentYear} Infolio. All rights reserved.
           </p>
           <p className="text-xs text-muted-foreground flex items-center gap-1.5">
-            Made with <Heart className="w-3.5 h-3.5 text-red-500 fill-red-500" /> by Alokchitra Team
+            Made with <Heart className="w-3.5 h-3.5 text-red-500 fill-red-500" /> by Infolio Team
           </p>
         </div>
       </div>

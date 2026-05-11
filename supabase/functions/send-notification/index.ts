@@ -79,7 +79,7 @@ const handler = async (req: Request): Promise<Response> => {
       case "welcome":
         // Send welcome email to new user
         emailTo = userEmail!;
-        emailSubject = "🎉 Welcome to Alpha Portfolio!";
+        emailSubject = "🎉 Welcome to Infolio!";
         emailHtml = `
           <!DOCTYPE html>
           <html>
@@ -96,11 +96,11 @@ const handler = async (req: Request): Promise<Response> => {
           <body>
             <div class="container">
               <div class="header">
-                <h1>Welcome to Alpha Portfolio!</h1>
+                <h1>Welcome to Infolio!</h1>
               </div>
               <div class="content">
                 <h2>Hi ${userName || 'there'}! 👋</h2>
-                <p>Thank you for joining Alpha Portfolio. We're excited to have you on board!</p>
+                <p>Thank you for joining Infolio. We're excited to have you on board!</p>
                 <p>Here's what happens next:</p>
                 <ol>
                   <li>✅ Your email has been verified</li>
@@ -108,11 +108,11 @@ const handler = async (req: Request): Promise<Response> => {
                   <li>🚀 Once approved, you can publish your portfolio</li>
                 </ol>
                 <p>In the meantime, you can start building your portfolio and explore our beautiful themes.</p>
-                <a href="https://alphaportfolio.com/dashboard" class="button">Go to Dashboard</a>
+                <a href="https://infolio.online/dashboard" class="button">Go to Dashboard</a>
                 <p style="margin-top: 20px;">If you have any questions, feel free to reach out to us.</p>
               </div>
               <div class="footer">
-                <p>© 2024 Alpha Portfolio. All rights reserved.</p>
+                <p>© 2024 Infolio. All rights reserved.</p>
               </div>
             </div>
           </body>
@@ -121,7 +121,7 @@ const handler = async (req: Request): Promise<Response> => {
 
         // Also notify admin about new user
         await resend.emails.send({
-          from: "Alpha Portfolio <onboarding@resend.dev>",
+          from: "Infolio <onboarding@resend.dev>",
           to: [ADMIN_EMAIL],
           subject: `🆕 New User Registration: ${userName || userEmail}`,
           html: `
@@ -129,7 +129,7 @@ const handler = async (req: Request): Promise<Response> => {
             <p><strong>Name:</strong> ${userName}</p>
             <p><strong>Email:</strong> ${userEmail}</p>
             <p>Please review and approve this account in the admin panel.</p>
-            <a href="https://alphaportfolio.com/admin/users">View in Admin Panel</a>
+            <a href="https://infolio.online/admin/users">View in Admin Panel</a>
           `,
         });
         break;
@@ -160,7 +160,7 @@ const handler = async (req: Request): Promise<Response> => {
                 <p><strong>Name:</strong> ${userName}</p>
                 <p><strong>Email:</strong> ${userEmail}</p>
                 <p><strong>Message:</strong> ${message || 'No message provided'}</p>
-                <a href="https://alphaportfolio.com/admin/users" class="button">Review in Admin Panel</a>
+                <a href="https://infolio.online/admin/users" class="button">Review in Admin Panel</a>
               </div>
             </div>
           </body>
@@ -170,9 +170,9 @@ const handler = async (req: Request): Promise<Response> => {
         // Also send confirmation to user
         if (userEmail) {
           await resend.emails.send({
-            from: "Alpha Portfolio <onboarding@resend.dev>",
+            from: "Infolio <onboarding@resend.dev>",
             to: [userEmail],
-            subject: "📬 Publish Request Received - Alpha Portfolio",
+            subject: "📬 Publish Request Received - Infolio",
             html: `
               <h2>Your publish request has been received!</h2>
               <p>Hi ${userName},</p>
@@ -223,16 +223,16 @@ const handler = async (req: Request): Promise<Response> => {
         // Send confirmation to user
         if (userEmail) {
           await resend.emails.send({
-            from: "Alpha Portfolio <onboarding@resend.dev>",
+            from: "Infolio <onboarding@resend.dev>",
             to: [userEmail],
-            subject: "✅ Support Request Received - Alpha Portfolio",
+            subject: "✅ Support Request Received - Infolio",
             html: `
               <h2>We've received your message!</h2>
               <p>Hi ${userName},</p>
               <p>Thank you for reaching out. Our team will get back to you as soon as possible.</p>
               <p>Your message:</p>
               <blockquote style="background: #f5f5f5; padding: 15px; border-left: 4px solid #667eea;">${message}</blockquote>
-              <p>Best regards,<br>Alpha Portfolio Team</p>
+              <p>Best regards,<br>Infolio Team</p>
             `,
           });
         }
@@ -241,7 +241,7 @@ const handler = async (req: Request): Promise<Response> => {
       case "account_approved":
         // Send approval notification to user
         emailTo = userEmail!;
-        emailSubject = "🎉 Your Account is Approved! - Alpha Portfolio";
+        emailSubject = "🎉 Your Account is Approved! - Infolio";
         emailHtml = `
           <!DOCTYPE html>
           <html>
@@ -261,14 +261,14 @@ const handler = async (req: Request): Promise<Response> => {
               </div>
               <div class="content">
                 <h2>Congratulations, ${userName}!</h2>
-                <p>Great news! Your Alpha Portfolio account has been approved by our admin team.</p>
+                <p>Great news! Your Infolio account has been approved by our admin team.</p>
                 <p>You can now:</p>
                 <ul>
                   <li>✅ Publish your portfolio</li>
                   <li>✅ Get your own subdomain</li>
                   <li>✅ Connect custom domains</li>
                 </ul>
-                <a href="https://alphaportfolio.com/dashboard" class="button">Go to Dashboard</a>
+                <a href="https://infolio.online/dashboard" class="button">Go to Dashboard</a>
               </div>
             </div>
           </body>
@@ -279,7 +279,7 @@ const handler = async (req: Request): Promise<Response> => {
       case "publish_approved":
         // Send publish approval notification to user
         emailTo = userEmail!;
-        emailSubject = "🚀 Your Portfolio is Now Live! - Alpha Portfolio";
+        emailSubject = "🚀 Your Portfolio is Now Live! - Infolio";
         emailHtml = `
           <!DOCTYPE html>
           <html>
@@ -301,7 +301,7 @@ const handler = async (req: Request): Promise<Response> => {
                 <h2>Congratulations, ${userName}!</h2>
                 <p>Your portfolio has been approved and is now live for the world to see!</p>
                 <p>Share your portfolio link with friends, colleagues, and potential employers.</p>
-                <a href="https://alphaportfolio.com/dashboard" class="button">View Your Portfolio</a>
+                <a href="https://infolio.online/dashboard" class="button">View Your Portfolio</a>
               </div>
             </div>
           </body>
@@ -311,7 +311,7 @@ const handler = async (req: Request): Promise<Response> => {
 
       case "account_rejected":
         emailTo = userEmail!;
-        emailSubject = "Account Status Update - Alpha Portfolio";
+        emailSubject = "Account Status Update - Infolio";
         emailHtml = `
           <h2>Account Status Update</h2>
           <p>Hi ${userName},</p>
@@ -351,7 +351,7 @@ const handler = async (req: Request): Promise<Response> => {
                   <p><strong>Transaction ID:</strong> ${transactionId}</p>
                 </div>
                 <p>Please verify the payment and approve/reject the purchase request in the admin panel.</p>
-                <a href="https://alphaportfolio.com/admin/themes" class="button">Review in Admin Panel</a>
+                <a href="https://infolio.online/admin/themes" class="button">Review in Admin Panel</a>
               </div>
             </div>
           </body>
@@ -414,7 +414,7 @@ const handler = async (req: Request): Promise<Response> => {
                   <h3>Message:</h3>
                   <p>${message}</p>
                 </div>
-                <a href="https://alphaportfolio.com/admin/users" class="button">View User in Admin Panel</a>
+                <a href="https://infolio.online/admin/users" class="button">View User in Admin Panel</a>
               </div>
             </div>
           </body>
@@ -424,9 +424,9 @@ const handler = async (req: Request): Promise<Response> => {
         // Send confirmation to user
         if (userEmail) {
           await resend.emails.send({
-            from: "Alpha Portfolio <onboarding@resend.dev>",
+            from: "Infolio <onboarding@resend.dev>",
             to: [userEmail],
-            subject: "✅ আপনার মেসেজ পাঠানো হয়েছে - Alpha Portfolio",
+            subject: "✅ আপনার মেসেজ পাঠানো হয়েছে - Infolio",
             html: `
               <h2>আপনার মেসেজ পেয়েছি! ✅</h2>
               <p>হাই ${userName},</p>
@@ -434,7 +434,7 @@ const handler = async (req: Request): Promise<Response> => {
               <p><strong>বিষয়:</strong> ${subject}</p>
               <p><strong>সমস্যার ধরন:</strong> ${issueType}</p>
               <blockquote style="background: #f5f5f5; padding: 15px; border-left: 4px solid #3b82f6;">${message}</blockquote>
-              <p>ধন্যবাদ,<br>Alpha Portfolio Team</p>
+              <p>ধন্যবাদ,<br>Infolio Team</p>
             `,
           });
         }
@@ -443,7 +443,7 @@ const handler = async (req: Request): Promise<Response> => {
       case "support_reply":
         // Send admin reply to user
         emailTo = userEmail!;
-        emailSubject = `💬 Reply: ${subject} - Alpha Portfolio`;
+        emailSubject = `💬 Reply: ${subject} - Infolio`;
         emailHtml = `
           <!DOCTYPE html>
           <html>
@@ -468,7 +468,7 @@ const handler = async (req: Request): Promise<Response> => {
                   <p>${message}</p>
                 </div>
                 <p>If you have any more questions, feel free to send another message.</p>
-                <p>Best regards,<br>Alpha Portfolio Team</p>
+                <p>Best regards,<br>Infolio Team</p>
               </div>
             </div>
           </body>
@@ -482,7 +482,7 @@ const handler = async (req: Request): Promise<Response> => {
 
     // Send email
     const emailResponse = await resend.emails.send({
-      from: "Alpha Portfolio <onboarding@resend.dev>",
+      from: "Infolio <onboarding@resend.dev>",
       to: [emailTo],
       subject: emailSubject,
       html: emailHtml,

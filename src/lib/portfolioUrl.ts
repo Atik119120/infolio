@@ -1,7 +1,7 @@
 // Returns the public portfolio URL for a username.
 // Uses subdomain format (username.maindomain) on the production custom domain,
 // and falls back to path-based (/username) on preview/lovable/localhost.
-const SUBDOMAIN_HOSTS = ["alokchitra.site"];
+const SUBDOMAIN_HOSTS = ["infolio.online"];
 
 export function getPortfolioUrl(username?: string | null): string {
   if (!username) return "";

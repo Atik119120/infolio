@@ -254,7 +254,7 @@ export default function DashboardSettings() {
   }
 
   const portfolioUrl = getPortfolioUrl(profile?.username);
-  const subdomainUrl = `${profile?.username}.alokchitra.site`;
+  const subdomainUrl = `${profile?.username}.infolio.online`;
 
   return (
     <div className="space-y-6 animate-fade-in">

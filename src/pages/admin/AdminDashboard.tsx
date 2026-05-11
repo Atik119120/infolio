@@ -103,7 +103,7 @@ export default function AdminDashboard() {
                 </div>
                 <div>
                   <h1 className="font-bold text-white text-lg tracking-tight">Admin</h1>
-                  <p className="text-[10px] text-slate-500 uppercase tracking-widest">Alokchitra</p>
+                  <p className="text-[10px] text-slate-500 uppercase tracking-widest">Infolio</p>
                 </div>
               </div>
               <Button 

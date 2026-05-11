@@ -245,13 +245,15 @@ export default function PortfolioEdit() {
         </TabsContent>
 
         <TabsContent value="customize" className="mt-4 space-y-4">
-          <CustomizationForm
-            portfolio={portfolio as any}
-            userId={user?.id || ""}
-            onUpdate={fetchAllData}
-            onSuccess={showSuccess}
-            onError={showError}
-          />
+          {activeTheme !== "custom-code" && (
+            <CustomizationForm
+              portfolio={portfolio as any}
+              userId={user?.id || ""}
+              onUpdate={fetchAllData}
+              onSuccess={showSuccess}
+              onError={showError}
+            />
+          )}
           <CustomCodeForm
             portfolio={portfolio as any}
             userId={user?.id || ""}

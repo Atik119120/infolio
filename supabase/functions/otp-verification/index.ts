@@ -213,15 +213,14 @@ function getPasswordResetEmailTemplate(otpCode: string, userName: string): strin
           text-align: center; 
         }
         .logo {
-          width: 60px;
-          height: 60px;
-          background: rgba(255,255,255,0.2);
-          border-radius: 15px;
+          width: 64px;
+          height: 64px;
+          background: #ffffff;
+          border-radius: 16px;
           margin: 0 auto 15px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-size: 28px;
+          padding: 8px;
+          display: block;
+          object-fit: contain;
         }
         .header h1 { 
           font-size: 24px; 

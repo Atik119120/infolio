@@ -41,7 +41,7 @@ export default function Footer() {
           {/* Brand */}
           <div className="md:col-span-5">
             <button onClick={() => navigate("/")} className="flex items-center gap-3 mb-5">
-              <img src={alphaLogo} alt="Infolio" className="h-9 w-auto object-contain invert" />
+              <img src={alphaLogo} alt="Infolio" className="h-9 w-auto object-contain" />
             </button>
             <p className="text-muted-foreground text-sm leading-relaxed mb-6 max-w-sm">
               Beautiful portfolios for creators, developers and freelancers — built without writing a single line of code.

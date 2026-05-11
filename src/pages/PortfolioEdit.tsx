@@ -16,6 +16,7 @@ import { LogoUploadForm } from "@/components/portfolio/LogoUploadForm";
 import { FaviconUploadForm } from "@/components/portfolio/FaviconUploadForm";
 import { SeoSettingsForm } from "@/components/portfolio/SeoSettingsForm";
 import { CustomizationForm } from "@/components/portfolio/CustomizationForm";
+import { CustomCodeForm } from "@/components/portfolio/CustomCodeForm";
 
 export interface Profile {
   username: string;
@@ -242,13 +243,18 @@ export default function PortfolioEdit() {
           />
         </TabsContent>
 
-        <TabsContent value="customize" className="mt-4">
+        <TabsContent value="customize" className="mt-4 space-y-4">
           <CustomizationForm
             portfolio={portfolio as any}
             userId={user?.id || ""}
             onUpdate={fetchAllData}
             onSuccess={showSuccess}
             onError={showError}
+          />
+          <CustomCodeForm
+            portfolio={portfolio as any}
+            userId={user?.id || ""}
+            onUpdate={fetchAllData}
           />
         </TabsContent>
 

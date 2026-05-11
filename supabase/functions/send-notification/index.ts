@@ -121,7 +121,7 @@ const handler = async (req: Request): Promise<Response> => {
 
         // Also notify admin about new user
         await resend.emails.send({
-          from: "Infolio <onboarding@resend.dev>",
+          from: "Infolio <noreply@infolio.online>",
           to: [ADMIN_EMAIL],
           subject: `🆕 New User Registration: ${userName || userEmail}`,
           html: `
@@ -170,7 +170,7 @@ const handler = async (req: Request): Promise<Response> => {
         // Also send confirmation to user
         if (userEmail) {
           await resend.emails.send({
-            from: "Infolio <onboarding@resend.dev>",
+            from: "Infolio <noreply@infolio.online>",
             to: [userEmail],
             subject: "📬 Publish Request Received - Infolio",
             html: `
@@ -223,7 +223,7 @@ const handler = async (req: Request): Promise<Response> => {
         // Send confirmation to user
         if (userEmail) {
           await resend.emails.send({
-            from: "Infolio <onboarding@resend.dev>",
+            from: "Infolio <noreply@infolio.online>",
             to: [userEmail],
             subject: "✅ Support Request Received - Infolio",
             html: `
@@ -424,7 +424,7 @@ const handler = async (req: Request): Promise<Response> => {
         // Send confirmation to user
         if (userEmail) {
           await resend.emails.send({
-            from: "Infolio <onboarding@resend.dev>",
+            from: "Infolio <noreply@infolio.online>",
             to: [userEmail],
             subject: "✅ আপনার মেসেজ পাঠানো হয়েছে - Infolio",
             html: `
@@ -482,7 +482,7 @@ const handler = async (req: Request): Promise<Response> => {
 
     // Send email
     const emailResponse = await resend.emails.send({
-      from: "Infolio <onboarding@resend.dev>",
+      from: "Infolio <noreply@infolio.online>",
       to: [emailTo],
       subject: emailSubject,
       html: emailHtml,

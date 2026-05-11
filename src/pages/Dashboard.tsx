@@ -179,7 +179,7 @@ export default function Dashboard() {
                 <ExternalLink className="w-3.5 h-3.5 opacity-75" />
               </button>
               <button
-                onClick={() => openWhatsApp("Hi! I need help with my Alokchitra account.")}
+                onClick={() => openWhatsApp("Hi! I need help with my Infolio account.")}
                 className="mt-2 w-full flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm font-medium bg-[#25D366] text-white hover:bg-[#1fbb59] transition-all duration-200"
               >
                 <MessageCircle className="w-4 h-4" />

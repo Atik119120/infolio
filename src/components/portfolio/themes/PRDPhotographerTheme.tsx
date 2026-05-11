@@ -529,7 +529,7 @@ export default function PRDPhotographerTheme({
           </div>
           <div className="border-t pt-6 flex flex-col md:flex-row justify-between items-center gap-3 text-xs opacity-60" style={{ borderColor: C.border }}>
             <div>{footerText || `© ${new Date().getFullYear()} ${name}. All rights reserved.`}</div>
-            <div>Built with Alokchitra</div>
+            <div>Built with Infolio</div>
           </div>
         </div>
       </footer>

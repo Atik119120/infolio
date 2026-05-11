@@ -30,7 +30,7 @@ import AdminSettings from "./pages/admin/AdminSettings";
 
 const queryClient = new QueryClient();
 
-const MAIN_DOMAIN = "alokchitra.site";
+const MAIN_DOMAIN = "infolio.online";
 
 const App = () => (
   <QueryClientProvider client={queryClient}>

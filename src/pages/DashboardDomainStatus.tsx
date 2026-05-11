@@ -38,7 +38,7 @@ interface DnsCheck {
 }
 
 const ACCEPTED_IPS = ["76.76.21.21", "76.76.21.61", "76.76.21.93", "216.198.79.1", "216.198.79.193"];
-const MAIN_DOMAIN = "alokchitra.site";
+const MAIN_DOMAIN = "infolio.online";
 
 function isVercelDnsTarget(target: string): boolean {
   const normalized = target.toLowerCase().replace(/\.$/, "");

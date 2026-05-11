@@ -83,7 +83,7 @@ export default function Index() {
 
             <div className="bg-card border border-primary/20 rounded-full p-1.5 flex items-center gap-2 max-w-xl mx-auto shadow-lg shadow-primary/10">
               <div className="flex-1 flex items-center pl-4 min-w-0">
-                <span className="text-muted-foreground text-sm font-medium hidden sm:inline">alokchitra.site/</span>
+                <span className="text-muted-foreground text-sm font-medium hidden sm:inline">infolio.online/</span>
                 <input
                   value={username}
                   onChange={(e) => setUsername(e.target.value.replace(/[^a-z0-9_-]/gi, "").toLowerCase())}
@@ -307,7 +307,7 @@ export default function Index() {
 /* ---------------- data & helpers ---------------- */
 
 const FAQS = [
-  { q: "Is Alokchitra really free?", a: "Yes. The Basic plan is free forever with the Simple theme and unlimited sections. Premium themes are an optional one-time purchase." },
+  { q: "Is Infolio really free?", a: "Yes. The Basic plan is free forever with the Simple theme and unlimited sections. Premium themes are an optional one-time purchase." },
   { q: "Do I need any coding skills?", a: "No code at all. Just sign up, fill a guided form, and your portfolio is live with a public URL." },
   { q: "Can I use my own domain?", a: "Yes. You get a free /u/username link, and you can connect a custom domain from your dashboard." },
   { q: "How long does it take to get approved?", a: "New accounts are usually activated within a few hours by our team. You'll get an email when your account is ready." },

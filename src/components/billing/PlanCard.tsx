@@ -43,7 +43,7 @@ export function PlanCard() {
         <CardContent>
           <div className="grid sm:grid-cols-2 gap-2 text-sm">
             <Feature ok>Storage: {Math.round(storageLimitBytes / 1024 / 1024)} MB</Feature>
-            <Feature ok>Subdomain (username.alokchitra.site)</Feature>
+            <Feature ok>Subdomain (username.infolio.online)</Feature>
             <Feature ok={isPro}>Custom domain</Feature>
             <Feature ok={isPro}>SEO meta tag editor</Feature>
             <Feature ok={isPro}>Google Search Console</Feature>

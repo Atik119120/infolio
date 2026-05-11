@@ -140,7 +140,7 @@ export default function AdminOverview() {
       <div>
         <h2 className="text-3xl font-bold">Admin Overview</h2>
         <p className="text-muted-foreground">
-          Monitor and manage all aspects of Alokchitra
+          Monitor and manage all aspects of Infolio
         </p>
       </div>
 

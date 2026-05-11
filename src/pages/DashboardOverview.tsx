@@ -244,7 +244,7 @@ export default function DashboardOverview() {
               <p className="text-xs text-muted-foreground">Chat with us directly on WhatsApp</p>
             </div>
           </div>
-          <Button className="bg-[#25D366] hover:bg-[#1fbb59] text-white h-9" onClick={() => openWhatsApp("Hi! I need help with my Alokchitra account.")}>
+          <Button className="bg-[#25D366] hover:bg-[#1fbb59] text-white h-9" onClick={() => openWhatsApp("Hi! I need help with my Infolio account.")}>
             <MessageCircle className="w-4 h-4 mr-1.5" /> WhatsApp
           </Button>
         </CardContent>

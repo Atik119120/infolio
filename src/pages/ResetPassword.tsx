@@ -278,7 +278,7 @@ export default function ResetPassword() {
         <div className="absolute inset-0 bg-black/20" />
         <div className="relative z-10 flex flex-col justify-center px-16 text-white">
           <div className="flex items-center gap-3 mb-8">
-            <img src={alphaLogo} alt="Alokchitra" className="h-12 w-auto object-contain invert" />
+            <img src={alphaLogo} alt="Infolio" className="h-12 w-auto object-contain invert" />
           </div>
           <h1 className="text-5xl font-bold leading-tight mb-6">
             Reset Your Password
@@ -323,7 +323,7 @@ export default function ResetPassword() {
 
           {/* Mobile Logo */}
           <div className="lg:hidden flex items-center justify-center gap-3 mb-8">
-            <img src={alphaLogo} alt="Alokchitra" className="h-10 w-auto object-contain invert" />
+            <img src={alphaLogo} alt="Infolio" className="h-10 w-auto object-contain invert" />
           </div>
 
           <Card className="border-0 shadow-xl">

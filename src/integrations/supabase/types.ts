@@ -268,7 +268,10 @@ export type Database = {
           brand_name: string | null
           browser_title: string | null
           created_at: string
+          custom_css: string | null
           custom_head_html: string | null
+          custom_html: string | null
+          custom_js: string | null
           favicon_url: string | null
           footer_text: string | null
           google_verification: string | null
@@ -300,7 +303,10 @@ export type Database = {
           brand_name?: string | null
           browser_title?: string | null
           created_at?: string
+          custom_css?: string | null
           custom_head_html?: string | null
+          custom_html?: string | null
+          custom_js?: string | null
           favicon_url?: string | null
           footer_text?: string | null
           google_verification?: string | null
@@ -332,7 +338,10 @@ export type Database = {
           brand_name?: string | null
           browser_title?: string | null
           created_at?: string
+          custom_css?: string | null
           custom_head_html?: string | null
+          custom_html?: string | null
+          custom_js?: string | null
           favicon_url?: string | null
           footer_text?: string | null
           google_verification?: string | null

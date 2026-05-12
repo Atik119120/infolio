@@ -10,6 +10,7 @@ import {
   Eye, Check, Palette, ExternalLink, Lock, Sparkles, Clock, Star, Crown, Zap
 } from "lucide-react";
 import { THEME_OPTIONS, getGroupedThemes, ThemeCategory } from "./themes/types";
+import { useAdminThemes } from "@/hooks/useAdminThemes";
 import { WhatsAppUpgradeDialog } from "@/components/billing/WhatsAppUpgradeDialog";
 
 interface ThemeSelectorProps {
@@ -121,7 +122,26 @@ export function ThemeSelector({ currentTheme, userId, onUpdate }: ThemeSelectorP
   const [selectedPurchaseTheme, setSelectedPurchaseTheme] = useState<{id: string, name: string} | null>(null);
   const { toast } = useToast();
 
-  const groupedThemes = getGroupedThemes();
+  const baseGrouped = getGroupedThemes();
+  const { themes: adminThemes } = useAdminThemes();
+  const groupedThemes = adminThemes.length > 0
+    ? [
+        ...baseGrouped,
+        {
+          category: 'free' as ThemeCategory,
+          label: 'Custom Themes',
+          themes: adminThemes.map((t) => ({
+            value: `admin:${t.slug}`,
+            label: t.name,
+            description: t.description || 'Custom uploaded theme',
+            isPremium: false,
+            price: 0,
+            category: 'free' as ThemeCategory,
+            tier: 'free' as const,
+          })),
+        },
+      ]
+    : baseGrouped;
 
   useEffect(() => {
     setSelectedTheme(currentTheme || 'freelancer');

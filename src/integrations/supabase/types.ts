@@ -14,6 +14,51 @@ export type Database = {
   }
   public: {
     Tables: {
+      admin_themes: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          css: string
+          description: string | null
+          html: string
+          id: string
+          is_active: boolean
+          js: string
+          name: string
+          preview_image_url: string | null
+          slug: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          css?: string
+          description?: string | null
+          html?: string
+          id?: string
+          is_active?: boolean
+          js?: string
+          name: string
+          preview_image_url?: string | null
+          slug: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          css?: string
+          description?: string | null
+          html?: string
+          id?: string
+          is_active?: boolean
+          js?: string
+          name?: string
+          preview_image_url?: string | null
+          slug?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       cleanup_logs: {
         Row: {
           created_at: string

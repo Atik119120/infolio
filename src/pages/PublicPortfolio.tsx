@@ -13,6 +13,7 @@ import {
   PRDDigitalMarketerTheme,
   BiographyTheme,
   CustomCodeTheme,
+  AdminUploadedTheme,
   ThemeProfile,
   ThemePortfolio,
   ThemeSkill,
@@ -126,6 +127,12 @@ export default function PublicPortfolio() {
   };
 
   const selectedTheme = portfolio?.theme || 'freelancer';
+
+  // Admin-uploaded custom themes use the prefix `admin:` followed by the slug
+  if (selectedTheme.startsWith('admin:')) {
+    const slug = selectedTheme.slice('admin:'.length);
+    return <AdminUploadedTheme slug={slug} {...themeProps} />;
+  }
 
   switch (selectedTheme) {
     case 'small-business':

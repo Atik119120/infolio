@@ -31,7 +31,9 @@ const emptyProject = {
 };
 
 export function ProjectsForm({ projects, userId, onUpdate, onSuccess, onError }: ProjectsFormProps) {
-  const { perFileLimitBytes, isPro } = usePlan();
+  const { perFileLimitBytes, isPro, plan } = usePlan();
+  const imageCap = isPro ? 30 : 6;
+  const imagesUsed = projects.filter((p) => !!p.image_url).length;
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingProject, setEditingProject] = useState<Project | null>(null);
   const [formData, setFormData] = useState(emptyProject);
@@ -83,8 +85,24 @@ export function ProjectsForm({ projects, userId, onUpdate, onSuccess, onError }:
 
     // 1MB limit
     if (file.size > perFileLimitBytes) {
-      onError(`Image must be less than ${Math.round(perFileLimitBytes/1024/1024)}MB${isPro ? "" : " (upgrade to Pro for 3MB)"}`);
+      onError(`Image must be less than ${Math.round(perFileLimitBytes/1024/1024)}MB${isPro ? "" : " (upgrade to Pro for 5MB)"}`);
       return;
+    }
+
+    // Image count cap (free: 6, pro: 30). Replacing an existing project image doesn't count as new.
+    const replacingExisting = !!editingProject?.image_url;
+    if (!replacingExisting && imagesUsed >= imageCap) {
+      onError(`Image limit reached (${imageCap} for ${plan} plan)${isPro ? "" : " — upgrade to Pro for more"}`);
+      return;
+    }
+
+    // Auto-delete previous image (this project's old image) before uploading the new one.
+    const oldUrl = formData.image_url || editingProject?.image_url;
+    if (oldUrl && oldUrl.includes("/projects/")) {
+      const path = oldUrl.split("/projects/")[1]?.split("?")[0];
+      if (path) {
+        await supabase.storage.from("projects").remove([path]).catch(() => {});
+      }
     }
 
     setUploading(true);

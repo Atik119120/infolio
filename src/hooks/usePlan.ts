@@ -16,8 +16,10 @@ export interface PlanInfo {
 
 const FREE_STORAGE = 100 * 1024 * 1024; // 100 MB
 const PRO_STORAGE = 300 * 1024 * 1024;  // 300 MB
-const FREE_FILE = 1 * 1024 * 1024;      // 1 MB
-const PRO_FILE = 3 * 1024 * 1024;       // 3 MB
+const FREE_FILE = 2 * 1024 * 1024;      // 2 MB
+const PRO_FILE = 5 * 1024 * 1024;       // 5 MB
+export const FREE_PROJECT_IMAGE_CAP = 6;
+export const PRO_PROJECT_IMAGE_CAP = 30;
 
 export function usePlan(): PlanInfo {
   const { user } = useAuth();
@@ -57,6 +59,6 @@ export function usePlan(): PlanInfo {
 }
 
 export const PLAN_LIMITS = {
-  free: { storage: FREE_STORAGE, file: FREE_FILE, label: "100 MB", fileLabel: "1 MB" },
-  pro: { storage: PRO_STORAGE, file: PRO_FILE, label: "300 MB", fileLabel: "3 MB" },
+  free: { storage: FREE_STORAGE, file: FREE_FILE, label: "100 MB", fileLabel: "2 MB", projectImages: FREE_PROJECT_IMAGE_CAP },
+  pro: { storage: PRO_STORAGE, file: PRO_FILE, label: "300 MB", fileLabel: "5 MB", projectImages: PRO_PROJECT_IMAGE_CAP },
 };

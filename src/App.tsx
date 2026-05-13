@@ -28,6 +28,7 @@ import AdminThemes from "./pages/admin/AdminThemes";
 import AdminCustomThemes from "./pages/admin/AdminCustomThemes";
 import AdminPlans from "./pages/admin/AdminPlans";
 import AdminSettings from "./pages/admin/AdminSettings";
+import AdminSiteSettings from "./pages/admin/AdminSiteSettings";
 
 const queryClient = new QueryClient();
 

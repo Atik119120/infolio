@@ -24,12 +24,16 @@ interface CustomizationData {
 interface Props {
   portfolio: CustomizationData | null;
   userId: string;
+  enabledFields?: import("@/config/themeFeatures").CustomizeField[];
   onUpdate: () => void;
   onSuccess: (m: string) => void;
   onError: (m: string) => void;
 }
 
-export function CustomizationForm({ portfolio, userId, onUpdate, onSuccess, onError }: Props) {
+export function CustomizationForm({ portfolio, userId, enabledFields, onUpdate, onSuccess, onError }: Props) {
+  const ALL_ON = !enabledFields;
+  const has = (f: import("@/config/themeFeatures").CustomizeField) =>
+    ALL_ON || (enabledFields && enabledFields.includes(f));
   const { perFileLimitBytes } = usePlan();
   const [data, setData] = useState<CustomizationData>({
     hero_image_url: portfolio?.hero_image_url || "",

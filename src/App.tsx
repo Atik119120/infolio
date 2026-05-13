@@ -72,6 +72,7 @@ const App = () => (
                 <Route path="custom-themes" element={<AdminCustomThemes />} />
                 <Route path="plans" element={<AdminPlans />} />
                 <Route path="settings" element={<AdminSettings />} />
+                <Route path="site-settings" element={<AdminSiteSettings />} />
               </Route>
               {/* Public portfolio at root: /:username (must be LAST) */}
               <Route path="/:username" element={<PublicPortfolio />} />

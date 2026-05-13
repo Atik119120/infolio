@@ -17,6 +17,7 @@ import { FaviconUploadForm } from "@/components/portfolio/FaviconUploadForm";
 import { SeoSettingsForm } from "@/components/portfolio/SeoSettingsForm";
 import { CustomizationForm } from "@/components/portfolio/CustomizationForm";
 import { CustomCodeForm } from "@/components/portfolio/CustomCodeForm";
+import { getThemeConfig } from "@/config/themeFeatures";
 
 export interface Profile {
   username: string;
@@ -174,26 +175,16 @@ export default function PortfolioEdit() {
     { value: "seo", label: "SEO", icon: Search },
   ];
 
-  // Each theme exposes only the sections it actually renders.
-  // Theme → enabled feature tabs (theme/basic/customize/branding/social/seo are universal)
-  const THEME_FEATURES: Record<string, string[]> = {
-    "freelancer":            ["theme", "basic", "customize", "branding", "skills", "services", "projects", "experience", "education", "social", "seo"],
-    "small-business":        ["theme", "basic", "customize", "branding", "skills", "services", "projects", "experience", "education", "social", "seo"],
-    "prd-graphic-designer":  ["theme", "basic", "customize", "branding", "skills", "services", "projects", "experience", "social", "seo"],
-    "prd-photographer":      ["theme", "basic", "customize", "branding", "services", "projects", "experience", "education", "social", "seo"],
-    "prd-digital-marketer":  ["theme", "basic", "customize", "branding", "services", "projects", "experience", "social", "seo"],
-    "biography":             ["theme", "basic", "customize", "branding", "projects", "experience", "education", "social", "seo"],
-    "custom-code":           ["theme", "customize"],
-  };
-
   const activeTheme = portfolio?.theme || "freelancer";
-  const enabled = THEME_FEATURES[activeTheme] || allTabs.map((t) => t.value);
-  const tabs = allTabs.filter((t) => enabled.includes(t.value));
+  const themeConfig = getThemeConfig(activeTheme);
+  const tabs = allTabs.filter((t) => themeConfig.tabs.includes(t.value));
 
-  // If active tab not enabled by current theme, jump back to theme tab
-  if (!enabled.includes(activeTab)) {
-    setTimeout(() => setActiveTab("theme"), 0);
-  }
+  // If active tab not enabled by current theme, jump back to theme tab (effect, not render).
+  useEffect(() => {
+    if (!themeConfig.tabs.includes(activeTab)) {
+      setActiveTab("theme");
+    }
+  }, [activeTheme, activeTab, themeConfig.tabs]);
 
   return (
     <div className="space-y-4 animate-fade-in">
@@ -245,10 +236,11 @@ export default function PortfolioEdit() {
         </TabsContent>
 
         <TabsContent value="customize" className="mt-4 space-y-4">
-          {activeTheme !== "custom-code" && (
+          {activeTheme !== "custom-code" && themeConfig.customizeFields.length > 0 && (
             <CustomizationForm
               portfolio={portfolio as any}
               userId={user?.id || ""}
+              enabledFields={themeConfig.customizeFields}
               onUpdate={fetchAllData}
               onSuccess={showSuccess}
               onError={showError}

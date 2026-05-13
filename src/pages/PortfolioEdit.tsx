@@ -17,6 +17,7 @@ import { FaviconUploadForm } from "@/components/portfolio/FaviconUploadForm";
 import { SeoSettingsForm } from "@/components/portfolio/SeoSettingsForm";
 import { CustomizationForm } from "@/components/portfolio/CustomizationForm";
 import { CustomCodeForm } from "@/components/portfolio/CustomCodeForm";
+import { getThemeConfig } from "@/config/themeFeatures";
 
 export interface Profile {
   username: string;

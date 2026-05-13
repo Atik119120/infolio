@@ -59,6 +59,6 @@ export function usePlan(): PlanInfo {
 }
 
 export const PLAN_LIMITS = {
-  free: { storage: FREE_STORAGE, file: FREE_FILE, label: "100 MB", fileLabel: "1 MB" },
-  pro: { storage: PRO_STORAGE, file: PRO_FILE, label: "300 MB", fileLabel: "3 MB" },
+  free: { storage: FREE_STORAGE, file: FREE_FILE, label: "100 MB", fileLabel: "2 MB", projectImages: FREE_PROJECT_IMAGE_CAP },
+  pro: { storage: PRO_STORAGE, file: PRO_FILE, label: "300 MB", fileLabel: "5 MB", projectImages: PRO_PROJECT_IMAGE_CAP },
 };

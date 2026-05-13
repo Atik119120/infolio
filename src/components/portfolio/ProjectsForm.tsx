@@ -31,7 +31,9 @@ const emptyProject = {
 };
 
 export function ProjectsForm({ projects, userId, onUpdate, onSuccess, onError }: ProjectsFormProps) {
-  const { perFileLimitBytes, isPro } = usePlan();
+  const { perFileLimitBytes, isPro, plan } = usePlan();
+  const imageCap = isPro ? 30 : 6;
+  const imagesUsed = projects.filter((p) => !!p.image_url).length;
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingProject, setEditingProject] = useState<Project | null>(null);
   const [formData, setFormData] = useState(emptyProject);

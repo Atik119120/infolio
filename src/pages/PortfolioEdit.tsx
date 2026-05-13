@@ -236,10 +236,11 @@ export default function PortfolioEdit() {
         </TabsContent>
 
         <TabsContent value="customize" className="mt-4 space-y-4">
-          {activeTheme !== "custom-code" && (
+          {activeTheme !== "custom-code" && themeConfig.customizeFields.length > 0 && (
             <CustomizationForm
               portfolio={portfolio as any}
               userId={user?.id || ""}
+              enabledFields={themeConfig.customizeFields}
               onUpdate={fetchAllData}
               onSuccess={showSuccess}
               onError={showError}

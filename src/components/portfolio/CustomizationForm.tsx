@@ -140,108 +140,133 @@ export function CustomizationForm({ portfolio, userId, enabledFields, onUpdate, 
     </div>
   );
 
+  const showHero = has("hero_image") || has("hero_headline") || has("hero_subheadline") || has("hero_cta");
+  const showAbout = has("about_image") || has("about_text");
+  const showFooter = has("footer_text") || has("browser_title");
+
   return (
     <div className="space-y-4">
       {/* HERO */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2"><Sparkles className="w-5 h-5" /> Hero Section</CardTitle>
-          <CardDescription>প্রথম যে section দেখাবে — image, headline, CTA সব এখান থেকে control করো।</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <ImageUpload
-            label="Hero Image (Hero section-এ দেখাবে)"
-            value={data.hero_image_url}
-            busy={uploadingHero}
-            inputRef={heroRef}
-            onUpload={(e) => { const f = e.target.files?.[0]; if (f) uploadImage(f, "hero_image_url", setUploadingHero); }}
-            onRemove={() => removeImage("hero_image_url")}
-          />
-          <div className="grid md:grid-cols-2 gap-3">
-            <div className="space-y-1.5">
-              <Label>Headline</Label>
-              <Input value={data.hero_headline || ""} onChange={(e) => update("hero_headline", e.target.value)} placeholder="e.g., Creative Web Designer" maxLength={120} />
+      {showHero && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2"><Sparkles className="w-5 h-5" /> Hero Section</CardTitle>
+            <CardDescription>প্রথম যে section দেখাবে — image, headline, CTA সব এখান থেকে control করো।</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {has("hero_image") && (
+              <ImageUpload
+                label="Hero Image (Hero section-এ দেখাবে)"
+                value={data.hero_image_url}
+                busy={uploadingHero}
+                inputRef={heroRef}
+                onUpload={(e) => { const f = e.target.files?.[0]; if (f) uploadImage(f, "hero_image_url", setUploadingHero); }}
+                onRemove={() => removeImage("hero_image_url")}
+              />
+            )}
+            <div className="grid md:grid-cols-2 gap-3">
+              {has("hero_headline") && (
+                <div className="space-y-1.5">
+                  <Label>Headline</Label>
+                  <Input value={data.hero_headline || ""} onChange={(e) => update("hero_headline", e.target.value)} placeholder="e.g., Creative Web Designer" maxLength={120} />
+                </div>
+              )}
+              {has("hero_subheadline") && (
+                <div className="space-y-1.5">
+                  <Label>Subheadline</Label>
+                  <Input value={data.hero_subheadline || ""} onChange={(e) => update("hero_subheadline", e.target.value)} placeholder="Available for hire worldwide" maxLength={160} />
+                </div>
+              )}
+              {has("hero_cta") && (
+                <>
+                  <div className="space-y-1.5">
+                    <Label>CTA Button Text</Label>
+                    <Input value={data.hero_cta_text || ""} onChange={(e) => update("hero_cta_text", e.target.value)} placeholder="View my work" maxLength={40} />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label>CTA Button Link</Label>
+                    <Input value={data.hero_cta_link || ""} onChange={(e) => update("hero_cta_link", e.target.value)} placeholder="#works or https://..." maxLength={200} />
+                  </div>
+                </>
+              )}
             </div>
-            <div className="space-y-1.5">
-              <Label>Subheadline</Label>
-              <Input value={data.hero_subheadline || ""} onChange={(e) => update("hero_subheadline", e.target.value)} placeholder="Available for hire worldwide" maxLength={160} />
-            </div>
-            <div className="space-y-1.5">
-              <Label>CTA Button Text</Label>
-              <Input value={data.hero_cta_text || ""} onChange={(e) => update("hero_cta_text", e.target.value)} placeholder="View my work" maxLength={40} />
-            </div>
-            <div className="space-y-1.5">
-              <Label>CTA Button Link</Label>
-              <Input value={data.hero_cta_link || ""} onChange={(e) => update("hero_cta_link", e.target.value)} placeholder="#works or https://..." maxLength={200} />
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      )}
 
       {/* ABOUT */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2"><User className="w-5 h-5" /> About Section</CardTitle>
-          <CardDescription>About section-এর জন্য আলাদা image আর text — Hero থেকে completely separate।</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <ImageUpload
-            label="About Image (About section-এ দেখাবে)"
-            value={data.about_image_url}
-            busy={uploadingAbout}
-            inputRef={aboutRef}
-            onUpload={(e) => { const f = e.target.files?.[0]; if (f) uploadImage(f, "about_image_url", setUploadingAbout); }}
-            onRemove={() => removeImage("about_image_url")}
-          />
-          <div className="space-y-1.5">
-            <Label>About Text</Label>
-            <Textarea
-              value={data.about_text || ""}
-              onChange={(e) => update("about_text", e.target.value)}
-              placeholder="Write about yourself — your story, expertise, and what makes you unique."
-              rows={5}
-              maxLength={1200}
-            />
-            <p className="text-xs text-muted-foreground">খালি রাখলে Basic Info-এর Bio ব্যবহার হবে।</p>
-          </div>
-        </CardContent>
-      </Card>
+      {showAbout && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2"><User className="w-5 h-5" /> About Section</CardTitle>
+            <CardDescription>About section-এর জন্য আলাদা image আর text — Hero থেকে completely separate।</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {has("about_image") && (
+              <ImageUpload
+                label="About Image (About section-এ দেখাবে)"
+                value={data.about_image_url}
+                busy={uploadingAbout}
+                inputRef={aboutRef}
+                onUpload={(e) => { const f = e.target.files?.[0]; if (f) uploadImage(f, "about_image_url", setUploadingAbout); }}
+                onRemove={() => removeImage("about_image_url")}
+              />
+            )}
+            {has("about_text") && (
+              <div className="space-y-1.5">
+                <Label>About Text</Label>
+                <Textarea
+                  value={data.about_text || ""}
+                  onChange={(e) => update("about_text", e.target.value)}
+                  placeholder="Write about yourself — your story, expertise, and what makes you unique."
+                  rows={5}
+                  maxLength={1200}
+                />
+                <p className="text-xs text-muted-foreground">খালি রাখলে Basic Info-এর Bio ব্যবহার হবে।</p>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      )}
 
       {/* FOOTER & BROWSER */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2"><Type className="w-5 h-5" /> Footer & Browser Tab</CardTitle>
-          <CardDescription>Footer text, copyright, browser tab title customize করো।</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="space-y-1.5">
-            <Label className="flex items-center gap-2"><Globe className="w-4 h-4 text-muted-foreground" /> Browser Tab Title</Label>
-            <Input
-              value={data.browser_title || ""}
-              onChange={(e) => update("browser_title", e.target.value)}
-              placeholder="e.g., John Doe — Web Designer"
-              maxLength={70}
-            />
-            <p className="text-xs text-muted-foreground">
-              খালি রাখলে: SEO Meta Title → Brand Name → Display Name থেকে fallback হবে।
-            </p>
-          </div>
-          <div className="space-y-1.5">
-            <Label>Footer Text / Copyright</Label>
-            <Textarea
-              value={data.footer_text || ""}
-              onChange={(e) => update("footer_text", e.target.value)}
-              placeholder="© 2026 Your Name. All rights reserved."
-              rows={2}
-              maxLength={300}
-            />
-            <p className="text-xs text-muted-foreground">খালি রাখলে default copyright দেখাবে।</p>
-          </div>
-        </CardContent>
-      </Card>
-
-      <div className="sticky bottom-0 bg-background/80 backdrop-blur border-t pt-4 -mx-4 px-4 flex justify-end">
-        <Button onClick={handleSave} disabled={saving} size="lg">
+      {showFooter && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2"><Type className="w-5 h-5" /> Footer & Browser Tab</CardTitle>
+            <CardDescription>Footer text, copyright, browser tab title customize করো।</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {has("browser_title") && (
+              <div className="space-y-1.5">
+                <Label className="flex items-center gap-2"><Globe className="w-4 h-4 text-muted-foreground" /> Browser Tab Title</Label>
+                <Input
+                  value={data.browser_title || ""}
+                  onChange={(e) => update("browser_title", e.target.value)}
+                  placeholder="e.g., John Doe — Web Designer"
+                  maxLength={70}
+                />
+                <p className="text-xs text-muted-foreground">
+                  খালি রাখলে: SEO Meta Title → Brand Name → Display Name থেকে fallback হবে।
+                </p>
+              </div>
+            )}
+            {has("footer_text") && (
+              <div className="space-y-1.5">
+                <Label>Footer Text / Copyright</Label>
+                <Textarea
+                  value={data.footer_text || ""}
+                  onChange={(e) => update("footer_text", e.target.value)}
+                  placeholder="© 2026 Your Name. All rights reserved."
+                  rows={2}
+                  maxLength={300}
+                />
+                <p className="text-xs text-muted-foreground">খালি রাখলে default copyright দেখাবে।</p>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      )}
           {saving ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : null}
           Save Customization
         </Button>

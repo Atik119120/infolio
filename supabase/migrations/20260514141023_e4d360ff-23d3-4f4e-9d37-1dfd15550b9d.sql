@@ -1,0 +1,1 @@
+CREATE INDEX IF NOT EXISTS idx_otp_codes_lookup ON public.otp_codes (email, code, verified, expires_at);

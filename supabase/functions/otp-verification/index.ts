@@ -435,9 +435,6 @@ const handler = async (req: Request): Promise<Response> => {
         );
       }
 
-      // Clean up expired OTPs (don't delete recent ones for rate limiting)
-      await supabase.from("otp_codes").delete().lt("expires_at", new Date().toISOString());
-
       const otpCode = generateOTP();
       const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
 
@@ -452,20 +449,23 @@ const handler = async (req: Request): Promise<Response> => {
         throw new Error("Failed to generate verification code");
       }
 
-      const emailHtml = getSignupEmailTemplate(otpCode, userName || "");
+      // Background tasks: cleanup + email send (don't block response)
+      // @ts-ignore - EdgeRuntime is available in Deno Deploy
+      const bg = (typeof EdgeRuntime !== "undefined" && EdgeRuntime.waitUntil)
+        ? (p: Promise<unknown>) => EdgeRuntime.waitUntil(p)
+        : (_: Promise<unknown>) => {};
 
-      const emailResponse = await resend.emails.send({
+      bg(supabase.from("otp_codes").delete().lt("expires_at", new Date().toISOString()));
+      bg(resend.emails.send({
         from: "Infolio <noreply@infolio.online>",
         to: [email],
         subject: `${otpCode} - Your Infolio Verification Code`,
-        html: emailHtml,
-      });
-
-      console.log("OTP email sent:", emailResponse);
+        html: getSignupEmailTemplate(otpCode, userName || ""),
+      }).then((r) => console.log("OTP email queued:", r)).catch((e) => console.error("OTP email send failed:", e)));
 
       return new Response(
-        JSON.stringify({ 
-          success: true, 
+        JSON.stringify({
+          success: true,
           message: "Verification code sent",
           remainingAttempts: remaining - 1
         }),
@@ -546,9 +546,6 @@ const handler = async (req: Request): Promise<Response> => {
         );
       }
 
-      // Clean up expired OTPs (don't delete recent ones for rate limiting)
-      await supabase.from("otp_codes").delete().lt("expires_at", new Date().toISOString());
-
       const otpCode = generateOTP();
       const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
 
@@ -563,20 +560,22 @@ const handler = async (req: Request): Promise<Response> => {
         throw new Error("Failed to generate reset code");
       }
 
-      const emailHtml = getPasswordResetEmailTemplate(otpCode, profile.display_name || "");
+      // @ts-ignore - EdgeRuntime in Deno Deploy
+      const bg = (typeof EdgeRuntime !== "undefined" && EdgeRuntime.waitUntil)
+        ? (p: Promise<unknown>) => EdgeRuntime.waitUntil(p)
+        : (_: Promise<unknown>) => {};
 
-      const emailResponse = await resend.emails.send({
+      bg(supabase.from("otp_codes").delete().lt("expires_at", new Date().toISOString()));
+      bg(resend.emails.send({
         from: "Infolio <noreply@infolio.online>",
         to: [email],
         subject: `${otpCode} - Reset Your Infolio Password`,
-        html: emailHtml,
-      });
-
-      console.log("Password reset OTP email sent:", emailResponse);
+        html: getPasswordResetEmailTemplate(otpCode, profile.display_name || ""),
+      }).then((r) => console.log("Reset email queued:", r)).catch((e) => console.error("Reset email failed:", e)));
 
       return new Response(
-        JSON.stringify({ 
-          success: true, 
+        JSON.stringify({
+          success: true,
           message: "Reset code sent",
           remainingAttempts: remaining - 1
         }),

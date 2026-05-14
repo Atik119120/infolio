@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { Helmet } from "react-helmet-async";
 import { Button } from "@/components/ui/button";
 import { openWhatsApp } from "@/lib/whatsapp";
 import { MessageCircle } from "lucide-react";
@@ -28,8 +29,27 @@ export default function Index() {
 
   const closeMenu = () => setMobileMenuOpen(false);
 
+  const faqJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: FAQS.map((f) => ({
+      "@type": "Question",
+      name: f.q,
+      acceptedAnswer: { "@type": "Answer", text: f.a },
+    })),
+  };
+
   return (
     <div className="min-h-screen bg-background overflow-x-hidden text-foreground">
+      <Helmet>
+        <title>Infolio — Build Your Professional Portfolio in Minutes</title>
+        <meta name="description" content="Pick a theme, add your work, and publish a stunning personal portfolio in minutes — on your own subdomain or custom domain." />
+        <link rel="canonical" href="https://infolio.online/" />
+        <meta property="og:title" content="Infolio — Build Your Professional Portfolio in Minutes" />
+        <meta property="og:description" content="Pick a theme, add your work, and publish a stunning personal portfolio in minutes." />
+        <meta property="og:url" content="https://infolio.online/" />
+        <script type="application/ld+json">{JSON.stringify(faqJsonLd)}</script>
+      </Helmet>
       {/* NAV */}
       <SiteHeader />
 

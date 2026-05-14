@@ -13,6 +13,7 @@ import { z } from "zod";
 import alphaLogo from "@/assets/alpha-portfolio-logo.png";
 import { isDisposableEmail, isAllowedEmailDomain } from "@/lib/tempEmailValidator";
 import { OTPVerification } from "@/components/auth/OTPVerification";
+import { Helmet } from "react-helmet-async";
 
 const loginSchema = z.object({
   email: z.string().trim().email({ message: "Invalid email address" }),
@@ -222,6 +223,15 @@ export default function Auth() {
 
   return (
     <div className="min-h-screen flex relative">
+      <Helmet>
+        <title>Sign in or Sign up — Infolio</title>
+        <meta name="description" content="Log in to your Infolio account or create a new one to start building your portfolio." />
+        <link rel="canonical" href="https://infolio.online/auth" />
+        <meta property="og:title" content="Sign in or Sign up — Infolio" />
+        <meta property="og:description" content="Log in to Infolio or create a new account to start building your portfolio." />
+        <meta property="og:url" content="https://infolio.online/auth" />
+        <meta name="robots" content="noindex,follow" />
+      </Helmet>
       {/* Back to home */}
       <button
         onClick={() => navigate("/")}

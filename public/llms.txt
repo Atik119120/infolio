@@ -1,0 +1,15 @@
+# Infolio
+
+> Infolio is a no-code portfolio builder. Pick a theme, add your work, and publish a professional personal site in minutes — on a free subdomain or your own custom domain.
+
+Infolio is built for freelancers, designers, photographers, video editors, digital marketers, and other professionals who need a polished portfolio without writing code. The Basic plan is free forever; premium themes are an optional one-time purchase.
+
+## Pages
+
+- [Home](/): Product overview, features, pricing, and FAQ.
+- [Themes](/themes): Gallery of free and premium portfolio themes by category.
+- [Sign in / Sign up](/auth): Create an account or log in to start building.
+
+## Optional
+
+- [Reset password](/reset-password): Recover access to your account.

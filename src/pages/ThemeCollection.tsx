@@ -73,8 +73,26 @@ export default function ThemeCollection() {
   const premiumGroups = groupedThemes.filter(g => g.category !== 'free');
   const totalThemes = THEME_OPTIONS.length;
 
+  const collectionJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: "Infolio Theme Gallery",
+    description: "Browse free and premium portfolio themes by category — for designers, photographers, developers, marketers, and more.",
+    url: "https://infolio.online/themes",
+    isPartOf: { "@type": "WebSite", name: "Infolio", url: "https://infolio.online/" },
+  };
+
   return (
     <div className="min-h-screen bg-background">
+      <Helmet>
+        <title>Portfolio Themes — Infolio</title>
+        <meta name="description" content="Browse Infolio's gallery of free and premium portfolio themes designed for every profession." />
+        <link rel="canonical" href="https://infolio.online/themes" />
+        <meta property="og:title" content="Portfolio Themes — Infolio" />
+        <meta property="og:description" content="Browse free and premium portfolio themes by category — built for designers, photographers, developers and more." />
+        <meta property="og:url" content="https://infolio.online/themes" />
+        <script type="application/ld+json">{JSON.stringify(collectionJsonLd)}</script>
+      </Helmet>
       <SiteHeader />
 
       {/* Hero */}

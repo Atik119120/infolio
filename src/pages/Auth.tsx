@@ -13,6 +13,7 @@ import { z } from "zod";
 import alphaLogo from "@/assets/alpha-portfolio-logo.png";
 import { isDisposableEmail, isAllowedEmailDomain } from "@/lib/tempEmailValidator";
 import { OTPVerification } from "@/components/auth/OTPVerification";
+import { Helmet } from "react-helmet-async";
 
 const loginSchema = z.object({
   email: z.string().trim().email({ message: "Invalid email address" }),

@@ -3,4 +3,5 @@
   <url><loc>https://infolio.online/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>
   <url><loc>https://infolio.online/themes</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
   <url><loc>https://infolio.online/auth</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://infolio.online/reset-password</loc><changefreq>yearly</changefreq><priority>0.2</priority></url>
 </urlset>

@@ -10,10 +10,6 @@ import { Github, Rocket, ExternalLink, Loader2, CheckCircle2, XCircle } from "lu
 import { Helmet } from "react-helmet-async";
 
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL as string;
-const GITHUB_CLIENT_ID = "Ov23liINFOLIO_PLACEHOLDER"; // not used in code, kept inline
-// We use edge-function-derived client IDs by reading from a public endpoint?
-// Simpler: hardcode via env at build time isn't available — fetch via a tiny helper isn't worth it.
-// Instead: embed the GITHUB_OAUTH_CLIENT_ID and VERCEL_CLIENT_ID through a public site_settings row.
 
 interface Integration {
   provider: "github" | "vercel";

@@ -125,6 +125,45 @@ export type Database = {
         }
         Relationships: []
       }
+      deployments: {
+        Row: {
+          created_at: string
+          deploy_url: string | null
+          error: string | null
+          id: string
+          repo_full_name: string | null
+          status: string
+          updated_at: string
+          user_id: string
+          vercel_deployment_id: string | null
+          vercel_project_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          deploy_url?: string | null
+          error?: string | null
+          id?: string
+          repo_full_name?: string | null
+          status?: string
+          updated_at?: string
+          user_id: string
+          vercel_deployment_id?: string | null
+          vercel_project_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          deploy_url?: string | null
+          error?: string | null
+          id?: string
+          repo_full_name?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string
+          vercel_deployment_id?: string | null
+          vercel_project_id?: string | null
+        }
+        Relationships: []
+      }
       domains: {
         Row: {
           created_at: string
@@ -666,6 +705,39 @@ export type Database = {
           status?: string
           theme_id?: string
           transaction_id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_integrations: {
+        Row: {
+          access_token: string
+          account_login: string | null
+          created_at: string
+          id: string
+          metadata: Json
+          provider: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          access_token: string
+          account_login?: string | null
+          created_at?: string
+          id?: string
+          metadata?: Json
+          provider: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          access_token?: string
+          account_login?: string | null
+          created_at?: string
+          id?: string
+          metadata?: Json
+          provider?: string
           updated_at?: string
           user_id?: string
         }

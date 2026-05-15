@@ -37,17 +37,9 @@ export default function DashboardDeploy() {
   useEffect(() => {
     if (!user) return;
     load();
-    // Read public OAuth client IDs from site_settings
-    supabase.from("site_settings").select("key,value")
-      .in("key", ["github_oauth_client_id", "vercel_client_id"])
-      .then(({ data }) => {
-        const map: any = {};
-        data?.forEach((r: any) => {
-          if (r.key === "github_oauth_client_id") map.github = r.value?.id || r.value;
-          if (r.key === "vercel_client_id") map.vercel = r.value?.id || r.value;
-        });
-        setOauthIds(map);
-      });
+    supabase.functions.invoke("deploy-config").then(({ data }) => {
+      if (data) setOauthIds({ github: (data as any).github_client_id, vercel: (data as any).vercel_client_id });
+    });
   }, [user]);
 
   useEffect(() => {

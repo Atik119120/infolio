@@ -29,6 +29,7 @@ import {
   Zap,
   ShoppingBag,
   Globe2,
+  Rocket,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import alphaLogo from "@/assets/alpha-portfolio-logo.png";

@@ -26,3 +26,9 @@ verify_jwt = false
 
 [functions.telegram-webhook-setup]
 verify_jwt = false
+
+[functions.github-oauth-callback]
+verify_jwt = false
+
+[functions.vercel-oauth-callback]
+verify_jwt = false

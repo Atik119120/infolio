@@ -15,6 +15,7 @@ import PortfolioEdit from "./pages/PortfolioEdit";
 import DashboardSettings from "./pages/DashboardSettings";
 import DashboardPurchases from "./pages/DashboardPurchases";
 import DashboardDomainStatus from "./pages/DashboardDomainStatus";
+import DashboardDeploy from "./pages/DashboardDeploy";
 import PublicPortfolio from "./pages/PublicPortfolio";
 import ThemeDemo from "./pages/ThemeDemo";
 import ThemeCollection from "./pages/ThemeCollection";
@@ -60,6 +61,7 @@ const App = () => (
                 <Route path="purchases" element={<DashboardPurchases />} />
                 <Route path="settings" element={<DashboardSettings />} />
                 <Route path="domain-status" element={<DashboardDomainStatus />} />
+                <Route path="deploy" element={<DashboardDeploy />} />
               </Route>
               <Route path="/admin" element={
                 <AdminRoute>

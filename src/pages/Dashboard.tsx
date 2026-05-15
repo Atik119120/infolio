@@ -77,6 +77,7 @@ export default function Dashboard() {
     { icon: User, label: "Profile", path: "/dashboard/edit", hash: "basic" },
     { icon: FileEdit, label: "Edit Portfolio", path: "/dashboard/edit" },
     { icon: Globe2, label: "Domain Status", path: "/dashboard/domain-status" },
+    { icon: Rocket, label: "Deploy", path: "/dashboard/deploy" },
     { icon: Settings, label: "Settings", path: "/dashboard/settings" },
   ];
 

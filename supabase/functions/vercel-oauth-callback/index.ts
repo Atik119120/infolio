@@ -13,7 +13,8 @@ Deno.serve(async (req) => {
 
   const url = new URL(req.url);
   const code = url.searchParams.get("code");
-  const state = url.searchParams.get("state"); // user_id
+  // Vercel may pass `state` or `s` depending on install URL
+  const state = url.searchParams.get("state") || url.searchParams.get("s");
 
   if (!code || !state) {
     return Response.redirect(`${APP_URL}/dashboard/deploy?error=missing_code`, 302);

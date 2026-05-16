@@ -72,8 +72,9 @@ export default function DashboardDeploy() {
 
   const connectVercel = () => {
     if (!oauthIds.vercel) return toast.error("Vercel OAuth not configured by admin");
-    const redirect = `${SUPABASE_URL}/functions/v1/vercel-oauth-callback`;
-    const url = `https://vercel.com/integrations/${oauthIds.vercel}/new?state=${user!.id}&redirect_uri=${encodeURIComponent(redirect)}`;
+    // Vercel integration install URL — slug is configured in the integration settings.
+    // The redirect URL is set on Vercel's integration page, NOT passed as a query param.
+    const url = `https://vercel.com/integrations/${oauthIds.vercel}/new?s=${user!.id}`;
     window.location.href = url;
   };
 

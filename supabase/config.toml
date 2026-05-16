@@ -30,8 +30,5 @@ verify_jwt = false
 [functions.github-oauth-callback]
 verify_jwt = false
 
-[functions.vercel-oauth-callback]
-verify_jwt = false
-
 [functions.deploy-config]
 verify_jwt = false

@@ -131,8 +131,11 @@ export type Database = {
           deploy_url: string | null
           error: string | null
           id: string
+          logs: Json
           repo_full_name: string | null
+          source: string
           status: string
+          subdomain: string | null
           updated_at: string
           user_id: string
           vercel_deployment_id: string | null
@@ -143,8 +146,11 @@ export type Database = {
           deploy_url?: string | null
           error?: string | null
           id?: string
+          logs?: Json
           repo_full_name?: string | null
+          source?: string
           status?: string
+          subdomain?: string | null
           updated_at?: string
           user_id: string
           vercel_deployment_id?: string | null
@@ -155,8 +161,11 @@ export type Database = {
           deploy_url?: string | null
           error?: string | null
           id?: string
+          logs?: Json
           repo_full_name?: string | null
+          source?: string
           status?: string
+          subdomain?: string | null
           updated_at?: string
           user_id?: string
           vercel_deployment_id?: string | null

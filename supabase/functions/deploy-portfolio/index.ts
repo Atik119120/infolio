@@ -5,6 +5,21 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
+const ROOT_DOMAIN = Deno.env.get("DEPLOY_ROOT_DOMAIN") ?? "infolio.site";
+const VERCEL_TOKEN = Deno.env.get("VERCEL_API_TOKEN")!;
+const VERCEL_TEAM = Deno.env.get("VERCEL_TEAM_ID") ?? "";
+const teamQ = VERCEL_TEAM ? `?teamId=${VERCEL_TEAM}` : "";
+const teamQAmp = VERCEL_TEAM ? `&teamId=${VERCEL_TEAM}` : "";
+
+const vcHeaders = {
+  Authorization: `Bearer ${VERCEL_TOKEN}`,
+  "Content-Type": "application/json",
+};
+
+function sanitizeSubdomain(s: string) {
+  return s.toLowerCase().replace(/[^a-z0-9-]/g, "-").replace(/^-+|-+$/g, "").slice(0, 40);
+}
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
 
@@ -34,104 +49,89 @@ Deno.serve(async (req) => {
   );
 
   try {
-    const { data: integrations } = await admin
-      .from("user_integrations")
-      .select("*")
-      .eq("user_id", userId);
+    if (!VERCEL_TOKEN) throw new Error("Platform Vercel token missing");
 
-    const gh = integrations?.find((i) => i.provider === "github");
-    const vc = integrations?.find((i) => i.provider === "vercel");
-    if (!gh || !vc) throw new Error("Connect GitHub and Vercel first");
+    const body = await req.json().catch(() => ({}));
+    const source: "template" | "import" = body.source ?? "template";
+    const requestedSub = sanitizeSubdomain(body.subdomain || "");
+    let importRepo: string | undefined = body.repo_full_name;
+
+    const { data: integ } = await admin
+      .from("user_integrations").select("*")
+      .eq("user_id", userId).eq("provider", "github").maybeSingle();
+    if (!integ) throw new Error("Connect GitHub first");
 
     const { data: profile } = await admin
       .from("profiles").select("username").eq("user_id", userId).single();
     if (!profile) throw new Error("Profile not found");
 
-    const templateRepo = Deno.env.get("DEPLOY_TEMPLATE_REPO"); // "owner/repo"
-    if (!templateRepo) throw new Error("DEPLOY_TEMPLATE_REPO not set");
-    const [tplOwner, tplName] = templateRepo.split("/");
+    const subdomain = requestedSub || sanitizeSubdomain(profile.username);
+    if (!subdomain) throw new Error("Invalid subdomain");
 
-    const repoName = `infolio-${profile.username}`;
+    // Uniqueness check
+    const { data: clash } = await admin
+      .from("deployments").select("user_id").eq("subdomain", subdomain).maybeSingle();
+    if (clash && clash.user_id !== userId) throw new Error(`Subdomain ${subdomain} is taken`);
 
-    // 1. Create repo from template on user's GitHub
     const ghHeaders = {
-      Authorization: `Bearer ${gh.access_token}`,
+      Authorization: `Bearer ${integ.access_token}`,
       Accept: "application/vnd.github+json",
       "User-Agent": "Infolio-Deploy",
     };
 
-    let repoFullName = `${gh.account_login}/${repoName}`;
-    const checkRepo = await fetch(`https://api.github.com/repos/${repoFullName}`, { headers: ghHeaders });
-    if (checkRepo.status === 404) {
-      const createRepo = await fetch(
-        `https://api.github.com/repos/${tplOwner}/${tplName}/generate`,
-        {
-          method: "POST",
-          headers: { ...ghHeaders, "Content-Type": "application/json" },
-          body: JSON.stringify({ name: repoName, private: false, include_all_branches: false }),
-        }
-      );
-      if (!createRepo.ok) {
-        const err = await createRepo.text();
-        throw new Error(`GitHub repo create failed: ${err}`);
-      }
-      const repoJson = await createRepo.json();
-      repoFullName = repoJson.full_name;
-    }
+    let repoFullName = importRepo;
 
-    // 2. Commit/update .env.production with portfolio username
-    const envContent = `VITE_SUPABASE_URL=${Deno.env.get("SUPABASE_URL")}
+    if (source === "template") {
+      const tpl = Deno.env.get("DEPLOY_TEMPLATE_REPO");
+      if (!tpl) throw new Error("Template repo not configured");
+      const [tplOwner, tplName] = tpl.split("/");
+      const repoName = `infolio-${subdomain}`;
+      repoFullName = `${integ.account_login}/${repoName}`;
+
+      const check = await fetch(`https://api.github.com/repos/${repoFullName}`, { headers: ghHeaders });
+      if (check.status === 404) {
+        const create = await fetch(
+          `https://api.github.com/repos/${tplOwner}/${tplName}/generate`,
+          {
+            method: "POST",
+            headers: { ...ghHeaders, "Content-Type": "application/json" },
+            body: JSON.stringify({ name: repoName, private: false }),
+          }
+        );
+        if (!create.ok) throw new Error(`GitHub repo create failed: ${await create.text()}`);
+        await new Promise((r) => setTimeout(r, 2500));
+      }
+
+      // env file
+      const envContent = `VITE_SUPABASE_URL=${Deno.env.get("SUPABASE_URL")}
 VITE_SUPABASE_PUBLISHABLE_KEY=${Deno.env.get("SUPABASE_ANON_KEY")}
 VITE_PORTFOLIO_USERNAME=${profile.username}
 `;
-    const encodedEnv = btoa(envContent);
-
-    // get existing file SHA if exists
-    let existingSha: string | undefined;
-    const existing = await fetch(
-      `https://api.github.com/repos/${repoFullName}/contents/.env.production`,
-      { headers: ghHeaders }
-    );
-    if (existing.ok) {
-      const j = await existing.json();
-      existingSha = j.sha;
-    }
-
-    // GitHub template generation is async — wait briefly
-    await new Promise((r) => setTimeout(r, 2000));
-
-    const putRes = await fetch(
-      `https://api.github.com/repos/${repoFullName}/contents/.env.production`,
-      {
+      let sha: string | undefined;
+      const ex = await fetch(`https://api.github.com/repos/${repoFullName}/contents/.env.production`, { headers: ghHeaders });
+      if (ex.ok) sha = (await ex.json()).sha;
+      await fetch(`https://api.github.com/repos/${repoFullName}/contents/.env.production`, {
         method: "PUT",
         headers: { ...ghHeaders, "Content-Type": "application/json" },
-        body: JSON.stringify({
-          message: "chore: configure portfolio env",
-          content: encodedEnv,
-          sha: existingSha,
-        }),
-      }
-    );
-    if (!putRes.ok) {
-      console.warn("env commit failed (non-fatal):", await putRes.text());
+        body: JSON.stringify({ message: "chore: env", content: btoa(envContent), sha }),
+      });
     }
 
-    // 3. Vercel project setup
-    const vcHeaders = {
-      Authorization: `Bearer ${vc.access_token}`,
-      "Content-Type": "application/json",
-    };
-    const teamQ = vc.metadata?.team_id ? `?teamId=${vc.metadata.team_id}` : "";
+    if (!repoFullName) throw new Error("Repository not selected");
 
-    let projectId = (vc.metadata as any)?.[`project_${profile.username}`];
-    if (!projectId) {
-      // Vercel needs a GitHub repo ID
-      const repoMeta = await fetch(`https://api.github.com/repos/${repoFullName}`, { headers: ghHeaders }).then(r => r.json());
-      const projRes = await fetch(`https://api.vercel.com/v9/projects${teamQ}`, {
+    // ----- Vercel project (platform-owned) -----
+    const projectSlug = `infolio-${subdomain}`.slice(0, 100);
+    let projectId: string | null = null;
+
+    const exProj = await fetch(`https://api.vercel.com/v9/projects/${projectSlug}${teamQ}`, { headers: vcHeaders });
+    if (exProj.ok) {
+      projectId = (await exProj.json()).id;
+    } else {
+      const createProj = await fetch(`https://api.vercel.com/v9/projects${teamQ}`, {
         method: "POST",
         headers: vcHeaders,
         body: JSON.stringify({
-          name: repoName.toLowerCase().replace(/[^a-z0-9-]/g, "-").slice(0, 100),
+          name: projectSlug,
           framework: "vite",
           gitRepository: { type: "github", repo: repoFullName },
           environmentVariables: [
@@ -141,50 +141,56 @@ VITE_PORTFOLIO_USERNAME=${profile.username}
           ],
         }),
       });
-      const projJson = await projRes.json();
-      if (!projRes.ok) throw new Error(`Vercel project create: ${JSON.stringify(projJson)}`);
-      projectId = projJson.id;
+      const pj = await createProj.json();
+      if (!createProj.ok) throw new Error(`Vercel project: ${JSON.stringify(pj)}`);
+      projectId = pj.id;
     }
 
-    // 4. Trigger deployment
+    // Attach subdomain alias (idempotent)
+    const fqdn = `${subdomain}.${ROOT_DOMAIN}`;
+    const addDomain = await fetch(`https://api.vercel.com/v10/projects/${projectId}/domains${teamQ}`, {
+      method: "POST",
+      headers: vcHeaders,
+      body: JSON.stringify({ name: fqdn }),
+    });
+    if (!addDomain.ok) {
+      const t = await addDomain.text();
+      if (!t.includes("domain_already_in_use") && !t.includes("already exists")) {
+        console.warn("alias attach:", t);
+      }
+    }
+
+    // Trigger deployment
+    const [org, repoOnly] = repoFullName.split("/");
     const depRes = await fetch(`https://api.vercel.com/v13/deployments${teamQ}`, {
       method: "POST",
       headers: vcHeaders,
       body: JSON.stringify({
-        name: repoName,
+        name: projectSlug,
         project: projectId,
         target: "production",
-        gitSource: {
-          type: "github",
-          repo: repoFullName.split("/")[1],
-          org: repoFullName.split("/")[0],
-          ref: "main",
-        },
+        gitSource: { type: "github", repo: repoOnly, org, ref: "main" },
       }),
     });
-    const depJson = await depRes.json();
-    if (!depRes.ok) throw new Error(`Vercel deploy: ${JSON.stringify(depJson)}`);
+    const dep = await depRes.json();
+    if (!depRes.ok) throw new Error(`Vercel deploy: ${JSON.stringify(dep)}`);
 
-    const deployUrl = depJson.url ? `https://${depJson.url}` : null;
+    const deployUrl = `https://${fqdn}`;
 
-    // Save deployment record
     await admin.from("deployments").insert({
       user_id: userId,
       vercel_project_id: projectId,
-      vercel_deployment_id: depJson.id,
+      vercel_deployment_id: dep.id,
       repo_full_name: repoFullName,
       deploy_url: deployUrl,
-      status: depJson.readyState || "QUEUED",
+      subdomain,
+      source,
+      status: dep.readyState || "QUEUED",
     });
 
-    // Save back project_id so we don't recreate
-    await admin.from("user_integrations").update({
-      metadata: { ...(vc.metadata as any), [`project_${profile.username}`]: projectId },
-      updated_at: new Date().toISOString(),
-    }).eq("user_id", userId).eq("provider", "vercel");
-
     return new Response(JSON.stringify({
-      success: true, deployUrl, repo: repoFullName, projectId, deploymentId: depJson.id,
+      success: true, deployUrl, subdomain, repo: repoFullName,
+      projectId, deploymentId: dep.id,
     }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (e) {
     console.error("deploy-portfolio", e);

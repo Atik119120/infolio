@@ -205,7 +205,6 @@ Deno.serve(async (req) => {
         body: JSON.stringify({
           name: projectSlug,
           framework: "vite",
-          gitRepository: { type: "github", repo: repoFullName },
           buildCommand: null,
           outputDirectory: null,
           installCommand: null,

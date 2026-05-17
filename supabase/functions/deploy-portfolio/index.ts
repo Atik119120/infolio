@@ -154,6 +154,7 @@ Deno.serve(async (req) => {
 
     await addLog("github", "running", source === "template" ? "Creating Infolio starter repository" : "Preparing selected GitHub repository");
     const ghHeaders = { Authorization: `Bearer ${integ.access_token}`, Accept: "application/vnd.github+json", "User-Agent": "Infolio-Deploy" };
+    let defaultBranch = "main";
 
     if (source === "template") {
       const tpl = Deno.env.get("DEPLOY_TEMPLATE_REPO");
@@ -188,6 +189,8 @@ Deno.serve(async (req) => {
     }
 
     if (!repoFullName || !repoFullName.includes("/")) throw new Error("Repository not selected");
+    const repoInfo = await githubFetch(`https://api.github.com/repos/${repoFullName}`, ghHeaders, "GitHub repository access");
+    defaultBranch = repoInfo.default_branch || "main";
     await addLog("github", "success", `Repository ready: ${repoFullName}`);
     await admin.from("deployments").update({ repo_full_name: repoFullName }).eq("id", deploymentRowId);
 
@@ -225,15 +228,16 @@ Deno.serve(async (req) => {
     }
     await addLog("domain", "success", `${fqdn} assigned`);
 
-    await addLog("deploy", "running", "Building and publishing production website");
-    const [org, repo] = repoFullName.split("/");
+    await addLog("deploy", "running", "Collecting source files and publishing production website");
+    const files = await collectGithubFiles(repoFullName, defaultBranch, ghHeaders);
     const deployment = await vercelFetch("/v13/deployments", {
       method: "POST",
       body: JSON.stringify({
         name: projectSlug,
         project: projectId,
         target: "production",
-        gitSource: { type: "github", org, repo, ref: "main" },
+        files,
+        projectSettings: { framework: "vite" },
         meta: { infolioUserId: userId, infolioSubdomain: subdomain },
       }),
     }, "Production deployment");

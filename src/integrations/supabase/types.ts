@@ -132,6 +132,7 @@ export type Database = {
           error: string | null
           id: string
           logs: Json
+          project_name: string | null
           repo_full_name: string | null
           source: string
           status: string
@@ -147,6 +148,7 @@ export type Database = {
           error?: string | null
           id?: string
           logs?: Json
+          project_name?: string | null
           repo_full_name?: string | null
           source?: string
           status?: string
@@ -162,6 +164,7 @@ export type Database = {
           error?: string | null
           id?: string
           logs?: Json
+          project_name?: string | null
           repo_full_name?: string | null
           source?: string
           status?: string

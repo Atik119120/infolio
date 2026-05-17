@@ -124,18 +124,36 @@ export default function DashboardDeploy() {
     if (!sub) return toast.error("Enter a subdomain");
     if (tab === "import" && !selectedRepo) return toast.error("Pick a repository");
 
+    setDeployError(null);
+    setDeployLogs([
+      { step: "github", status: "running", message: "Preparing GitHub repository", at: new Date().toISOString() },
+    ]);
     setDeploying(true);
     const { data, error } = await supabase.functions.invoke("deploy-portfolio", {
       body: { source: tab, subdomain: sub, repo_full_name: tab === "import" ? selectedRepo : undefined },
     });
     setDeploying(false);
     if (error || (data as any)?.error) {
-      toast.error((data as any)?.error || error!.message);
+      const message = (data as any)?.error || error!.message || "Deployment failed";
+      setDeployError(message);
+      setDeployLogs((data as any)?.logs || []);
+      toast.error(message);
       return;
     }
-    toast.success("Deploy started! Live URL will appear shortly.");
+    setDeployLogs((data as any)?.logs || []);
+    toast.success("Deployment started. Your live URL is being prepared.");
     load();
   };
+
+  const steps = [
+    { key: "github", label: "Cloning repository" },
+    { key: "project", label: "Preparing project" },
+    { key: "domain", label: "Assigning subdomain" },
+    { key: "deploy", label: "Building website" },
+    { key: "complete", label: "Live URL generated" },
+  ];
+
+  const getStepStatus = (key: string) => deployLogs?.filter((l) => l.step === key).at(-1)?.status;
 
   return (
     <div className="space-y-6">

@@ -5,30 +5,98 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-const ROOT_DOMAIN = Deno.env.get("DEPLOY_ROOT_DOMAIN") ?? "infolio.site";
-const VERCEL_TOKEN = Deno.env.get("VERCEL_API_TOKEN")!;
-const VERCEL_TEAM = Deno.env.get("VERCEL_TEAM_ID") ?? "";
-const teamQ = VERCEL_TEAM ? `?teamId=${VERCEL_TEAM}` : "";
-const teamQAmp = VERCEL_TEAM ? `&teamId=${VERCEL_TEAM}` : "";
+const ROOT_DOMAIN = Deno.env.get("DEPLOY_ROOT_DOMAIN") ?? "infolio.online";
+const VERCEL_TOKEN = Deno.env.get("VERCEL_API_TOKEN") ?? "";
+const RAW_VERCEL_TEAM = (Deno.env.get("VERCEL_TEAM_ID") ?? "").trim();
+const VERCEL_TEAM = RAW_VERCEL_TEAM.startsWith("team_") ? RAW_VERCEL_TEAM : "";
 
-const vcHeaders = {
-  Authorization: `Bearer ${VERCEL_TOKEN}`,
-  "Content-Type": "application/json",
-};
+type StepStatus = "pending" | "running" | "success" | "error";
+type DeployStep = "github" | "project" | "deploy" | "domain" | "complete";
+type LogEntry = { step: DeployStep; status: StepStatus; message: string; at: string; details?: unknown };
+type DeploymentFile = { file: string; data: string; encoding: "base64" };
+
+function json(body: unknown, status = 200) {
+  return new Response(JSON.stringify(body), {
+    status,
+    headers: { ...corsHeaders, "Content-Type": "application/json" },
+  });
+}
 
 function sanitizeSubdomain(s: string) {
   return s.toLowerCase().replace(/[^a-z0-9-]/g, "-").replace(/^-+|-+$/g, "").slice(0, 40);
+}
+
+function getVercelUrl(path: string) {
+  const cleanPath = path.startsWith("/") ? path : `/${path}`;
+  const url = new URL(`https://api.vercel.com${cleanPath}`);
+  if (VERCEL_TEAM) url.searchParams.set("teamId", VERCEL_TEAM);
+  return url.toString();
+}
+
+async function parseApiError(res: Response, label: string) {
+  const text = await res.text();
+  let parsed: any = null;
+  try { parsed = JSON.parse(text); } catch (_) { parsed = null; }
+  const message = parsed?.error?.message || parsed?.message || text || `${label} failed`;
+  const code = parsed?.error?.code || parsed?.code || res.status;
+  const err = new Error(`${label}: ${message}`) as Error & { details?: unknown; status?: number; code?: string };
+  err.details = parsed || text;
+  err.status = res.status;
+  err.code = String(code);
+  return err;
+}
+
+async function vercelFetch(path: string, init: RequestInit = {}, label = "Vercel request") {
+  const res = await fetch(getVercelUrl(path), {
+    ...init,
+    headers: {
+      Authorization: `Bearer ${VERCEL_TOKEN}`,
+      "Content-Type": "application/json",
+      ...(init.headers || {}),
+    },
+  });
+  if (!res.ok) throw await parseApiError(res, label);
+  return res.json();
+}
+
+async function githubFetch(url: string, headers: Record<string, string>, label: string) {
+  const res = await fetch(url, { headers });
+  if (!res.ok) throw await parseApiError(res, label);
+  return res.json();
+}
+
+function shouldSkipFile(path: string, size = 0) {
+  const blocked = ["node_modules/", ".git/", "dist/", "build/", ".next/", "coverage/", ".vercel/", "bun.lockb"];
+  return blocked.some((p) => path === p.replace("/", "") || path.includes(p)) || size > 1_000_000;
+}
+
+async function collectGithubFiles(repoFullName: string, branch: string, ghHeaders: Record<string, string>) {
+  const [owner, repo] = repoFullName.split("/");
+  const tree = await githubFetch(
+    `https://api.github.com/repos/${owner}/${repo}/git/trees/${encodeURIComponent(branch)}?recursive=1`,
+    ghHeaders,
+    "GitHub source files"
+  );
+  const blobs = (tree.tree || []).filter((item: any) => item.type === "blob" && !shouldSkipFile(item.path, item.size));
+  if (!blobs.length) throw new Error("No deployable source files found in this repository");
+  if (blobs.length > 500) throw new Error("Repository is too large for instant deployment. Please use a smaller Vite/React project.");
+
+  const files: DeploymentFile[] = [];
+  let totalSize = 0;
+  for (const item of blobs) {
+    totalSize += item.size || 0;
+    if (totalSize > 10_000_000) throw new Error("Repository source is too large for instant deployment. Please remove large files and try again.");
+    const blob = await githubFetch(item.url, ghHeaders, `GitHub file ${item.path}`);
+    files.push({ file: item.path, data: String(blob.content || "").replace(/\n/g, ""), encoding: "base64" });
+  }
+  return files;
 }
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
 
   const authHeader = req.headers.get("Authorization");
-  if (!authHeader?.startsWith("Bearer ")) {
-    return new Response(JSON.stringify({ error: "Unauthorized" }), {
-      status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
-  }
+  if (!authHeader?.startsWith("Bearer ")) return json({ error: "Unauthorized" }, 401);
 
   const supabase = createClient(
     Deno.env.get("SUPABASE_URL")!,
@@ -36,166 +104,162 @@ Deno.serve(async (req) => {
     { global: { headers: { Authorization: authHeader } } }
   );
   const { data: claims } = await supabase.auth.getClaims(authHeader.replace("Bearer ", ""));
-  if (!claims?.claims) {
-    return new Response(JSON.stringify({ error: "Unauthorized" }), {
-      status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
-  }
-  const userId = claims.claims.sub;
+  if (!claims?.claims) return json({ error: "Unauthorized" }, 401);
 
-  const admin = createClient(
-    Deno.env.get("SUPABASE_URL")!,
-    Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
-  );
+  const userId = claims.claims.sub;
+  const admin = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
+  const logs: LogEntry[] = [];
+  let deploymentRowId: string | null = null;
+
+  const addLog = async (step: DeployStep, status: StepStatus, message: string, details?: unknown) => {
+    logs.push({ step, status, message, at: new Date().toISOString(), details });
+    if (deploymentRowId) {
+      await admin.from("deployments").update(status === "error" ? { logs, status: "FAILED" } : { logs }).eq("id", deploymentRowId);
+    }
+  };
 
   try {
-    if (!VERCEL_TOKEN) throw new Error("Platform Vercel token missing");
+    if (!VERCEL_TOKEN) throw new Error("Platform deployment token is missing");
 
     const body = await req.json().catch(() => ({}));
-    const source: "template" | "import" = body.source ?? "template";
+    const source: "template" | "import" = body.source === "import" ? "import" : "template";
     const requestedSub = sanitizeSubdomain(body.subdomain || "");
-    let importRepo: string | undefined = body.repo_full_name;
+    let repoFullName: string | undefined = body.repo_full_name;
 
-    const { data: integ } = await admin
-      .from("user_integrations").select("*")
-      .eq("user_id", userId).eq("provider", "github").maybeSingle();
+    const { data: integ } = await admin.from("user_integrations").select("*").eq("user_id", userId).eq("provider", "github").maybeSingle();
     if (!integ) throw new Error("Connect GitHub first");
 
-    const { data: profile } = await admin
-      .from("profiles").select("username").eq("user_id", userId).single();
+    const { data: profile } = await admin.from("profiles").select("username").eq("user_id", userId).single();
     if (!profile) throw new Error("Profile not found");
 
     const subdomain = requestedSub || sanitizeSubdomain(profile.username);
-    if (!subdomain) throw new Error("Invalid subdomain");
+    if (!subdomain) throw new Error("Enter a valid subdomain");
+    if (["www", "app", "api", "admin", "mail", "infolio"].includes(subdomain)) throw new Error("This subdomain is reserved");
 
-    // Uniqueness check
-    const { data: clash } = await admin
-      .from("deployments").select("user_id").eq("subdomain", subdomain).maybeSingle();
-    if (clash && clash.user_id !== userId) throw new Error(`Subdomain ${subdomain} is taken`);
+    const { data: clash } = await admin.from("deployments").select("user_id").eq("subdomain", subdomain).maybeSingle();
+    if (clash && clash.user_id !== userId) throw new Error(`Subdomain ${subdomain}.${ROOT_DOMAIN} is already taken`);
 
-    const ghHeaders = {
-      Authorization: `Bearer ${integ.access_token}`,
-      Accept: "application/vnd.github+json",
-      "User-Agent": "Infolio-Deploy",
-    };
+    const projectSlug = `infolio-${subdomain}`.replace(/[^a-z0-9-]/g, "-").slice(0, 100);
+    const { data: inserted, error: insertError } = await admin.from("deployments").insert({
+      user_id: userId,
+      repo_full_name: repoFullName || null,
+      deploy_url: `https://${subdomain}.${ROOT_DOMAIN}`,
+      subdomain,
+      source,
+      project_name: projectSlug,
+      status: "QUEUED",
+      logs,
+    }).select("id").single();
+    if (insertError) throw new Error(insertError.message);
+    deploymentRowId = inserted.id;
 
-    let repoFullName = importRepo;
+    await addLog("github", "running", source === "template" ? "Creating Infolio starter repository" : "Preparing selected GitHub repository");
+    const ghHeaders = { Authorization: `Bearer ${integ.access_token}`, Accept: "application/vnd.github+json", "User-Agent": "Infolio-Deploy" };
+    let defaultBranch = "main";
 
     if (source === "template") {
       const tpl = Deno.env.get("DEPLOY_TEMPLATE_REPO");
-      if (!tpl) throw new Error("Template repo not configured");
+      if (!tpl) throw new Error("Infolio starter template is not configured");
       const [tplOwner, tplName] = tpl.split("/");
       const repoName = `infolio-${subdomain}`;
       repoFullName = `${integ.account_login}/${repoName}`;
 
       const check = await fetch(`https://api.github.com/repos/${repoFullName}`, { headers: ghHeaders });
       if (check.status === 404) {
-        const create = await fetch(
-          `https://api.github.com/repos/${tplOwner}/${tplName}/generate`,
-          {
-            method: "POST",
-            headers: { ...ghHeaders, "Content-Type": "application/json" },
-            body: JSON.stringify({ name: repoName, private: false }),
-          }
-        );
-        if (!create.ok) throw new Error(`GitHub repo create failed: ${await create.text()}`);
+        const create = await fetch(`https://api.github.com/repos/${tplOwner}/${tplName}/generate`, {
+          method: "POST",
+          headers: { ...ghHeaders, "Content-Type": "application/json" },
+          body: JSON.stringify({ name: repoName, private: false, include_all_branches: false }),
+        });
+        if (!create.ok) throw await parseApiError(create, "GitHub template import");
         await new Promise((r) => setTimeout(r, 2500));
+      } else if (!check.ok) {
+        throw await parseApiError(check, "GitHub repository check");
       }
 
-      // env file
-      const envContent = `VITE_SUPABASE_URL=${Deno.env.get("SUPABASE_URL")}
-VITE_SUPABASE_PUBLISHABLE_KEY=${Deno.env.get("SUPABASE_ANON_KEY")}
-VITE_PORTFOLIO_USERNAME=${profile.username}
-`;
+      const envContent = `VITE_SUPABASE_URL=${Deno.env.get("SUPABASE_URL")}\nVITE_SUPABASE_PUBLISHABLE_KEY=${Deno.env.get("SUPABASE_ANON_KEY")}\nVITE_PORTFOLIO_USERNAME=${profile.username}\n`;
       let sha: string | undefined;
       const ex = await fetch(`https://api.github.com/repos/${repoFullName}/contents/.env.production`, { headers: ghHeaders });
       if (ex.ok) sha = (await ex.json()).sha;
-      await fetch(`https://api.github.com/repos/${repoFullName}/contents/.env.production`, {
+      const putEnv = await fetch(`https://api.github.com/repos/${repoFullName}/contents/.env.production`, {
         method: "PUT",
         headers: { ...ghHeaders, "Content-Type": "application/json" },
-        body: JSON.stringify({ message: "chore: env", content: btoa(envContent), sha }),
+        body: JSON.stringify({ message: "chore: configure Infolio deployment", content: btoa(envContent), sha }),
       });
+      if (!putEnv.ok) throw await parseApiError(putEnv, "GitHub environment setup");
     }
 
-    if (!repoFullName) throw new Error("Repository not selected");
+    if (!repoFullName || !repoFullName.includes("/")) throw new Error("Repository not selected");
+    const repoInfo = await githubFetch(`https://api.github.com/repos/${repoFullName}`, ghHeaders, "GitHub repository access");
+    defaultBranch = repoInfo.default_branch || "main";
+    await addLog("github", "success", `Repository ready: ${repoFullName}`);
+    await admin.from("deployments").update({ repo_full_name: repoFullName }).eq("id", deploymentRowId);
 
-    // ----- Vercel project (platform-owned) -----
-    const projectSlug = `infolio-${subdomain}`.slice(0, 100);
-    let projectId: string | null = null;
-
-    const exProj = await fetch(`https://api.vercel.com/v9/projects/${projectSlug}${teamQ}`, { headers: vcHeaders });
-    if (exProj.ok) {
-      projectId = (await exProj.json()).id;
-    } else {
-      const createProj = await fetch(`https://api.vercel.com/v9/projects${teamQ}`, {
+    await addLog("project", "running", "Creating or updating Infolio deployment project");
+    let project: any;
+    try {
+      project = await vercelFetch(`/v9/projects/${projectSlug}`, {}, "Project lookup");
+    } catch (e: any) {
+      if (e.status !== 404) throw e;
+      project = await vercelFetch("/v9/projects", {
         method: "POST",
-        headers: vcHeaders,
         body: JSON.stringify({
           name: projectSlug,
           framework: "vite",
-          gitRepository: { type: "github", repo: repoFullName },
-          environmentVariables: [
-            { key: "VITE_SUPABASE_URL", value: Deno.env.get("SUPABASE_URL"), target: ["production","preview","development"], type: "plain" },
-            { key: "VITE_SUPABASE_PUBLISHABLE_KEY", value: Deno.env.get("SUPABASE_ANON_KEY"), target: ["production","preview","development"], type: "plain" },
-            { key: "VITE_PORTFOLIO_USERNAME", value: profile.username, target: ["production","preview","development"], type: "plain" },
-          ],
+          buildCommand: null,
+          outputDirectory: null,
+          installCommand: null,
         }),
-      });
-      const pj = await createProj.json();
-      if (!createProj.ok) throw new Error(`Vercel project: ${JSON.stringify(pj)}`);
-      projectId = pj.id;
+      }, "Project creation");
     }
 
-    // Attach subdomain alias (idempotent)
+    const projectId = project.id;
+    await admin.from("deployments").update({ vercel_project_id: projectId }).eq("id", deploymentRowId);
+    await addLog("project", "success", "Deployment project is ready");
+
     const fqdn = `${subdomain}.${ROOT_DOMAIN}`;
-    const addDomain = await fetch(`https://api.vercel.com/v10/projects/${projectId}/domains${teamQ}`, {
-      method: "POST",
-      headers: vcHeaders,
-      body: JSON.stringify({ name: fqdn }),
-    });
-    if (!addDomain.ok) {
-      const t = await addDomain.text();
-      if (!t.includes("domain_already_in_use") && !t.includes("already exists")) {
-        console.warn("alias attach:", t);
-      }
+    await addLog("domain", "running", `Assigning ${fqdn}`);
+    const domainPayload = { name: fqdn, gitBranch: defaultBranch };
+    try {
+      await vercelFetch(`/v10/projects/${projectId}/domains`, { method: "POST", body: JSON.stringify(domainPayload) }, "Domain assignment");
+    } catch (e: any) {
+      const msg = String(e.message || "");
+      if (!msg.includes("already") && !msg.includes("in use")) throw e;
     }
+    await addLog("domain", "success", `${fqdn} assigned`);
 
-    // Trigger deployment
-    const [org, repoOnly] = repoFullName.split("/");
-    const depRes = await fetch(`https://api.vercel.com/v13/deployments${teamQ}`, {
+    await addLog("deploy", "running", "Collecting source files and publishing production website");
+    const files = await collectGithubFiles(repoFullName, defaultBranch, ghHeaders);
+    const envContent = `VITE_SUPABASE_URL=${Deno.env.get("SUPABASE_URL")}\nVITE_SUPABASE_PUBLISHABLE_KEY=${Deno.env.get("SUPABASE_ANON_KEY")}\nVITE_PORTFOLIO_USERNAME=${profile.username}\n`;
+    const envFile = { file: ".env.production", data: btoa(envContent), encoding: "base64" as const };
+    const deployFiles = [envFile, ...files.filter((f) => f.file !== ".env.production")];
+    const deployment = await vercelFetch("/v13/deployments", {
       method: "POST",
-      headers: vcHeaders,
       body: JSON.stringify({
         name: projectSlug,
         project: projectId,
         target: "production",
-        gitSource: { type: "github", repo: repoOnly, org, ref: "main" },
+        files: deployFiles,
+        projectSettings: { framework: "vite" },
+        meta: { infolioUserId: userId, infolioSubdomain: subdomain },
       }),
-    });
-    const dep = await depRes.json();
-    if (!depRes.ok) throw new Error(`Vercel deploy: ${JSON.stringify(dep)}`);
+    }, "Production deployment");
 
-    const deployUrl = `https://${fqdn}`;
+    await admin.from("deployments").update({
+      vercel_deployment_id: deployment.id,
+      status: deployment.readyState || "BUILDING",
+      deploy_url: `https://${fqdn}`,
+      error: null,
+      logs,
+    }).eq("id", deploymentRowId);
+    await addLog("complete", "success", "Deployment started successfully. The live URL will be ready after the build finishes.");
 
-    await admin.from("deployments").insert({
-      user_id: userId,
-      vercel_project_id: projectId,
-      vercel_deployment_id: dep.id,
-      repo_full_name: repoFullName,
-      deploy_url: deployUrl,
-      subdomain,
-      source,
-      status: dep.readyState || "QUEUED",
-    });
-
-    return new Response(JSON.stringify({
-      success: true, deployUrl, subdomain, repo: repoFullName,
-      projectId, deploymentId: dep.id,
-    }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    return json({ success: true, deploymentId: deploymentRowId, deployUrl: `https://${fqdn}`, subdomain, repo: repoFullName, logs });
   } catch (e) {
-    console.error("deploy-portfolio", e);
-    return new Response(JSON.stringify({ error: e instanceof Error ? e.message : String(e) }), {
-      status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+    const message = e instanceof Error ? e.message : String(e);
+    await addLog("complete", "error", message, (e as any)?.details);
+    if (deploymentRowId) await admin.from("deployments").update({ status: "FAILED", error: message, logs }).eq("id", deploymentRowId);
+    console.error("deploy-portfolio", message, (e as any)?.details || "");
+    return json({ error: message, details: (e as any)?.details || null, logs }, 500);
   }
 });

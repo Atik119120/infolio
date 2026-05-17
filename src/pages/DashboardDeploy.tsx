@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { toast } from "sonner";
-import { Github, Rocket, ExternalLink, Loader2, CheckCircle2, XCircle, Globe, Sparkles, FolderGit2 } from "lucide-react";
+import { Github, Rocket, ExternalLink, Loader2, CheckCircle2, XCircle, Globe, Sparkles, FolderGit2, AlertCircle } from "lucide-react";
 import { Helmet } from "react-helmet-async";
 
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL as string;
@@ -26,6 +26,9 @@ interface Repo {
 interface Deployment {
   id: string;
   deploy_url: string | null;
+  error?: string | null;
+  logs?: Array<{ step: string; status: string; message: string; at: string }> | null;
+  project_name?: string | null;
   subdomain: string | null;
   repo_full_name: string | null;
   status: string;
@@ -40,8 +43,10 @@ export default function DashboardDeploy() {
   const [deployments, setDeployments] = useState<Deployment[]>([]);
   const [loading, setLoading] = useState(true);
   const [deploying, setDeploying] = useState(false);
+  const [deployLogs, setDeployLogs] = useState<Deployment["logs"]>([]);
+  const [deployError, setDeployError] = useState<string | null>(null);
   const [githubClientId, setGithubClientId] = useState<string | null>(null);
-  const [rootDomain, setRootDomain] = useState("infolio.site");
+  const [rootDomain, setRootDomain] = useState("infolio.online");
 
   const [tab, setTab] = useState<"template" | "import">("template");
   const [subdomain, setSubdomain] = useState("");
@@ -55,7 +60,7 @@ export default function DashboardDeploy() {
     supabase.functions.invoke("deploy-config").then(({ data }) => {
       if (data) {
         setGithubClientId((data as any).github_client_id);
-        setRootDomain((data as any).root_domain || "infolio.site");
+        setRootDomain((data as any).root_domain || "infolio.online");
       }
     });
   }, [user]);
@@ -119,17 +124,38 @@ export default function DashboardDeploy() {
     if (!sub) return toast.error("Enter a subdomain");
     if (tab === "import" && !selectedRepo) return toast.error("Pick a repository");
 
+    setDeployError(null);
+    setDeployLogs([
+      { step: "github", status: "running", message: "Preparing GitHub repository", at: new Date().toISOString() },
+    ]);
     setDeploying(true);
     const { data, error } = await supabase.functions.invoke("deploy-portfolio", {
       body: { source: tab, subdomain: sub, repo_full_name: tab === "import" ? selectedRepo : undefined },
     });
     setDeploying(false);
     if (error || (data as any)?.error) {
-      toast.error((data as any)?.error || error!.message);
+      const message = (data as any)?.error || error!.message || "Deployment failed";
+      setDeployError(message);
+      setDeployLogs((data as any)?.logs || []);
+      toast.error(message);
       return;
     }
-    toast.success("Deploy started! Live URL will appear shortly.");
+    setDeployLogs((data as any)?.logs || []);
+    toast.success("Deployment started. Your live URL is being prepared.");
     load();
+  };
+
+  const steps = [
+    { key: "github", label: "Cloning repository" },
+    { key: "project", label: "Preparing project" },
+    { key: "domain", label: "Assigning subdomain" },
+    { key: "deploy", label: "Building website" },
+    { key: "complete", label: "Live URL generated" },
+  ];
+
+  const getStepStatus = (key: string) => {
+    const matches = deployLogs?.filter((l) => l.step === key) || [];
+    return matches.length ? matches[matches.length - 1].status : undefined;
   };
 
   return (
@@ -148,7 +174,7 @@ export default function DashboardDeploy() {
       </div>
 
       {/* GitHub */}
-      <Card className="border-violet-500/20">
+      <Card className="border-primary/20">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Github className="w-5 h-5" /> GitHub Account
@@ -163,7 +189,7 @@ export default function DashboardDeploy() {
         <CardContent>
           {githubLogin
             ? <Button variant="outline" onClick={disconnectGithub}>Disconnect</Button>
-            : <Button onClick={connectGithub} className="bg-slate-900 text-white hover:bg-slate-800">
+            : <Button onClick={connectGithub}>
                 <Github className="w-4 h-4 mr-2" />Connect GitHub
               </Button>}
         </CardContent>
@@ -172,7 +198,7 @@ export default function DashboardDeploy() {
       {/* Project source + subdomain */}
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2"><Sparkles className="w-5 h-5 text-violet-500" /> New deployment</CardTitle>
+          <CardTitle className="flex items-center gap-2"><Sparkles className="w-5 h-5 text-primary" /> New deployment</CardTitle>
           <CardDescription>Pick a starting point and your URL.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-5">
@@ -221,13 +247,13 @@ export default function DashboardDeploy() {
                         <button
                           key={r.id}
                           onClick={() => setSelectedRepo(r.full_name)}
-                          className={`w-full text-left p-3 hover:bg-muted/50 flex items-center justify-between gap-2 ${selectedRepo === r.full_name ? "bg-violet-500/10" : ""}`}
+                          className={`w-full text-left p-3 hover:bg-muted/50 flex items-center justify-between gap-2 ${selectedRepo === r.full_name ? "bg-primary/10" : ""}`}
                         >
                           <div className="min-w-0">
                             <p className="text-sm font-medium truncate">{r.full_name}</p>
                             <p className="text-xs text-muted-foreground">{r.private ? "Private" : "Public"} · updated {new Date(r.updated_at).toLocaleDateString()}</p>
                           </div>
-                          {selectedRepo === r.full_name && <CheckCircle2 className="w-4 h-4 text-violet-500 flex-shrink-0" />}
+                          {selectedRepo === r.full_name && <CheckCircle2 className="w-4 h-4 text-primary flex-shrink-0" />}
                         </button>
                       ))}
                     </div>
@@ -240,10 +266,43 @@ export default function DashboardDeploy() {
             size="lg"
             disabled={!githubLogin || deploying || !subdomain}
             onClick={deploy}
-            className="bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white w-full sm:w-auto"
+            className="gradient-primary w-full sm:w-auto"
           >
             {deploying ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Publishing…</> : <><Rocket className="w-4 h-4 mr-2" />Publish Website</>}
           </Button>
+
+          {(deployLogs?.length || deployError) && (
+            <div className="rounded-lg border bg-muted/30 p-4 space-y-3">
+              {deployError && (
+                <div className="flex items-start gap-2 text-sm text-destructive">
+                  <AlertCircle className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                  <span>{deployError}</span>
+                </div>
+              )}
+              <div className="grid gap-2 sm:grid-cols-5">
+                {steps.map((s) => {
+                  const status = getStepStatus(s.key);
+                  const isRunning = status === "running" || (!status && deploying && s.key === "github");
+                  const isSuccess = status === "success";
+                  const isError = status === "error";
+                  return (
+                    <div key={s.key} className="rounded-md border bg-card p-3 text-xs">
+                      <div className="flex items-center gap-2">
+                        {isRunning ? <Loader2 className="w-3.5 h-3.5 animate-spin text-primary" />
+                          : isSuccess ? <CheckCircle2 className="w-3.5 h-3.5 text-success" />
+                          : isError ? <XCircle className="w-3.5 h-3.5 text-destructive" />
+                          : <span className="w-3.5 h-3.5 rounded-full border border-muted-foreground/30" />}
+                        <span className="font-medium leading-tight">{s.label}</span>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+              <div className="max-h-36 overflow-y-auto rounded-md bg-background/70 p-2 text-xs text-muted-foreground space-y-1">
+                {deployLogs?.map((log, i) => <p key={`${log.step}-${i}`}>{log.message}</p>)}
+              </div>
+            </div>
+          )}
         </CardContent>
       </Card>
 
@@ -262,6 +321,7 @@ export default function DashboardDeploy() {
                       <p className="text-xs text-muted-foreground truncate">
                         {new Date(d.created_at).toLocaleString()} · {d.status} · {d.source || "template"}
                       </p>
+                      {d.error && <p className="text-xs text-destructive truncate mt-1">{d.error}</p>}
                     </div>
                     {d.deploy_url && (
                       <Button size="sm" variant="outline" asChild>

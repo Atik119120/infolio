@@ -102,6 +102,9 @@ export default function PortfolioEdit() {
   const { user } = useAuth();
   const { toast } = useToast();
 
+  const activeTheme = portfolio?.theme || "freelancer";
+  const themeConfig = getThemeConfig(activeTheme);
+
   useEffect(() => {
     if (user) {
       fetchAllData();
@@ -151,6 +154,13 @@ export default function PortfolioEdit() {
     toast({ variant: "destructive", title: "Error", description: message });
   };
 
+  // If active tab not enabled by current theme, jump back to theme tab.
+  useEffect(() => {
+    if (!loading && !themeConfig.tabs.includes(activeTab)) {
+      setActiveTab("theme");
+    }
+  }, [loading, activeTheme, activeTab, themeConfig.tabs]);
+
   if (loading) {
     return (
       <div className="space-y-4 animate-pulse">
@@ -175,16 +185,7 @@ export default function PortfolioEdit() {
     { value: "seo", label: "SEO", icon: Search },
   ];
 
-  const activeTheme = portfolio?.theme || "freelancer";
-  const themeConfig = getThemeConfig(activeTheme);
   const tabs = allTabs.filter((t) => themeConfig.tabs.includes(t.value));
-
-  // If active tab not enabled by current theme, jump back to theme tab (effect, not render).
-  useEffect(() => {
-    if (!themeConfig.tabs.includes(activeTab)) {
-      setActiveTab("theme");
-    }
-  }, [activeTheme, activeTab, themeConfig.tabs]);
 
   return (
     <div className="space-y-4 animate-fade-in">

@@ -171,7 +171,7 @@ export default function DashboardDeploy() {
       </div>
 
       {/* GitHub */}
-      <Card className="border-violet-500/20">
+      <Card className="border-primary/20">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Github className="w-5 h-5" /> GitHub Account
@@ -186,7 +186,7 @@ export default function DashboardDeploy() {
         <CardContent>
           {githubLogin
             ? <Button variant="outline" onClick={disconnectGithub}>Disconnect</Button>
-            : <Button onClick={connectGithub} className="bg-slate-900 text-white hover:bg-slate-800">
+            : <Button onClick={connectGithub}>
                 <Github className="w-4 h-4 mr-2" />Connect GitHub
               </Button>}
         </CardContent>
@@ -195,7 +195,7 @@ export default function DashboardDeploy() {
       {/* Project source + subdomain */}
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2"><Sparkles className="w-5 h-5 text-violet-500" /> New deployment</CardTitle>
+          <CardTitle className="flex items-center gap-2"><Sparkles className="w-5 h-5 text-primary" /> New deployment</CardTitle>
           <CardDescription>Pick a starting point and your URL.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-5">
@@ -244,13 +244,13 @@ export default function DashboardDeploy() {
                         <button
                           key={r.id}
                           onClick={() => setSelectedRepo(r.full_name)}
-                          className={`w-full text-left p-3 hover:bg-muted/50 flex items-center justify-between gap-2 ${selectedRepo === r.full_name ? "bg-violet-500/10" : ""}`}
+                          className={`w-full text-left p-3 hover:bg-muted/50 flex items-center justify-between gap-2 ${selectedRepo === r.full_name ? "bg-primary/10" : ""}`}
                         >
                           <div className="min-w-0">
                             <p className="text-sm font-medium truncate">{r.full_name}</p>
                             <p className="text-xs text-muted-foreground">{r.private ? "Private" : "Public"} · updated {new Date(r.updated_at).toLocaleDateString()}</p>
                           </div>
-                          {selectedRepo === r.full_name && <CheckCircle2 className="w-4 h-4 text-violet-500 flex-shrink-0" />}
+                          {selectedRepo === r.full_name && <CheckCircle2 className="w-4 h-4 text-primary flex-shrink-0" />}
                         </button>
                       ))}
                     </div>
@@ -263,10 +263,43 @@ export default function DashboardDeploy() {
             size="lg"
             disabled={!githubLogin || deploying || !subdomain}
             onClick={deploy}
-            className="bg-gradient-to-r from-violet-600 to-fuchsia-600 text-white w-full sm:w-auto"
+            className="gradient-primary w-full sm:w-auto"
           >
             {deploying ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Publishing…</> : <><Rocket className="w-4 h-4 mr-2" />Publish Website</>}
           </Button>
+
+          {(deployLogs?.length || deployError) && (
+            <div className="rounded-lg border bg-muted/30 p-4 space-y-3">
+              {deployError && (
+                <div className="flex items-start gap-2 text-sm text-destructive">
+                  <AlertCircle className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                  <span>{deployError}</span>
+                </div>
+              )}
+              <div className="grid gap-2 sm:grid-cols-5">
+                {steps.map((s) => {
+                  const status = getStepStatus(s.key);
+                  const isRunning = status === "running" || (!status && deploying && s.key === "github");
+                  const isSuccess = status === "success";
+                  const isError = status === "error";
+                  return (
+                    <div key={s.key} className="rounded-md border bg-card p-3 text-xs">
+                      <div className="flex items-center gap-2">
+                        {isRunning ? <Loader2 className="w-3.5 h-3.5 animate-spin text-primary" />
+                          : isSuccess ? <CheckCircle2 className="w-3.5 h-3.5 text-success" />
+                          : isError ? <XCircle className="w-3.5 h-3.5 text-destructive" />
+                          : <span className="w-3.5 h-3.5 rounded-full border border-muted-foreground/30" />}
+                        <span className="font-medium leading-tight">{s.label}</span>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+              <div className="max-h-36 overflow-y-auto rounded-md bg-background/70 p-2 text-xs text-muted-foreground space-y-1">
+                {deployLogs?.map((log, i) => <p key={`${log.step}-${i}`}>{log.message}</p>)}
+              </div>
+            </div>
+          )}
         </CardContent>
       </Card>
 

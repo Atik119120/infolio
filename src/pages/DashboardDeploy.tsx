@@ -153,7 +153,10 @@ export default function DashboardDeploy() {
     { key: "complete", label: "Live URL generated" },
   ];
 
-  const getStepStatus = (key: string) => deployLogs?.filter((l) => l.step === key).at(-1)?.status;
+  const getStepStatus = (key: string) => {
+    const matches = deployLogs?.filter((l) => l.step === key) || [];
+    return matches.length ? matches[matches.length - 1].status : undefined;
+  };
 
   return (
     <div className="space-y-6">

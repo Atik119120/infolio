@@ -219,7 +219,7 @@ Deno.serve(async (req) => {
 
     const fqdn = `${subdomain}.${ROOT_DOMAIN}`;
     await addLog("domain", "running", `Assigning ${fqdn}`);
-    const domainPayload = { name: fqdn, gitBranch: "main" };
+    const domainPayload = { name: fqdn, gitBranch: defaultBranch };
     try {
       await vercelFetch(`/v10/projects/${projectId}/domains`, { method: "POST", body: JSON.stringify(domainPayload) }, "Domain assignment");
     } catch (e: any) {
@@ -230,13 +230,16 @@ Deno.serve(async (req) => {
 
     await addLog("deploy", "running", "Collecting source files and publishing production website");
     const files = await collectGithubFiles(repoFullName, defaultBranch, ghHeaders);
+    const envContent = `VITE_SUPABASE_URL=${Deno.env.get("SUPABASE_URL")}\nVITE_SUPABASE_PUBLISHABLE_KEY=${Deno.env.get("SUPABASE_ANON_KEY")}\nVITE_PORTFOLIO_USERNAME=${profile.username}\n`;
+    const envFile = { file: ".env.production", data: btoa(envContent), encoding: "base64" as const };
+    const deployFiles = [envFile, ...files.filter((f) => f.file !== ".env.production")];
     const deployment = await vercelFetch("/v13/deployments", {
       method: "POST",
       body: JSON.stringify({
         name: projectSlug,
         project: projectId,
         target: "production",
-        files,
+        files: deployFiles,
         projectSettings: { framework: "vite" },
         meta: { infolioUserId: userId, infolioSubdomain: subdomain },
       }),

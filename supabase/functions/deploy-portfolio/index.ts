@@ -114,7 +114,7 @@ Deno.serve(async (req) => {
   const addLog = async (step: DeployStep, status: StepStatus, message: string, details?: unknown) => {
     logs.push({ step, status, message, at: new Date().toISOString(), details });
     if (deploymentRowId) {
-      await admin.from("deployments").update({ logs, status: status === "error" ? "FAILED" : step }).eq("id", deploymentRowId);
+      await admin.from("deployments").update(status === "error" ? { logs, status: "FAILED" } : { logs }).eq("id", deploymentRowId);
     }
   };
 

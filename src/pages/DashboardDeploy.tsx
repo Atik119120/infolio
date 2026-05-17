@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { toast } from "sonner";
-import { Github, Rocket, ExternalLink, Loader2, CheckCircle2, XCircle, Globe, Sparkles, FolderGit2 } from "lucide-react";
+import { Github, Rocket, ExternalLink, Loader2, CheckCircle2, XCircle, Globe, Sparkles, FolderGit2, AlertCircle } from "lucide-react";
 import { Helmet } from "react-helmet-async";
 
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL as string;
@@ -26,6 +26,9 @@ interface Repo {
 interface Deployment {
   id: string;
   deploy_url: string | null;
+  error?: string | null;
+  logs?: Array<{ step: string; status: string; message: string; at: string }> | null;
+  project_name?: string | null;
   subdomain: string | null;
   repo_full_name: string | null;
   status: string;
@@ -40,8 +43,10 @@ export default function DashboardDeploy() {
   const [deployments, setDeployments] = useState<Deployment[]>([]);
   const [loading, setLoading] = useState(true);
   const [deploying, setDeploying] = useState(false);
+  const [deployLogs, setDeployLogs] = useState<Deployment["logs"]>([]);
+  const [deployError, setDeployError] = useState<string | null>(null);
   const [githubClientId, setGithubClientId] = useState<string | null>(null);
-  const [rootDomain, setRootDomain] = useState("infolio.site");
+  const [rootDomain, setRootDomain] = useState("infolio.online");
 
   const [tab, setTab] = useState<"template" | "import">("template");
   const [subdomain, setSubdomain] = useState("");
@@ -55,7 +60,7 @@ export default function DashboardDeploy() {
     supabase.functions.invoke("deploy-config").then(({ data }) => {
       if (data) {
         setGithubClientId((data as any).github_client_id);
-        setRootDomain((data as any).root_domain || "infolio.site");
+        setRootDomain((data as any).root_domain || "infolio.online");
       }
     });
   }, [user]);

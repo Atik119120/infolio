@@ -7,7 +7,8 @@ const corsHeaders = {
 
 const ROOT_DOMAIN = Deno.env.get("DEPLOY_ROOT_DOMAIN") ?? "infolio.online";
 const VERCEL_TOKEN = Deno.env.get("VERCEL_API_TOKEN") ?? "";
-const VERCEL_TEAM = (Deno.env.get("VERCEL_TEAM_ID") ?? "").trim();
+const RAW_VERCEL_TEAM = (Deno.env.get("VERCEL_TEAM_ID") ?? "").trim();
+const VERCEL_TEAM = RAW_VERCEL_TEAM.startsWith("team_") ? RAW_VERCEL_TEAM : "";
 
 type StepStatus = "pending" | "running" | "success" | "error";
 type DeployStep = "github" | "project" | "deploy" | "domain" | "complete";

@@ -318,6 +318,7 @@ export default function DashboardDeploy() {
                       <p className="text-xs text-muted-foreground truncate">
                         {new Date(d.created_at).toLocaleString()} · {d.status} · {d.source || "template"}
                       </p>
+                      {d.error && <p className="text-xs text-destructive truncate mt-1">{d.error}</p>}
                     </div>
                     {d.deploy_url && (
                       <Button size="sm" variant="outline" asChild>

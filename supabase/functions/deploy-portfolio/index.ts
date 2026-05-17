@@ -12,6 +12,7 @@ const VERCEL_TEAM = (Deno.env.get("VERCEL_TEAM_ID") ?? "").trim();
 type StepStatus = "pending" | "running" | "success" | "error";
 type DeployStep = "github" | "project" | "deploy" | "domain" | "complete";
 type LogEntry = { step: DeployStep; status: StepStatus; message: string; at: string; details?: unknown };
+type DeploymentFile = { file: string; data: string; encoding: "base64" };
 
 function json(body: unknown, status = 200) {
   return new Response(JSON.stringify(body), {
@@ -55,6 +56,39 @@ async function vercelFetch(path: string, init: RequestInit = {}, label = "Vercel
   });
   if (!res.ok) throw await parseApiError(res, label);
   return res.json();
+}
+
+async function githubFetch(url: string, headers: Record<string, string>, label: string) {
+  const res = await fetch(url, { headers });
+  if (!res.ok) throw await parseApiError(res, label);
+  return res.json();
+}
+
+function shouldSkipFile(path: string, size = 0) {
+  const blocked = ["node_modules/", ".git/", "dist/", "build/", ".next/", "coverage/", ".vercel/", "bun.lockb"];
+  return blocked.some((p) => path === p.replace("/", "") || path.includes(p)) || size > 1_000_000;
+}
+
+async function collectGithubFiles(repoFullName: string, branch: string, ghHeaders: Record<string, string>) {
+  const [owner, repo] = repoFullName.split("/");
+  const tree = await githubFetch(
+    `https://api.github.com/repos/${owner}/${repo}/git/trees/${encodeURIComponent(branch)}?recursive=1`,
+    ghHeaders,
+    "GitHub source files"
+  );
+  const blobs = (tree.tree || []).filter((item: any) => item.type === "blob" && !shouldSkipFile(item.path, item.size));
+  if (!blobs.length) throw new Error("No deployable source files found in this repository");
+  if (blobs.length > 500) throw new Error("Repository is too large for instant deployment. Please use a smaller Vite/React project.");
+
+  const files: DeploymentFile[] = [];
+  let totalSize = 0;
+  for (const item of blobs) {
+    totalSize += item.size || 0;
+    if (totalSize > 10_000_000) throw new Error("Repository source is too large for instant deployment. Please remove large files and try again.");
+    const blob = await githubFetch(item.url, ghHeaders, `GitHub file ${item.path}`);
+    files.push({ file: item.path, data: String(blob.content || "").replace(/\n/g, ""), encoding: "base64" });
+  }
+  return files;
 }
 
 Deno.serve(async (req) => {

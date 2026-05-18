@@ -813,6 +813,7 @@ export type Database = {
           deployment_url: string
           project_id: string
           ready_at: string
+          username: string
         }[]
       }
     }

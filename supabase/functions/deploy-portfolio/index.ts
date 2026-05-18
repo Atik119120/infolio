@@ -15,6 +15,8 @@ type DeployStep = "github" | "project" | "deploy" | "domain" | "complete";
 type LogEntry = { step: DeployStep; status: StepStatus; message: string; at: string; details?: unknown };
 type DeploymentFile = { file: string; data: string; encoding: "base64" };
 
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
 function json(body: unknown, status = 200) {
   return new Response(JSON.stringify(body), {
     status,
@@ -57,6 +59,37 @@ async function vercelFetch(path: string, init: RequestInit = {}, label = "Vercel
   });
   if (!res.ok) throw await parseApiError(res, label);
   return res.json();
+}
+
+async function waitForDeploymentReady(deploymentId: string, onStatus: (state: string) => Promise<void>) {
+  let lastState = "INITIALIZING";
+  for (let i = 0; i < 45; i++) {
+    const deployment = await vercelFetch(`/v13/deployments/${deploymentId}`, {}, "Deployment status");
+    const state = String(deployment.readyState || deployment.state || "INITIALIZING");
+    if (state !== lastState) {
+      lastState = state;
+      await onStatus(state);
+    }
+    if (state === "READY") return deployment;
+    if (["ERROR", "CANCELED", "FAILED"].includes(state)) {
+      throw new Error(deployment.errorMessage || `Deployment failed with status ${state}`);
+    }
+    await sleep(2000);
+  }
+  throw new Error("Deployment build timed out before becoming ready");
+}
+
+async function assignDeploymentAlias(deploymentId: string, fqdn: string) {
+  try {
+    return await vercelFetch(`/v2/deployments/${deploymentId}/aliases`, {
+      method: "POST",
+      body: JSON.stringify({ alias: fqdn }),
+    }, "Deployment alias assignment");
+  } catch (e: any) {
+    const msg = String(e.message || "");
+    if (e.status === 409 || msg.includes("already assigned")) return null;
+    throw e;
+  }
 }
 
 async function githubFetch(url: string, headers: Record<string, string>, label: string) {

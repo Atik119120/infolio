@@ -277,7 +277,17 @@ Deno.serve(async (req) => {
     const files = await collectGithubFiles(repoFullName, defaultBranch, ghHeaders);
     const envContent = `VITE_SUPABASE_URL=${Deno.env.get("SUPABASE_URL")}\nVITE_SUPABASE_PUBLISHABLE_KEY=${Deno.env.get("SUPABASE_ANON_KEY")}\nVITE_PORTFOLIO_USERNAME=${profile.username}\n`;
     const envFile = { file: ".env.production", data: btoa(envContent), encoding: "base64" as const };
-    const deployFiles = [envFile, ...files.filter((f) => f.file !== ".env.production")];
+    const hasVercelConfig = files.some((f) => f.file === "vercel.json");
+    const spaFallbackFile = {
+      file: "vercel.json",
+      data: btoa(JSON.stringify({ rewrites: [{ source: "/(.*)", destination: "/index.html" }] }, null, 2)),
+      encoding: "base64" as const,
+    };
+    const deployFiles = [
+      envFile,
+      ...(hasVercelConfig ? [] : [spaFallbackFile]),
+      ...files.filter((f) => f.file !== ".env.production"),
+    ];
     const deployment = await vercelFetch("/v13/deployments", {
       method: "POST",
       body: JSON.stringify({

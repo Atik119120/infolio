@@ -169,22 +169,34 @@ Deno.serve(async (req) => {
     if (!subdomain) throw new Error("Enter a valid subdomain");
     if (["www", "app", "api", "admin", "mail", "infolio"].includes(subdomain)) throw new Error("This subdomain is reserved");
 
-    const { data: clash } = await admin.from("deployments").select("user_id").eq("subdomain", subdomain).maybeSingle();
+    const { data: clash } = await admin.from("deployments").select("id,user_id").eq("subdomain", subdomain).maybeSingle();
     if (clash && clash.user_id !== userId) throw new Error(`Subdomain ${subdomain}.${ROOT_DOMAIN} is already taken`);
 
     const projectSlug = `infolio-${subdomain}`.replace(/[^a-z0-9-]/g, "-").slice(0, 100);
-    const { data: inserted, error: insertError } = await admin.from("deployments").insert({
+    const initialPayload = {
       user_id: userId,
       repo_full_name: repoFullName || null,
       deploy_url: `https://${subdomain}.${ROOT_DOMAIN}`,
+      deployment_url: `https://${subdomain}.${ROOT_DOMAIN}`,
       subdomain,
+      assigned_subdomain: subdomain,
       source,
+      active_theme_template: source,
       project_name: projectSlug,
-      status: "QUEUED",
+      status: "INITIALIZING",
+      is_active: true,
+      error: null,
       logs,
-    }).select("id").single();
-    if (insertError) throw new Error(insertError.message);
-    deploymentRowId = inserted.id;
+    };
+    if (clash?.id) {
+      const { error: updateError } = await admin.from("deployments").update(initialPayload).eq("id", clash.id);
+      if (updateError) throw new Error(updateError.message);
+      deploymentRowId = clash.id;
+    } else {
+      const { data: inserted, error: insertError } = await admin.from("deployments").insert(initialPayload).select("id").single();
+      if (insertError) throw new Error(insertError.message);
+      deploymentRowId = inserted.id;
+    }
 
     await addLog("github", "running", source === "template" ? "Creating Infolio starter repository" : "Preparing selected GitHub repository");
     const ghHeaders = { Authorization: `Bearer ${integ.access_token}`, Accept: "application/vnd.github+json", "User-Agent": "Infolio-Deploy" };
@@ -282,10 +294,35 @@ Deno.serve(async (req) => {
       vercel_deployment_id: deployment.id,
       status: deployment.readyState || "BUILDING",
       deploy_url: `https://${fqdn}`,
+      deployment_url: `https://${fqdn}`,
+      assigned_subdomain: subdomain,
+      active_theme_template: source,
       error: null,
       logs,
     }).eq("id", deploymentRowId);
-    await addLog("complete", "success", "Deployment started successfully. The live URL will be ready after the build finishes.");
+
+    await waitForDeploymentReady(deployment.id, async (state) => {
+      await admin.from("deployments").update({ status: state, logs }).eq("id", deploymentRowId);
+      await addLog("deploy", "running", `Build status: ${state}`);
+    });
+
+    await addLog("domain", "running", `Connecting ${fqdn} to the live deployment`);
+    await assignDeploymentAlias(deployment.id, fqdn);
+
+    await admin.from("deployments").update({
+      status: "READY",
+      deploy_url: `https://${fqdn}`,
+      deployment_url: `https://${fqdn}`,
+      assigned_subdomain: subdomain,
+      vercel_project_id: projectId,
+      vercel_deployment_id: deployment.id,
+      active_theme_template: source,
+      is_active: true,
+      ready_at: new Date().toISOString(),
+      error: null,
+      logs,
+    }).eq("id", deploymentRowId);
+    await addLog("complete", "success", `${fqdn} is live and connected.`);
 
     return json({ success: true, deploymentId: deploymentRowId, deployUrl: `https://${fqdn}`, subdomain, repo: repoFullName, logs });
   } catch (e) {

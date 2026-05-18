@@ -26,13 +26,16 @@ interface Repo {
 interface Deployment {
   id: string;
   deploy_url: string | null;
+  deployment_url?: string | null;
   error?: string | null;
   logs?: Array<{ step: string; status: string; message: string; at: string }> | null;
   project_name?: string | null;
   subdomain: string | null;
+  assigned_subdomain?: string | null;
   repo_full_name: string | null;
   status: string;
   source: string | null;
+  active_theme_template?: string | null;
   created_at: string;
 }
 
@@ -141,8 +144,10 @@ export default function DashboardDeploy() {
       return;
     }
     setDeployLogs((data as any)?.logs || []);
-    toast.success("Deployment started. Your live URL is being prepared.");
-    load();
+    const liveUrl = (data as any)?.deployUrl;
+    toast.success("Deployment complete. Opening your live website.");
+    await load();
+    if (liveUrl) window.location.assign(liveUrl);
   };
 
   const steps = [
@@ -316,16 +321,16 @@ export default function DashboardDeploy() {
                   <li key={d.id} className="flex items-center justify-between border rounded-lg p-3 gap-3">
                     <div className="min-w-0">
                       <p className="text-sm font-medium truncate">
-                        {d.subdomain ? `${d.subdomain}.${rootDomain}` : d.repo_full_name}
+                        {(d.assigned_subdomain || d.subdomain) ? `${d.assigned_subdomain || d.subdomain}.${rootDomain}` : d.repo_full_name}
                       </p>
                       <p className="text-xs text-muted-foreground truncate">
-                        {new Date(d.created_at).toLocaleString()} · {d.status} · {d.source || "template"}
+                        {new Date(d.created_at).toLocaleString()} · {d.status} · {d.active_theme_template || d.source || "template"}
                       </p>
                       {d.error && <p className="text-xs text-destructive truncate mt-1">{d.error}</p>}
                     </div>
-                    {d.deploy_url && (
+                    {(d.deployment_url || d.deploy_url) && (
                       <Button size="sm" variant="outline" asChild>
-                        <a href={d.deploy_url} target="_blank" rel="noreferrer">
+                        <a href={d.deployment_url || d.deploy_url || "#"} target="_blank" rel="noreferrer">
                           Open <ExternalLink className="w-3 h-3 ml-1" />
                         </a>
                       </Button>

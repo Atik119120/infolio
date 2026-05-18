@@ -53,12 +53,16 @@ export default function SubdomainRouter({ children, mainDomain }: SubdomainRoute
     const mainDomainLower = mainDomain.toLowerCase();
     const hostnameLower = hostname.toLowerCase();
 
-    // 1) Subdomain match: <prefix>.maindomain.tld
+    // 1) Platform deployment subdomain: <prefix>.infolio.online
     if (hostnameLower.endsWith("." + mainDomainLower)) {
       const prefix = hostnameLower.slice(0, hostnameLower.length - mainDomainLower.length - 1);
       if (prefix && prefix !== "www" && !prefix.includes(".") && /^[a-z0-9-]+$/.test(prefix)) {
-        setSubdomain(prefix);
-        setIsChecking(false);
+        (async () => {
+          const { data } = await (supabase as any).rpc("resolve_active_deployment", { _hostname: hostnameLower });
+          const resolvedUsername = Array.isArray(data) ? data[0]?.username : data?.username;
+          setSubdomain(resolvedUsername || prefix);
+          setIsChecking(false);
+        })();
         return;
       }
       // Root domain (or www) — show normal app

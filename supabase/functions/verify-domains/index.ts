@@ -207,6 +207,21 @@ Deno.serve(async (req) => {
     for (const domain of domains as Domain[]) {
       console.log(`Verifying domain: ${domain.domain}`);
 
+      const normalizedDomain = domain.domain.toLowerCase();
+      if (normalizedDomain === "infolio.online" || normalizedDomain.endsWith(".infolio.online")) {
+        const { error: updateError } = await supabase
+          .from("domains")
+          .update({ is_verified: true, verified_at: new Date().toISOString() })
+          .eq("id", domain.id);
+
+        verificationResults.push({
+          domain: domain.domain,
+          verified: !updateError,
+          reason: updateError ? "Database update failed" : "Internal Infolio subdomain verified automatically",
+        });
+        continue;
+      }
+
       // Check TXT record for verification token
       const txtRecords = await lookupTxtRecords(domain.domain);
       const tokenFound = txtRecords.some(

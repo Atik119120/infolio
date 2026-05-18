@@ -127,12 +127,17 @@ export type Database = {
       }
       deployments: {
         Row: {
+          active_theme_template: string | null
+          assigned_subdomain: string | null
           created_at: string
           deploy_url: string | null
+          deployment_url: string | null
           error: string | null
           id: string
+          is_active: boolean
           logs: Json
           project_name: string | null
+          ready_at: string | null
           repo_full_name: string | null
           source: string
           status: string
@@ -143,12 +148,17 @@ export type Database = {
           vercel_project_id: string | null
         }
         Insert: {
+          active_theme_template?: string | null
+          assigned_subdomain?: string | null
           created_at?: string
           deploy_url?: string | null
+          deployment_url?: string | null
           error?: string | null
           id?: string
+          is_active?: boolean
           logs?: Json
           project_name?: string | null
+          ready_at?: string | null
           repo_full_name?: string | null
           source?: string
           status?: string
@@ -159,12 +169,17 @@ export type Database = {
           vercel_project_id?: string | null
         }
         Update: {
+          active_theme_template?: string | null
+          assigned_subdomain?: string | null
           created_at?: string
           deploy_url?: string | null
+          deployment_url?: string | null
           error?: string | null
           id?: string
+          is_active?: boolean
           logs?: Json
           project_name?: string | null
+          ready_at?: string | null
           repo_full_name?: string | null
           source?: string
           status?: string
@@ -788,6 +803,18 @@ export type Database = {
           _user_id: string
         }
         Returns: boolean
+      }
+      resolve_active_deployment: {
+        Args: { _hostname: string }
+        Returns: {
+          active_theme_template: string
+          assigned_subdomain: string
+          deployment_status: string
+          deployment_url: string
+          project_id: string
+          ready_at: string
+          username: string
+        }[]
       }
     }
     Enums: {

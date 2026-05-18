@@ -15,6 +15,8 @@ type DeployStep = "github" | "project" | "deploy" | "domain" | "complete";
 type LogEntry = { step: DeployStep; status: StepStatus; message: string; at: string; details?: unknown };
 type DeploymentFile = { file: string; data: string; encoding: "base64" };
 
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
 function json(body: unknown, status = 200) {
   return new Response(JSON.stringify(body), {
     status,
@@ -57,6 +59,37 @@ async function vercelFetch(path: string, init: RequestInit = {}, label = "Vercel
   });
   if (!res.ok) throw await parseApiError(res, label);
   return res.json();
+}
+
+async function waitForDeploymentReady(deploymentId: string, onStatus: (state: string) => Promise<void>) {
+  let lastState = "INITIALIZING";
+  for (let i = 0; i < 45; i++) {
+    const deployment = await vercelFetch(`/v13/deployments/${deploymentId}`, {}, "Deployment status");
+    const state = String(deployment.readyState || deployment.state || "INITIALIZING");
+    if (state !== lastState) {
+      lastState = state;
+      await onStatus(state);
+    }
+    if (state === "READY") return deployment;
+    if (["ERROR", "CANCELED", "FAILED"].includes(state)) {
+      throw new Error(deployment.errorMessage || `Deployment failed with status ${state}`);
+    }
+    await sleep(2000);
+  }
+  throw new Error("Deployment build timed out before becoming ready");
+}
+
+async function assignDeploymentAlias(deploymentId: string, fqdn: string) {
+  try {
+    return await vercelFetch(`/v2/deployments/${deploymentId}/aliases`, {
+      method: "POST",
+      body: JSON.stringify({ alias: fqdn }),
+    }, "Deployment alias assignment");
+  } catch (e: any) {
+    const msg = String(e.message || "");
+    if (e.status === 409 || msg.includes("already assigned")) return null;
+    throw e;
+  }
 }
 
 async function githubFetch(url: string, headers: Record<string, string>, label: string) {
@@ -136,22 +169,34 @@ Deno.serve(async (req) => {
     if (!subdomain) throw new Error("Enter a valid subdomain");
     if (["www", "app", "api", "admin", "mail", "infolio"].includes(subdomain)) throw new Error("This subdomain is reserved");
 
-    const { data: clash } = await admin.from("deployments").select("user_id").eq("subdomain", subdomain).maybeSingle();
+    const { data: clash } = await admin.from("deployments").select("id,user_id").eq("subdomain", subdomain).maybeSingle();
     if (clash && clash.user_id !== userId) throw new Error(`Subdomain ${subdomain}.${ROOT_DOMAIN} is already taken`);
 
     const projectSlug = `infolio-${subdomain}`.replace(/[^a-z0-9-]/g, "-").slice(0, 100);
-    const { data: inserted, error: insertError } = await admin.from("deployments").insert({
+    const initialPayload = {
       user_id: userId,
       repo_full_name: repoFullName || null,
       deploy_url: `https://${subdomain}.${ROOT_DOMAIN}`,
+      deployment_url: `https://${subdomain}.${ROOT_DOMAIN}`,
       subdomain,
+      assigned_subdomain: subdomain,
       source,
+      active_theme_template: source,
       project_name: projectSlug,
-      status: "QUEUED",
+      status: "INITIALIZING",
+      is_active: true,
+      error: null,
       logs,
-    }).select("id").single();
-    if (insertError) throw new Error(insertError.message);
-    deploymentRowId = inserted.id;
+    };
+    if (clash?.id) {
+      const { error: updateError } = await admin.from("deployments").update(initialPayload).eq("id", clash.id);
+      if (updateError) throw new Error(updateError.message);
+      deploymentRowId = clash.id;
+    } else {
+      const { data: inserted, error: insertError } = await admin.from("deployments").insert(initialPayload).select("id").single();
+      if (insertError) throw new Error(insertError.message);
+      deploymentRowId = inserted.id;
+    }
 
     await addLog("github", "running", source === "template" ? "Creating Infolio starter repository" : "Preparing selected GitHub repository");
     const ghHeaders = { Authorization: `Bearer ${integ.access_token}`, Accept: "application/vnd.github+json", "User-Agent": "Infolio-Deploy" };
@@ -232,7 +277,17 @@ Deno.serve(async (req) => {
     const files = await collectGithubFiles(repoFullName, defaultBranch, ghHeaders);
     const envContent = `VITE_SUPABASE_URL=${Deno.env.get("SUPABASE_URL")}\nVITE_SUPABASE_PUBLISHABLE_KEY=${Deno.env.get("SUPABASE_ANON_KEY")}\nVITE_PORTFOLIO_USERNAME=${profile.username}\n`;
     const envFile = { file: ".env.production", data: btoa(envContent), encoding: "base64" as const };
-    const deployFiles = [envFile, ...files.filter((f) => f.file !== ".env.production")];
+    const hasVercelConfig = files.some((f) => f.file === "vercel.json");
+    const spaFallbackFile = {
+      file: "vercel.json",
+      data: btoa(JSON.stringify({ rewrites: [{ source: "/(.*)", destination: "/index.html" }] }, null, 2)),
+      encoding: "base64" as const,
+    };
+    const deployFiles = [
+      envFile,
+      ...(hasVercelConfig ? [] : [spaFallbackFile]),
+      ...files.filter((f) => f.file !== ".env.production"),
+    ];
     const deployment = await vercelFetch("/v13/deployments", {
       method: "POST",
       body: JSON.stringify({
@@ -249,10 +304,35 @@ Deno.serve(async (req) => {
       vercel_deployment_id: deployment.id,
       status: deployment.readyState || "BUILDING",
       deploy_url: `https://${fqdn}`,
+      deployment_url: `https://${fqdn}`,
+      assigned_subdomain: subdomain,
+      active_theme_template: source,
       error: null,
       logs,
     }).eq("id", deploymentRowId);
-    await addLog("complete", "success", "Deployment started successfully. The live URL will be ready after the build finishes.");
+
+    await waitForDeploymentReady(deployment.id, async (state) => {
+      await admin.from("deployments").update({ status: state, logs }).eq("id", deploymentRowId);
+      await addLog("deploy", "running", `Build status: ${state}`);
+    });
+
+    await addLog("domain", "running", `Connecting ${fqdn} to the live deployment`);
+    await assignDeploymentAlias(deployment.id, fqdn);
+
+    await admin.from("deployments").update({
+      status: "READY",
+      deploy_url: `https://${fqdn}`,
+      deployment_url: `https://${fqdn}`,
+      assigned_subdomain: subdomain,
+      vercel_project_id: projectId,
+      vercel_deployment_id: deployment.id,
+      active_theme_template: source,
+      is_active: true,
+      ready_at: new Date().toISOString(),
+      error: null,
+      logs,
+    }).eq("id", deploymentRowId);
+    await addLog("complete", "success", `${fqdn} is live and connected.`);
 
     return json({ success: true, deploymentId: deploymentRowId, deployUrl: `https://${fqdn}`, subdomain, repo: repoFullName, logs });
   } catch (e) {

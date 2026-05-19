@@ -124,6 +124,7 @@ export function LeftSidebar() {
       </div>
 
       <TemplatesDialog open={tplOpen} onOpenChange={setTplOpen} />
+      <MarketplaceDialog open={mktOpen} onOpenChange={setMktOpen} />
     </div>
   );
 }

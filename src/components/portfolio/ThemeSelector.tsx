@@ -33,25 +33,25 @@ const categoryIcons: Record<string, React.ElementType> = {
   'cosmic': Eye,
 };
 
-// Category colors mapping
+// Category colors (B&W minimal)
 const categoryColors: Record<string, string> = {
-  'free': 'from-slate-500 to-slate-700',
-  'web-developer': 'from-green-500 to-emerald-600',
-  'graphic-designer': 'from-pink-500 to-rose-600',
-  'photographer': 'from-amber-500 to-orange-600',
-  'video-editor': 'from-purple-500 to-violet-600',
-  'digital-marketer': 'from-blue-500 to-cyan-600',
-  'official': 'from-slate-600 to-slate-800',
-  'personal': 'from-rose-400 to-pink-500',
-  'cosmic': 'from-indigo-600 via-purple-600 to-pink-500',
+  'free': 'from-white/15 to-white/5',
+  'web-developer': 'from-white/15 to-white/5',
+  'graphic-designer': 'from-white/15 to-white/5',
+  'photographer': 'from-white/15 to-white/5',
+  'video-editor': 'from-white/15 to-white/5',
+  'digital-marketer': 'from-white/15 to-white/5',
+  'official': 'from-white/15 to-white/5',
+  'personal': 'from-white/15 to-white/5',
+  'cosmic': 'from-white/20 to-white/5',
 };
 
-// Tier colors
+// Tier colors (B&W minimal)
 const tierColors: Record<string, string> = {
-  'free': 'from-gray-500 to-gray-700',
-  'standard': 'from-blue-500 to-cyan-500',
-  'pro': 'from-amber-500 to-orange-500',
-  'elite': 'from-purple-500 via-violet-500 to-fuchsia-500',
+  'free': 'from-white/10 to-white/5',
+  'standard': 'from-white/15 to-white/5',
+  'pro': 'from-white/20 to-white/10',
+  'elite': 'from-white/25 to-white/10',
 };
 
 const themePreviews: Record<string, { hero: string; features: string[] }> = {
@@ -229,32 +229,30 @@ export function ThemeSelector({ currentTheme, userId, onUpdate }: ThemeSelectorP
 
   return (
     <>
-      <Card>
+      <Card className="bg-white/[0.02] border-white/10 text-white">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Palette className="w-5 h-5 text-primary" />
+          <CardTitle className="flex items-center gap-2 text-white">
+            <Palette className="w-5 h-5 text-white" />
             Choose Your Theme
           </CardTitle>
-          <CardDescription>
+          <CardDescription className="text-white/50">
             Select a theme that matches your profession. Themes are grouped by category.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-8">
           {/* Tier Legend */}
-          <div className="flex flex-wrap items-center gap-4 text-sm p-4 bg-muted/50 rounded-lg">
-            <span className="font-medium">Tiers:</span>
+          <div className="flex flex-wrap items-center gap-4 text-sm p-4 bg-white/5 border border-white/10 rounded-lg text-white/70">
+            <span className="font-medium text-white">Tiers:</span>
             <span className="flex items-center gap-1.5">
-              <div className="w-3 h-3 rounded bg-blue-500" />
+              <div className="w-3 h-3 rounded bg-white/40" />
               Standard ৳200
             </span>
             <span className="flex items-center gap-1.5">
-              <div className="w-3 h-3 rounded bg-gradient-to-r from-amber-500 to-orange-500" />
-              <Zap className="w-3 h-3 text-amber-500" />
+              <Zap className="w-3 h-3 text-white/70" />
               Pro ৳300
             </span>
             <span className="flex items-center gap-1.5">
-              <div className="w-3 h-3 rounded bg-gradient-to-r from-purple-500 to-fuchsia-500" />
-              <Crown className="w-3 h-3 text-purple-500" />
+              <Crown className="w-3 h-3 text-white" />
               Elite ৳400
             </span>
           </div>
@@ -268,11 +266,11 @@ export function ThemeSelector({ currentTheme, userId, onUpdate }: ThemeSelectorP
               <div key={group.category}>
                 {/* Category Header */}
                 <div className="flex items-center gap-3 mb-4">
-                  <div className={`w-8 h-8 rounded-lg bg-gradient-to-br ${categoryColor} flex items-center justify-center`}>
+                  <div className={`w-8 h-8 rounded-lg bg-gradient-to-br ${categoryColor} border border-white/10 flex items-center justify-center`}>
                     <CategoryIcon className="w-4 h-4 text-white" />
                   </div>
-                  <h3 className="font-semibold">{group.label}</h3>
-                  <Badge variant="secondary" className="text-xs">
+                  <h3 className="font-semibold text-white">{group.label}</h3>
+                  <Badge variant="secondary" className="text-xs bg-white/10 text-white border-white/10">
                     {group.themes.length} theme{group.themes.length > 1 ? 's' : ''}
                   </Badge>
                 </div>
@@ -291,23 +289,23 @@ export function ThemeSelector({ currentTheme, userId, onUpdate }: ThemeSelectorP
                     return (
                       <div
                         key={theme.value}
-                        className={`relative rounded-xl border-2 transition-all cursor-pointer overflow-hidden ${
+                        className={`relative rounded-xl border transition-all cursor-pointer overflow-hidden ${
                           isSelected 
-                            ? 'border-primary ring-2 ring-primary/20' 
-                            : 'border-border hover:border-primary/50'
+                            ? 'border-white ring-1 ring-white/30 bg-white/[0.04]' 
+                            : 'border-white/10 hover:border-white/30 bg-white/[0.02]'
                         }`}
                         onClick={() => handleThemeChange(theme.value)}
                       >
                         {/* Theme Preview Header */}
-                        <div className={`h-24 bg-gradient-to-br ${gradient} relative`}>
+                        <div className={`h-24 bg-gradient-to-br ${gradient} border-b border-white/10 relative`}>
                           <div className="absolute inset-0 flex items-center justify-center">
-                            <Icon className="w-10 h-10 text-white/80" />
+                            <Icon className="w-10 h-10 text-white/70" />
                           </div>
                           
                           {/* Lock overlay for premium themes */}
                           {!isUnlocked && !isFree && (
-                            <div className="absolute inset-0 bg-black/40 flex items-center justify-center backdrop-blur-[1px]">
-                              <div className="bg-black/60 rounded-full p-2">
+                            <div className="absolute inset-0 bg-black/50 flex items-center justify-center backdrop-blur-[1px]">
+                              <div className="bg-white/10 border border-white/20 rounded-full p-2">
                                 <Lock className="w-6 h-6 text-white" />
                               </div>
                             </div>
@@ -316,29 +314,29 @@ export function ThemeSelector({ currentTheme, userId, onUpdate }: ThemeSelectorP
                           {/* Badges */}
                           <div className="absolute top-2 right-2 flex flex-col gap-1">
                             {isSelected && (
-                              <Badge className="bg-white text-primary">
+                              <Badge className="bg-white text-black border-0">
                                 <Check className="w-3 h-3 mr-1" />
                                 Active
                               </Badge>
                             )}
                             {isFree ? null : isUnlocked ? (
-                              <Badge variant="secondary" className="bg-amber-500/90 text-white border-0">
+                              <Badge variant="secondary" className="bg-white/15 text-white border-white/10">
                                 <Sparkles className="w-3 h-3 mr-1" />
                                 Owned
                               </Badge>
                             ) : purchaseStatus === 'pending' ? (
-                              <Badge variant="secondary" className="bg-blue-500/90 text-white border-0">
+                              <Badge variant="secondary" className="bg-white/10 text-white border-white/10">
                                 <Clock className="w-3 h-3 mr-1" />
                                 Pending
                               </Badge>
                             ) : (
                               <>
-                                <Badge className={`${theme.tier === 'pro' ? 'bg-gradient-to-r from-amber-500 to-orange-500' : theme.tier === 'elite' ? 'bg-gradient-to-r from-purple-500 to-fuchsia-500' : 'bg-blue-500'} text-white border-0 text-xs capitalize`}>
+                                <Badge className="bg-white/15 text-white border border-white/15 text-xs capitalize">
                                   {theme.tier === 'elite' && <Crown className="w-3 h-3 mr-1" />}
                                   {theme.tier === 'pro' && <Zap className="w-3 h-3 mr-1" />}
                                   {theme.tier}
                                 </Badge>
-                                <Badge variant="secondary" className="bg-black/60 text-white border-0">
+                                <Badge variant="secondary" className="bg-black/60 text-white border-white/15">
                                   ৳{theme.price}
                                 </Badge>
                               </>
@@ -347,15 +345,15 @@ export function ThemeSelector({ currentTheme, userId, onUpdate }: ThemeSelectorP
                         </div>
 
                         {/* Theme Info */}
-                        <div className="p-4 bg-card">
+                        <div className="p-4 bg-transparent">
                           <div className="flex items-center justify-between mb-2">
-                            <h3 className="font-semibold text-sm">{theme.label}</h3>
+                            <h3 className="font-semibold text-sm text-white">{theme.label}</h3>
                             <Dialog>
                               <DialogTrigger asChild>
                                 <Button 
                                   variant="ghost" 
                                   size="sm" 
-                                  className="h-7 px-2 text-xs"
+                                  className="h-7 px-2 text-xs text-white/70 hover:text-white hover:bg-white/5"
                                   onClick={(e) => {
                                     e.stopPropagation();
                                     setPreviewTheme(theme.value);
@@ -368,12 +366,12 @@ export function ThemeSelector({ currentTheme, userId, onUpdate }: ThemeSelectorP
                               <DialogContent className="max-w-2xl">
                                 <DialogHeader>
                                   <DialogTitle className="flex items-center gap-3">
-                                    <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${gradient} flex items-center justify-center`}>
+                                    <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${gradient} border border-white/10 flex items-center justify-center`}>
                                       <Icon className="w-5 h-5 text-white" />
                                     </div>
                                     {theme.label} Theme
                                     {isFree ? null : (
-                                      <Badge className={`${theme.tier === 'pro' ? 'bg-gradient-to-r from-amber-500 to-orange-500' : theme.tier === 'elite' ? 'bg-gradient-to-r from-purple-500 to-fuchsia-500' : 'bg-blue-500'} text-white ml-2 capitalize`}>
+                                      <Badge className="bg-white/15 text-white border border-white/15 ml-2 capitalize">
                                         {theme.tier} - ৳{theme.price}
                                       </Badge>
                                     )}
@@ -381,8 +379,8 @@ export function ThemeSelector({ currentTheme, userId, onUpdate }: ThemeSelectorP
                                 </DialogHeader>
                                 <div className="space-y-6 py-4">
                                   {/* Mock Preview */}
-                                  <div className={`h-48 rounded-xl bg-gradient-to-br ${gradient} relative overflow-hidden`}>
-                                    <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
+                                  <div className={`h-48 rounded-xl bg-gradient-to-br ${gradient} border border-white/10 relative overflow-hidden`}>
+                                    <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
                                       <div className="text-center text-white">
                                         <Icon className="w-12 h-12 mx-auto mb-3 opacity-80" />
                                         <p className="text-lg font-medium">{preview?.hero}</p>
@@ -396,7 +394,7 @@ export function ThemeSelector({ currentTheme, userId, onUpdate }: ThemeSelectorP
                                     <div className="grid grid-cols-2 gap-2">
                                       {preview?.features.map((feature, i) => (
                                         <div key={i} className="flex items-center gap-2 text-sm text-muted-foreground">
-                                          <Check className="w-4 h-4 text-primary" />
+                                          <Check className="w-4 h-4" />
                                           {feature}
                                         </div>
                                       ))}
@@ -432,7 +430,7 @@ export function ThemeSelector({ currentTheme, userId, onUpdate }: ThemeSelectorP
                                       </Button>
                                     ) : (
                                       <Button 
-                                        className={`flex-1 ${theme.tier === 'elite' ? 'bg-gradient-to-r from-purple-500 to-fuchsia-500 hover:from-purple-600 hover:to-fuchsia-600' : theme.tier === 'pro' ? 'bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600' : ''}`}
+                                        className="flex-1"
                                         onClick={() => {
                                           setSelectedPurchaseTheme({ id: theme.value, name: theme.label });
                                           setPurchaseDialogOpen(true);
@@ -453,11 +451,16 @@ export function ThemeSelector({ currentTheme, userId, onUpdate }: ThemeSelectorP
                               </DialogContent>
                             </Dialog>
                           </div>
-                          <p className="text-xs text-muted-foreground line-clamp-2">{theme.description}</p>
+                          <p className="text-xs text-white/50 line-clamp-2">{theme.description}</p>
                           <div className="mt-4 flex gap-2">
                             <Button
-                              className="flex-1"
-                              variant={isSelected ? "secondary" : isUnlocked ? "default" : "outline"}
+                              className={`flex-1 ${
+                                isSelected
+                                  ? "bg-white/10 text-white hover:bg-white/10 border border-white/15"
+                                  : isUnlocked
+                                  ? "bg-white text-black hover:bg-white/90"
+                                  : "bg-transparent border border-white/15 text-white hover:bg-white/5"
+                              }`}
                               size="sm"
                               disabled={isSelected || saving}
                               onClick={(e) => {

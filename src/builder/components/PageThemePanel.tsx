@@ -2,7 +2,9 @@ import { HexColorPicker } from "react-colorful";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 import { useBuilderStore } from "../store";
+import { createBlock } from "../blocks/defaults";
 import { Palette } from "lucide-react";
 
 const FONTS = [

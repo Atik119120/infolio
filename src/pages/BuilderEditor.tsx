@@ -111,6 +111,8 @@ export default function BuilderEditor() {
     });
   };
 
+  useKeyboardShortcuts(() => save(false));
+
   if (loading) {
     return (
       <div className="fixed inset-0 bg-slate-950 flex items-center justify-center text-white">
@@ -119,8 +121,6 @@ export default function BuilderEditor() {
     );
   }
 
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  useKeyboardShortcuts(() => save(false));
 
   return (
     <div className="fixed inset-0 bg-slate-900 flex flex-col text-white z-50">

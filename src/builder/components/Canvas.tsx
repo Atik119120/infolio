@@ -26,6 +26,7 @@ import {
   ContextMenuSeparator,
   ContextMenuTrigger,
 } from "@/components/ui/context-menu";
+import { ThemeStyle } from "./ThemeStyle";
 
 const deviceWidth: Record<string, string> = {
   desktop: "100%",

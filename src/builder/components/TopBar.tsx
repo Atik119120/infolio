@@ -54,7 +54,7 @@ export function TopBar({ onSave, onPublish, saving, publishing }: Props) {
             onClick={() => setDevice(key)}
             className={cn(
               "h-7 w-9 rounded-md inline-flex items-center justify-center",
-              device === key ? "bg-red-600 text-white" : "text-white/60 hover:text-white"
+              device === key ? "bg-pink-600 text-white" : "text-white/60 hover:text-white"
             )}
           >
             <Icon className="w-4 h-4" />
@@ -114,7 +114,7 @@ export function TopBar({ onSave, onPublish, saving, publishing }: Props) {
         )}
         <Button
           size="sm"
-          className="h-9 gap-1.5 bg-red-600 hover:bg-red-700"
+          className="h-9 gap-1.5 bg-gradient-to-r from-pink-600 to-fuchsia-600 hover:brightness-110 text-white shadow-lg shadow-pink-600/30"
           onClick={onPublish}
           disabled={publishing}
         >

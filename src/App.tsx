@@ -24,6 +24,8 @@ const DashboardPurchases = lazy(() => import("./pages/DashboardPurchases"));
 const DashboardDomainStatus = lazy(() => import("./pages/DashboardDomainStatus"));
 const DashboardDeploy = lazy(() => import("./pages/DashboardDeploy"));
 const DashboardAnalytics = lazy(() => import("./pages/DashboardAnalytics"));
+const DashboardProducts = lazy(() => import("./pages/DashboardProducts"));
+const DashboardOrders = lazy(() => import("./pages/DashboardOrders"));
 const PublicPortfolio = lazy(() => import("./pages/PublicPortfolio"));
 const ThemeDemo = lazy(() => import("./pages/ThemeDemo"));
 const ThemeCollection = lazy(() => import("./pages/ThemeCollection"));

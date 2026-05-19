@@ -487,7 +487,7 @@ export default function Auth() {
                       )}
                     </Button>
                     <p className="text-xs text-center text-muted-foreground">
-                      After signup, your account will need admin approval before you can publish your portfolio.
+                      By creating an account, you'll be redirected to your dashboard instantly.
                     </p>
                   </form>
                 </TabsContent>

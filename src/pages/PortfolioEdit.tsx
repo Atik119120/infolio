@@ -188,10 +188,10 @@ export default function PortfolioEdit() {
   const tabs = allTabs.filter((t) => themeConfig.tabs.includes(t.value));
 
   return (
-    <div className="space-y-4 animate-fade-in">
+    <div className="space-y-4 animate-fade-in text-white">
       <div>
-        <h1 className="text-xl font-bold">Edit Portfolio</h1>
-        <p className="text-sm text-muted-foreground">
+        <h1 className="text-xl font-semibold tracking-tight">Edit Portfolio</h1>
+        <p className="text-sm text-white/50">
           Choose theme and customize content — sections shown match your selected theme
         </p>
       </div>
@@ -205,11 +205,7 @@ export default function PortfolioEdit() {
             <TabsTrigger
               key={tab.value}
               value={tab.value}
-              className={`flex items-center gap-1.5 px-3 py-2 rounded-lg border text-xs font-medium transition-all ${
-                tab.value === 'theme'
-                  ? 'data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary data-[state=active]:to-accent data-[state=active]:text-white border-primary/30'
-                  : 'data-[state=active]:bg-primary data-[state=active]:text-primary-foreground'
-              }`}
+              className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-white/10 bg-white/[0.02] text-xs font-medium text-white/60 hover:text-white hover:bg-white/5 transition-all data-[state=active]:bg-white data-[state=active]:text-black data-[state=active]:border-white"
             >
               <tab.icon className="w-3.5 h-3.5" />
               <span className="hidden sm:inline">{tab.label}</span>

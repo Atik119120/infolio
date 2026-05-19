@@ -1,4 +1,4 @@
-import { CSSProperties } from "react";
+import { CSSProperties, ReactNode } from "react";
 import { Twitter, Github, Linkedin, Instagram, Facebook, Youtube, Check, Plus } from "lucide-react";
 import type { Block, BlockStyle, DeviceMode } from "../types";
 import { useBuilderStore } from "../store";
@@ -9,6 +9,7 @@ import {
   ProgressWidget, StatsWidget, FaqWidget, CtaWidget, TeamWidget, LogosWidget,
   CountdownWidget, CarouselWidget,
 } from "./AdvancedWidgets";
+import { AnimationWrapper } from "./AnimationWrapper";
 
 const styleToCss = (s: BlockStyle, device: DeviceMode): CSSProperties => {
   if (

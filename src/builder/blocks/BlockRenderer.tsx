@@ -10,6 +10,7 @@ import {
   ProgressWidget, StatsWidget, FaqWidget, CtaWidget, TeamWidget, LogosWidget,
   CountdownWidget, CarouselWidget,
 } from "./AdvancedWidgets";
+import { ProductGridWidget, ProductCardWidget, CategoryGridWidget } from "./EcommerceWidgets";
 import { AnimationWrapper } from "./AnimationWrapper";
 
 const mergeStyle = (s: BlockStyle, device: DeviceMode): BlockStyle => {
@@ -447,6 +448,10 @@ function BlockRendererInner({ block, device = "desktop", editable, editorMode, o
     case "logos":     return <LogosWidget block={block} css={css} editable={editable} onEditText={onEditText} />;
     case "countdown": return <CountdownWidget block={block} css={css} editable={editable} onEditText={onEditText} />;
     case "carousel":  return <CarouselWidget block={block} css={css} editable={editable} onEditText={onEditText} />;
+
+    case "productGrid":  return <ProductGridWidget block={block} css={css} editable={editable} onEditText={onEditText} />;
+    case "productCard":  return <ProductCardWidget block={block} css={css} editable={editable} onEditText={onEditText} />;
+    case "categoryGrid": return <CategoryGridWidget block={block} css={css} editable={editable} onEditText={onEditText} />;
 
     default:
       return null;

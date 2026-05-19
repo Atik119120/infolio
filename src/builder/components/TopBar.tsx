@@ -66,6 +66,46 @@ export function TopBar({ onSave, onPublish, saving, publishing }: Props) {
       <div className="flex items-center gap-1.5 flex-1 justify-end">
         <Button
           variant="ghost"
+          size="icon"
+          className={cn(
+            "h-9 w-9 hover:bg-white/10",
+            content.header ? "text-pink-400 hover:text-pink-300" : "text-white/70 hover:text-white"
+          )}
+          onClick={() => {
+            if (content.header) {
+              setSelected(content.header.id);
+            } else {
+              const nav = createBlock("navbar");
+              setHeader(nav);
+              setSelected(nav.id);
+            }
+          }}
+          title={content.header ? "Edit Header" : "Add Header"}
+        >
+          <PanelTop className="w-4 h-4" />
+        </Button>
+        <Button
+          variant="ghost"
+          size="icon"
+          className={cn(
+            "h-9 w-9 hover:bg-white/10",
+            content.footer ? "text-pink-400 hover:text-pink-300" : "text-white/70 hover:text-white"
+          )}
+          onClick={() => {
+            if (content.footer) {
+              setSelected(content.footer.id);
+            } else {
+              const f = createBlock("footer");
+              setFooter(f);
+              setSelected(f.id);
+            }
+          }}
+          title={content.footer ? "Edit Footer" : "Add Footer"}
+        >
+          <PanelBottom className="w-4 h-4" />
+        </Button>
+        <Button
+          variant="ghost"
           size="sm"
           className="h-9 gap-1.5 text-white/80 hover:text-white hover:bg-white/10"
           onClick={() => setAiOpen(true)}

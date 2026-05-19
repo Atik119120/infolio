@@ -309,6 +309,7 @@ export function CheckoutWidget({ block, css }: Common) {
               <div className="grid sm:grid-cols-2 gap-4">
                 <Field label="Full name" name="name" />
                 <Field label="Email" name="email" type="email" />
+                <Field label="Phone" name="phone" required={false} full />
               </div>
             </div>
 

@@ -227,7 +227,7 @@ export default function Dashboard() {
       {/* Main Content - Scrollable */}
       <div className="lg:pl-64 min-h-screen flex flex-col">
         {/* Top Bar - Fixed */}
-        <header className="sticky top-0 z-30 h-14 bg-black/80 backdrop-blur-xl border-b border-white/10 flex items-center justify-between px-5">
+        <header className="sticky top-0 z-30 h-14 bg-black flex items-center justify-between px-5">
           <div className="flex items-center gap-3">
             <Button
               variant="ghost"

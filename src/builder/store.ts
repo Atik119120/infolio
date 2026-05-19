@@ -23,12 +23,12 @@ interface BuilderStore {
   setSlug: (s: string) => void;
   setTheme: (t: Partial<PageTheme>) => void;
   addBlock: (block: Block, index?: number) => void;
+  addBlockInside: (parentId: string, block: Block) => void;
   updateBlock: (id: string, patch: Partial<Block>) => void;
   updateBlockContent: (id: string, content: Record<string, any>) => void;
   updateBlockStyle: (id: string, style: Partial<BlockStyle>) => void;
   removeBlock: (id: string) => void;
   duplicateBlock: (id: string) => void;
-  reorderBlocks: (fromId: string, toId: string) => void;
   setBlocks: (blocks: Block[]) => void;
   markSaved: () => void;
   markPublished: () => void;
@@ -37,6 +37,66 @@ interface BuilderStore {
 }
 
 const clone = <T,>(v: T): T => JSON.parse(JSON.stringify(v));
+
+const reassignIds = (b: Block): Block => ({
+  ...b,
+  id: crypto.randomUUID(),
+  children: b.children ? b.children.map(reassignIds) : undefined,
+});
+
+// ---- Recursive tree helpers ----
+const findInTree = (blocks: Block[], id: string): Block | null => {
+  for (const b of blocks) {
+    if (b.id === id) return b;
+    if (b.children) {
+      const f = findInTree(b.children, id);
+      if (f) return f;
+    }
+  }
+  return null;
+};
+
+const updateInTree = (
+  blocks: Block[],
+  id: string,
+  fn: (b: Block) => Block
+): Block[] =>
+  blocks.map((b) => {
+    if (b.id === id) return fn(b);
+    if (b.children) return { ...b, children: updateInTree(b.children, id, fn) };
+    return b;
+  });
+
+const removeInTree = (blocks: Block[], id: string): Block[] =>
+  blocks.flatMap((b) => {
+    if (b.id === id) return [];
+    if (b.children) return [{ ...b, children: removeInTree(b.children, id) }];
+    return [b];
+  });
+
+const duplicateInTree = (blocks: Block[], id: string): Block[] => {
+  const out: Block[] = [];
+  for (const b of blocks) {
+    if (b.id === id) {
+      out.push(b);
+      out.push(reassignIds(clone(b)));
+    } else if (b.children) {
+      out.push({ ...b, children: duplicateInTree(b.children, id) });
+    } else {
+      out.push(b);
+    }
+  }
+  return out;
+};
+
+const insertChild = (blocks: Block[], parentId: string, child: Block): Block[] =>
+  blocks.map((b) => {
+    if (b.id === parentId) {
+      return { ...b, children: [...(b.children || []), child] };
+    }
+    if (b.children) return { ...b, children: insertChild(b.children, parentId, child) };
+    return b;
+  });
 
 const pushHistory = (state: BuilderStore): HistoryState => ({
   past: [...state.history.past.slice(-49), clone(state.content)],
@@ -79,111 +139,75 @@ export const useBuilderStore = create<BuilderStore>((set, get) => ({
 
   addBlock: (block, index) =>
     set((s) => {
-      const history = pushHistory(s);
       const blocks = [...s.content.blocks];
       if (index === undefined) blocks.push(block);
       else blocks.splice(index, 0, block);
       return {
-        history,
+        history: pushHistory(s),
         content: { ...s.content, blocks },
         selectedId: block.id,
         dirty: true,
       };
     }),
 
+  addBlockInside: (parentId, block) =>
+    set((s) => ({
+      history: pushHistory(s),
+      content: { ...s.content, blocks: insertChild(s.content.blocks, parentId, block) },
+      selectedId: block.id,
+      dirty: true,
+    })),
+
   updateBlock: (id, patch) =>
-    set((s) => {
-      const history = pushHistory(s);
-      return {
-        history,
-        content: {
-          ...s.content,
-          blocks: s.content.blocks.map((b) =>
-            b.id === id ? { ...b, ...patch } : b
-          ),
-        },
-        dirty: true,
-      };
-    }),
+    set((s) => ({
+      history: pushHistory(s),
+      content: {
+        ...s.content,
+        blocks: updateInTree(s.content.blocks, id, (b) => ({ ...b, ...patch })),
+      },
+      dirty: true,
+    })),
 
   updateBlockContent: (id, content) =>
-    set((s) => {
-      const history = pushHistory(s);
-      return {
-        history,
-        content: {
-          ...s.content,
-          blocks: s.content.blocks.map((b) =>
-            b.id === id ? { ...b, content: { ...b.content, ...content } } : b
-          ),
-        },
-        dirty: true,
-      };
-    }),
+    set((s) => ({
+      history: pushHistory(s),
+      content: {
+        ...s.content,
+        blocks: updateInTree(s.content.blocks, id, (b) => ({
+          ...b,
+          content: { ...b.content, ...content },
+        })),
+      },
+      dirty: true,
+    })),
 
   updateBlockStyle: (id, style) =>
-    set((s) => {
-      const history = pushHistory(s);
-      return {
-        history,
-        content: {
-          ...s.content,
-          blocks: s.content.blocks.map((b) =>
-            b.id === id ? { ...b, style: { ...b.style, ...style } } : b
-          ),
-        },
-        dirty: true,
-      };
-    }),
+    set((s) => ({
+      history: pushHistory(s),
+      content: {
+        ...s.content,
+        blocks: updateInTree(s.content.blocks, id, (b) => ({
+          ...b,
+          style: { ...b.style, ...style },
+        })),
+      },
+      dirty: true,
+    })),
 
   removeBlock: (id) =>
-    set((s) => {
-      const history = pushHistory(s);
-      return {
-        history,
-        content: {
-          ...s.content,
-          blocks: s.content.blocks.filter((b) => b.id !== id),
-        },
-        selectedId: s.selectedId === id ? null : s.selectedId,
-        dirty: true,
-      };
-    }),
+    set((s) => ({
+      history: pushHistory(s),
+      content: { ...s.content, blocks: removeInTree(s.content.blocks, id) },
+      selectedId: s.selectedId === id ? null : s.selectedId,
+      dirty: true,
+    })),
 
   duplicateBlock: (id) =>
-    set((s) => {
-      const history = pushHistory(s);
-      const idx = s.content.blocks.findIndex((b) => b.id === id);
-      if (idx === -1) return s;
-      const copy = {
-        ...clone(s.content.blocks[idx]),
-        id: crypto.randomUUID(),
-      };
-      const blocks = [...s.content.blocks];
-      blocks.splice(idx + 1, 0, copy);
-      return {
-        history,
-        content: { ...s.content, blocks },
-        selectedId: copy.id,
-        dirty: true,
-      };
-    }),
-
-  reorderBlocks: (fromId, toId) =>
-    set((s) => {
-      const history = pushHistory(s);
-      const blocks = [...s.content.blocks];
-      const from = blocks.findIndex((b) => b.id === fromId);
-      const to = blocks.findIndex((b) => b.id === toId);
-      if (from === -1 || to === -1) return s;
-      const [moved] = blocks.splice(from, 1);
-      blocks.splice(to, 0, moved);
-      return {
-        history,
-        content: { ...s.content, blocks },
-        dirty: true,
-      };
-    }),
+    set((s) => ({
+      history: pushHistory(s),
+      content: { ...s.content, blocks: duplicateInTree(s.content.blocks, id) },
+      dirty: true,
+    })),
 
   setBlocks: (blocks) =>
     set((s) => ({
@@ -223,3 +247,5 @@ export const useBuilderStore = create<BuilderStore>((set, get) => ({
       };
     }),
 }));
+
+export const findBlockById = (blocks: Block[], id: string) => findInTree(blocks, id);

@@ -27,8 +27,24 @@ interface Category {
 /* ---------------- Single Product Card ---------------- */
 function ProductCardItem({ p, accent = "#0f172a" }: { p: Product; accent?: string }) {
   const [hover, setHover] = useState(false);
+  const [added, setAdded] = useState(false);
+  const add = useCartStore((s) => s.add);
   const img = hover && p.hoverImage ? p.hoverImage : p.image;
   const ratingNum = Math.min(5, Math.max(0, Number(p.rating) || 0));
+
+  const handleAdd = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (p.inStock === false) return;
+    add({
+      id: `${p.title}-${p.price}`.replace(/\s+/g, "-").toLowerCase(),
+      title: p.title,
+      price: parsePrice(p.price),
+      image: p.image,
+    });
+    setAdded(true);
+    setTimeout(() => setAdded(false), 1200);
+  };
 
   return (
     <div

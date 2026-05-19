@@ -240,22 +240,6 @@ export function ThemeSelector({ currentTheme, userId, onUpdate }: ThemeSelectorP
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-8">
-          {/* Tier Legend */}
-          <div className="flex flex-wrap items-center gap-4 text-sm p-4 bg-white/5 border border-white/10 rounded-lg text-white/70">
-            <span className="font-medium text-white">Tiers:</span>
-            <span className="flex items-center gap-1.5">
-              <div className="w-3 h-3 rounded bg-white/40" />
-              Standard ৳200
-            </span>
-            <span className="flex items-center gap-1.5">
-              <Zap className="w-3 h-3 text-white/70" />
-              Pro ৳300
-            </span>
-            <span className="flex items-center gap-1.5">
-              <Crown className="w-3 h-3 text-white" />
-              Elite ৳400
-            </span>
-          </div>
 
           {/* Theme Categories */}
           {groupedThemes.map((group) => {

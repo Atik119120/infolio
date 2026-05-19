@@ -290,3 +290,33 @@
   background-size: 200% 200%;
   animation: gradient-shift 3s ease infinite;
 }
+/* Dashboard B&W minimal scope — overrides design tokens for inner pages */
+.dashboard-bw {
+  --background: 0 0% 0%;
+  --foreground: 0 0% 100%;
+  --card: 0 0% 4%;
+  --card-foreground: 0 0% 100%;
+  --popover: 0 0% 4%;
+  --popover-foreground: 0 0% 100%;
+  --primary: 0 0% 100%;
+  --primary-foreground: 0 0% 0%;
+  --secondary: 0 0% 10%;
+  --secondary-foreground: 0 0% 100%;
+  --muted: 0 0% 8%;
+  --muted-foreground: 0 0% 60%;
+  --accent: 0 0% 12%;
+  --accent-foreground: 0 0% 100%;
+  --border: 0 0% 100% / 0.1;
+  --input: 0 0% 100% / 0.1;
+  --ring: 0 0% 100%;
+  color: hsl(0 0% 100%);
+}
+.dashboard-bw .gradient-hero,
+.dashboard-bw .gradient-primary,
+.dashboard-bw .gradient-text {
+  background: transparent !important;
+  background-image: none !important;
+  color: hsl(0 0% 100%) !important;
+  -webkit-text-fill-color: hsl(0 0% 100%) !important;
+}
+.dashboard-bw .shadow-glow { box-shadow: none !important; }

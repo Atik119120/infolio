@@ -1,6 +1,7 @@
 import { CSSProperties, useState } from "react";
-import { ShoppingCart, Heart, Eye, Star, Tag } from "lucide-react";
+import { ShoppingCart, Heart, Eye, Star, Tag, Check } from "lucide-react";
 import type { Block } from "../types";
+import { useCartStore, parsePrice } from "../cart/cartStore";
 
 type Common = { block: Block; css: CSSProperties; editable?: boolean; onEditText?: (f: string, v: string) => void };
 
@@ -26,8 +27,24 @@ interface Category {
 /* ---------------- Single Product Card ---------------- */
 function ProductCardItem({ p, accent = "#0f172a" }: { p: Product; accent?: string }) {
   const [hover, setHover] = useState(false);
+  const [added, setAdded] = useState(false);
+  const add = useCartStore((s) => s.add);
   const img = hover && p.hoverImage ? p.hoverImage : p.image;
   const ratingNum = Math.min(5, Math.max(0, Number(p.rating) || 0));
+
+  const handleAdd = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (p.inStock === false) return;
+    add({
+      id: `${p.title}-${p.price}`.replace(/\s+/g, "-").toLowerCase(),
+      title: p.title,
+      price: parsePrice(p.price),
+      image: p.image,
+    });
+    setAdded(true);
+    setTimeout(() => setAdded(false), 1200);
+  };
 
   return (
     <div
@@ -76,11 +93,12 @@ function ProductCardItem({ p, accent = "#0f172a" }: { p: Product; accent?: strin
 
         {/* Add to cart */}
         <button
-          className="absolute left-3 right-3 bottom-3 h-10 rounded-xl text-white text-xs font-semibold uppercase tracking-wider inline-flex items-center justify-center gap-2 opacity-0 translate-y-3 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 shadow-lg"
-          style={{ background: accent }}
+          onClick={handleAdd}
+          disabled={p.inStock === false}
+          className="absolute left-3 right-3 bottom-3 h-10 rounded-xl text-white text-xs font-semibold uppercase tracking-wider inline-flex items-center justify-center gap-2 opacity-0 translate-y-3 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 shadow-lg disabled:opacity-40"
+          style={{ background: added ? "#16a34a" : accent }}
         >
-          <ShoppingCart className="w-3.5 h-3.5" />
-          Add to cart
+          {added ? <><Check className="w-3.5 h-3.5" /> Added</> : <><ShoppingCart className="w-3.5 h-3.5" /> Add to cart</>}
         </button>
       </div>
 

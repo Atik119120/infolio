@@ -663,6 +663,39 @@ export const BLOCK_DEFS: BlockDef[] = [
     }),
   },
   {
+    type: "cartFloating",
+    label: "Cart Button",
+    category: "element",
+    icon: "ShoppingBag",
+    create: () => ({
+      type: "cartFloating",
+      content: {
+        label: "Cart",
+        position: "bottom-right",
+        accentColor: "#0f172a",
+        currency: "$",
+      },
+      style: {},
+    }),
+  },
+  {
+    type: "checkout",
+    label: "Checkout",
+    category: "section",
+    icon: "CreditCard",
+    create: () => ({
+      type: "checkout",
+      content: {
+        title: "Checkout",
+        accentColor: "#0f172a",
+        currency: "$",
+        shippingFee: "5",
+        taxRate: 0,
+      },
+      style: {},
+    }),
+  },
+  {
     type: "container",
     label: "Container",
     category: "layout",

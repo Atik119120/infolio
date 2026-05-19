@@ -108,6 +108,7 @@ function SortableBlock({ block }: { block: Block }) {
 export function Canvas() {
   const { content, device, setSelected, setBlocks } = useBuilderStore();
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 6 } }));
+  const theme = content.theme || {};
 
   const handleDragEnd = (e: DragEndEvent) => {
     const { active, over } = e;
@@ -126,8 +127,12 @@ export function Canvas() {
       <motion.div
         animate={{ width: deviceWidth[device] }}
         transition={{ duration: 0.3 }}
-        className="bg-white shadow-2xl rounded-lg overflow-hidden min-h-[80vh] w-full"
-        style={{ maxWidth: deviceWidth[device] }}
+        className="shadow-2xl rounded-lg overflow-hidden min-h-[80vh] w-full"
+        style={{
+          maxWidth: deviceWidth[device],
+          background: theme.background || "#ffffff",
+          fontFamily: theme.fontFamily,
+        }}
       >
         {content.blocks.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-[60vh] text-slate-400 text-center px-6">

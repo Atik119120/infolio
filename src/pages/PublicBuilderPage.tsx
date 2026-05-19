@@ -49,8 +49,9 @@ export default function PublicBuilderPage() {
     );
   }
 
+  const theme = content.theme || {};
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen" style={{ background: theme.background || "#ffffff", fontFamily: theme.fontFamily }}>
       {content.blocks.map((b) => (
         <BlockRenderer key={b.id} block={b} />
       ))}

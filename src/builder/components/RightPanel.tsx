@@ -10,6 +10,8 @@ import { useBuilderStore } from "../store";
 import type { BlockStyle } from "../types";
 import { AlignLeft, AlignCenter, AlignRight } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { ImageUploader } from "./ImageUploader";
+import { PageThemePanel } from "./PageThemePanel";
 
 function ColorField({ label, value, onChange }: { label: string; value?: string; onChange: (v: string) => void }) {
   return (
@@ -68,11 +70,8 @@ export function RightPanel() {
 
   if (!block) {
     return (
-      <div className="h-full bg-slate-950/95 border-l border-white/10 text-white/50 flex items-center justify-center text-center px-6">
-        <div>
-          <p className="text-sm font-medium text-white/80">Select an element</p>
-          <p className="text-xs mt-1">Click anything on the canvas to edit its properties</p>
-        </div>
+      <div className="h-full bg-slate-950/95 border-l border-white/10">
+        <PageThemePanel />
       </div>
     );
   }
@@ -98,8 +97,35 @@ export function RightPanel() {
         <div className="flex-1 overflow-y-auto px-4 pb-6 space-y-4">
           <TabsContent value="content" className="space-y-3 mt-0">
             {Object.entries(block.content).map(([key, val]) => {
-              if (key === "links" || typeof val === "object") return null;
+              if (typeof val === "object" && val !== null) return null;
+              const isImageField = /^(imageUrl|src|image)$/i.test(key);
+              const isHtmlField = block.type === "customCode" && key === "html";
               const isLong = typeof val === "string" && val.length > 60;
+              if (isImageField) {
+                return (
+                  <ImageUploader
+                    key={key}
+                    label={key}
+                    value={String(val ?? "")}
+                    onChange={(v) => setC({ [key]: v })}
+                  />
+                );
+              }
+              if (isHtmlField) {
+                return (
+                  <div key={key} className="space-y-1.5">
+                    <Label className="text-xs text-white/70">HTML / CSS / JS</Label>
+                    <textarea
+                      value={String(val ?? "")}
+                      onChange={(e) => setC({ [key]: e.target.value })}
+                      rows={14}
+                      spellCheck={false}
+                      className="w-full text-[11px] font-mono rounded-md bg-slate-900 border border-white/10 px-2 py-1.5 text-emerald-200"
+                    />
+                    <p className="text-[10px] text-white/40">Inline &lt;style&gt; and &lt;script&gt; tags are supported.</p>
+                  </div>
+                );
+              }
               return (
                 <div key={key} className="space-y-1.5">
                   <Label className="text-xs text-white/70 capitalize">{key}</Label>
@@ -120,11 +146,6 @@ export function RightPanel() {
                 </div>
               );
             })}
-            {block.type === "image" && (
-              <p className="text-[10px] text-white/40">
-                Tip: paste any Cloudinary or hosted URL above.
-              </p>
-            )}
           </TabsContent>
 
           <TabsContent value="style" className="space-y-4 mt-0">

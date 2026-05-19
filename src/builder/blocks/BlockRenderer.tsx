@@ -1,5 +1,5 @@
 import { CSSProperties } from "react";
-import { Twitter, Github, Linkedin, Instagram, Facebook, Youtube } from "lucide-react";
+import { Twitter, Github, Linkedin, Instagram, Facebook, Youtube, Check } from "lucide-react";
 import type { Block, BlockStyle, DeviceMode } from "../types";
 
 const styleToCss = (s: BlockStyle, device: DeviceMode): CSSProperties => {
@@ -34,12 +34,8 @@ const styleToCss = (s: BlockStyle, device: DeviceMode): CSSProperties => {
 };
 
 const socialIcon: Record<string, any> = {
-  twitter: Twitter,
-  github: Github,
-  linkedin: Linkedin,
-  instagram: Instagram,
-  facebook: Facebook,
-  youtube: Youtube,
+  twitter: Twitter, github: Github, linkedin: Linkedin,
+  instagram: Instagram, facebook: Facebook, youtube: Youtube,
 };
 
 interface Props {
@@ -62,27 +58,36 @@ export function BlockRenderer({ block, device = "desktop", editable, onEditText 
       : {};
 
   switch (block.type) {
+    case "navbar":
+      return (
+        <nav style={css}>
+          <div className="max-w-6xl mx-auto px-6 flex items-center justify-between gap-6">
+            <span className="font-bold text-lg" {...editableProps("brand")}>{block.content.brand}</span>
+            <div className="hidden md:flex items-center gap-6 text-sm">
+              {(block.content.links || []).map((l: any, i: number) => (
+                <a key={i} href={editable ? undefined : l.url} onClick={(e) => editable && e.preventDefault()} className="opacity-80 hover:opacity-100">{l.label}</a>
+              ))}
+            </div>
+            {block.content.ctaText && (
+              <a href={editable ? undefined : block.content.ctaLink} onClick={(e) => editable && e.preventDefault()} className="text-sm font-semibold bg-red-600 text-white px-4 py-2 rounded-full">
+                <span {...editableProps("ctaText")}>{block.content.ctaText}</span>
+              </a>
+            )}
+          </div>
+        </nav>
+      );
+
     case "hero":
       return (
         <section style={css}>
           <div className="max-w-4xl mx-auto px-6">
             {block.content.eyebrow && (
-              <p className="text-xs uppercase tracking-widest opacity-70 mb-3" {...editableProps("eyebrow")}>
-                {block.content.eyebrow}
-              </p>
+              <p className="text-xs uppercase tracking-widest opacity-70 mb-3" {...editableProps("eyebrow")}>{block.content.eyebrow}</p>
             )}
-            <h1 className="text-5xl md:text-6xl font-bold mb-4" {...editableProps("title")}>
-              {block.content.title}
-            </h1>
-            <p className="text-lg opacity-80 mb-8 max-w-2xl mx-auto" {...editableProps("subtitle")}>
-              {block.content.subtitle}
-            </p>
+            <h1 className="text-5xl md:text-6xl font-bold mb-4" {...editableProps("title")}>{block.content.title}</h1>
+            <p className="text-lg opacity-80 mb-8 max-w-2xl mx-auto" {...editableProps("subtitle")}>{block.content.subtitle}</p>
             {block.content.ctaText && (
-              <a
-                href={editable ? undefined : block.content.ctaLink}
-                onClick={(e) => editable && e.preventDefault()}
-                className="inline-block bg-red-600 hover:bg-red-700 text-white font-semibold px-8 py-3 rounded-full transition"
-              >
+              <a href={editable ? undefined : block.content.ctaLink} onClick={(e) => editable && e.preventDefault()} className="inline-block bg-red-600 hover:bg-red-700 text-white font-semibold px-8 py-3 rounded-full transition">
                 <span {...editableProps("ctaText")}>{block.content.ctaText}</span>
               </a>
             )}
@@ -93,44 +98,141 @@ export function BlockRenderer({ block, device = "desktop", editable, onEditText 
         </section>
       );
 
+    case "about":
+      return (
+        <section style={css}>
+          <div className="max-w-5xl mx-auto px-6 grid md:grid-cols-2 gap-10 items-center">
+            {block.content.imageUrl && <img src={block.content.imageUrl} alt="" className="rounded-2xl w-full object-cover aspect-square" />}
+            <div>
+              <h2 className="text-4xl font-bold mb-4" {...editableProps("title")}>{block.content.title}</h2>
+              <p className="opacity-80 leading-relaxed" {...editableProps("body")}>{block.content.body}</p>
+            </div>
+          </div>
+        </section>
+      );
+
+    case "services":
+      return (
+        <section style={css}>
+          <div className="max-w-6xl mx-auto px-6">
+            <h2 className="text-4xl font-bold mb-10" {...editableProps("title")}>{block.content.title}</h2>
+            <div className="grid md:grid-cols-3 gap-6">
+              {(block.content.items || []).map((it: any, i: number) => (
+                <div key={i} className="p-6 rounded-xl border border-current/10" style={{ borderColor: "rgba(0,0,0,0.08)" }}>
+                  <h3 className="text-xl font-semibold mb-2">{it.title}</h3>
+                  <p className="opacity-70 text-sm">{it.body}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      );
+
+    case "pricing":
+      return (
+        <section style={css}>
+          <div className="max-w-6xl mx-auto px-6">
+            <h2 className="text-4xl font-bold mb-10" {...editableProps("title")}>{block.content.title}</h2>
+            <div className="grid md:grid-cols-3 gap-6">
+              {(block.content.plans || []).map((p: any, i: number) => (
+                <div key={i} className={`p-6 rounded-2xl border ${p.featured ? "border-red-500 shadow-xl scale-[1.02]" : "border-slate-200"}`}>
+                  <p className="text-sm uppercase tracking-wide opacity-60">{p.name}</p>
+                  <p className="text-4xl font-bold my-3">{p.price}</p>
+                  <ul className="space-y-2 text-sm">
+                    {(p.features || []).map((f: string, j: number) => (
+                      <li key={j} className="flex items-center gap-2"><Check className="w-4 h-4 text-red-600" />{f}</li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      );
+
+    case "testimonial":
+      return (
+        <section style={css}>
+          <div className="max-w-5xl mx-auto px-6">
+            <h2 className="text-4xl font-bold mb-10" {...editableProps("title")}>{block.content.title}</h2>
+            <div className="grid md:grid-cols-2 gap-6">
+              {(block.content.items || []).map((t: any, i: number) => (
+                <div key={i} className="p-6 rounded-xl bg-white/5 border border-white/10">
+                  <p className="italic opacity-90 mb-3">"{t.quote}"</p>
+                  <p className="text-sm opacity-60">— {t.author}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      );
+
+    case "gallery":
+      return (
+        <section style={css}>
+          <div className="max-w-6xl mx-auto px-6">
+            <h2 className="text-4xl font-bold mb-10" {...editableProps("title")}>{block.content.title}</h2>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              {(block.content.images || []).map((src: string, i: number) => (
+                <img key={i} src={src} alt="" className="rounded-lg aspect-square object-cover w-full" />
+              ))}
+            </div>
+          </div>
+        </section>
+      );
+
+    case "contact":
+      return (
+        <section style={css}>
+          <div className="max-w-2xl mx-auto px-6">
+            <h2 className="text-4xl font-bold mb-3" {...editableProps("title")}>{block.content.title}</h2>
+            <p className="opacity-80 mb-6" {...editableProps("body")}>{block.content.body}</p>
+            {block.content.email && (
+              <a href={editable ? undefined : `mailto:${block.content.email}`} onClick={(e) => editable && e.preventDefault()} className="inline-block bg-red-600 text-white font-semibold px-8 py-3 rounded-full">
+                <span {...editableProps("ctaText")}>{block.content.ctaText}</span>
+              </a>
+            )}
+          </div>
+        </section>
+      );
+
+    case "footer":
+      return (
+        <footer style={css}>
+          <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-3 text-sm">
+            <p {...editableProps("text")}>{block.content.text}</p>
+            <div className="flex gap-4 opacity-80">
+              {(block.content.links || []).map((l: any, i: number) => (
+                <a key={i} href={editable ? undefined : l.url} onClick={(e) => editable && e.preventDefault()}>{l.label}</a>
+              ))}
+            </div>
+          </div>
+        </footer>
+      );
+
     case "section":
       return (
         <section style={css}>
           <div className="max-w-4xl mx-auto px-6">
-            <h2 className="text-3xl font-bold mb-3" {...editableProps("title")}>
-              {block.content.title}
-            </h2>
-            <p className="opacity-80" {...editableProps("body")}>
-              {block.content.body}
-            </p>
+            <h2 className="text-3xl font-bold mb-3" {...editableProps("title")}>{block.content.title}</h2>
+            <p className="opacity-80" {...editableProps("body")}>{block.content.body}</p>
           </div>
         </section>
       );
 
     case "heading": {
       const Tag = (block.content.level || "h2") as any;
-      return (
-        <Tag style={css} {...editableProps("text")}>
-          {block.content.text}
-        </Tag>
-      );
+      return <Tag style={css} {...editableProps("text")}>{block.content.text}</Tag>;
     }
 
     case "paragraph":
-      return (
-        <p style={css} {...editableProps("text")}>
-          {block.content.text}
-        </p>
-      );
+      return <p style={css} {...editableProps("text")}>{block.content.text}</p>;
 
     case "button":
       return (
         <div style={{ textAlign: css.textAlign as any, paddingTop: css.paddingTop, paddingBottom: css.paddingBottom }}>
-          <a
-            href={editable ? undefined : block.content.link}
-            onClick={(e) => editable && e.preventDefault()}
-            style={{ ...css, display: "inline-block", paddingTop: css.paddingTop, paddingBottom: css.paddingBottom }}
-          >
+          <a href={editable ? undefined : block.content.link} onClick={(e) => editable && e.preventDefault()}
+            style={{ ...css, display: "inline-block" }}>
             <span {...editableProps("text")}>{block.content.text}</span>
           </a>
         </div>
@@ -139,24 +241,30 @@ export function BlockRenderer({ block, device = "desktop", editable, onEditText 
     case "image":
       return (
         <div style={{ textAlign: "center", padding: "8px 0" }}>
-          <img
-            src={block.content.src}
-            alt={block.content.alt || ""}
-            style={css}
-            className="inline-block"
-          />
+          <img src={block.content.src} alt={block.content.alt || ""} style={css} className="inline-block" />
         </div>
       );
 
     case "video":
       return (
         <div style={{ ...css, position: "relative", paddingBottom: "56.25%", height: 0, overflow: "hidden" }}>
-          <iframe
-            src={block.content.src}
-            style={{ position: "absolute", inset: 0, width: "100%", height: "100%", border: 0 }}
-            allowFullScreen
-          />
+          <iframe src={block.content.src} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", border: 0 }} allowFullScreen />
         </div>
+      );
+
+    case "form":
+      return (
+        <form onSubmit={(e) => e.preventDefault()} style={css} className="max-w-md mx-auto space-y-3 px-6">
+          <h3 className="text-xl font-semibold" {...editableProps("title")}>{block.content.title}</h3>
+          {(block.content.fields || []).map((f: any, i: number) => (
+            f.type === "textarea" ? (
+              <textarea key={i} placeholder={f.label} rows={3} className="w-full border border-slate-200 rounded-md px-3 py-2 text-sm" />
+            ) : (
+              <input key={i} type={f.type} placeholder={f.label} className="w-full border border-slate-200 rounded-md px-3 py-2 text-sm" />
+            )
+          ))}
+          <button type="submit" className="bg-red-600 text-white px-5 py-2 rounded-md text-sm font-semibold">{block.content.submitText}</button>
+        </form>
       );
 
     case "divider":
@@ -171,18 +279,17 @@ export function BlockRenderer({ block, device = "desktop", editable, onEditText 
           {(block.content.links || []).map((l: any, i: number) => {
             const Icon = socialIcon[l.platform] || Twitter;
             return (
-              <a
-                key={i}
-                href={editable ? undefined : l.url}
-                onClick={(e) => editable && e.preventDefault()}
-                className="w-10 h-10 rounded-full bg-slate-800 text-white inline-flex items-center justify-center hover:bg-red-600 transition"
-              >
+              <a key={i} href={editable ? undefined : l.url} onClick={(e) => editable && e.preventDefault()}
+                className="w-10 h-10 rounded-full bg-slate-800 text-white inline-flex items-center justify-center hover:bg-red-600 transition">
                 <Icon className="w-4 h-4" />
               </a>
             );
           })}
         </div>
       );
+
+    case "customCode":
+      return <div style={css} dangerouslySetInnerHTML={{ __html: block.content.html || "" }} />;
 
     default:
       return null;

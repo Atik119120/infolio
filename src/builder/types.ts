@@ -8,33 +8,37 @@ export type BlockType =
   | "divider"
   | "spacer"
   | "video"
-  | "social";
+  | "social"
+  | "navbar"
+  | "about"
+  | "services"
+  | "pricing"
+  | "testimonial"
+  | "contact"
+  | "footer"
+  | "gallery"
+  | "form"
+  | "customCode";
 
 export interface BlockStyle {
-  // Typography
   fontSize?: string;
   fontWeight?: string;
   fontFamily?: string;
   color?: string;
   textAlign?: "left" | "center" | "right";
-  // Spacing
   paddingTop?: string;
   paddingBottom?: string;
   paddingLeft?: string;
   paddingRight?: string;
   marginTop?: string;
   marginBottom?: string;
-  // Background & Border
   background?: string;
   borderRadius?: string;
   borderWidth?: string;
   borderColor?: string;
-  // Effects
   boxShadow?: string;
-  // Layout
   width?: string;
   maxWidth?: string;
-  // Visibility
   hideMobile?: boolean;
   hideTablet?: boolean;
   hideDesktop?: boolean;
@@ -47,13 +51,17 @@ export interface Block {
   style: BlockStyle;
 }
 
+export interface PageTheme {
+  primaryColor?: string;
+  background?: string;
+  fontFamily?: string;
+  containerWidth?: string;
+  buttonRadius?: string;
+}
+
 export interface PageContent {
   blocks: Block[];
-  theme?: {
-    primaryColor?: string;
-    background?: string;
-    fontFamily?: string;
-  };
+  theme?: PageTheme;
 }
 
 export type DeviceMode = "desktop" | "tablet" | "mobile";

@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import type { Block, PageContent, DeviceMode, BlockStyle } from "./types";
+import type { Block, PageContent, DeviceMode, BlockStyle, PageTheme } from "./types";
 
 interface HistoryState {
   past: PageContent[];
@@ -16,18 +16,12 @@ interface BuilderStore {
   device: DeviceMode;
   dirty: boolean;
   history: HistoryState;
-  // setters
-  loadPage: (p: {
-    id: string;
-    name: string;
-    slug: string;
-    isPublished: boolean;
-    content: PageContent;
-  }) => void;
+  loadPage: (p: { id: string; name: string; slug: string; isPublished: boolean; content: PageContent }) => void;
   setDevice: (d: DeviceMode) => void;
   setSelected: (id: string | null) => void;
   setName: (n: string) => void;
   setSlug: (s: string) => void;
+  setTheme: (t: Partial<PageTheme>) => void;
   addBlock: (block: Block, index?: number) => void;
   updateBlock: (id: string, patch: Partial<Block>) => void;
   updateBlockContent: (id: string, content: Record<string, any>) => void;
@@ -76,6 +70,12 @@ export const useBuilderStore = create<BuilderStore>((set, get) => ({
   setSelected: (selectedId) => set({ selectedId }),
   setName: (pageName) => set({ pageName, dirty: true }),
   setSlug: (pageSlug) => set({ pageSlug, dirty: true }),
+  setTheme: (t) =>
+    set((s) => ({
+      history: pushHistory(s),
+      content: { ...s.content, theme: { ...(s.content.theme || {}), ...t } },
+      dirty: true,
+    })),
 
   addBlock: (block, index) =>
     set((s) => {

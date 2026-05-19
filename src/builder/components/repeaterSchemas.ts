@@ -122,6 +122,24 @@ export const REPEATER_SCHEMAS: Record<string, RepeaterSchema> = {
     ],
     defaultItem: { label: "New link", url: "#" },
   },
+  "footer.columns": {
+    itemLabel: "Column",
+    titleField: "title",
+    fields: [
+      { name: "title", label: "Column Title", type: "text" },
+      { name: "linksText", label: "Links (one per line — Label|URL)", type: "textarea" },
+    ],
+    defaultItem: { title: "New Column", linksText: "Link one|#\nLink two|#" },
+  },
+  "footer.socialLinks": {
+    itemLabel: "Social",
+    titleField: "platform",
+    fields: [
+      { name: "platform", label: "Platform (twitter/github/linkedin/instagram/facebook/youtube)", type: "text" },
+      { name: "url", label: "URL", type: "url" },
+    ],
+    defaultItem: { platform: "twitter", url: "https://" },
+  },
   "navbar.links": {
     itemLabel: "Link",
     titleField: "label",

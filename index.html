@@ -44,19 +44,29 @@
       "@graph": [
         {
           "@type": "Organization",
-          "name": "Infolio",
+          "name": "Infolio WebBuilder",
+          "alternateName": "Infolio",
           "url": "https://infolio.online/",
-          "logo": "https://infolio.online/apple-touch-icon.png"
+          "logo": "https://infolio.online/apple-touch-icon.png",
+          "sameAs": ["https://infolio.online/"]
         },
         {
           "@type": "WebSite",
-          "name": "Infolio",
+          "name": "Infolio WebBuilder",
           "url": "https://infolio.online/",
           "potentialAction": {
             "@type": "SearchAction",
             "target": "https://infolio.online/?q={search_term_string}",
             "query-input": "required name=search_term_string"
           }
+        },
+        {
+          "@type": "SoftwareApplication",
+          "name": "Infolio WebBuilder",
+          "applicationCategory": "WebApplication",
+          "operatingSystem": "Any",
+          "description": "Free AI no-code website builder for portfolio, personal brand and ecommerce sites with one-click deployment.",
+          "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
         }
       ]
     }

@@ -185,6 +185,8 @@ function HeaderFooterWrap({ label, block }: { label: "Header" | "Footer"; block:
     </div>
   );
 }
+
+export function Canvas() {
   const { content, device, setSelected, setBlocks } = useBuilderStore();
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 6 } }));
   const theme = content.theme || {};

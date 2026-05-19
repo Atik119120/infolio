@@ -167,6 +167,29 @@ function Inner({ portfolio, userId, onUpdate, onSuccess, onError }: SeoSettingsF
         </CardContent>
       </Card>
 
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Code2 className="w-5 h-5 text-primary" /> Google Analytics & Tag Manager
+          </CardTitle>
+          <CardDescription>
+            Track your portfolio visitors. IDs are auto-injected on your published site.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="ga_measurement_id">GA4 Measurement ID</Label>
+            <Input id="ga_measurement_id" name="ga_measurement_id" value={form.ga_measurement_id} onChange={onChange} placeholder="G-XXXXXXXXXX" />
+            <p className="text-xs text-muted-foreground">Find it in Google Analytics → Admin → Data Streams.</p>
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="gtm_id">Google Tag Manager ID</Label>
+            <Input id="gtm_id" name="gtm_id" value={form.gtm_id} onChange={onChange} placeholder="GTM-XXXXXXX" />
+            <p className="text-xs text-muted-foreground">Optional — only if you use GTM instead of (or alongside) GA4.</p>
+          </div>
+        </CardContent>
+      </Card>
+
       <Button onClick={handleSave} disabled={saving} size="lg">
         {saving ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Saving</> : "Save SEO settings"}
       </Button>

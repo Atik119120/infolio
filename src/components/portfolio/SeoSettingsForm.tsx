@@ -16,6 +16,8 @@ interface SeoSettingsFormProps {
     og_image_url?: string | null;
     google_verification?: string | null;
     custom_head_html?: string | null;
+    ga_measurement_id?: string | null;
+    gtm_id?: string | null;
   } | null;
   userId: string;
   onUpdate: () => void;
@@ -45,6 +47,8 @@ function Inner({ portfolio, userId, onUpdate, onSuccess, onError }: SeoSettingsF
     og_image_url: p.og_image_url || "",
     google_verification: p.google_verification || "",
     custom_head_html: p.custom_head_html || "",
+    ga_measurement_id: p.ga_measurement_id || "",
+    gtm_id: p.gtm_id || "",
   });
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -67,6 +71,8 @@ function Inner({ portfolio, userId, onUpdate, onSuccess, onError }: SeoSettingsF
       og_image_url: form.og_image_url.trim() || null,
       google_verification: form.google_verification ? normalizeVerification(form.google_verification) : null,
       custom_head_html: form.custom_head_html.trim() || null,
+      ga_measurement_id: form.ga_measurement_id.trim() || null,
+      gtm_id: form.gtm_id.trim() || null,
     };
     const { error } = await supabase.from("portfolios").update(payload).eq("user_id", userId);
     setSaving(false);
@@ -158,6 +164,29 @@ function Inner({ portfolio, userId, onUpdate, onSuccess, onError }: SeoSettingsF
           <p className="text-xs text-amber-600 dark:text-amber-400">
             ⚠ Only paste code from sources you trust. Invalid HTML can break your page.
           </p>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Code2 className="w-5 h-5 text-primary" /> Google Analytics & Tag Manager
+          </CardTitle>
+          <CardDescription>
+            Track your portfolio visitors. IDs are auto-injected on your published site.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="ga_measurement_id">GA4 Measurement ID</Label>
+            <Input id="ga_measurement_id" name="ga_measurement_id" value={form.ga_measurement_id} onChange={onChange} placeholder="G-XXXXXXXXXX" />
+            <p className="text-xs text-muted-foreground">Find it in Google Analytics → Admin → Data Streams.</p>
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="gtm_id">Google Tag Manager ID</Label>
+            <Input id="gtm_id" name="gtm_id" value={form.gtm_id} onChange={onChange} placeholder="GTM-XXXXXXX" />
+            <p className="text-xs text-muted-foreground">Optional — only if you use GTM instead of (or alongside) GA4.</p>
+          </div>
         </CardContent>
       </Card>
 

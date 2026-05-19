@@ -385,7 +385,9 @@ export type Database = {
           custom_js: string | null
           favicon_url: string | null
           footer_text: string | null
+          ga_measurement_id: string | null
           google_verification: string | null
+          gtm_id: string | null
           headline: string | null
           hero_cta_link: string | null
           hero_cta_text: string | null
@@ -420,7 +422,9 @@ export type Database = {
           custom_js?: string | null
           favicon_url?: string | null
           footer_text?: string | null
+          ga_measurement_id?: string | null
           google_verification?: string | null
+          gtm_id?: string | null
           headline?: string | null
           hero_cta_link?: string | null
           hero_cta_text?: string | null
@@ -455,7 +459,9 @@ export type Database = {
           custom_js?: string | null
           favicon_url?: string | null
           footer_text?: string | null
+          ga_measurement_id?: string | null
           google_verification?: string | null
+          gtm_id?: string | null
           headline?: string | null
           hero_cta_link?: string | null
           hero_cta_text?: string | null

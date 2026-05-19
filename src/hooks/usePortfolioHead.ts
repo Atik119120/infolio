@@ -80,6 +80,32 @@ export function usePortfolioHead({ portfolio, displayName }: PortfolioHeadInput)
 
     if (p.google_verification) setMeta("google-site-verification", p.google_verification);
 
+    // Google Analytics (GA4) injection
+    const injectedScripts: HTMLElement[] = [];
+    if (p.ga_measurement_id && /^G-[A-Z0-9]+$/i.test(p.ga_measurement_id)) {
+      const s1 = document.createElement("script");
+      s1.async = true;
+      s1.src = `https://www.googletagmanager.com/gtag/js?id=${p.ga_measurement_id}`;
+      s1.setAttribute("data-portfolio-custom", "true");
+      document.head.appendChild(s1);
+      injectedScripts.push(s1);
+
+      const s2 = document.createElement("script");
+      s2.setAttribute("data-portfolio-custom", "true");
+      s2.innerHTML = `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${p.ga_measurement_id}');`;
+      document.head.appendChild(s2);
+      injectedScripts.push(s2);
+    }
+
+    // Google Tag Manager injection
+    if (p.gtm_id && /^GTM-[A-Z0-9]+$/i.test(p.gtm_id)) {
+      const s = document.createElement("script");
+      s.setAttribute("data-portfolio-custom", "true");
+      s.innerHTML = `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','${p.gtm_id}');`;
+      document.head.appendChild(s);
+      injectedScripts.push(s);
+    }
+
     // Custom HTML injection
     if (p.custom_head_html) {
       const container = document.createElement("div");

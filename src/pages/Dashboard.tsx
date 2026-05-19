@@ -138,45 +138,90 @@ export default function Dashboard() {
             <p className="mt-2 text-center text-[10px] text-white/40 uppercase tracking-[0.25em]">Dashboard</p>
           </div>
 
+          {/* Plan + Engine pill */}
+          <div className="px-4 pt-4 pb-2 space-y-2">
+            <div className={cn("rounded-lg p-2.5 bg-gradient-to-r text-white", planMeta.color)}>
+              <p className="text-[9px] uppercase tracking-widest opacity-80">Current Plan</p>
+              <p className="text-sm font-semibold">{planMeta.label}</p>
+            </div>
+            <button
+              onClick={() => handleNavigate("/dashboard/engine")}
+              className="w-full rounded-lg p-2.5 bg-white/[0.04] border border-white/10 hover:bg-white/[0.07] text-left transition"
+            >
+              <p className="text-[9px] uppercase tracking-widest text-white/40">Active Engine</p>
+              <p className="text-xs text-white">{engineMeta.icon} {engineMeta.label}</p>
+            </button>
+          </div>
+
           {/* Navigation */}
-          <nav className="flex-1 p-3 space-y-0.5 overflow-y-auto">
+          <nav className="flex-1 px-3 pb-3 space-y-0.5 overflow-y-auto">
             <p className="px-3 py-2 text-[10px] font-medium text-white/30 uppercase tracking-[0.2em]">
               Menu
             </p>
-            {navItems.map((item) => {
-              const isActive = item.hash
-                ? false
-                : location.pathname === item.path ||
+            {nav.map((entry) => {
+              if (!isGroup(entry)) {
+                const item = entry;
+                const active = isLeafActive(item.path, item.hash) ||
                   (item.path === "/dashboard" && location.pathname === "/dashboard");
+                return (
+                  <button
+                    key={item.label}
+                    onClick={() => handleNavigate(item.path, item.hash)}
+                    className={cn(
+                      "w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors",
+                      active
+                        ? "bg-white text-black font-medium"
+                        : "text-white/60 hover:text-white hover:bg-white/5"
+                    )}
+                  >
+                    <item.icon className="w-4 h-4" strokeWidth={1.75} />
+                    <span className="flex-1 text-left">{item.label}</span>
+                  </button>
+                );
+              }
 
+              const groupActive = entry.items.some((i) => location.pathname === i.path);
+              const open = openGroups[entry.label] ?? groupActive;
               return (
-                <button
-                  key={item.label}
-                  onClick={() => {
-                    if (item.hash) {
-                      navigate(item.path);
-                      setTimeout(() => {
-                        const event = new CustomEvent('switchTab', { detail: item.hash });
-                        window.dispatchEvent(event);
-                      }, 100);
-                    } else {
-                      navigate(item.path);
-                    }
-                    setSidebarOpen(false);
-                  }}
-                  className={cn(
-                    "w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors",
-                    isActive
-                      ? "bg-white text-black font-medium"
-                      : "text-white/60 hover:text-white hover:bg-white/5"
+                <div key={entry.label}>
+                  <button
+                    onClick={() => setOpenGroups({ ...openGroups, [entry.label]: !open })}
+                    className={cn(
+                      "w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors",
+                      open ? "text-white bg-white/[0.04]" : "text-white/60 hover:text-white hover:bg-white/5"
+                    )}
+                  >
+                    <entry.icon className="w-4 h-4" strokeWidth={1.75} />
+                    <span className="flex-1 text-left">{entry.label}</span>
+                    <ChevronDown className={cn("w-3.5 h-3.5 transition-transform", open && "rotate-180")} />
+                  </button>
+                  {open && (
+                    <div className="ml-3 mt-0.5 mb-1 pl-3 border-l border-white/10 space-y-0.5">
+                      {entry.items.map((item) => {
+                        const active = isLeafActive(item.path, item.hash);
+                        return (
+                          <button
+                            key={item.label}
+                            onClick={() => handleNavigate(item.path, item.hash)}
+                            className={cn(
+                              "w-full flex items-center gap-2 px-3 py-1.5 rounded-md text-xs transition-colors",
+                              active
+                                ? "bg-white text-black font-medium"
+                                : "text-white/55 hover:text-white hover:bg-white/5"
+                            )}
+                          >
+                            <item.icon className="w-3.5 h-3.5" strokeWidth={1.75} />
+                            <span className="flex-1 text-left">{item.label}</span>
+                          </button>
+                        );
+                      })}
+                    </div>
                   )}
-                >
-                  <item.icon className="w-4 h-4" strokeWidth={1.75} />
-                  <span className="flex-1 text-left">{item.label}</span>
-                </button>
+                </div>
               );
             })}
           </nav>
+
 
           {/* View Portfolio Link */}
           {profile && (

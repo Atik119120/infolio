@@ -198,6 +198,41 @@ export const useBuilderStore = create<BuilderStore>((set, get) => ({
       dirty: true,
     })),
 
+  updateBlockStyleForDevice: (id, device, style) =>
+    set((s) => {
+      if (device === "desktop") {
+        return {
+          history: pushHistory(s),
+          content: {
+            ...s.content,
+            blocks: updateInTree(s.content.blocks, id, (b) => ({
+              ...b,
+              style: { ...b.style, ...style },
+            })),
+          },
+          dirty: true,
+        };
+      }
+      return {
+        history: pushHistory(s),
+        content: {
+          ...s.content,
+          blocks: updateInTree(s.content.blocks, id, (b) => {
+            const resp = b.style.responsive || {};
+            const prev = (resp as any)[device] || {};
+            return {
+              ...b,
+              style: {
+                ...b.style,
+                responsive: { ...resp, [device]: { ...prev, ...style } },
+              },
+            };
+          }),
+        },
+        dirty: true,
+      };
+    }),
+
   removeBlock: (id) =>
     set((s) => ({
       history: pushHistory(s),

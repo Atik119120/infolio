@@ -19,7 +19,20 @@ export type BlockType =
   | "footer"
   | "gallery"
   | "form"
-  | "customCode";
+  | "customCode"
+  | "accordion"
+  | "tabs"
+  | "alert"
+  | "iconBox"
+  | "counter"
+  | "progress"
+  | "stats"
+  | "faq"
+  | "cta"
+  | "team"
+  | "logos"
+  | "countdown"
+  | "carousel";
 
 export interface BlockStyle {
   fontSize?: string;

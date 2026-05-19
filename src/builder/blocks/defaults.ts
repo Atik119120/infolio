@@ -351,7 +351,201 @@ export const BLOCK_DEFS: BlockDef[] = [
       style: {},
     }),
   },
-  // ===== LAYOUT =====
+  // ===== ADVANCED WIDGETS =====
+  {
+    type: "accordion",
+    label: "Accordion",
+    category: "element",
+    icon: "ChevronsUpDown",
+    create: () => ({
+      type: "accordion",
+      content: {
+        items: [
+          { title: "What is Infolio?", body: "A modern visual website builder." },
+          { title: "Is there a free plan?", body: "Yes — the Starter plan is free forever." },
+          { title: "Can I export my site?", body: "Yes, you can publish or export at any time." },
+        ],
+      },
+      style: { paddingTop: "24px", paddingBottom: "24px", color: "#0f172a" },
+    }),
+  },
+  {
+    type: "tabs",
+    label: "Tabs",
+    category: "element",
+    icon: "LayoutPanelTop",
+    create: () => ({
+      type: "tabs",
+      content: {
+        items: [
+          { title: "Overview", body: "An overview of your product or service." },
+          { title: "Features", body: "All the powerful features you offer." },
+          { title: "Pricing", body: "Transparent pricing for everyone." },
+        ],
+      },
+      style: { paddingTop: "24px", paddingBottom: "24px", color: "#0f172a" },
+    }),
+  },
+  {
+    type: "alert",
+    label: "Alert",
+    category: "element",
+    icon: "AlertCircle",
+    create: () => ({
+      type: "alert",
+      content: { title: "Heads up!", body: "This is an important message for your visitors.", variant: "info" },
+      style: { paddingTop: "16px", paddingBottom: "16px", borderRadius: "12px" },
+    }),
+  },
+  {
+    type: "iconBox",
+    label: "Icon Box",
+    category: "element",
+    icon: "Box",
+    create: () => ({
+      type: "iconBox",
+      content: { icon: "Sparkles", title: "Feature title", body: "Short description of this feature." },
+      style: { paddingTop: "24px", paddingBottom: "24px", textAlign: "center", color: "#0f172a" },
+    }),
+  },
+  {
+    type: "counter",
+    label: "Counter",
+    category: "element",
+    icon: "Hash",
+    create: () => ({
+      type: "counter",
+      content: { value: 1200, suffix: "+", label: "Happy customers" },
+      style: { paddingTop: "24px", paddingBottom: "24px", textAlign: "center", color: "#0f172a" },
+    }),
+  },
+  {
+    type: "progress",
+    label: "Progress",
+    category: "element",
+    icon: "BarChart3",
+    create: () => ({
+      type: "progress",
+      content: { label: "Design", value: 80 },
+      style: { paddingTop: "12px", paddingBottom: "12px", color: "#0f172a" },
+    }),
+  },
+  {
+    type: "stats",
+    label: "Stats",
+    category: "section",
+    icon: "TrendingUp",
+    create: () => ({
+      type: "stats",
+      content: {
+        items: [
+          { value: "10K+", label: "Users" },
+          { value: "99%", label: "Uptime" },
+          { value: "24/7", label: "Support" },
+          { value: "150+", label: "Countries" },
+        ],
+      },
+      style: { paddingTop: "64px", paddingBottom: "64px", background: "#0f172a", color: "#ffffff", textAlign: "center" },
+    }),
+  },
+  {
+    type: "faq",
+    label: "FAQ",
+    category: "section",
+    icon: "HelpCircle",
+    create: () => ({
+      type: "faq",
+      content: {
+        title: "Frequently asked questions",
+        items: [
+          { question: "How do I get started?", answer: "Sign up and start building right away." },
+          { question: "Can I cancel anytime?", answer: "Yes, cancel anytime — no questions asked." },
+          { question: "Do you offer refunds?", answer: "We offer a 14-day money-back guarantee." },
+        ],
+      },
+      style: { paddingTop: "80px", paddingBottom: "80px", background: "#ffffff", color: "#0f172a" },
+    }),
+  },
+  {
+    type: "cta",
+    label: "CTA",
+    category: "section",
+    icon: "Megaphone",
+    create: () => ({
+      type: "cta",
+      content: {
+        title: "Ready to get started?",
+        body: "Join thousands building beautiful sites with Infolio.",
+        ctaText: "Start free",
+        ctaLink: "#",
+      },
+      style: {
+        paddingTop: "80px", paddingBottom: "80px",
+        background: "linear-gradient(135deg,#dc2626 0%,#7c3aed 100%)",
+        color: "#ffffff", textAlign: "center",
+      },
+    }),
+  },
+  {
+    type: "team",
+    label: "Team",
+    category: "section",
+    icon: "Users",
+    create: () => ({
+      type: "team",
+      content: {
+        title: "Meet the team",
+        members: [
+          { name: "Alex Park", role: "Founder", image: "https://i.pravatar.cc/200?img=12" },
+          { name: "Riya Sen", role: "Designer", image: "https://i.pravatar.cc/200?img=47" },
+          { name: "Jon Lee", role: "Engineer", image: "https://i.pravatar.cc/200?img=33" },
+        ],
+      },
+      style: { paddingTop: "80px", paddingBottom: "80px", background: "#ffffff", color: "#0f172a", textAlign: "center" },
+    }),
+  },
+  {
+    type: "logos",
+    label: "Logos",
+    category: "section",
+    icon: "Building2",
+    create: () => ({
+      type: "logos",
+      content: {
+        title: "Trusted by teams worldwide",
+        logos: ["Acme", "Globex", "Soylent", "Initech", "Umbrella", "Hooli"],
+      },
+      style: { paddingTop: "48px", paddingBottom: "48px", background: "#f8fafc", color: "#475569", textAlign: "center" },
+    }),
+  },
+  {
+    type: "countdown",
+    label: "Countdown",
+    category: "element",
+    icon: "Timer",
+    create: () => ({
+      type: "countdown",
+      content: { target: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(), label: "Launching in" },
+      style: { paddingTop: "32px", paddingBottom: "32px", textAlign: "center", color: "#0f172a" },
+    }),
+  },
+  {
+    type: "carousel",
+    label: "Carousel",
+    category: "element",
+    icon: "GalleryHorizontal",
+    create: () => ({
+      type: "carousel",
+      content: {
+        images: [
+          "https://images.unsplash.com/photo-1503264116251-35a269479413?w=1200",
+          "https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=1200",
+          "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=1200",
+        ],
+      },
+      style: { paddingTop: "24px", paddingBottom: "24px", borderRadius: "16px" },
+    }),
+  },
   {
     type: "container",
     label: "Container",

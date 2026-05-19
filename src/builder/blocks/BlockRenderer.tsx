@@ -4,6 +4,11 @@ import type { Block, BlockStyle, DeviceMode } from "../types";
 import { useBuilderStore } from "../store";
 import { createBlock } from "./defaults";
 import { cn } from "@/lib/utils";
+import {
+  AccordionWidget, TabsWidget, AlertWidget, IconBoxWidget, CounterWidget,
+  ProgressWidget, StatsWidget, FaqWidget, CtaWidget, TeamWidget, LogosWidget,
+  CountdownWidget, CarouselWidget,
+} from "./AdvancedWidgets";
 
 const styleToCss = (s: BlockStyle, device: DeviceMode): CSSProperties => {
   if (
@@ -311,6 +316,20 @@ export function BlockRenderer({ block, device = "desktop", editable, editorMode,
 
     case "customCode":
       return <div style={css} dangerouslySetInnerHTML={{ __html: block.content.html || "" }} />;
+
+    case "accordion": return <AccordionWidget block={block} css={css} editable={editable} onEditText={onEditText} />;
+    case "tabs":      return <TabsWidget block={block} css={css} editable={editable} onEditText={onEditText} />;
+    case "alert":     return <AlertWidget block={block} css={css} editable={editable} onEditText={onEditText} />;
+    case "iconBox":   return <IconBoxWidget block={block} css={css} editable={editable} onEditText={onEditText} />;
+    case "counter":   return <CounterWidget block={block} css={css} editable={editable} onEditText={onEditText} />;
+    case "progress":  return <ProgressWidget block={block} css={css} editable={editable} onEditText={onEditText} />;
+    case "stats":     return <StatsWidget block={block} css={css} editable={editable} onEditText={onEditText} />;
+    case "faq":       return <FaqWidget block={block} css={css} editable={editable} onEditText={onEditText} />;
+    case "cta":       return <CtaWidget block={block} css={css} editable={editable} onEditText={onEditText} />;
+    case "team":      return <TeamWidget block={block} css={css} editable={editable} onEditText={onEditText} />;
+    case "logos":     return <LogosWidget block={block} css={css} editable={editable} onEditText={onEditText} />;
+    case "countdown": return <CountdownWidget block={block} css={css} editable={editable} onEditText={onEditText} />;
+    case "carousel":  return <CarouselWidget block={block} css={css} editable={editable} onEditText={onEditText} />;
 
     default:
       return null;

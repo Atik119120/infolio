@@ -167,7 +167,7 @@ export function FaqWidget({ block, css, editable, onEditText }: Common) {
   return (
     <section style={css}>
       <div className="max-w-3xl mx-auto px-6">
-        <h2 className="text-4xl font-bold mb-8 text-center" {...editProps(editable, onEditText, "title")}>{block.content.title}</h2>
+        {block.content.title && <h2 className="text-4xl font-bold mb-8 text-center" {...editProps(editable, onEditText, "title")}>{block.content.title}</h2>}
         <div className="space-y-2">
           {(block.content.items || []).map((it: any, i: number) => {
             const isOpen = open === i;
@@ -191,7 +191,7 @@ export function CtaWidget({ block, css, editable, onEditText }: Common) {
   return (
     <section style={css}>
       <div className="max-w-3xl mx-auto px-6">
-        <h2 className="text-4xl md:text-5xl font-bold mb-3" {...editProps(editable, onEditText, "title")}>{block.content.title}</h2>
+        {block.content.title && <h2 className="text-4xl md:text-5xl font-bold mb-3" {...editProps(editable, onEditText, "title")}>{block.content.title}</h2>}
         <p className="opacity-90 text-lg mb-8" {...editProps(editable, onEditText, "body")}>{block.content.body}</p>
         {block.content.ctaText && (
           <a href={editable ? undefined : block.content.ctaLink} onClick={(e) => editable && e.preventDefault()}
@@ -208,7 +208,7 @@ export function TeamWidget({ block, css, editable, onEditText }: Common) {
   return (
     <section style={css}>
       <div className="max-w-6xl mx-auto px-6">
-        <h2 className="text-4xl font-bold mb-10" {...editProps(editable, onEditText, "title")}>{block.content.title}</h2>
+        {block.content.title && <h2 className="text-4xl font-bold mb-10" {...editProps(editable, onEditText, "title")}>{block.content.title}</h2>}
         <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-8">
           {(block.content.members || []).map((m: any, i: number) => (
             <div key={i}>

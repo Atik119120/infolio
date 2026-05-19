@@ -454,33 +454,41 @@ export function ThemeSelector({ currentTheme, userId, onUpdate }: ThemeSelectorP
                             </Dialog>
                           </div>
                           <p className="text-xs text-muted-foreground line-clamp-2">{theme.description}</p>
-                          <Button
-                            className="mt-4 w-full"
-                            variant={isSelected ? "secondary" : isUnlocked ? "default" : "outline"}
-                            size="sm"
-                            disabled={isSelected || saving}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleThemeChange(theme.value);
-                            }}
-                          >
-                            {isSelected ? (
-                              <>
-                                <Check className="w-4 h-4 mr-2" />
-                                Selected
-                              </>
-                            ) : isUnlocked ? (
-                              <>
-                                <Palette className="w-4 h-4 mr-2" />
-                                Select Theme
-                              </>
-                            ) : (
-                              <>
-                                <Lock className="w-4 h-4 mr-2" />
-                                Unlock
-                              </>
+                          <div className="mt-4 flex gap-2">
+                            <Button
+                              className="flex-1"
+                              variant={isSelected ? "secondary" : isUnlocked ? "default" : "outline"}
+                              size="sm"
+                              disabled={isSelected || saving}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleThemeChange(theme.value);
+                              }}
+                            >
+                              {isSelected ? (
+                                <><Check className="w-4 h-4 mr-1.5" />Selected</>
+                              ) : isUnlocked ? (
+                                <><Palette className="w-4 h-4 mr-1.5" />Select</>
+                              ) : (
+                                <><Lock className="w-4 h-4 mr-1.5" />Unlock</>
+                              )}
+                            </Button>
+                            {isUnlocked && !theme.value.startsWith("admin:") && theme.value !== "custom-code" && (
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                className="border-red-500/40 text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  navigate(`/customize/${theme.value}`);
+                                }}
+                                title="Open visual builder pre-loaded with this theme"
+                              >
+                                <Wand2 className="w-4 h-4 mr-1.5" />
+                                Customize
+                              </Button>
                             )}
-                          </Button>
+                          </div>
                         </div>
                       </div>
                     );

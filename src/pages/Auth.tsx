@@ -384,24 +384,6 @@ export default function Auth() {
                       </p>
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="signup-phone" className="flex items-center gap-2">
-                        <Phone className="w-4 h-4" />
-                        Phone Number
-                      </Label>
-                      <Input
-                        id="signup-phone"
-                        type="tel"
-                        placeholder="+8801XXXXXXXXX"
-                        value={phone}
-                        onChange={(e) => setPhone(e.target.value)}
-                        className={errors.phone ? "border-destructive" : ""}
-                        disabled={isLoading}
-                      />
-                      {errors.phone && (
-                        <p className="text-sm text-destructive">{errors.phone}</p>
-                      )}
-                    </div>
-                    <div className="space-y-2">
                       <Label htmlFor="signup-password" className="flex items-center gap-2">
                         <Lock className="w-4 h-4" />
                         Password

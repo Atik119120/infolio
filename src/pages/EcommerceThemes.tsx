@@ -5,8 +5,8 @@ import { Helmet } from "react-helmet-async";
 import { Crown, ShoppingBag, Sparkles, ExternalLink, Wand2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { SiteHeader } from "@/components/home/SiteHeader";
-import { Footer } from "@/components/home/Footer";
+import SiteHeader from "@/components/home/SiteHeader";
+import Footer from "@/components/home/Footer";
 import { ECOMMERCE_TEMPLATES } from "@/builder/marketplace/ecommerceTemplates";
 
 const CATS = ["All", "Fashion", "Electronics", "Food", "Service", "Digital"];

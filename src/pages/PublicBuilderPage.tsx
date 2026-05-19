@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { BlockRenderer } from "@/builder/blocks/BlockRenderer";
+import { ThemeStyle } from "@/builder/components/ThemeStyle";
 import type { PageContent } from "@/builder/types";
 
 export default function PublicBuilderPage() {

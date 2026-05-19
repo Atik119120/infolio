@@ -1,4 +1,4 @@
-import { CSSProperties, ReactNode } from "react";
+import { CSSProperties } from "react";
 import { Twitter, Github, Linkedin, Instagram, Facebook, Youtube, Check, Plus } from "lucide-react";
 import type { Block, BlockStyle, DeviceMode } from "../types";
 import { useBuilderStore } from "../store";

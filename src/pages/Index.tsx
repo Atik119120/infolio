@@ -8,6 +8,8 @@ import { motion } from "framer-motion";
 import {
   ArrowRight, Zap, Globe, Palette, Users, Sparkles, Check,
   ShieldCheck, ArrowUpRight, Plus, Minus, Star, BadgeCheck, Crown, X, Menu,
+  Github, Cloud, Code2, Rocket, Server, Search, BarChart3, ShoppingBag,
+  Layers, FolderGit2, Gauge, FileCode, Lock, Database,
 } from "lucide-react";
 import ThemeDemoSection from "@/components/home/ThemeDemoSection";
 import Footer from "@/components/home/Footer";

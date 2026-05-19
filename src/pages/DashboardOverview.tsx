@@ -281,3 +281,29 @@ export default function DashboardOverview() {
     </div>
   );
 }
+
+function UsageTile({ icon, label, used, total, unit, tone }: { icon: React.ReactNode; label: string; used: number; total: number; unit: string; tone: "primary" | "secondary" | "accent" }) {
+  const pct = Math.min(Math.round((used / total) * 100), 100);
+  const tones = {
+    primary: "bg-primary/15 text-primary",
+    secondary: "bg-secondary/15 text-secondary",
+    accent: "bg-accent/15 text-accent",
+  } as const;
+  return (
+    <Card className="overflow-hidden">
+      <CardContent className="p-4 space-y-3">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className={`w-8 h-8 rounded-lg grid place-items-center ${tones[tone]}`}>{icon}</div>
+            <span className="text-sm font-medium">{label}</span>
+          </div>
+          <span className="text-xs text-muted-foreground">{pct}%</span>
+        </div>
+        <Progress value={pct} className="h-1.5" />
+        <p className="text-xs text-muted-foreground">
+          <span className="font-semibold text-foreground">{used}{unit}</span> of {total}{unit} used
+        </p>
+      </CardContent>
+    </Card>
+  );
+}

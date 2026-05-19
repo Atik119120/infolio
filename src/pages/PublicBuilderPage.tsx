@@ -18,7 +18,7 @@ export default function PublicBuilderPage() {
     (async () => {
       const { data } = await supabase
         .from("builder_pages")
-        .select("name,published_content,is_published")
+        .select("name,published_content,is_published,user_id")
         .eq("slug", slug)
         .eq("is_published", true)
         .maybeSingle();
@@ -29,6 +29,7 @@ export default function PublicBuilderPage() {
       setContent(data.published_content as any);
       setName(data.name);
       document.title = `${data.name} — Infolio`;
+      if (data.user_id) trackView({ ownerId: data.user_id, pageType: "builder", slug });
     })();
   }, [slug]);
 

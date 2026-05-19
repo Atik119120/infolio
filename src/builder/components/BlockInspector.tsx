@@ -364,6 +364,7 @@ export function BlockInspector({ block }: { block: Block }) {
                 </div>
               );
             })}
+            </>)}
           </TabsContent>
 
           {/* ============== STYLE ============== */}

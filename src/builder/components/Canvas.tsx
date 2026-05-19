@@ -177,10 +177,7 @@ export function Canvas() {
       >
         <ThemeStyle theme={theme} scopeId="builder-canvas-scope" />
         {content.header && (
-          <div className="relative">
-            <div className="absolute top-1 left-1 z-10 text-[9px] uppercase tracking-widest bg-pink-600/90 text-white px-1.5 py-0.5 rounded">Header</div>
-            <BlockRenderer block={content.header} />
-          </div>
+          <HeaderFooterWrap label="Header" block={content.header} />
         )}
         {content.blocks.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-[60vh] text-slate-400 text-center px-6">
@@ -198,10 +195,7 @@ export function Canvas() {
           </DndContext>
         )}
         {content.footer && (
-          <div className="relative">
-            <div className="absolute top-1 left-1 z-10 text-[9px] uppercase tracking-widest bg-pink-600/90 text-white px-1.5 py-0.5 rounded">Footer</div>
-            <BlockRenderer block={content.footer} />
-          </div>
+          <HeaderFooterWrap label="Footer" block={content.footer} />
         )}
       </motion.div>
     </div>

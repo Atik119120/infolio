@@ -161,7 +161,7 @@ export function Canvas() {
 
   return (
     <div
-      className="h-full overflow-auto bg-slate-200/70 dark:bg-slate-800/40 py-8 px-4 flex justify-center"
+      className="h-full overflow-y-auto overflow-x-hidden bg-slate-200/70 dark:bg-slate-800/40 py-8 px-4 flex justify-center items-start"
       onClick={() => setSelected(null)}
     >
       <motion.div

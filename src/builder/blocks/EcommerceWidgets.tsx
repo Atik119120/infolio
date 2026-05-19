@@ -1,6 +1,7 @@
 import { CSSProperties, useState } from "react";
-import { ShoppingCart, Heart, Eye, Star, Tag } from "lucide-react";
+import { ShoppingCart, Heart, Eye, Star, Tag, Check } from "lucide-react";
 import type { Block } from "../types";
+import { useCartStore, parsePrice } from "../cart/cartStore";
 
 type Common = { block: Block; css: CSSProperties; editable?: boolean; onEditText?: (f: string, v: string) => void };
 

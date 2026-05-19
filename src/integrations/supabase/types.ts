@@ -618,6 +618,7 @@ export type Database = {
         Row: {
           about_image_url: string | null
           about_text: string | null
+          active_engine: string
           bio: string | null
           brand_name: string | null
           browser_title: string | null
@@ -626,6 +627,7 @@ export type Database = {
           custom_head_html: string | null
           custom_html: string | null
           custom_js: string | null
+          engine_backups: Json
           favicon_url: string | null
           footer_text: string | null
           ga_measurement_id: string | null
@@ -651,10 +653,12 @@ export type Database = {
           updated_at: string
           user_id: string
           website: string | null
+          website_type: string
         }
         Insert: {
           about_image_url?: string | null
           about_text?: string | null
+          active_engine?: string
           bio?: string | null
           brand_name?: string | null
           browser_title?: string | null
@@ -663,6 +667,7 @@ export type Database = {
           custom_head_html?: string | null
           custom_html?: string | null
           custom_js?: string | null
+          engine_backups?: Json
           favicon_url?: string | null
           footer_text?: string | null
           ga_measurement_id?: string | null
@@ -688,10 +693,12 @@ export type Database = {
           updated_at?: string
           user_id: string
           website?: string | null
+          website_type?: string
         }
         Update: {
           about_image_url?: string | null
           about_text?: string | null
+          active_engine?: string
           bio?: string | null
           brand_name?: string | null
           browser_title?: string | null
@@ -700,6 +707,7 @@ export type Database = {
           custom_head_html?: string | null
           custom_html?: string | null
           custom_js?: string | null
+          engine_backups?: Json
           favicon_url?: string | null
           footer_text?: string | null
           ga_measurement_id?: string | null
@@ -725,6 +733,7 @@ export type Database = {
           updated_at?: string
           user_id?: string
           website?: string | null
+          website_type?: string
         }
         Relationships: []
       }

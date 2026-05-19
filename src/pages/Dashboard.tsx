@@ -5,7 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { openWhatsApp } from "@/lib/whatsapp";
-import { MessageCircle } from "lucide-react";
+import { MessageCircle, ChevronDown } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,28 +15,18 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
-  LayoutDashboard,
-  FileEdit,
   Settings,
   ExternalLink,
   LogOut,
   Menu,
   X,
   Eye,
-  User,
-  Sparkles,
-  ChevronRight,
-  Zap,
-  ShoppingBag,
-  Globe2,
-  Rocket,
-  Wand2,
-  BarChart3,
-  Package,
-  Store,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import alphaLogo from "@/assets/alpha-portfolio-logo.png";
+import { useWorkspace } from "@/hooks/useWorkspace";
+import { buildSidebar, isGroup } from "@/components/dashboard/sidebarConfig";
+import { PLAN_META, ENGINE_META } from "@/lib/features";
 
 interface Profile {
   username: string;
@@ -44,12 +34,15 @@ interface Profile {
   avatar_url: string | null;
 }
 
+
 export default function Dashboard() {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({});
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const workspace = useWorkspace();
 
   useEffect(() => {
     if (user) {
@@ -71,16 +64,12 @@ export default function Dashboard() {
 
   const fetchProfile = async () => {
     if (!user) return;
-    
     const { data } = await supabase
       .from("profiles")
       .select("username, display_name, avatar_url")
       .eq("user_id", user.id)
       .single();
-    
-    if (data) {
-      setProfile(data);
-    }
+    if (data) setProfile(data);
   };
 
   const handleSignOut = async () => {
@@ -88,19 +77,27 @@ export default function Dashboard() {
     navigate("/");
   };
 
-  const navItems = [
-    { icon: LayoutDashboard, label: "Overview", path: "/dashboard" },
-    { icon: User, label: "Profile", path: "/dashboard/edit", hash: "basic" },
-    { icon: FileEdit, label: "Edit Portfolio", path: "/dashboard/edit" },
-    { icon: Wand2, label: "Page Builder", path: "/dashboard/builder" },
-    { icon: Package, label: "Products", path: "/dashboard/products" },
-    { icon: ShoppingBag, label: "Orders", path: "/dashboard/orders" },
-    { icon: Store, label: "Store Settings", path: "/dashboard/store" },
-    { icon: BarChart3, label: "Analytics", path: "/dashboard/analytics" },
-    { icon: Globe2, label: "Domain Status", path: "/dashboard/domain-status" },
-    { icon: Rocket, label: "Deploy", path: "/dashboard/deploy" },
-    { icon: Settings, label: "Settings", path: "/dashboard/settings" },
-  ];
+  const nav = buildSidebar(workspace);
+  const planMeta = PLAN_META[workspace.plan] || PLAN_META.basic;
+  const engineMeta = ENGINE_META[workspace.engine];
+
+  const isLeafActive = (path: string, hash?: string) => {
+    if (hash) return false;
+    return location.pathname === path;
+  };
+
+  const handleNavigate = (path: string, hash?: string) => {
+    if (hash) {
+      navigate(path);
+      setTimeout(() => {
+        window.dispatchEvent(new CustomEvent("switchTab", { detail: hash }));
+      }, 100);
+    } else {
+      navigate(path);
+    }
+    setSidebarOpen(false);
+  };
+
 
   return (
     <div className="min-h-screen bg-black text-white">
@@ -141,45 +138,90 @@ export default function Dashboard() {
             <p className="mt-2 text-center text-[10px] text-white/40 uppercase tracking-[0.25em]">Dashboard</p>
           </div>
 
+          {/* Plan + Engine pill */}
+          <div className="px-4 pt-4 pb-2 space-y-2">
+            <div className={cn("rounded-lg p-2.5 bg-gradient-to-r text-white", planMeta.color)}>
+              <p className="text-[9px] uppercase tracking-widest opacity-80">Current Plan</p>
+              <p className="text-sm font-semibold">{planMeta.label}</p>
+            </div>
+            <button
+              onClick={() => handleNavigate("/dashboard/engine")}
+              className="w-full rounded-lg p-2.5 bg-white/[0.04] border border-white/10 hover:bg-white/[0.07] text-left transition"
+            >
+              <p className="text-[9px] uppercase tracking-widest text-white/40">Active Engine</p>
+              <p className="text-xs text-white">{engineMeta.icon} {engineMeta.label}</p>
+            </button>
+          </div>
+
           {/* Navigation */}
-          <nav className="flex-1 p-3 space-y-0.5 overflow-y-auto">
+          <nav className="flex-1 px-3 pb-3 space-y-0.5 overflow-y-auto">
             <p className="px-3 py-2 text-[10px] font-medium text-white/30 uppercase tracking-[0.2em]">
               Menu
             </p>
-            {navItems.map((item) => {
-              const isActive = item.hash
-                ? false
-                : location.pathname === item.path ||
+            {nav.map((entry) => {
+              if (!isGroup(entry)) {
+                const item = entry;
+                const active = isLeafActive(item.path, item.hash) ||
                   (item.path === "/dashboard" && location.pathname === "/dashboard");
+                return (
+                  <button
+                    key={item.label}
+                    onClick={() => handleNavigate(item.path, item.hash)}
+                    className={cn(
+                      "w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors",
+                      active
+                        ? "bg-white text-black font-medium"
+                        : "text-white/60 hover:text-white hover:bg-white/5"
+                    )}
+                  >
+                    <item.icon className="w-4 h-4" strokeWidth={1.75} />
+                    <span className="flex-1 text-left">{item.label}</span>
+                  </button>
+                );
+              }
 
+              const groupActive = entry.items.some((i) => location.pathname === i.path);
+              const open = openGroups[entry.label] ?? groupActive;
               return (
-                <button
-                  key={item.label}
-                  onClick={() => {
-                    if (item.hash) {
-                      navigate(item.path);
-                      setTimeout(() => {
-                        const event = new CustomEvent('switchTab', { detail: item.hash });
-                        window.dispatchEvent(event);
-                      }, 100);
-                    } else {
-                      navigate(item.path);
-                    }
-                    setSidebarOpen(false);
-                  }}
-                  className={cn(
-                    "w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors",
-                    isActive
-                      ? "bg-white text-black font-medium"
-                      : "text-white/60 hover:text-white hover:bg-white/5"
+                <div key={entry.label}>
+                  <button
+                    onClick={() => setOpenGroups({ ...openGroups, [entry.label]: !open })}
+                    className={cn(
+                      "w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors",
+                      open ? "text-white bg-white/[0.04]" : "text-white/60 hover:text-white hover:bg-white/5"
+                    )}
+                  >
+                    <entry.icon className="w-4 h-4" strokeWidth={1.75} />
+                    <span className="flex-1 text-left">{entry.label}</span>
+                    <ChevronDown className={cn("w-3.5 h-3.5 transition-transform", open && "rotate-180")} />
+                  </button>
+                  {open && (
+                    <div className="ml-3 mt-0.5 mb-1 pl-3 border-l border-white/10 space-y-0.5">
+                      {entry.items.map((item) => {
+                        const active = isLeafActive(item.path, item.hash);
+                        return (
+                          <button
+                            key={item.label}
+                            onClick={() => handleNavigate(item.path, item.hash)}
+                            className={cn(
+                              "w-full flex items-center gap-2 px-3 py-1.5 rounded-md text-xs transition-colors",
+                              active
+                                ? "bg-white text-black font-medium"
+                                : "text-white/55 hover:text-white hover:bg-white/5"
+                            )}
+                          >
+                            <item.icon className="w-3.5 h-3.5" strokeWidth={1.75} />
+                            <span className="flex-1 text-left">{item.label}</span>
+                          </button>
+                        );
+                      })}
+                    </div>
                   )}
-                >
-                  <item.icon className="w-4 h-4" strokeWidth={1.75} />
-                  <span className="flex-1 text-left">{item.label}</span>
-                </button>
+                </div>
               );
             })}
           </nav>
+
 
           {/* View Portfolio Link */}
           {profile && (
@@ -256,11 +298,19 @@ export default function Dashboard() {
             </Button>
 
             <h1 className="text-sm font-medium text-white tracking-tight">
-              {navItems.find(item =>
-                !item.hash && (location.pathname === item.path ||
-                (item.path === "/dashboard" && location.pathname === "/dashboard"))
-              )?.label || "Dashboard"}
+              {(() => {
+                for (const e of nav) {
+                  if (isGroup(e)) {
+                    const m = e.items.find((i) => i.path === location.pathname);
+                    if (m) return `${e.label} · ${m.label}`;
+                  } else if (e.path === location.pathname) {
+                    return e.label;
+                  }
+                }
+                return "Dashboard";
+              })()}
             </h1>
+
           </div>
 
           <div className="flex items-center gap-2">

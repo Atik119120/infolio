@@ -26,6 +26,8 @@ const DashboardDeploy = lazy(() => import("./pages/DashboardDeploy"));
 const DashboardAnalytics = lazy(() => import("./pages/DashboardAnalytics"));
 const DashboardProducts = lazy(() => import("./pages/DashboardProducts"));
 const DashboardOrders = lazy(() => import("./pages/DashboardOrders"));
+const DashboardEngine = lazy(() => import("./pages/DashboardEngine"));
+const DashboardSEO = lazy(() => import("./pages/DashboardSEO"));
 const DashboardStoreSettings = lazy(() => import("./pages/DashboardStoreSettings"));
 const PublicPortfolio = lazy(() => import("./pages/PublicPortfolio"));
 const ThemeDemo = lazy(() => import("./pages/ThemeDemo"));
@@ -107,6 +109,8 @@ const App = () => (
                   <Route path="products" element={<DashboardProducts />} />
                   <Route path="orders" element={<DashboardOrders />} />
                   <Route path="store" element={<DashboardStoreSettings />} />
+                  <Route path="engine" element={<DashboardEngine />} />
+                  <Route path="seo" element={<DashboardSEO />} />
                 </Route>
                 <Route path="/admin" element={
                   <AdminRoute>

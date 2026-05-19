@@ -316,3 +316,75 @@ export function BlockRenderer({ block, device = "desktop", editable, editorMode,
       return null;
   }
 }
+
+function ContainerBlock({
+  block,
+  css,
+  device,
+  editorMode,
+}: {
+  block: Block;
+  css: CSSProperties;
+  device: DeviceMode;
+  editorMode?: boolean;
+}) {
+  const { selectedId, setSelected, updateBlockContent, addBlockInside } = useBuilderStore();
+  const isEmpty = !block.children || block.children.length === 0;
+  const isGrid = css.display === "grid";
+
+  return (
+    <div style={{ ...css, position: "relative" }}>
+      {(block.children || []).map((child) => {
+        const isSel = selectedId === child.id;
+        if (!editorMode) {
+          return <BlockRenderer key={child.id} block={child} device={device} />;
+        }
+        return (
+          <div
+            key={child.id}
+            onClick={(e) => {
+              e.stopPropagation();
+              setSelected(child.id);
+            }}
+            className={cn(
+              "relative cursor-pointer transition min-w-0",
+              !isGrid && "flex-1",
+              "hover:outline hover:outline-1 hover:outline-red-400/40 hover:outline-offset-2",
+              isSel && "outline outline-2 outline-red-500 outline-offset-2 rounded-sm"
+            )}
+          >
+            <BlockRenderer
+              block={child}
+              device={device}
+              editable={isSel}
+              editorMode
+              onEditText={(field, value) =>
+                updateBlockContent(child.id, { [field]: value })
+              }
+            />
+          </div>
+        );
+      })}
+
+      {editorMode && (
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            addBlockInside(block.id, createBlock("paragraph"));
+          }}
+          className="absolute -bottom-3 left-1/2 -translate-x-1/2 z-10 w-6 h-6 rounded-full bg-red-600 text-white inline-flex items-center justify-center shadow-lg hover:scale-110 transition"
+          title="Add child block"
+        >
+          <Plus className="w-3.5 h-3.5" />
+        </button>
+      )}
+
+      {editorMode && isEmpty && (
+        <div className="w-full text-center text-xs text-slate-400 italic py-4 border-2 border-dashed border-slate-300 rounded">
+          Empty container — click + to add
+        </div>
+      )}
+    </div>
+  );
+}
+

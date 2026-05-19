@@ -108,8 +108,10 @@ function SortableBlock({ block }: { block: Block }) {
             block={block}
             device={device}
             editable={isSelected}
+            editorMode
             onEditText={(field, value) => updateBlockContent(block.id, { [field]: value })}
           />
+
         </div>
       </ContextMenuTrigger>
       <ContextMenuContent className="w-52">

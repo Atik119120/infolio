@@ -149,6 +149,100 @@ export function RightPanel() {
           </TabsContent>
 
           <TabsContent value="style" className="space-y-4 mt-0">
+            {block.type === "container" && (
+              <div className="space-y-3 pb-3 border-b border-white/10">
+                <p className="text-[10px] uppercase tracking-widest text-red-400/80">Layout</p>
+                <div className="space-y-1.5">
+                  <Label className="text-xs text-white/70">Display</Label>
+                  <div className="grid grid-cols-3 gap-1">
+                    {(["flex", "grid", "block"] as const).map((d) => (
+                      <button
+                        key={d}
+                        onClick={() => setS({ display: d })}
+                        className={cn(
+                          "h-8 text-xs rounded-md border border-white/10 capitalize",
+                          (s.display || "flex") === d
+                            ? "bg-red-500/20 border-red-500/50 text-white"
+                            : "bg-white/5 text-white/70"
+                        )}
+                      >
+                        {d}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {(s.display || "flex") === "flex" && (
+                  <div className="space-y-1.5">
+                    <Label className="text-xs text-white/70">Direction</Label>
+                    <div className="grid grid-cols-2 gap-1">
+                      {(["row", "column"] as const).map((d) => (
+                        <button
+                          key={d}
+                          onClick={() => setS({ flexDirection: d })}
+                          className={cn(
+                            "h-8 text-xs rounded-md border border-white/10 capitalize",
+                            (s.flexDirection || "row") === d
+                              ? "bg-red-500/20 border-red-500/50 text-white"
+                              : "bg-white/5 text-white/70"
+                          )}
+                        >
+                          {d}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {s.display === "grid" && (
+                  <div className="space-y-1.5">
+                    <div className="flex items-center justify-between">
+                      <Label className="text-xs text-white/70">Grid Columns</Label>
+                      <span className="text-[11px] text-white/50">{s.gridColumns || 3}</span>
+                    </div>
+                    <Slider
+                      value={[s.gridColumns || 3]}
+                      min={1}
+                      max={6}
+                      step={1}
+                      onValueChange={([v]) => setS({ gridColumns: v })}
+                    />
+                  </div>
+                )}
+
+                <PxSlider label="Gap" value={s.gap} onChange={(v) => setS({ gap: v })} max={80} />
+
+                <div className="space-y-1.5">
+                  <Label className="text-xs text-white/70">Justify</Label>
+                  <select
+                    value={s.justifyContent || "flex-start"}
+                    onChange={(e) => setS({ justifyContent: e.target.value as any })}
+                    className="w-full h-8 text-xs rounded-md bg-white/5 border border-white/10 text-white px-2"
+                  >
+                    {["flex-start", "center", "flex-end", "space-between", "space-around"].map((v) => (
+                      <option key={v} value={v} className="bg-slate-900">{v}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="space-y-1.5">
+                  <Label className="text-xs text-white/70">Align Items</Label>
+                  <select
+                    value={s.alignItems || "stretch"}
+                    onChange={(e) => setS({ alignItems: e.target.value as any })}
+                    className="w-full h-8 text-xs rounded-md bg-white/5 border border-white/10 text-white px-2"
+                  >
+                    {["stretch", "flex-start", "center", "flex-end"].map((v) => (
+                      <option key={v} value={v} className="bg-slate-900">{v}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <PxSlider label="Min Height" value={s.minHeight} onChange={(v) => setS({ minHeight: v })} max={800} />
+              </div>
+            )}
+
+
             <div className="space-y-1.5">
               <Label className="text-xs text-white/70">Align</Label>
               <div className="flex gap-1">

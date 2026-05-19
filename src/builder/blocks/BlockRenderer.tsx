@@ -1,6 +1,9 @@
 import { CSSProperties } from "react";
-import { Twitter, Github, Linkedin, Instagram, Facebook, Youtube, Check } from "lucide-react";
+import { Twitter, Github, Linkedin, Instagram, Facebook, Youtube, Check, Plus } from "lucide-react";
 import type { Block, BlockStyle, DeviceMode } from "../types";
+import { useBuilderStore } from "../store";
+import { createBlock } from "./defaults";
+import { cn } from "@/lib/utils";
 
 const styleToCss = (s: BlockStyle, device: DeviceMode): CSSProperties => {
   if (
@@ -10,7 +13,7 @@ const styleToCss = (s: BlockStyle, device: DeviceMode): CSSProperties => {
   ) {
     return { display: "none" };
   }
-  return {
+  const css: CSSProperties = {
     fontSize: s.fontSize,
     fontWeight: s.fontWeight as any,
     fontFamily: s.fontFamily,
@@ -30,7 +33,20 @@ const styleToCss = (s: BlockStyle, device: DeviceMode): CSSProperties => {
     boxShadow: s.boxShadow,
     width: s.width,
     maxWidth: s.maxWidth,
+    minHeight: s.minHeight,
   };
+  if (s.display) css.display = s.display;
+  if (s.display === "flex") {
+    css.flexDirection = s.flexDirection;
+    css.justifyContent = s.justifyContent;
+    css.alignItems = s.alignItems;
+    css.flexWrap = s.flexWrap;
+    css.gap = s.gap;
+  } else if (s.display === "grid") {
+    css.gridTemplateColumns = `repeat(${s.gridColumns || 3}, minmax(0, 1fr))`;
+    css.gap = s.gap;
+  }
+  return css;
 };
 
 const socialIcon: Record<string, any> = {
@@ -42,10 +58,11 @@ interface Props {
   block: Block;
   device?: DeviceMode;
   editable?: boolean;
+  editorMode?: boolean;
   onEditText?: (field: string, value: string) => void;
 }
 
-export function BlockRenderer({ block, device = "desktop", editable, onEditText }: Props) {
+export function BlockRenderer({ block, device = "desktop", editable, editorMode, onEditText }: Props) {
   const css = styleToCss(block.style, device);
   const editableProps = (field: string) =>
     editable
@@ -58,6 +75,10 @@ export function BlockRenderer({ block, device = "desktop", editable, onEditText 
       : {};
 
   switch (block.type) {
+    case "container":
+      return <ContainerBlock block={block} css={css} device={device} editorMode={editorMode} />;
+
+
     case "navbar":
       return (
         <nav style={css}>
@@ -295,3 +316,79 @@ export function BlockRenderer({ block, device = "desktop", editable, onEditText 
       return null;
   }
 }
+
+function ContainerBlock({
+  block,
+  css,
+  device,
+  editorMode,
+}: {
+  block: Block;
+  css: CSSProperties;
+  device: DeviceMode;
+  editorMode?: boolean;
+}) {
+  const { selectedId, setSelected, updateBlockContent, addBlockInside } = useBuilderStore();
+  const isEmpty = !block.children || block.children.length === 0;
+  const isGrid = css.display === "grid";
+
+  return (
+    <div style={{ ...css, position: "relative" }}>
+      {(block.children || []).map((child) => {
+        const isSel = selectedId === child.id;
+        if (!editorMode) {
+          return (
+            <div key={child.id} className={cn(!isGrid && "flex-1 min-w-0")}>
+              <BlockRenderer block={child} device={device} />
+            </div>
+          );
+        }
+        return (
+          <div
+            key={child.id}
+            onClick={(e) => {
+              e.stopPropagation();
+              setSelected(child.id);
+            }}
+            className={cn(
+              "relative cursor-pointer transition min-w-0",
+              !isGrid && "flex-1",
+              "hover:outline hover:outline-1 hover:outline-red-400/40 hover:outline-offset-2",
+              isSel && "outline outline-2 outline-red-500 outline-offset-2 rounded-sm"
+            )}
+          >
+            <BlockRenderer
+              block={child}
+              device={device}
+              editable={isSel}
+              editorMode
+              onEditText={(field, value) =>
+                updateBlockContent(child.id, { [field]: value })
+              }
+            />
+          </div>
+        );
+      })}
+
+      {editorMode && (
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            addBlockInside(block.id, createBlock("paragraph"));
+          }}
+          className="absolute -bottom-3 left-1/2 -translate-x-1/2 z-10 w-6 h-6 rounded-full bg-red-600 text-white inline-flex items-center justify-center shadow-lg hover:scale-110 transition"
+          title="Add child block"
+        >
+          <Plus className="w-3.5 h-3.5" />
+        </button>
+      )}
+
+      {editorMode && isEmpty && (
+        <div className="w-full text-center text-xs text-slate-400 italic py-4 border-2 border-dashed border-slate-300 rounded">
+          Empty container — click + to add
+        </div>
+      )}
+    </div>
+  );
+}
+

@@ -3,10 +3,58 @@ import type { Block, BlockType } from "../types";
 export interface BlockDef {
   type: BlockType;
   label: string;
-  category: "section" | "element";
+  category: "section" | "element" | "layout";
   icon: string;
   create: () => Omit<Block, "id">;
+  preset?: string; // custom preset key (e.g. cols-2)
 }
+
+const containerBase = {
+  display: "flex" as const,
+  flexDirection: "row" as const,
+  gap: "16px",
+  paddingTop: "24px",
+  paddingBottom: "24px",
+  paddingLeft: "24px",
+  paddingRight: "24px",
+  alignItems: "stretch" as const,
+  justifyContent: "flex-start" as const,
+  minHeight: "80px",
+};
+
+const makeChildCol = (text: string): any => ({
+  id: crypto.randomUUID(),
+  type: "container",
+  content: {},
+  style: {
+    display: "flex",
+    flexDirection: "column",
+    gap: "12px",
+    paddingTop: "16px",
+    paddingBottom: "16px",
+    paddingLeft: "16px",
+    paddingRight: "16px",
+    background: "rgba(0,0,0,0.02)",
+    borderRadius: "8px",
+    minHeight: "120px",
+    width: "100%",
+  },
+  children: [
+    {
+      id: crypto.randomUUID(),
+      type: "heading",
+      content: { text, level: "h3" },
+      style: { fontSize: "20px", fontWeight: "600", color: "#0f172a" },
+    },
+    {
+      id: crypto.randomUUID(),
+      type: "paragraph",
+      content: { text: "Add content here." },
+      style: { fontSize: "14px", color: "#475569" },
+    },
+  ],
+});
+
 
 export const BLOCK_DEFS: BlockDef[] = [
   {
@@ -303,10 +351,87 @@ export const BLOCK_DEFS: BlockDef[] = [
       style: {},
     }),
   },
+  // ===== LAYOUT =====
+  {
+    type: "container",
+    label: "Container",
+    category: "layout",
+    icon: "Square",
+    preset: "container",
+    create: () => ({
+      type: "container",
+      content: {},
+      style: { ...containerBase, flexDirection: "column", minHeight: "120px" },
+      children: [],
+    }),
+  },
+  {
+    type: "container",
+    label: "2 Columns",
+    category: "layout",
+    icon: "Columns2",
+    preset: "cols-2",
+    create: () => ({
+      type: "container",
+      content: {},
+      style: { ...containerBase },
+      children: [makeChildCol("Column 1"), makeChildCol("Column 2")],
+    }),
+  },
+  {
+    type: "container",
+    label: "3 Columns",
+    category: "layout",
+    icon: "Columns3",
+    preset: "cols-3",
+    create: () => ({
+      type: "container",
+      content: {},
+      style: { ...containerBase },
+      children: [makeChildCol("Column 1"), makeChildCol("Column 2"), makeChildCol("Column 3")],
+    }),
+  },
+  {
+    type: "container",
+    label: "4 Columns",
+    category: "layout",
+    icon: "Columns4",
+    preset: "cols-4",
+    create: () => ({
+      type: "container",
+      content: {},
+      style: { ...containerBase },
+      children: [makeChildCol("1"), makeChildCol("2"), makeChildCol("3"), makeChildCol("4")],
+    }),
+  },
+  {
+    type: "container",
+    label: "Grid",
+    category: "layout",
+    icon: "LayoutGrid",
+    preset: "grid",
+    create: () => ({
+      type: "container",
+      content: {},
+      style: {
+        ...containerBase,
+        display: "grid",
+        gridColumns: 3,
+        gap: "16px",
+      },
+      children: [makeChildCol("Item 1"), makeChildCol("Item 2"), makeChildCol("Item 3")],
+    }),
+  },
 ];
 
-export const createBlock = (type: BlockType): Block => {
-  const def = BLOCK_DEFS.find((d) => d.type === type);
-  if (!def) throw new Error(`Unknown block: ${type}`);
-  return { id: crypto.randomUUID(), ...def.create() };
+export const createBlock = (typeOrPreset: BlockType | string, preset?: string): Block => {
+  const def = preset
+    ? BLOCK_DEFS.find((d) => d.preset === preset)
+    : BLOCK_DEFS.find((d) => d.preset === typeOrPreset) ||
+      BLOCK_DEFS.find((d) => d.type === (typeOrPreset as BlockType));
+  if (!def) throw new Error(`Unknown block: ${typeOrPreset}`);
+  const created = def.create();
+  // Ensure deep IDs already assigned by makeChildCol; just give top-level id
+  return { id: crypto.randomUUID(), ...created };
 };
+

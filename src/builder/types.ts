@@ -1,5 +1,6 @@
 export type BlockType =
   | "section"
+  | "container"
   | "hero"
   | "heading"
   | "paragraph"
@@ -42,6 +43,15 @@ export interface BlockStyle {
   hideMobile?: boolean;
   hideTablet?: boolean;
   hideDesktop?: boolean;
+  // Container layout
+  display?: "flex" | "grid" | "block";
+  flexDirection?: "row" | "column";
+  gridColumns?: number;
+  gap?: string;
+  justifyContent?: "flex-start" | "center" | "flex-end" | "space-between" | "space-around";
+  alignItems?: "flex-start" | "center" | "flex-end" | "stretch";
+  flexWrap?: "wrap" | "nowrap";
+  minHeight?: string;
 }
 
 export interface Block {
@@ -49,6 +59,7 @@ export interface Block {
   type: BlockType;
   content: Record<string, any>;
   style: BlockStyle;
+  children?: Block[];
 }
 
 export interface PageTheme {
@@ -65,3 +76,4 @@ export interface PageContent {
 }
 
 export type DeviceMode = "desktop" | "tablet" | "mobile";
+

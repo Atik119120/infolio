@@ -1,7 +1,8 @@
 import { CSSProperties, useEffect, useState } from "react";
-import { ShoppingBag, X, Plus, Minus, Trash2, CheckCircle2, CreditCard, Truck, ShieldCheck } from "lucide-react";
+import { ShoppingBag, X, Plus, Minus, Trash2, CheckCircle2, CreditCard, Truck, ShieldCheck, Loader2 } from "lucide-react";
 import type { Block } from "../types";
 import { useCartStore, cartTotals, formatPrice, parsePrice } from "../cart/cartStore";
+import { supabase } from "@/integrations/supabase/client";
 
 type Common = { block: Block; css: CSSProperties };
 

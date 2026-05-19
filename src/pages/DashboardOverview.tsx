@@ -20,6 +20,7 @@ import {
 import { openWhatsApp } from "@/lib/whatsapp";
 import { getPortfolioUrl } from "@/lib/portfolioUrl";
 import { cn } from "@/lib/utils";
+import DynamicWidgets from "@/components/dashboard/DynamicWidgets";
 
 interface Portfolio { is_published: boolean; headline: string | null; bio: string | null; }
 interface Profile { username: string; display_name: string | null; avatar_url: string | null; }

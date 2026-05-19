@@ -167,15 +167,18 @@ export function CheckoutWidget({ block, css }: Common) {
   const shipping = parsePrice(block.content.shippingFee);
   const taxRate = Number(block.content.taxRate) || 0;
   const title = block.content.title || "Checkout";
+  const storeOwnerId: string | undefined = block.content.storeOwnerId;
 
   const items = useCartStore((s) => s.items);
   const clear = useCartStore((s) => s.clear);
   const { subtotal, count } = cartTotals(items);
 
-  const [success, setSuccess] = useState(false);
+  const [success, setSuccess] = useState<null | string>(null);
+  const [submitting, setSubmitting] = useState(false);
   const [form, setForm] = useState({
     name: "",
     email: "",
+    phone: "",
     address: "",
     city: "",
     zip: "",
@@ -183,12 +186,13 @@ export function CheckoutWidget({ block, css }: Common) {
     cardNumber: "",
     expiry: "",
     cvc: "",
+    notes: "",
     method: "card",
   });
 
   useEffect(() => {
     if (success) {
-      const t = setTimeout(() => setSuccess(false), 6000);
+      const t = setTimeout(() => setSuccess(null), 8000);
       return () => clearTimeout(t);
     }
   }, [success]);
@@ -196,12 +200,75 @@ export function CheckoutWidget({ block, css }: Common) {
   const tax = subtotal * (taxRate / 100);
   const total = subtotal + (subtotal > 0 ? shipping : 0) + tax;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (items.length === 0) return;
-    setSuccess(true);
+    if (items.length === 0 || submitting) return;
+    setSubmitting(true);
+
+    // Resolve store owner: from block content, else first active store
+    let ownerId = storeOwnerId;
+    if (!ownerId) {
+      const { data: store } = await supabase
+        .from("stores" as any)
+        .select("user_id")
+        .eq("is_active", true)
+        .limit(1)
+        .maybeSingle();
+      ownerId = (store as any)?.user_id;
+    }
+
+    if (!ownerId) {
+      setSubmitting(false);
+      alert("This store is not yet configured. Please contact the owner.");
+      return;
+    }
+
+    const { data: order, error } = await supabase
+      .from("orders" as any)
+      .insert({
+        store_owner_id: ownerId,
+        customer_name: form.name,
+        customer_email: form.email,
+        customer_phone: form.phone || null,
+        shipping_address: form.address || null,
+        shipping_city: form.city || null,
+        shipping_zip: form.zip || null,
+        shipping_country: form.country || null,
+        notes: form.notes || null,
+        subtotal,
+        shipping_fee: shipping,
+        tax,
+        total,
+        currency: currency === "$" ? "USD" : currency,
+        payment_method: form.method,
+        transaction_id: form.method === "card" && form.cardNumber ? `card-****${form.cardNumber.slice(-4)}` : null,
+        status: form.method === "card" ? "paid" : "pending",
+      })
+      .select()
+      .single();
+
+    if (error || !order) {
+      setSubmitting(false);
+      alert(`Order failed: ${error?.message || "unknown error"}`);
+      return;
+    }
+
+    const orderId = (order as any).id;
+    await supabase.from("order_items" as any).insert(
+      items.map((it) => ({
+        order_id: orderId,
+        title: it.title,
+        image_url: it.image || null,
+        price: it.price,
+        qty: it.qty,
+      }))
+    );
+
+    setSubmitting(false);
+    setSuccess((order as any).order_number);
     clear();
   };
+
 
   const Field = ({
     label, name, type = "text", required = true, full = false,

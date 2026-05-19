@@ -250,14 +250,6 @@ Deno.serve(async (req) => {
         continue;
       }
 
-      const normalizedDomain = domain.domain.toLowerCase();
-      if (normalizedDomain === "infolio.online" || normalizedDomain.endsWith(".infolio.online")) {
-        // Internal subdomain — auto-verify, no TXT/A check
-        await supabase.from("domains").update({ is_verified: true, verified_at: new Date().toISOString() }).eq("id", domain.id);
-        verificationResults.push({ domain: domain.domain, verified: true, reason: "Internal Infolio subdomain auto-verified" });
-        continue;
-      }
-
       // Check TXT record for verification token
       const txtRecords = await lookupTxtRecords(domain.domain);
       const tokenFound = txtRecords.some((record) => record === domain.verification_token);
@@ -273,14 +265,6 @@ Deno.serve(async (req) => {
         continue;
       }
 
-      if (!aRecordCorrect) {
-        verificationResults.push({
-          domain: domain.domain,
-          verified: false,
-          reason: "A record does not point to correct IP",
-        });
-        continue;
-      }
 
       // Both checks passed - verify the domain
       const { error: updateError } = await supabase

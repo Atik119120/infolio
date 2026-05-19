@@ -135,9 +135,30 @@ export function PageThemePanel() {
           />
         </div>
 
-        <p className="text-[10px] text-white/40 pt-3 border-t border-white/10">
-          Tip: Theme settings apply to every block. Click a block to override.
-        </p>
+        <div className="pt-3 mt-3 border-t border-white/10 space-y-3">
+          <p className="text-[10px] uppercase tracking-widest text-white/40">Global sections</p>
+          <div className="flex items-center justify-between">
+            <Label className="text-xs text-white/70">Site header</Label>
+            <Switch
+              checked={!!content.header}
+              onCheckedChange={(v) =>
+                setHeader(v ? { id: crypto.randomUUID(), ...createBlock("navbar") } : null)
+              }
+            />
+          </div>
+          <div className="flex items-center justify-between">
+            <Label className="text-xs text-white/70">Site footer</Label>
+            <Switch
+              checked={!!content.footer}
+              onCheckedChange={(v) =>
+                setFooter(v ? { id: crypto.randomUUID(), ...createBlock("footer") } : null)
+              }
+            />
+          </div>
+          <p className="text-[10px] text-white/40">
+            Click header/footer on the canvas to edit content.
+          </p>
+        </div>
       </div>
     </div>
   );

@@ -1,8 +1,10 @@
+import { useState } from "react";
 import { motion } from "framer-motion";
-import { Monitor, Tablet, Smartphone, Undo2, Redo2, Save, Rocket, ArrowLeft, ExternalLink, Loader2 } from "lucide-react";
+import { Monitor, Tablet, Smartphone, Undo2, Redo2, Save, Rocket, ArrowLeft, ExternalLink, Loader2, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { useBuilderStore } from "../store";
+import { AiGenerateDialog } from "./AiGenerateDialog";
 import { cn } from "@/lib/utils";
 import type { DeviceMode } from "../types";
 

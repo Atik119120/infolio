@@ -582,6 +582,14 @@ export default function CustomDomainManager() {
 
                 {/* DNS Instructions for Pending Domains */}
                 {!domain.is_verified && (
+                  domain.domain.toLowerCase().endsWith(".infolio.online") ? (
+                    <div className="bg-muted/50 rounded-lg p-4 text-sm flex items-start gap-2">
+                      <Info className="w-4 h-4 text-primary mt-0.5 shrink-0" />
+                      <p>
+                        Internal Infolio subdomain — no DNS setup required. Click <strong>Verify Now</strong> to activate instantly.
+                      </p>
+                    </div>
+                  ) : (
                   <div className="bg-muted/50 rounded-lg p-4 space-y-3">
                     <div className="flex items-start gap-2">
                       <Info className="w-4 h-4 text-primary mt-0.5 shrink-0" />
@@ -596,13 +604,13 @@ export default function CustomDomainManager() {
                         <p className="font-medium text-muted-foreground">A Record (Root Domain):</p>
                         <div className="flex items-center gap-2 bg-background rounded p-2 border">
                           <code className="flex-1 text-xs">
-                            Type: A | Name: @ | Value: 185.158.133.1
+                            Type: A | Name: @ | Value: 76.76.21.21
                           </code>
                           <Button
                             variant="ghost"
                             size="icon"
                             className="h-6 w-6 shrink-0"
-                            onClick={() => copyToClipboard("185.158.133.1", `${domain.id}-a`)}
+                            onClick={() => copyToClipboard("76.76.21.21", `${domain.id}-a`)}
                           >
                             {copiedToken === `${domain.id}-a` ? (
                               <CheckCircle2 className="w-3 h-3 text-green-500" />
@@ -613,18 +621,18 @@ export default function CustomDomainManager() {
                         </div>
                       </div>
 
-                      {/* A Record for www */}
+                      {/* CNAME for www */}
                       <div className="space-y-1">
-                        <p className="font-medium text-muted-foreground">A Record (www subdomain):</p>
+                        <p className="font-medium text-muted-foreground">CNAME (www subdomain):</p>
                         <div className="flex items-center gap-2 bg-background rounded p-2 border">
                           <code className="flex-1 text-xs">
-                            Type: A | Name: www | Value: 185.158.133.1
+                            Type: CNAME | Name: www | Value: cname.vercel-dns.com
                           </code>
                           <Button
                             variant="ghost"
                             size="icon"
                             className="h-6 w-6 shrink-0"
-                            onClick={() => copyToClipboard("185.158.133.1", `${domain.id}-www`)}
+                            onClick={() => copyToClipboard("cname.vercel-dns.com", `${domain.id}-www`)}
                           >
                             {copiedToken === `${domain.id}-www` ? (
                               <CheckCircle2 className="w-3 h-3 text-green-500" />
@@ -659,9 +667,10 @@ export default function CustomDomainManager() {
                     </div>
 
                     <p className="text-xs text-muted-foreground">
-                      DNS changes can take up to 72 hours to propagate. Once verified, your portfolio will be accessible at your custom domain.
+                      DNS changes can take up to 72 hours to propagate. Once verified, the domain auto-attaches to your live Infolio deployment.
                     </p>
                   </div>
+                  )
                 )}
               </div>
             ))}

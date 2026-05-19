@@ -287,6 +287,11 @@ Deno.serve(async (req) => {
 
       console.log(`Domain verified: ${domain.domain}`);
 
+      // Attach to user's latest Vercel project so live traffic resolves
+      const attach = await attachDomainToLatestProject(supabase, domain.user_id, domain.domain);
+      if (!attach.ok) console.log(`Vercel attach skipped for ${domain.domain}: ${attach.reason}`);
+
+
       // Send email notification
       let emailSent = false;
       if (resend) {

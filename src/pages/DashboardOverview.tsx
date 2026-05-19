@@ -108,18 +108,22 @@ export default function DashboardOverview() {
   return (
     <div className="space-y-4 animate-fade-in text-white">
       {/* Welcome */}
-      <div className="rounded-xl border border-white/10 bg-white/[0.02] p-5">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <div className="glass-card-strong rounded-2xl p-5 relative overflow-hidden">
+        <div className="absolute -top-20 -right-20 w-64 h-64 rounded-full blur-3xl opacity-40 pointer-events-none"
+             style={{ background: "radial-gradient(circle, rgba(139,92,246,0.5), transparent 70%)" }} />
+        <div className="absolute -bottom-24 -left-10 w-64 h-64 rounded-full blur-3xl opacity-30 pointer-events-none"
+             style={{ background: "radial-gradient(circle, rgba(56,189,248,0.5), transparent 70%)" }} />
+        <div className="relative flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
             <h1 className="text-2xl font-semibold mb-1 tracking-tight">
               Welcome, {profile?.display_name || "there"}.
             </h1>
-            <p className="text-white/50 text-sm">
+            <p className="text-white/60 text-sm">
               {portfolio?.is_published ? "Your portfolio is live." : "Publish your portfolio whenever you're ready."}
             </p>
           </div>
           <div className="flex gap-2">
-            <Button variant="outline" size="sm" className="h-9 bg-transparent border-white/15 text-white hover:bg-white/5 hover:text-white" onClick={() => navigate("/dashboard/edit")}>
+            <Button variant="outline" size="sm" className="h-9 bg-white/5 backdrop-blur border-white/15 text-white hover:bg-white/10 hover:text-white" onClick={() => navigate("/dashboard/edit")}>
               <FileEdit className="w-4 h-4 mr-1.5" /> Edit
             </Button>
             {profile && (
@@ -133,13 +137,19 @@ export default function DashboardOverview() {
 
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        <StatTile label="Skills" value={stats.skills} />
-        <StatTile label="Projects" value={stats.projects} />
-        <StatTile label="Experience" value={stats.experiences} />
-        <div className="rounded-xl border border-white/10 bg-white/[0.02] p-4">
-          <p className="text-xs text-white/50">Portfolio</p>
+        <StatTile label="Skills" value={stats.skills} tint="sky" />
+        <StatTile label="Projects" value={stats.projects} tint="violet" />
+        <StatTile label="Experience" value={stats.experiences} tint="amber" />
+        <div className="glass-card rounded-2xl p-4">
+          <p className="text-xs text-white/60">Portfolio</p>
           <div className="mt-2 flex items-center gap-2">
-            <span className={cn("text-xs px-2 py-0.5 rounded-full border", portfolio?.is_published ? "border-white/30 text-white" : "border-white/10 text-white/50")}>
+            <span className={cn(
+              "text-xs px-2 py-0.5 rounded-full border inline-flex items-center gap-1",
+              portfolio?.is_published
+                ? "border-emerald-400/40 text-emerald-300 bg-emerald-400/10"
+                : "border-amber-400/40 text-amber-300 bg-amber-400/10"
+            )}>
+              <span className={cn("w-1.5 h-1.5 rounded-full", portfolio?.is_published ? "bg-emerald-400" : "bg-amber-400")} />
               {portfolio?.is_published ? "Live" : "Draft"}
             </span>
             <button disabled={saving} onClick={togglePublish} className="text-xs text-white/70 hover:text-white inline-flex items-center">
@@ -150,26 +160,30 @@ export default function DashboardOverview() {
       </div>
 
       {/* Completion */}
-      <div className="rounded-xl border border-white/10 bg-white/[0.02] p-4">
+      <div className="glass-card rounded-2xl p-4">
         <div className="flex items-center justify-between mb-3">
           <p className="text-sm font-medium">Completion</p>
-          <span className="text-xl font-semibold">{score}%</span>
+          <span className="text-xl font-semibold bg-clip-text text-transparent"
+                style={{ backgroundImage: "linear-gradient(135deg,#a78bfa,#38bdf8)" }}>{score}%</span>
         </div>
-        <div className="h-1 rounded-full bg-white/10 overflow-hidden">
-          <div className="h-full bg-white transition-all" style={{ width: `${score}%` }} />
+        <div className="h-1.5 rounded-full bg-white/10 overflow-hidden">
+          <div className="h-full transition-all"
+               style={{ width: `${score}%`, background: "linear-gradient(90deg,#a78bfa,#38bdf8,#10b981)" }} />
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mt-4">
           {completionItems.map((item) => (
             <div key={item.label} className="flex items-center gap-1.5 text-xs">
               {item.done
-                ? <CheckCircle2 className="w-3.5 h-3.5 text-white" />
+                ? <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
                 : <Circle className="w-3.5 h-3.5 text-white/30" />}
               <span className={item.done ? "text-white/80" : "text-white/40"}>{item.label}</span>
             </div>
           ))}
         </div>
         {score < 100 && (
-          <Button className="w-full mt-4 h-9 text-sm bg-white text-black hover:bg-white/90" onClick={() => navigate("/dashboard/edit")}>
+          <Button className="w-full mt-4 h-9 text-sm text-white border-0 hover:opacity-90"
+                  style={{ background: "linear-gradient(135deg,#6366f1,#8b5cf6,#ec4899)" }}
+                  onClick={() => navigate("/dashboard/edit")}>
             Complete Portfolio <ArrowRight className="w-4 h-4 ml-1.5" />
           </Button>
         )}
@@ -177,38 +191,44 @@ export default function DashboardOverview() {
 
       {/* Usage */}
       <div className="grid md:grid-cols-3 gap-3">
-        <UsageTile icon={<HardDrive className="w-4 h-4" />} label="Storage" used={120} total={500} unit="MB" />
-        <UsageTile icon={<Gauge className="w-4 h-4" />} label="Bandwidth" used={2.4} total={10} unit="GB" />
-        <UsageTile icon={<Layers className="w-4 h-4" />} label="Projects" used={1} total={1} unit="" />
+        <UsageTile icon={<HardDrive className="w-4 h-4" />} label="Storage" used={120} total={500} unit="MB" tint="sky" />
+        <UsageTile icon={<Gauge className="w-4 h-4" />} label="Bandwidth" used={2.4} total={10} unit="GB" tint="emerald" />
+        <UsageTile icon={<Layers className="w-4 h-4" />} label="Projects" used={1} total={1} unit="" tint="rose" />
       </div>
 
       {/* Plan */}
-      <div className="rounded-xl border border-white/10 bg-white/[0.02] p-4 flex items-center justify-between gap-3">
+      <div className="glass-card glass-tint-amber rounded-2xl p-4 flex items-center justify-between gap-3" style={{ borderColor: "rgba(245,158,11,0.3)" }}>
         <div className="flex items-center gap-3 min-w-0">
-          <div className="w-10 h-10 rounded-lg border border-white/15 grid place-items-center">
+          <div className="w-10 h-10 rounded-xl grid place-items-center shrink-0"
+               style={{ background: "linear-gradient(135deg,#f59e0b,#f97316)" }}>
             <Crown className="w-5 h-5 text-white" />
           </div>
           <div className="min-w-0">
             <p className="font-medium text-sm">You're on the Basic plan</p>
-            <p className="text-xs text-white/50">Upgrade for custom domains, GitHub deploys & more.</p>
+            <p className="text-xs text-white/60">Upgrade for custom domains, GitHub deploys & more.</p>
           </div>
         </div>
-        <Button size="sm" className="h-9 bg-white text-black hover:bg-white/90 shrink-0" onClick={() => navigate("/#pricing")}>
+        <Button size="sm" className="h-9 text-white border-0 hover:opacity-90 shrink-0"
+                style={{ background: "linear-gradient(135deg,#f59e0b,#f97316)" }}
+                onClick={() => navigate("/#pricing")}>
           Upgrade <ArrowRight className="w-3.5 h-3.5 ml-1" />
         </Button>
       </div>
 
       {/* Portfolio URL */}
       {profile && (
-        <div className="rounded-xl border border-white/10 bg-white/[0.02] p-4 flex items-center justify-between gap-3">
+        <div className="glass-card rounded-2xl p-4 flex items-center justify-between gap-3">
           <div className="flex items-center gap-3 min-w-0">
-            <div className="w-10 h-10 rounded-lg border border-white/15 grid place-items-center"><Globe className="w-5 h-5 text-white" /></div>
+            <div className="w-10 h-10 rounded-xl grid place-items-center shrink-0"
+                 style={{ background: "linear-gradient(135deg,#38bdf8,#6366f1)" }}>
+              <Globe className="w-5 h-5 text-white" />
+            </div>
             <div className="min-w-0">
               <p className="font-medium text-sm">Your Portfolio</p>
-              <p className="text-xs text-white/50 truncate">{portfolioUrl}</p>
+              <p className="text-xs text-white/60 truncate">{portfolioUrl}</p>
             </div>
           </div>
-          <Button variant="outline" size="sm" className="h-8 text-xs bg-transparent border-white/15 text-white hover:bg-white/5 hover:text-white" onClick={() => navigator.clipboard.writeText(portfolioUrl)}>Copy</Button>
+          <Button variant="outline" size="sm" className="h-8 text-xs bg-white/5 backdrop-blur border-white/15 text-white hover:bg-white/10 hover:text-white" onClick={() => navigator.clipboard.writeText(portfolioUrl)}>Copy</Button>
         </div>
       )}
 
@@ -238,30 +258,46 @@ export default function DashboardOverview() {
   );
 }
 
-function StatTile({ label, value }: { label: string; value: number }) {
+type Tint = "sky" | "violet" | "amber" | "emerald" | "rose";
+const tintBg: Record<Tint, string> = {
+  sky: "linear-gradient(135deg,#38bdf8,#0ea5e9)",
+  violet: "linear-gradient(135deg,#a78bfa,#7c3aed)",
+  amber: "linear-gradient(135deg,#fbbf24,#f59e0b)",
+  emerald: "linear-gradient(135deg,#34d399,#10b981)",
+  rose: "linear-gradient(135deg,#fb7185,#e11d48)",
+};
+const tintClass: Record<Tint, string> = {
+  sky: "glass-tint-sky",
+  violet: "glass-tint-violet",
+  amber: "glass-tint-amber",
+  emerald: "glass-tint-emerald",
+  rose: "glass-tint-rose",
+};
+
+function StatTile({ label, value, tint = "sky" }: { label: string; value: number; tint?: Tint }) {
   return (
-    <div className="rounded-xl border border-white/10 bg-white/[0.02] p-4">
-      <p className="text-xs text-white/50">{label}</p>
-      <p className="text-2xl font-semibold mt-2">{value}</p>
+    <div className={cn("glass-card rounded-2xl p-4 relative overflow-hidden", tintClass[tint])}>
+      <p className="text-xs text-white/60">{label}</p>
+      <p className="text-2xl font-semibold mt-2 bg-clip-text text-transparent" style={{ backgroundImage: tintBg[tint] }}>{value}</p>
     </div>
   );
 }
 
-function UsageTile({ icon, label, used, total, unit }: { icon: React.ReactNode; label: string; used: number; total: number; unit: string }) {
+function UsageTile({ icon, label, used, total, unit, tint = "sky" }: { icon: React.ReactNode; label: string; used: number; total: number; unit: string; tint?: Tint }) {
   const pct = Math.min(Math.round((used / total) * 100), 100);
   return (
-    <div className="rounded-xl border border-white/10 bg-white/[0.02] p-4 space-y-3">
+    <div className={cn("glass-card rounded-2xl p-4 space-y-3", tintClass[tint])}>
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg border border-white/15 grid place-items-center text-white">{icon}</div>
+          <div className="w-8 h-8 rounded-lg grid place-items-center text-white" style={{ background: tintBg[tint] }}>{icon}</div>
           <span className="text-sm font-medium">{label}</span>
         </div>
-        <span className="text-xs text-white/50">{pct}%</span>
+        <span className="text-xs text-white/60">{pct}%</span>
       </div>
-      <div className="h-1 rounded-full bg-white/10 overflow-hidden">
-        <div className="h-full bg-white" style={{ width: `${pct}%` }} />
+      <div className="h-1.5 rounded-full bg-white/10 overflow-hidden">
+        <div className="h-full" style={{ width: `${pct}%`, background: tintBg[tint] }} />
       </div>
-      <p className="text-xs text-white/50">
+      <p className="text-xs text-white/60">
         <span className="font-semibold text-white">{used}{unit}</span> of {total}{unit} used
       </p>
     </div>

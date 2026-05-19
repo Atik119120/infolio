@@ -320,3 +320,25 @@
   -webkit-text-fill-color: hsl(0 0% 100%) !important;
 }
 .dashboard-bw .shadow-glow { box-shadow: none !important; }
+
+/* Glassmorphism utilities for dashboard cards */
+.glass-card {
+  background: linear-gradient(135deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+  border: 1px solid rgba(255,255,255,0.10);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  box-shadow: 0 1px 0 rgba(255,255,255,0.05) inset, 0 10px 30px -12px rgba(0,0,0,0.6);
+}
+.glass-card-strong {
+  background: linear-gradient(135deg, rgba(255,255,255,0.10), rgba(255,255,255,0.03));
+  border: 1px solid rgba(255,255,255,0.14);
+  backdrop-filter: blur(18px) saturate(150%);
+  -webkit-backdrop-filter: blur(18px) saturate(150%);
+  box-shadow: 0 1px 0 rgba(255,255,255,0.08) inset, 0 20px 50px -20px rgba(0,0,0,0.7);
+}
+.glass-tint-emerald { background: linear-gradient(135deg, rgba(16,185,129,0.14), rgba(255,255,255,0.03)); }
+.glass-tint-amber   { background: linear-gradient(135deg, rgba(245,158,11,0.14), rgba(255,255,255,0.03)); }
+.glass-tint-violet  { background: linear-gradient(135deg, rgba(139,92,246,0.14), rgba(255,255,255,0.03)); }
+.glass-tint-sky     { background: linear-gradient(135deg, rgba(56,189,248,0.14), rgba(255,255,255,0.03)); }
+.glass-tint-rose    { background: linear-gradient(135deg, rgba(244,63,94,0.14), rgba(255,255,255,0.03)); }
+

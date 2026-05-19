@@ -58,10 +58,11 @@ interface Props {
   block: Block;
   device?: DeviceMode;
   editable?: boolean;
+  editorMode?: boolean;
   onEditText?: (field: string, value: string) => void;
 }
 
-export function BlockRenderer({ block, device = "desktop", editable, onEditText }: Props) {
+export function BlockRenderer({ block, device = "desktop", editable, editorMode, onEditText }: Props) {
   const css = styleToCss(block.style, device);
   const editableProps = (field: string) =>
     editable
@@ -74,6 +75,10 @@ export function BlockRenderer({ block, device = "desktop", editable, onEditText 
       : {};
 
   switch (block.type) {
+    case "container":
+      return <ContainerBlock block={block} css={css} device={device} editorMode={editorMode} />;
+
+
     case "navbar":
       return (
         <nav style={css}>

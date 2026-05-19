@@ -469,14 +469,16 @@ function FeatureCard({ icon, title, description }: { icon: React.ReactNode; titl
   );
 }
 
-function PriceRow({ children, ok = false, light = false }: { children: React.ReactNode; ok?: boolean; light?: boolean }) {
-  return (
-    <li className="flex items-start gap-2.5">
-      <span className={`shrink-0 w-5 h-5 rounded-full grid place-items-center mt-0.5 ${
-        ok
-          ? (light ? "bg-white/20 text-white" : "bg-primary/15 text-primary")
-          : (light ? "bg-white/10 text-white/50" : "bg-muted text-muted-foreground/60")
-      }`}>
+const FAQS = [
+  { q: "Can I connect my own domain?", a: "Yes — on Creator Premium and above, connect any domain with auto-issued SSL straight from your dashboard." },
+  { q: "Can I deploy React or Next.js apps?", a: "Yes. Developer Pro and Studio plans support React, Next.js and Vite — connect GitHub or pick a template." },
+  { q: "Is SSL included?", a: "Always. Every site (subdomain or custom) gets free auto-renewing SSL." },
+  { q: "Can I switch themes later?", a: "Anytime. Your content carries over when you switch themes from the dashboard." },
+  { q: "Do you support GitHub deployment?", a: "Yes. Authorize once, then deploy any public or private repo with one click." },
+  { q: "Will e-commerce features come later?", a: "Commerce Pro is on the roadmap — products, orders, checkout and store analytics, all included." },
+  { q: "How do payments work?", a: "Pay monthly or yearly via bKash, Nagad or Rocket. Yearly saves around 15%." },
+  { q: "Is Infolio really free to start?", a: "Yes. Build, publish and host on a free subdomain — no credit card required." },
+];
         {ok ? <Check className="w-3 h-3" strokeWidth={3} /> : <X className="w-3 h-3" strokeWidth={3} />}
       </span>
       <span className={ok ? (light ? "text-white" : "text-foreground") : (light ? "text-white/60 line-through" : "text-muted-foreground line-through")}>

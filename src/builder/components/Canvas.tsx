@@ -126,6 +126,12 @@ function SortableBlock({ block }: { block: Block }) {
         <ContextMenuItem onClick={() => setSelected(block.id)}>
           Select & Edit
         </ContextMenuItem>
+        <ContextMenuItem
+          onClick={() => user && saveBlockAsSection(user.id, block)}
+          disabled={!user}
+        >
+          <BookmarkPlus className="w-3.5 h-3.5 mr-2" /> Save as section
+        </ContextMenuItem>
         <ContextMenuSeparator />
         <ContextMenuItem
           className="text-red-500 focus:text-red-500"

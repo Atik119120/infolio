@@ -23,6 +23,7 @@ const DashboardSettings = lazy(() => import("./pages/DashboardSettings"));
 const DashboardPurchases = lazy(() => import("./pages/DashboardPurchases"));
 const DashboardDomainStatus = lazy(() => import("./pages/DashboardDomainStatus"));
 const DashboardDeploy = lazy(() => import("./pages/DashboardDeploy"));
+const DashboardAnalytics = lazy(() => import("./pages/DashboardAnalytics"));
 const PublicPortfolio = lazy(() => import("./pages/PublicPortfolio"));
 const ThemeDemo = lazy(() => import("./pages/ThemeDemo"));
 const ThemeCollection = lazy(() => import("./pages/ThemeCollection"));
@@ -99,6 +100,7 @@ const App = () => (
                   <Route path="settings" element={<DashboardSettings />} />
                   <Route path="domain-status" element={<DashboardDomainStatus />} />
                   <Route path="deploy" element={<DashboardDeploy />} />
+                  <Route path="analytics" element={<DashboardAnalytics />} />
                 </Route>
                 <Route path="/admin" element={
                   <AdminRoute>

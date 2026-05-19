@@ -30,6 +30,7 @@ interface BuilderStore {
   removeBlock: (id: string) => void;
   duplicateBlock: (id: string) => void;
   setBlocks: (blocks: Block[]) => void;
+  replaceContent: (content: PageContent) => void;
   markSaved: () => void;
   markPublished: () => void;
   undo: () => void;

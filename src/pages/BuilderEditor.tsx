@@ -13,6 +13,8 @@ import { LeftSidebar } from "@/builder/components/LeftSidebar";
 import { Canvas } from "@/builder/components/Canvas";
 import { RightPanel } from "@/builder/components/RightPanel";
 import { TopBar } from "@/builder/components/TopBar";
+import { Navigator } from "@/builder/components/Navigator";
+import { useKeyboardShortcuts } from "@/builder/hooks/useKeyboardShortcuts";
 import { Loader2 } from "lucide-react";
 
 export default function BuilderEditor() {

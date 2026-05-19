@@ -159,6 +159,112 @@ export function BlockInspector({ block }: { block: Block }) {
         <div className="flex-1 overflow-y-auto px-3 py-3 space-y-3">
           {/* ============== CONTENT ============== */}
           <TabsContent value="content" className="space-y-3 mt-0">
+            {(() => {
+              const schema = CONTENT_SCHEMAS[block.type];
+              if (!schema) return null;
+              const renderField = (f: ContentField) => {
+                const val = (block.content as any)[f.name];
+                if (f.type === "boolean") {
+                  return (
+                    <div key={f.name} className="flex items-center justify-between py-1.5 px-2 rounded-md bg-white/5 border border-white/10">
+                      <Label className="text-xs text-white/80">{f.label}</Label>
+                      <Switch checked={!!val} onCheckedChange={(v) => setC({ [f.name]: v })} />
+                    </div>
+                  );
+                }
+                if (f.type === "image") {
+                  return <ImageUploader key={f.name} label={f.label} value={String(val ?? "")} onChange={(v) => setC({ [f.name]: v })} />;
+                }
+                if (f.type === "select" && f.options) {
+                  return (
+                    <SelectField
+                      key={f.name}
+                      label={f.label}
+                      value={String(val ?? f.options[0]?.value ?? "")}
+                      onChange={(v) => setC({ [f.name]: v })}
+                      options={f.options}
+                    />
+                  );
+                }
+                if (f.type === "textarea") {
+                  return (
+                    <div key={f.name} className="space-y-1.5">
+                      <Label className="text-xs text-white/70">{f.label}</Label>
+                      <textarea
+                        value={String(val ?? "")}
+                        placeholder={f.placeholder}
+                        onChange={(e) => setC({ [f.name]: e.target.value })}
+                        rows={3}
+                        className="w-full text-xs rounded-md bg-white/5 border border-white/10 px-2 py-1.5 text-white"
+                      />
+                    </div>
+                  );
+                }
+                return (
+                  <div key={f.name} className="space-y-1.5">
+                    <Label className="text-xs text-white/70">{f.label}</Label>
+                    <Input
+                      value={String(val ?? "")}
+                      placeholder={f.placeholder}
+                      onChange={(e) => setC({ [f.name]: e.target.value })}
+                      className="h-8 text-xs bg-white/5 border-white/10 text-white"
+                    />
+                  </div>
+                );
+              };
+
+              // Render schema groups
+              const groupNodes = schema.groups.map((g, i) => (
+                <Section key={g.title} title={g.title} defaultOpen={g.defaultOpen ?? i === 0}>
+                  {g.fields.map(renderField)}
+                </Section>
+              ));
+
+              // Append repeater/string-list fields not covered in schema groups
+              const schemaFieldNames = new Set(schema.groups.flatMap((g) => g.fields.map((f) => f.name)));
+              const extraNodes = Object.entries(block.content)
+                .filter(([k]) => !schemaFieldNames.has(k))
+                .map(([key, val]) => {
+                  const schemaKey = `${block.type}.${key}`;
+                  const repeaterSchema = REPEATER_SCHEMAS[schemaKey];
+                  const stringSchema = STRING_LIST_SCHEMAS[schemaKey];
+                  if (Array.isArray(val) && repeaterSchema) {
+                    return (
+                      <div key={key} className="space-y-2">
+                        <Label className="text-[11px] uppercase tracking-widest text-pink-400/80">
+                          {repeaterSchema.itemLabel}s
+                        </Label>
+                        <RepeaterControl items={val} schema={repeaterSchema} onChange={(items) => setC({ [key]: items })} />
+                      </div>
+                    );
+                  }
+                  if (Array.isArray(val) && stringSchema) {
+                    return (
+                      <div key={key} className="space-y-2">
+                        <Label className="text-[11px] uppercase tracking-widest text-pink-400/80">{stringSchema.itemLabel}s</Label>
+                        <StringListControl
+                          items={val as string[]}
+                          itemLabel={stringSchema.itemLabel}
+                          type={stringSchema.type}
+                          placeholder={stringSchema.placeholder}
+                          onChange={(items) => setC({ [key]: items })}
+                        />
+                      </div>
+                    );
+                  }
+                  return null;
+                })
+                .filter(Boolean);
+
+              return (
+                <>
+                  {groupNodes}
+                  {extraNodes}
+                </>
+              );
+            })()}
+
+            {!CONTENT_SCHEMAS[block.type] && (<>
             {Object.entries(block.content).map(([key, val]) => {
               const schemaKey = `${block.type}.${key}`;
               const repeaterSchema = REPEATER_SCHEMAS[schemaKey];

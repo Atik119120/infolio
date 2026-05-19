@@ -19,7 +19,7 @@ interface Props {
 export function TopBar({ onSave, onPublish, saving, publishing }: Props) {
   const navigate = useNavigate();
   const [aiOpen, setAiOpen] = useState(false);
-  const { pageName, setName, device, setDevice, undo, redo, dirty, isPublished, pageSlug } =
+  const { pageName, setName, device, setDevice, undo, redo, dirty, isPublished, pageSlug, content, setHeader, setFooter, setSelected } =
     useBuilderStore();
 
   const devices: { key: DeviceMode; icon: any }[] = [

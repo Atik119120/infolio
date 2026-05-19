@@ -26,6 +26,7 @@ import {
   ContextMenuSeparator,
   ContextMenuTrigger,
 } from "@/components/ui/context-menu";
+import { ThemeStyle } from "./ThemeStyle";
 
 const deviceWidth: Record<string, string> = {
   desktop: "100%",
@@ -155,6 +156,7 @@ export function Canvas() {
       onClick={() => setSelected(null)}
     >
       <motion.div
+        id="builder-canvas-scope"
         animate={{ width: deviceWidth[device] }}
         transition={{ duration: 0.3 }}
         className="shadow-2xl rounded-lg overflow-hidden min-h-[80vh] w-full"
@@ -164,6 +166,7 @@ export function Canvas() {
           fontFamily: theme.fontFamily,
         }}
       >
+        <ThemeStyle theme={theme} scopeId="builder-canvas-scope" />
         {content.blocks.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-[60vh] text-slate-400 text-center px-6">
             <div className="text-5xl mb-3">✨</div>

@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { BlockRenderer } from "@/builder/blocks/BlockRenderer";
+import { ThemeStyle } from "@/builder/components/ThemeStyle";
 import type { PageContent } from "@/builder/types";
 
 export default function PublicBuilderPage() {
@@ -51,7 +52,8 @@ export default function PublicBuilderPage() {
 
   const theme = content.theme || {};
   return (
-    <div className="min-h-screen" style={{ background: theme.background || "#ffffff", fontFamily: theme.fontFamily }}>
+    <div id="builder-public-scope" className="min-h-screen" style={{ background: theme.background || "#ffffff", fontFamily: theme.fontFamily }}>
+      <ThemeStyle theme={theme} scopeId="builder-public-scope" />
       {content.blocks.map((b) => (
         <BlockRenderer key={b.id} block={b} />
       ))}

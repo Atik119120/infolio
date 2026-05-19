@@ -217,8 +217,25 @@ export const BLOCK_DEFS: BlockDef[] = [
     icon: "PanelBottom",
     create: () => ({
       type: "footer",
-      content: { text: "© 2026 Brand. All rights reserved.", links: [{ label: "Privacy", url: "#" }, { label: "Terms", url: "#" }] },
-      style: { paddingTop: "32px", paddingBottom: "32px", background: "#0f172a", color: "#ffffff", textAlign: "center" },
+      content: {
+        logoUrl: "",
+        brand: "Brand",
+        tagline: "Build something amazing with our platform.",
+        columns: [
+          { title: "Product", linksText: "Features|#\nPricing|#\nChangelog|#" },
+          { title: "Company", linksText: "About|#\nBlog|#\nCareers|#" },
+          { title: "Resources", linksText: "Docs|#\nSupport|#\nContact|#" },
+        ],
+        socialLinks: [
+          { platform: "twitter", url: "https://twitter.com" },
+          { platform: "github", url: "https://github.com" },
+          { platform: "linkedin", url: "https://linkedin.com" },
+        ],
+        copyright: "© 2026 Brand. All rights reserved.",
+        text: "",
+        links: [],
+      },
+      style: { paddingTop: "64px", paddingBottom: "32px", background: "#0f172a", color: "#ffffff" },
     }),
   },
   {

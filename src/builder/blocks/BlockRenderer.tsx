@@ -4,6 +4,11 @@ import type { Block, BlockStyle, DeviceMode } from "../types";
 import { useBuilderStore } from "../store";
 import { createBlock } from "./defaults";
 import { cn } from "@/lib/utils";
+import {
+  AccordionWidget, TabsWidget, AlertWidget, IconBoxWidget, CounterWidget,
+  ProgressWidget, StatsWidget, FaqWidget, CtaWidget, TeamWidget, LogosWidget,
+  CountdownWidget, CarouselWidget,
+} from "./AdvancedWidgets";
 
 const styleToCss = (s: BlockStyle, device: DeviceMode): CSSProperties => {
   if (

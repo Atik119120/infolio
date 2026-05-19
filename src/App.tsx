@@ -39,6 +39,7 @@ const AdminSiteSettings = lazy(() => import("./pages/admin/AdminSiteSettings"));
 const BuilderList = lazy(() => import("./pages/BuilderList"));
 const BuilderEditor = lazy(() => import("./pages/BuilderEditor"));
 const PublicBuilderPage = lazy(() => import("./pages/PublicBuilderPage"));
+const CustomizeTheme = lazy(() => import("./pages/CustomizeTheme"));
 
 const queryClient = new QueryClient();
 
@@ -70,6 +71,11 @@ const App = () => (
                 {/* Public SEO alias: infolio.online/@username */}
                 <Route path="/@:username" element={<PublicPortfolio />} />
                 <Route path="/p/:slug" element={<PublicBuilderPage />} />
+                <Route path="/customize/:themeId" element={
+                  <ProtectedRoute>
+                    <CustomizeTheme />
+                  </ProtectedRoute>
+                } />
                 <Route path="/dashboard/builder/:id" element={
                   <ProtectedRoute>
                     <BuilderEditor />

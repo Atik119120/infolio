@@ -20,6 +20,7 @@ export type Database = {
           created_by: string | null
           css: string
           description: string | null
+          ecommerce_capable: boolean
           html: string
           id: string
           is_active: boolean
@@ -34,6 +35,7 @@ export type Database = {
           created_by?: string | null
           css?: string
           description?: string | null
+          ecommerce_capable?: boolean
           html?: string
           id?: string
           is_active?: boolean
@@ -48,6 +50,7 @@ export type Database = {
           created_by?: string | null
           css?: string
           description?: string | null
+          ecommerce_capable?: boolean
           html?: string
           id?: string
           is_active?: boolean
@@ -618,6 +621,7 @@ export type Database = {
         Row: {
           about_image_url: string | null
           about_text: string | null
+          accent_color: string | null
           active_engine: string
           bio: string | null
           brand_name: string | null
@@ -633,6 +637,7 @@ export type Database = {
           ga_measurement_id: string | null
           google_verification: string | null
           gtm_id: string | null
+          header_html: string | null
           headline: string | null
           hero_cta_link: string | null
           hero_cta_text: string | null
@@ -648,6 +653,7 @@ export type Database = {
           meta_title: string | null
           og_image_url: string | null
           phone: string | null
+          primary_color: string | null
           section_visibility: Json | null
           theme: string | null
           updated_at: string
@@ -658,6 +664,7 @@ export type Database = {
         Insert: {
           about_image_url?: string | null
           about_text?: string | null
+          accent_color?: string | null
           active_engine?: string
           bio?: string | null
           brand_name?: string | null
@@ -673,6 +680,7 @@ export type Database = {
           ga_measurement_id?: string | null
           google_verification?: string | null
           gtm_id?: string | null
+          header_html?: string | null
           headline?: string | null
           hero_cta_link?: string | null
           hero_cta_text?: string | null
@@ -688,6 +696,7 @@ export type Database = {
           meta_title?: string | null
           og_image_url?: string | null
           phone?: string | null
+          primary_color?: string | null
           section_visibility?: Json | null
           theme?: string | null
           updated_at?: string
@@ -698,6 +707,7 @@ export type Database = {
         Update: {
           about_image_url?: string | null
           about_text?: string | null
+          accent_color?: string | null
           active_engine?: string
           bio?: string | null
           brand_name?: string | null
@@ -713,6 +723,7 @@ export type Database = {
           ga_measurement_id?: string | null
           google_verification?: string | null
           gtm_id?: string | null
+          header_html?: string | null
           headline?: string | null
           hero_cta_link?: string | null
           hero_cta_text?: string | null
@@ -728,6 +739,7 @@ export type Database = {
           meta_title?: string | null
           og_image_url?: string | null
           phone?: string | null
+          primary_color?: string | null
           section_visibility?: Json | null
           theme?: string | null
           updated_at?: string
@@ -1145,6 +1157,36 @@ export type Database = {
           created_at?: string
           id?: string
           metadata?: Json
+          provider?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_integrations_config: {
+        Row: {
+          config: Json
+          created_at: string
+          enabled: boolean
+          id: string
+          provider: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          config?: Json
+          created_at?: string
+          enabled?: boolean
+          id?: string
+          provider: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          config?: Json
+          created_at?: string
+          enabled?: boolean
+          id?: string
           provider?: string
           updated_at?: string
           user_id?: string

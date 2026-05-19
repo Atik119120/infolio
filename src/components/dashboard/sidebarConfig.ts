@@ -104,6 +104,9 @@ export function buildSidebar(w: Workspace): NavEntry[] {
   // SEO
   nav.push({ icon: Search, label: "SEO", path: "/dashboard/seo" });
 
+  // Site Settings (branding/header-footer/custom code)
+  nav.push({ icon: Palette, label: "Site Settings", path: "/dashboard/site" });
+
   // Domains
   nav.push({ icon: Globe2, label: "Domains", path: "/dashboard/domain-status" });
 
@@ -116,9 +119,7 @@ export function buildSidebar(w: Workspace): NavEntry[] {
   }
 
   // Integrations
-  if (features.integrations) {
-    nav.push({ icon: Plug, label: "Integrations", path: "/dashboard/integrations" });
-  }
+  nav.push({ icon: Plug, label: "Integrations", path: "/dashboard/integrations" });
 
   // Activity
   nav.push({ icon: Activity, label: "Activity", path: "/dashboard/purchases" });

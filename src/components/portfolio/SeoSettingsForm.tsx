@@ -16,6 +16,8 @@ interface SeoSettingsFormProps {
     og_image_url?: string | null;
     google_verification?: string | null;
     custom_head_html?: string | null;
+    ga_measurement_id?: string | null;
+    gtm_id?: string | null;
   } | null;
   userId: string;
   onUpdate: () => void;

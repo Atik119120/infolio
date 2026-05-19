@@ -162,15 +162,14 @@ export default function DashboardAnalytics() {
         <>
           {/* Stat cards */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <StatCard icon={<Eye className="w-5 h-5" />} label="Total Views" value={totalViews} accent="from-violet-500 to-fuchsia-500" />
-            <StatCard icon={<Users className="w-5 h-5" />} label="Unique Visitors" value={uniqueVisitors} accent="from-emerald-500 to-cyan-500" />
+            <StatCard icon={<Eye className="w-5 h-5" />} label="Total Views" value={totalViews} />
+            <StatCard icon={<Users className="w-5 h-5" />} label="Unique Visitors" value={uniqueVisitors} />
             <StatCard
               icon={<TrendingUp className="w-5 h-5" />}
               label="Avg / Day"
               value={Math.round((totalViews / days) * 10) / 10}
-              accent="from-amber-500 to-orange-500"
             />
-            <StatCard icon={<Globe className="w-5 h-5" />} label="Countries" value={new Set(filtered.map((r) => r.country).filter(Boolean)).size} accent="from-blue-500 to-indigo-500" />
+            <StatCard icon={<Globe className="w-5 h-5" />} label="Countries" value={new Set(filtered.map((r) => r.country).filter(Boolean)).size} />
           </div>
 
           {/* Chart */}
@@ -185,20 +184,20 @@ export default function DashboardAnalytics() {
                   <AreaChart data={chartData}>
                     <defs>
                       <linearGradient id="gv" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity={0.4} />
-                        <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity={0} />
+                        <stop offset="0%" stopColor="#ffffff" stopOpacity={0.35} />
+                        <stop offset="100%" stopColor="#ffffff" stopOpacity={0} />
                       </linearGradient>
                       <linearGradient id="gu" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stopColor="#10b981" stopOpacity={0.4} />
-                        <stop offset="100%" stopColor="#10b981" stopOpacity={0} />
+                        <stop offset="0%" stopColor="#ffffff" stopOpacity={0.15} />
+                        <stop offset="100%" stopColor="#ffffff" stopOpacity={0} />
                       </linearGradient>
                     </defs>
-                    <CartesianGrid strokeDasharray="3 3" opacity={0.2} />
-                    <XAxis dataKey="date" tick={{ fontSize: 11 }} />
-                    <YAxis tick={{ fontSize: 11 }} allowDecimals={false} />
-                    <Tooltip contentStyle={{ background: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 8 }} />
-                    <Area type="monotone" dataKey="Views" stroke="hsl(var(--primary))" fill="url(#gv)" strokeWidth={2} />
-                    <Area type="monotone" dataKey="Visitors" stroke="#10b981" fill="url(#gu)" strokeWidth={2} />
+                    <CartesianGrid strokeDasharray="3 3" stroke="#ffffff" opacity={0.08} />
+                    <XAxis dataKey="date" tick={{ fontSize: 11, fill: "#ffffff80" }} stroke="#ffffff20" />
+                    <YAxis tick={{ fontSize: 11, fill: "#ffffff80" }} stroke="#ffffff20" allowDecimals={false} />
+                    <Tooltip contentStyle={{ background: "#0a0a0a", border: "1px solid #ffffff20", borderRadius: 8, color: "#fff" }} />
+                    <Area type="monotone" dataKey="Views" stroke="#ffffff" fill="url(#gv)" strokeWidth={2} />
+                    <Area type="monotone" dataKey="Visitors" stroke="#a3a3a3" fill="url(#gu)" strokeWidth={2} strokeDasharray="4 4" />
                   </AreaChart>
                 </ResponsiveContainer>
               </div>
@@ -255,14 +254,13 @@ export default function DashboardAnalytics() {
   );
 }
 
-function StatCard({ icon, label, value, accent }: { icon: React.ReactNode; label: string; value: number; accent: string }) {
+function StatCard({ icon, label, value }: { icon: React.ReactNode; label: string; value: number }) {
   return (
-    <Card className="overflow-hidden relative">
-      <div className={`absolute inset-x-0 top-0 h-0.5 bg-gradient-to-r ${accent}`} />
+    <Card className="overflow-hidden">
       <CardContent className="p-4">
         <div className="flex items-center justify-between mb-2">
           <span className="text-xs text-muted-foreground uppercase tracking-wide">{label}</span>
-          <div className={`w-8 h-8 rounded-lg bg-gradient-to-br ${accent} text-white flex items-center justify-center`}>{icon}</div>
+          <div className="w-8 h-8 rounded-lg border border-white/15 text-white flex items-center justify-center">{icon}</div>
         </div>
         <p className="text-2xl font-bold tabular-nums">{value.toLocaleString()}</p>
       </CardContent>

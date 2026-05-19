@@ -1,6 +1,9 @@
 import { CSSProperties } from "react";
-import { Twitter, Github, Linkedin, Instagram, Facebook, Youtube, Check } from "lucide-react";
+import { Twitter, Github, Linkedin, Instagram, Facebook, Youtube, Check, Plus } from "lucide-react";
 import type { Block, BlockStyle, DeviceMode } from "../types";
+import { useBuilderStore } from "../store";
+import { createBlock } from "./defaults";
+import { cn } from "@/lib/utils";
 
 const styleToCss = (s: BlockStyle, device: DeviceMode): CSSProperties => {
   if (

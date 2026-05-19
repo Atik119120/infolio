@@ -35,7 +35,9 @@ export type BlockType =
   | "carousel"
   | "productGrid"
   | "productCard"
-  | "categoryGrid";
+  | "categoryGrid"
+  | "cartFloating"
+  | "checkout";
 
 export interface BlockStyle {
   // Typography

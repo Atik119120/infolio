@@ -1,3 +1,4 @@
+import { lazy, Suspense } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -7,33 +8,44 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { AdminRoute } from "@/components/AdminRoute";
 import SubdomainRouter from "@/components/SubdomainRouter";
+import { Loader2 } from "lucide-react";
+
+// Eagerly load landing & auth for fast first paint
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
-import Dashboard from "./pages/Dashboard";
-import DashboardOverview from "./pages/DashboardOverview";
-import PortfolioEdit from "./pages/PortfolioEdit";
-import DashboardSettings from "./pages/DashboardSettings";
-import DashboardPurchases from "./pages/DashboardPurchases";
-import DashboardDomainStatus from "./pages/DashboardDomainStatus";
-import DashboardDeploy from "./pages/DashboardDeploy";
-import PublicPortfolio from "./pages/PublicPortfolio";
-import ThemeDemo from "./pages/ThemeDemo";
-import ThemeCollection from "./pages/ThemeCollection";
 import NotFound from "./pages/NotFound";
-import ResetPassword from "./pages/ResetPassword";
-import AdminAuth from "./pages/admin/AdminAuth";
-import AdminDashboard from "./pages/admin/AdminDashboard";
-import AdminOverview from "./pages/admin/AdminOverview";
-import AdminUsers from "./pages/admin/AdminUsers";
-import AdminThemes from "./pages/admin/AdminThemes";
-import AdminCustomThemes from "./pages/admin/AdminCustomThemes";
-import AdminPlans from "./pages/admin/AdminPlans";
-import AdminSettings from "./pages/admin/AdminSettings";
-import AdminSiteSettings from "./pages/admin/AdminSiteSettings";
+
+// Lazy-load everything else to shrink the initial bundle
+const Dashboard = lazy(() => import("./pages/Dashboard"));
+const DashboardOverview = lazy(() => import("./pages/DashboardOverview"));
+const PortfolioEdit = lazy(() => import("./pages/PortfolioEdit"));
+const DashboardSettings = lazy(() => import("./pages/DashboardSettings"));
+const DashboardPurchases = lazy(() => import("./pages/DashboardPurchases"));
+const DashboardDomainStatus = lazy(() => import("./pages/DashboardDomainStatus"));
+const DashboardDeploy = lazy(() => import("./pages/DashboardDeploy"));
+const PublicPortfolio = lazy(() => import("./pages/PublicPortfolio"));
+const ThemeDemo = lazy(() => import("./pages/ThemeDemo"));
+const ThemeCollection = lazy(() => import("./pages/ThemeCollection"));
+const ResetPassword = lazy(() => import("./pages/ResetPassword"));
+const AdminAuth = lazy(() => import("./pages/admin/AdminAuth"));
+const AdminDashboard = lazy(() => import("./pages/admin/AdminDashboard"));
+const AdminOverview = lazy(() => import("./pages/admin/AdminOverview"));
+const AdminUsers = lazy(() => import("./pages/admin/AdminUsers"));
+const AdminThemes = lazy(() => import("./pages/admin/AdminThemes"));
+const AdminCustomThemes = lazy(() => import("./pages/admin/AdminCustomThemes"));
+const AdminPlans = lazy(() => import("./pages/admin/AdminPlans"));
+const AdminSettings = lazy(() => import("./pages/admin/AdminSettings"));
+const AdminSiteSettings = lazy(() => import("./pages/admin/AdminSiteSettings"));
 
 const queryClient = new QueryClient();
 
 const MAIN_DOMAIN = "infolio.online";
+
+const RouteFallback = () => (
+  <div className="min-h-screen flex items-center justify-center">
+    <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
+  </div>
+);
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -43,43 +55,47 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <SubdomainRouter mainDomain={MAIN_DOMAIN}>
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/auth" element={<Auth />} />
-              <Route path="/reset-password" element={<ResetPassword />} />
-              <Route path="/themes" element={<ThemeCollection />} />
-              <Route path="/admin/login" element={<AdminAuth />} />
-              <Route path="/demo/:themeName" element={<ThemeDemo />} />
-              <Route path="/u/:username" element={<PublicPortfolio />} />
-              <Route path="/dashboard" element={
-                <ProtectedRoute>
-                  <Dashboard />
-                </ProtectedRoute>
-              }>
-                <Route index element={<DashboardOverview />} />
-                <Route path="edit" element={<PortfolioEdit />} />
-                <Route path="purchases" element={<DashboardPurchases />} />
-                <Route path="settings" element={<DashboardSettings />} />
-                <Route path="domain-status" element={<DashboardDomainStatus />} />
-                <Route path="deploy" element={<DashboardDeploy />} />
-              </Route>
-              <Route path="/admin" element={
-                <AdminRoute>
-                  <AdminDashboard />
-                </AdminRoute>
-              }>
-                <Route index element={<AdminOverview />} />
-                <Route path="users" element={<AdminUsers />} />
-                <Route path="themes" element={<AdminThemes />} />
-                <Route path="custom-themes" element={<AdminCustomThemes />} />
-                <Route path="plans" element={<AdminPlans />} />
-                <Route path="settings" element={<AdminSettings />} />
-                <Route path="site-settings" element={<AdminSiteSettings />} />
-              </Route>
-              {/* Public portfolio at root: /:username (must be LAST) */}
-              <Route path="/:username" element={<PublicPortfolio />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
+            <Suspense fallback={<RouteFallback />}>
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="/auth" element={<Auth />} />
+                <Route path="/reset-password" element={<ResetPassword />} />
+                <Route path="/themes" element={<ThemeCollection />} />
+                <Route path="/admin/login" element={<AdminAuth />} />
+                <Route path="/demo/:themeName" element={<ThemeDemo />} />
+                <Route path="/u/:username" element={<PublicPortfolio />} />
+                {/* Public SEO alias: infolio.online/@username */}
+                <Route path="/@:username" element={<PublicPortfolio />} />
+                <Route path="/dashboard" element={
+                  <ProtectedRoute>
+                    <Dashboard />
+                  </ProtectedRoute>
+                }>
+                  <Route index element={<DashboardOverview />} />
+                  <Route path="edit" element={<PortfolioEdit />} />
+                  <Route path="purchases" element={<DashboardPurchases />} />
+                  <Route path="settings" element={<DashboardSettings />} />
+                  <Route path="domain-status" element={<DashboardDomainStatus />} />
+                  <Route path="deploy" element={<DashboardDeploy />} />
+                </Route>
+                <Route path="/admin" element={
+                  <AdminRoute>
+                    <AdminDashboard />
+                  </AdminRoute>
+                }>
+                  <Route index element={<AdminOverview />} />
+                  <Route path="users" element={<AdminUsers />} />
+                  <Route path="themes" element={<AdminThemes />} />
+                  <Route path="custom-themes" element={<AdminCustomThemes />} />
+                  <Route path="plans" element={<AdminPlans />} />
+                  <Route path="settings" element={<AdminSettings />} />
+                  <Route path="site-settings" element={<AdminSiteSettings />} />
+                </Route>
+                {/* Public portfolio at root: /:username (must be LAST) */}
+                <Route path="/:username" element={<PublicPortfolio />} />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </Suspense>
           </SubdomainRouter>
         </BrowserRouter>
       </TooltipProvider>

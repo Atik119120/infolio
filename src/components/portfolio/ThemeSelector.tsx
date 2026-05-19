@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -7,7 +8,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { useToast } from "@/hooks/use-toast";
 import { 
   Camera, PenTool, Film, TrendingUp, Code2, Building2, Heart, 
-  Eye, Check, Palette, ExternalLink, Lock, Sparkles, Clock, Star, Crown, Zap
+  Eye, Check, Palette, ExternalLink, Lock, Sparkles, Clock, Star, Crown, Zap, Wand2
 } from "lucide-react";
 import { THEME_OPTIONS, getGroupedThemes, ThemeCategory } from "./themes/types";
 import { useAdminThemes } from "@/hooks/useAdminThemes";
@@ -121,6 +122,7 @@ export function ThemeSelector({ currentTheme, userId, onUpdate }: ThemeSelectorP
   const [purchaseDialogOpen, setPurchaseDialogOpen] = useState(false);
   const [selectedPurchaseTheme, setSelectedPurchaseTheme] = useState<{id: string, name: string} | null>(null);
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const baseGrouped = getGroupedThemes();
   const { themes: adminThemes } = useAdminThemes();

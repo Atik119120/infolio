@@ -27,6 +27,7 @@ interface BuilderStore {
   updateBlock: (id: string, patch: Partial<Block>) => void;
   updateBlockContent: (id: string, content: Record<string, any>) => void;
   updateBlockStyle: (id: string, style: Partial<BlockStyle>) => void;
+  updateBlockStyleForDevice: (id: string, device: DeviceMode, style: Partial<BlockStyle>) => void;
   removeBlock: (id: string) => void;
   duplicateBlock: (id: string) => void;
   setBlocks: (blocks: Block[]) => void;

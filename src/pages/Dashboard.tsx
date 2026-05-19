@@ -55,6 +55,18 @@ export default function Dashboard() {
     }
   }, [user]);
 
+  // Force pure black background while in the dashboard
+  useEffect(() => {
+    const prevHtml = document.documentElement.style.backgroundColor;
+    const prevBody = document.body.style.backgroundColor;
+    document.documentElement.style.backgroundColor = "#000";
+    document.body.style.backgroundColor = "#000";
+    return () => {
+      document.documentElement.style.backgroundColor = prevHtml;
+      document.body.style.backgroundColor = prevBody;
+    };
+  }, []);
+
   const fetchProfile = async () => {
     if (!user) return;
     

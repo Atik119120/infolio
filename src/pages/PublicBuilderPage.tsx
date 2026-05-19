@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { BlockRenderer } from "@/builder/blocks/BlockRenderer";
 import { ThemeStyle } from "@/builder/components/ThemeStyle";
 import type { PageContent } from "@/builder/types";
+import { trackView } from "@/lib/trackView";
 
 export default function PublicBuilderPage() {
   const { slug } = useParams<{ slug: string }>();

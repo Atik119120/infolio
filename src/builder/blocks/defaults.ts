@@ -351,10 +351,87 @@ export const BLOCK_DEFS: BlockDef[] = [
       style: {},
     }),
   },
+  // ===== LAYOUT =====
+  {
+    type: "container",
+    label: "Container",
+    category: "layout",
+    icon: "Square",
+    preset: "container",
+    create: () => ({
+      type: "container",
+      content: {},
+      style: { ...containerBase, flexDirection: "column", minHeight: "120px" },
+      children: [],
+    }),
+  },
+  {
+    type: "container",
+    label: "2 Columns",
+    category: "layout",
+    icon: "Columns2",
+    preset: "cols-2",
+    create: () => ({
+      type: "container",
+      content: {},
+      style: { ...containerBase },
+      children: [makeChildCol("Column 1"), makeChildCol("Column 2")],
+    }),
+  },
+  {
+    type: "container",
+    label: "3 Columns",
+    category: "layout",
+    icon: "Columns3",
+    preset: "cols-3",
+    create: () => ({
+      type: "container",
+      content: {},
+      style: { ...containerBase },
+      children: [makeChildCol("Column 1"), makeChildCol("Column 2"), makeChildCol("Column 3")],
+    }),
+  },
+  {
+    type: "container",
+    label: "4 Columns",
+    category: "layout",
+    icon: "Columns4",
+    preset: "cols-4",
+    create: () => ({
+      type: "container",
+      content: {},
+      style: { ...containerBase },
+      children: [makeChildCol("1"), makeChildCol("2"), makeChildCol("3"), makeChildCol("4")],
+    }),
+  },
+  {
+    type: "container",
+    label: "Grid",
+    category: "layout",
+    icon: "LayoutGrid",
+    preset: "grid",
+    create: () => ({
+      type: "container",
+      content: {},
+      style: {
+        ...containerBase,
+        display: "grid",
+        gridColumns: 3,
+        gap: "16px",
+      },
+      children: [makeChildCol("Item 1"), makeChildCol("Item 2"), makeChildCol("Item 3")],
+    }),
+  },
 ];
 
-export const createBlock = (type: BlockType): Block => {
-  const def = BLOCK_DEFS.find((d) => d.type === type);
-  if (!def) throw new Error(`Unknown block: ${type}`);
-  return { id: crypto.randomUUID(), ...def.create() };
+export const createBlock = (typeOrPreset: BlockType | string, preset?: string): Block => {
+  const def = preset
+    ? BLOCK_DEFS.find((d) => d.preset === preset)
+    : BLOCK_DEFS.find((d) => d.preset === typeOrPreset) ||
+      BLOCK_DEFS.find((d) => d.type === (typeOrPreset as BlockType));
+  if (!def) throw new Error(`Unknown block: ${typeOrPreset}`);
+  const created = def.create();
+  // Ensure deep IDs already assigned by makeChildCol; just give top-level id
+  return { id: crypto.randomUUID(), ...created };
 };
+

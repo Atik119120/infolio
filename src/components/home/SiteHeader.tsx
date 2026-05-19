@@ -15,10 +15,10 @@ interface NavItem {
 }
 
 const NAV_ITEMS: NavItem[] = [
-  { label: "Features", icon: Sparkles, href: "/#features" },
+  { label: "Features", icon: Sparkles, to: "/features" },
   { label: "Themes", icon: LayoutGrid, to: "/themes" },
-  { label: "Pricing", icon: Tag, href: "/#pricing" },
-  { label: "FAQ", icon: HelpCircle, href: "/#faq" },
+  { label: "Pricing", icon: Tag, to: "/pricing" },
+  { label: "FAQ", icon: HelpCircle, to: "/faq" },
 ];
 
 export default function SiteHeader() {

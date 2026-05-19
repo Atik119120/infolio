@@ -368,6 +368,126 @@ export type Database = {
         }
         Relationships: []
       }
+      order_items: {
+        Row: {
+          created_at: string
+          id: string
+          image_url: string | null
+          order_id: string
+          price: number
+          product_id: string | null
+          qty: number
+          title: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          order_id: string
+          price: number
+          product_id?: string | null
+          qty?: number
+          title: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          order_id?: string
+          price?: number
+          product_id?: string | null
+          qty?: number
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "order_items_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "order_items_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      orders: {
+        Row: {
+          created_at: string
+          currency: string
+          customer_email: string
+          customer_name: string
+          customer_phone: string | null
+          id: string
+          notes: string | null
+          order_number: string
+          payment_method: string
+          shipping_address: string | null
+          shipping_city: string | null
+          shipping_country: string | null
+          shipping_fee: number
+          shipping_zip: string | null
+          status: string
+          store_owner_id: string
+          subtotal: number
+          tax: number
+          total: number
+          transaction_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          currency?: string
+          customer_email: string
+          customer_name: string
+          customer_phone?: string | null
+          id?: string
+          notes?: string | null
+          order_number: string
+          payment_method?: string
+          shipping_address?: string | null
+          shipping_city?: string | null
+          shipping_country?: string | null
+          shipping_fee?: number
+          shipping_zip?: string | null
+          status?: string
+          store_owner_id: string
+          subtotal?: number
+          tax?: number
+          total?: number
+          transaction_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          currency?: string
+          customer_email?: string
+          customer_name?: string
+          customer_phone?: string | null
+          id?: string
+          notes?: string | null
+          order_number?: string
+          payment_method?: string
+          shipping_address?: string | null
+          shipping_city?: string | null
+          shipping_country?: string | null
+          shipping_fee?: number
+          shipping_zip?: string | null
+          status?: string
+          store_owner_id?: string
+          subtotal?: number
+          tax?: number
+          total?: number
+          transaction_id?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       otp_codes: {
         Row: {
           code: string
@@ -608,6 +728,78 @@ export type Database = {
         }
         Relationships: []
       }
+      products: {
+        Row: {
+          badge: string | null
+          category: string | null
+          compare_at_price: number | null
+          created_at: string
+          description: string | null
+          display_order: number
+          featured: boolean
+          gallery: Json
+          id: string
+          image_url: string | null
+          price: number
+          rating: number | null
+          sku: string | null
+          slug: string
+          status: string
+          stock: number
+          tags: string[]
+          title: string
+          track_inventory: boolean
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          badge?: string | null
+          category?: string | null
+          compare_at_price?: number | null
+          created_at?: string
+          description?: string | null
+          display_order?: number
+          featured?: boolean
+          gallery?: Json
+          id?: string
+          image_url?: string | null
+          price?: number
+          rating?: number | null
+          sku?: string | null
+          slug: string
+          status?: string
+          stock?: number
+          tags?: string[]
+          title: string
+          track_inventory?: boolean
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          badge?: string | null
+          category?: string | null
+          compare_at_price?: number | null
+          created_at?: string
+          description?: string | null
+          display_order?: number
+          featured?: boolean
+          gallery?: Json
+          id?: string
+          image_url?: string | null
+          price?: number
+          rating?: number | null
+          sku?: string | null
+          slug?: string
+          status?: string
+          stock?: number
+          tags?: string[]
+          title?: string
+          track_inventory?: boolean
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           approved_at: string | null
@@ -817,6 +1009,57 @@ export type Database = {
           id?: string
           platform?: string
           url?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      stores: {
+        Row: {
+          contact_email: string | null
+          contact_phone: string | null
+          created_at: string
+          currency: string
+          currency_symbol: string
+          id: string
+          is_active: boolean
+          name: string
+          payment_instructions: string | null
+          payment_methods: Json
+          shipping_fee: number
+          tax_rate: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          contact_email?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          currency?: string
+          currency_symbol?: string
+          id?: string
+          is_active?: boolean
+          name?: string
+          payment_instructions?: string | null
+          payment_methods?: Json
+          shipping_fee?: number
+          tax_rate?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          contact_email?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          currency?: string
+          currency_symbol?: string
+          id?: string
+          is_active?: boolean
+          name?: string
+          payment_instructions?: string | null
+          payment_methods?: Json
+          shipping_fee?: number
+          tax_rate?: number
+          updated_at?: string
           user_id?: string
         }
         Relationships: []

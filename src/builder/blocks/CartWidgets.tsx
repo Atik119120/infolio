@@ -1,7 +1,8 @@
 import { CSSProperties, useEffect, useState } from "react";
-import { ShoppingBag, X, Plus, Minus, Trash2, CheckCircle2, CreditCard, Truck, ShieldCheck } from "lucide-react";
+import { ShoppingBag, X, Plus, Minus, Trash2, CheckCircle2, CreditCard, Truck, ShieldCheck, Loader2 } from "lucide-react";
 import type { Block } from "../types";
 import { useCartStore, cartTotals, formatPrice, parsePrice } from "../cart/cartStore";
+import { supabase } from "@/integrations/supabase/client";
 
 type Common = { block: Block; css: CSSProperties };
 
@@ -166,15 +167,18 @@ export function CheckoutWidget({ block, css }: Common) {
   const shipping = parsePrice(block.content.shippingFee);
   const taxRate = Number(block.content.taxRate) || 0;
   const title = block.content.title || "Checkout";
+  const storeOwnerId: string | undefined = block.content.storeOwnerId;
 
   const items = useCartStore((s) => s.items);
   const clear = useCartStore((s) => s.clear);
   const { subtotal, count } = cartTotals(items);
 
-  const [success, setSuccess] = useState(false);
+  const [success, setSuccess] = useState<null | string>(null);
+  const [submitting, setSubmitting] = useState(false);
   const [form, setForm] = useState({
     name: "",
     email: "",
+    phone: "",
     address: "",
     city: "",
     zip: "",
@@ -182,12 +186,13 @@ export function CheckoutWidget({ block, css }: Common) {
     cardNumber: "",
     expiry: "",
     cvc: "",
+    notes: "",
     method: "card",
   });
 
   useEffect(() => {
     if (success) {
-      const t = setTimeout(() => setSuccess(false), 6000);
+      const t = setTimeout(() => setSuccess(null), 8000);
       return () => clearTimeout(t);
     }
   }, [success]);
@@ -195,12 +200,75 @@ export function CheckoutWidget({ block, css }: Common) {
   const tax = subtotal * (taxRate / 100);
   const total = subtotal + (subtotal > 0 ? shipping : 0) + tax;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (items.length === 0) return;
-    setSuccess(true);
+    if (items.length === 0 || submitting) return;
+    setSubmitting(true);
+
+    // Resolve store owner: from block content, else first active store
+    let ownerId = storeOwnerId;
+    if (!ownerId) {
+      const { data: store } = await supabase
+        .from("stores" as any)
+        .select("user_id")
+        .eq("is_active", true)
+        .limit(1)
+        .maybeSingle();
+      ownerId = (store as any)?.user_id;
+    }
+
+    if (!ownerId) {
+      setSubmitting(false);
+      alert("This store is not yet configured. Please contact the owner.");
+      return;
+    }
+
+    const { data: order, error } = await supabase
+      .from("orders" as any)
+      .insert({
+        store_owner_id: ownerId,
+        customer_name: form.name,
+        customer_email: form.email,
+        customer_phone: form.phone || null,
+        shipping_address: form.address || null,
+        shipping_city: form.city || null,
+        shipping_zip: form.zip || null,
+        shipping_country: form.country || null,
+        notes: form.notes || null,
+        subtotal,
+        shipping_fee: shipping,
+        tax,
+        total,
+        currency: currency === "$" ? "USD" : currency,
+        payment_method: form.method,
+        transaction_id: form.method === "card" && form.cardNumber ? `card-****${form.cardNumber.slice(-4)}` : null,
+        status: form.method === "card" ? "paid" : "pending",
+      })
+      .select()
+      .single();
+
+    if (error || !order) {
+      setSubmitting(false);
+      alert(`Order failed: ${error?.message || "unknown error"}`);
+      return;
+    }
+
+    const orderId = (order as any).id;
+    await supabase.from("order_items" as any).insert(
+      items.map((it) => ({
+        order_id: orderId,
+        title: it.title,
+        image_url: it.image || null,
+        price: it.price,
+        qty: it.qty,
+      }))
+    );
+
+    setSubmitting(false);
+    setSuccess((order as any).order_number);
     clear();
   };
+
 
   const Field = ({
     label, name, type = "text", required = true, full = false,
@@ -227,8 +295,8 @@ export function CheckoutWidget({ block, css }: Common) {
           <div className="max-w-2xl mx-auto mb-8 p-5 rounded-2xl bg-green-50 border border-green-200 flex items-center gap-3">
             <CheckCircle2 className="w-6 h-6 text-green-600 flex-shrink-0" />
             <div>
-              <p className="font-semibold text-green-900">Order placed successfully!</p>
-              <p className="text-xs text-green-700">A confirmation email is on its way.</p>
+              <p className="font-semibold text-green-900">Order placed — {success}</p>
+              <p className="text-xs text-green-700">A confirmation will be sent to your email.</p>
             </div>
           </div>
         )}
@@ -241,6 +309,7 @@ export function CheckoutWidget({ block, css }: Common) {
               <div className="grid sm:grid-cols-2 gap-4">
                 <Field label="Full name" name="name" />
                 <Field label="Email" name="email" type="email" />
+                <Field label="Phone" name="phone" required={false} full />
               </div>
             </div>
 
@@ -286,14 +355,15 @@ export function CheckoutWidget({ block, css }: Common) {
 
             <button
               type="submit"
-              disabled={items.length === 0}
+              disabled={items.length === 0 || submitting}
               className="w-full h-12 rounded-xl text-white font-semibold inline-flex items-center justify-center gap-2 shadow-lg hover:opacity-90 transition disabled:opacity-40 disabled:cursor-not-allowed"
               style={{ background: accent }}
             >
-              <ShieldCheck className="w-4 h-4" />
-              Place order — {formatPrice(total, currency)}
+              {submitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <ShieldCheck className="w-4 h-4" />}
+              {submitting ? "Placing order..." : `Place order — ${formatPrice(total, currency)}`}
             </button>
           </form>
+
 
           {/* Summary */}
           <aside className="bg-white rounded-2xl p-6 shadow-sm border border-neutral-100 h-fit lg:sticky lg:top-6">

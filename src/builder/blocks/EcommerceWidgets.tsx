@@ -93,11 +93,12 @@ function ProductCardItem({ p, accent = "#0f172a" }: { p: Product; accent?: strin
 
         {/* Add to cart */}
         <button
-          className="absolute left-3 right-3 bottom-3 h-10 rounded-xl text-white text-xs font-semibold uppercase tracking-wider inline-flex items-center justify-center gap-2 opacity-0 translate-y-3 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 shadow-lg"
-          style={{ background: accent }}
+          onClick={handleAdd}
+          disabled={p.inStock === false}
+          className="absolute left-3 right-3 bottom-3 h-10 rounded-xl text-white text-xs font-semibold uppercase tracking-wider inline-flex items-center justify-center gap-2 opacity-0 translate-y-3 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 shadow-lg disabled:opacity-40"
+          style={{ background: added ? "#16a34a" : accent }}
         >
-          <ShoppingCart className="w-3.5 h-3.5" />
-          Add to cart
+          {added ? <><Check className="w-3.5 h-3.5" /> Added</> : <><ShoppingCart className="w-3.5 h-3.5" /> Add to cart</>}
         </button>
       </div>
 

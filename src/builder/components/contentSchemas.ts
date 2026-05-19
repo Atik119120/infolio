@@ -454,16 +454,4 @@ export const CONTENT_SCHEMAS: Record<string, ContentSchema> = {
       },
     ],
   },
-    groups: [
-      {
-        title: "Image",
-        defaultOpen: true,
-        fields: [
-          { name: "src", label: "Image", type: "image" },
-          { name: "alt", label: "Alt text", type: "text" },
-          { name: "link", label: "Link (optional)", type: "url" },
-        ],
-      },
-    ],
-  },
 };

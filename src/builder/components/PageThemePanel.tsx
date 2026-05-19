@@ -148,9 +148,7 @@ export function PageThemePanel() {
             <Label className="text-xs text-white/70">Site footer</Label>
             <Switch
               checked={!!content.footer}
-              onCheckedChange={(v) =>
-                setFooter(v ? { id: crypto.randomUUID(), ...createBlock("footer") } : null)
-              }
+              onCheckedChange={(v) => setFooter(v ? createBlock("footer") : null)}
             />
           </div>
           <p className="text-[10px] text-white/40">

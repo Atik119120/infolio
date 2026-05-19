@@ -337,7 +337,11 @@ function ContainerBlock({
       {(block.children || []).map((child) => {
         const isSel = selectedId === child.id;
         if (!editorMode) {
-          return <BlockRenderer key={child.id} block={child} device={device} />;
+          return (
+            <div key={child.id} className={cn(!isGrid && "flex-1 min-w-0")}>
+              <BlockRenderer block={child} device={device} />
+            </div>
+          );
         }
         return (
           <div

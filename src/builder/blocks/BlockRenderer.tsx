@@ -68,7 +68,18 @@ interface Props {
   onEditText?: (field: string, value: string) => void;
 }
 
-export function BlockRenderer({ block, device = "desktop", editable, editorMode, onEditText }: Props) {
+export function BlockRenderer(props: Props) {
+  const { block, editorMode } = props;
+  const content = <BlockRendererInner {...props} />;
+  // Disable entrance animations inside editor canvas; keep hover/opacity.
+  if (editorMode) {
+    const styleNoAnim = { ...block.style, animation: "none" as const };
+    return <AnimationWrapper style={styleNoAnim}>{content}</AnimationWrapper>;
+  }
+  return <AnimationWrapper style={block.style}>{content}</AnimationWrapper>;
+}
+
+function BlockRendererInner({ block, device = "desktop", editable, editorMode, onEditText }: Props) {
   const css = styleToCss(block.style, device);
   const editableProps = (field: string) =>
     editable

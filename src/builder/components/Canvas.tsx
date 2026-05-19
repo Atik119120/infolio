@@ -61,7 +61,7 @@ function SortableBlock({ block }: { block: Block }) {
           }}
           className={cn(
             "relative group",
-            isSelected && "ring-2 ring-red-500 ring-offset-2 ring-offset-slate-100"
+            isSelected && "ring-2 ring-pink-500 ring-offset-2 ring-offset-slate-100"
           )}
         >
           {/* Toolbar */}
@@ -99,7 +99,7 @@ function SortableBlock({ block }: { block: Block }) {
                     e.stopPropagation();
                     removeBlock(block.id);
                   }}
-                  className="p-1.5 hover:bg-red-500 rounded text-red-300 hover:text-white"
+                  className="p-1.5 hover:bg-pink-500 rounded text-pink-300 hover:text-white"
                   title="Delete (Del)"
                 >
                   <Trash2 className="w-3.5 h-3.5" />
@@ -134,7 +134,7 @@ function SortableBlock({ block }: { block: Block }) {
         </ContextMenuItem>
         <ContextMenuSeparator />
         <ContextMenuItem
-          className="text-red-500 focus:text-red-500"
+          className="text-pink-500 focus:text-pink-500"
           onClick={() => removeBlock(block.id)}
         >
           <Trash2 className="w-3.5 h-3.5 mr-2" /> Delete
@@ -178,7 +178,7 @@ export function Canvas() {
         <ThemeStyle theme={theme} scopeId="builder-canvas-scope" />
         {content.header && (
           <div className="relative">
-            <div className="absolute top-1 left-1 z-10 text-[9px] uppercase tracking-widest bg-red-600/90 text-white px-1.5 py-0.5 rounded">Header</div>
+            <div className="absolute top-1 left-1 z-10 text-[9px] uppercase tracking-widest bg-pink-600/90 text-white px-1.5 py-0.5 rounded">Header</div>
             <BlockRenderer block={content.header} />
           </div>
         )}
@@ -199,7 +199,7 @@ export function Canvas() {
         )}
         {content.footer && (
           <div className="relative">
-            <div className="absolute top-1 left-1 z-10 text-[9px] uppercase tracking-widest bg-red-600/90 text-white px-1.5 py-0.5 rounded">Footer</div>
+            <div className="absolute top-1 left-1 z-10 text-[9px] uppercase tracking-widest bg-pink-600/90 text-white px-1.5 py-0.5 rounded">Footer</div>
             <BlockRenderer block={content.footer} />
           </div>
         )}

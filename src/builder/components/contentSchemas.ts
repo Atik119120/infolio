@@ -454,4 +454,44 @@ export const CONTENT_SCHEMAS: Record<string, ContentSchema> = {
       },
     ],
   },
+
+  cartFloating: {
+    groups: [
+      {
+        title: "Cart Settings",
+        defaultOpen: true,
+        fields: [
+          { name: "label", label: "Aria Label", type: "text" },
+          { name: "currency", label: "Currency Symbol", type: "text", placeholder: "$" },
+          {
+            name: "position",
+            label: "Position",
+            type: "select",
+            options: [
+              { value: "bottom-right", label: "Bottom Right" },
+              { value: "bottom-left", label: "Bottom Left" },
+              { value: "top-right", label: "Top Right" },
+            ],
+          },
+          { name: "accentColor", label: "Accent Color (hex)", type: "text", placeholder: "#0f172a" },
+        ],
+      },
+    ],
+  },
+
+  checkout: {
+    groups: [
+      {
+        title: "Checkout Settings",
+        defaultOpen: true,
+        fields: [
+          { name: "title", label: "Title", type: "text" },
+          { name: "currency", label: "Currency Symbol", type: "text", placeholder: "$" },
+          { name: "shippingFee", label: "Shipping Fee", type: "text", placeholder: "5" },
+          { name: "taxRate", label: "Tax Rate (%)", type: "number" },
+          { name: "accentColor", label: "Accent Color (hex)", type: "text", placeholder: "#0f172a" },
+        ],
+      },
+    ],
+  },
 };

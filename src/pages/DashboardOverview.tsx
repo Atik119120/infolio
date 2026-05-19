@@ -107,6 +107,7 @@ export default function DashboardOverview() {
 
   return (
     <div className="space-y-4 animate-fade-in text-white">
+      <DynamicWidgets />
       {/* Welcome */}
       <div className="rounded-xl border border-white/10 bg-white/[0.02] p-5">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">

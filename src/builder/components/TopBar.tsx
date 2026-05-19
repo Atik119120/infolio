@@ -114,7 +114,7 @@ export function TopBar({ onSave, onPublish, saving, publishing }: Props) {
         )}
         <Button
           size="sm"
-          className="h-9 gap-1.5 bg-red-600 hover:bg-red-700"
+          className="h-9 gap-1.5 bg-gradient-to-r from-pink-600 to-fuchsia-600 hover:brightness-110 text-white shadow-lg shadow-pink-600/30"
           onClick={onPublish}
           disabled={publishing}
         >

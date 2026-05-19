@@ -6,6 +6,7 @@ import { createBlock } from "../blocks/defaults";
 import { useBuilderStore } from "../store";
 import { SectionsLibrary } from "./SectionsLibrary";
 import { TemplatesDialog } from "./TemplatesDialog";
+import { MarketplaceDialog } from "./MarketplaceDialog";
 import { BlockInspector } from "./BlockInspector";
 import { cn } from "@/lib/utils";
 

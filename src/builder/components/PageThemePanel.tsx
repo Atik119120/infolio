@@ -19,7 +19,7 @@ const FONTS = [
 ];
 
 export function PageThemePanel() {
-  const { content, setTheme } = useBuilderStore();
+  const { content, setTheme, setHeader, setFooter } = useBuilderStore();
   const t = content.theme || {};
 
   return (

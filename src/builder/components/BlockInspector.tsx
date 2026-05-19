@@ -11,6 +11,8 @@ import type { Block, BlockStyle } from "../types";
 import { AlignLeft, AlignCenter, AlignRight, ChevronLeft } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ImageUploader } from "./ImageUploader";
+import { RepeaterControl, StringListControl } from "./RepeaterControl";
+import { REPEATER_SCHEMAS, STRING_LIST_SCHEMAS } from "./repeaterSchemas";
 
 function ColorField({ label, value, onChange }: { label: string; value?: string; onChange: (v: string) => void }) {
   return (
@@ -78,10 +80,51 @@ export function BlockInspector({ block }: { block: Block }) {
         <div className="flex-1 overflow-y-auto px-3 py-3 space-y-4">
           <TabsContent value="content" className="space-y-3 mt-0">
             {Object.entries(block.content).map(([key, val]) => {
+              const schemaKey = `${block.type}.${key}`;
+              const repeaterSchema = REPEATER_SCHEMAS[schemaKey];
+              const stringSchema = STRING_LIST_SCHEMAS[schemaKey];
+
+              // Array of objects → repeater
+              if (Array.isArray(val) && repeaterSchema) {
+                return (
+                  <div key={key} className="space-y-2">
+                    <Label className="text-[11px] uppercase tracking-widest text-pink-400/80">
+                      {repeaterSchema.itemLabel}s
+                    </Label>
+                    <RepeaterControl
+                      items={val}
+                      schema={repeaterSchema}
+                      onChange={(items) => setC({ [key]: items })}
+                    />
+                  </div>
+                );
+              }
+
+              // Array of strings → simple list
+              if (Array.isArray(val) && stringSchema) {
+                return (
+                  <div key={key} className="space-y-2">
+                    <Label className="text-[11px] uppercase tracking-widest text-pink-400/80">
+                      {stringSchema.itemLabel}s
+                    </Label>
+                    <StringListControl
+                      items={val as string[]}
+                      itemLabel={stringSchema.itemLabel}
+                      type={stringSchema.type}
+                      placeholder={stringSchema.placeholder}
+                      onChange={(items) => setC({ [key]: items })}
+                    />
+                  </div>
+                );
+              }
+
+              // Unknown array/object → hide
               if (typeof val === "object" && val !== null) return null;
-              const isImageField = /^(imageUrl|src|image)$/i.test(key);
+
+              const isImageField = /^(imageUrl|src|image|logoUrl|avatarUrl)$/i.test(key);
               const isHtmlField = block.type === "customCode" && key === "html";
               const isLong = typeof val === "string" && val.length > 60;
+
               if (isImageField) {
                 return <ImageUploader key={key} label={key} value={String(val ?? "")} onChange={(v) => setC({ [key]: v })} />;
               }

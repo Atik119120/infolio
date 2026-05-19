@@ -119,6 +119,9 @@ export default function BuilderEditor() {
     );
   }
 
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  useKeyboardShortcuts(() => save(false));
+
   return (
     <div className="fixed inset-0 bg-slate-900 flex flex-col text-white z-50">
       <TopBar onSave={() => save(false)} onPublish={publish} saving={saving} publishing={publishing} />
@@ -128,7 +131,10 @@ export default function BuilderEditor() {
         </ResizablePanel>
         <ResizableHandle />
         <ResizablePanel defaultSize={60}>
-          <Canvas />
+          <div className="relative h-full">
+            <Canvas />
+            <Navigator />
+          </div>
         </ResizablePanel>
         <ResizableHandle />
         <ResizablePanel defaultSize={22} minSize={16} maxSize={32}>

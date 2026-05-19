@@ -298,11 +298,19 @@ export default function Dashboard() {
             </Button>
 
             <h1 className="text-sm font-medium text-white tracking-tight">
-              {navItems.find(item =>
-                !item.hash && (location.pathname === item.path ||
-                (item.path === "/dashboard" && location.pathname === "/dashboard"))
-              )?.label || "Dashboard"}
+              {(() => {
+                for (const e of nav) {
+                  if (isGroup(e)) {
+                    const m = e.items.find((i) => i.path === location.pathname);
+                    if (m) return `${e.label} · ${m.label}`;
+                  } else if (e.path === location.pathname) {
+                    return e.label;
+                  }
+                }
+                return "Dashboard";
+              })()}
             </h1>
+
           </div>
 
           <div className="flex items-center gap-2">

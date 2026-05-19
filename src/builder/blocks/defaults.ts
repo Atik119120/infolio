@@ -3,10 +3,58 @@ import type { Block, BlockType } from "../types";
 export interface BlockDef {
   type: BlockType;
   label: string;
-  category: "section" | "element";
+  category: "section" | "element" | "layout";
   icon: string;
   create: () => Omit<Block, "id">;
+  preset?: string; // custom preset key (e.g. cols-2)
 }
+
+const containerBase = {
+  display: "flex" as const,
+  flexDirection: "row" as const,
+  gap: "16px",
+  paddingTop: "24px",
+  paddingBottom: "24px",
+  paddingLeft: "24px",
+  paddingRight: "24px",
+  alignItems: "stretch" as const,
+  justifyContent: "flex-start" as const,
+  minHeight: "80px",
+};
+
+const makeChildCol = (text: string): any => ({
+  id: crypto.randomUUID(),
+  type: "container",
+  content: {},
+  style: {
+    display: "flex",
+    flexDirection: "column",
+    gap: "12px",
+    paddingTop: "16px",
+    paddingBottom: "16px",
+    paddingLeft: "16px",
+    paddingRight: "16px",
+    background: "rgba(0,0,0,0.02)",
+    borderRadius: "8px",
+    minHeight: "120px",
+    width: "100%",
+  },
+  children: [
+    {
+      id: crypto.randomUUID(),
+      type: "heading",
+      content: { text, level: "h3" },
+      style: { fontSize: "20px", fontWeight: "600", color: "#0f172a" },
+    },
+    {
+      id: crypto.randomUUID(),
+      type: "paragraph",
+      content: { text: "Add content here." },
+      style: { fontSize: "14px", color: "#475569" },
+    },
+  ],
+});
+
 
 export const BLOCK_DEFS: BlockDef[] = [
   {

@@ -1,5 +1,6 @@
 import { CSSProperties } from "react";
-import { Twitter, Github, Linkedin, Instagram, Facebook, Youtube, Check, Plus } from "lucide-react";
+import * as Icons from "lucide-react";
+import { Twitter, Github, Linkedin, Instagram, Facebook, Youtube, Check, Plus, Star } from "lucide-react";
 import type { Block, BlockStyle, DeviceMode } from "../types";
 import { useBuilderStore } from "../store";
 import { createBlock } from "./defaults";
@@ -142,7 +143,7 @@ function BlockRendererInner({ block, device = "desktop", editable, editorMode, o
           <div className="max-w-5xl mx-auto px-6 grid md:grid-cols-2 gap-10 items-center">
             {block.content.imageUrl && <img src={block.content.imageUrl} alt="" className="rounded-2xl w-full object-cover aspect-square" />}
             <div>
-              <h2 className="text-4xl font-bold mb-4" {...editableProps("title")}>{block.content.title}</h2>
+              {block.content.title && <h2 className="text-4xl font-bold mb-4" {...editableProps("title")}>{block.content.title}</h2>}
               <p className="opacity-80 leading-relaxed" {...editableProps("body")}>{block.content.body}</p>
             </div>
           </div>
@@ -153,14 +154,33 @@ function BlockRendererInner({ block, device = "desktop", editable, editorMode, o
       return (
         <section style={css}>
           <div className="max-w-6xl mx-auto px-6">
-            <h2 className="text-4xl font-bold mb-10" {...editableProps("title")}>{block.content.title}</h2>
+            {block.content.title && (
+              <h2 className="text-4xl font-bold mb-10" {...editableProps("title")}>{block.content.title}</h2>
+            )}
             <div className="grid md:grid-cols-3 gap-6">
-              {(block.content.items || []).map((it: any, i: number) => (
-                <div key={i} className="p-6 rounded-xl border border-current/10" style={{ borderColor: "rgba(0,0,0,0.08)" }}>
-                  <h3 className="text-xl font-semibold mb-2">{it.title}</h3>
-                  <p className="opacity-70 text-sm">{it.body}</p>
-                </div>
-              ))}
+              {(block.content.items || []).map((it: any, i: number) => {
+                const Icon = it.icon ? (Icons as any)[it.icon] : null;
+                return (
+                  <div key={i} className="relative p-6 rounded-xl border border-current/10 hover:-translate-y-1 transition" style={{ borderColor: "rgba(0,0,0,0.08)" }}>
+                    {it.badge && (
+                      <span className="absolute top-3 right-3 text-[10px] uppercase tracking-wide bg-pink-500/10 text-pink-600 px-2 py-0.5 rounded-full">{it.badge}</span>
+                    )}
+                    {it.image && <img src={it.image} alt="" className="w-full h-40 rounded-lg object-cover mb-4" />}
+                    {Icon && !it.image && (
+                      <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-pink-500/10 text-pink-600 mb-4">
+                        <Icon className="w-6 h-6" />
+                      </div>
+                    )}
+                    {it.title && <h3 className="text-xl font-semibold mb-2">{it.title}</h3>}
+                    {it.body && <p className="opacity-70 text-sm">{it.body}</p>}
+                    {it.buttonText && (
+                      <a href={editable ? undefined : it.buttonLink} onClick={(e) => editable && e.preventDefault()} className="inline-block mt-4 text-sm font-medium text-pink-600 hover:underline">
+                        {it.buttonText} →
+                      </a>
+                    )}
+                  </div>
+                );
+              })}
             </div>
           </div>
         </section>
@@ -170,17 +190,28 @@ function BlockRendererInner({ block, device = "desktop", editable, editorMode, o
       return (
         <section style={css}>
           <div className="max-w-6xl mx-auto px-6">
-            <h2 className="text-4xl font-bold mb-10" {...editableProps("title")}>{block.content.title}</h2>
+            {block.content.title && (
+              <h2 className="text-4xl font-bold mb-10" {...editableProps("title")}>{block.content.title}</h2>
+            )}
             <div className="grid md:grid-cols-3 gap-6">
               {(block.content.plans || []).map((p: any, i: number) => (
-                <div key={i} className={`p-6 rounded-2xl border ${p.featured ? "border-red-500 shadow-xl scale-[1.02]" : "border-slate-200"}`}>
+                <div key={i} className={`p-6 rounded-2xl border ${p.featured ? "border-pink-500 shadow-xl scale-[1.02]" : "border-slate-200"}`}>
                   <p className="text-sm uppercase tracking-wide opacity-60">{p.name}</p>
-                  <p className="text-4xl font-bold my-3">{p.price}</p>
-                  <ul className="space-y-2 text-sm">
+                  <p className="text-4xl font-bold my-3">
+                    {p.price}
+                    {p.period && <span className="text-base font-normal opacity-60">{p.period}</span>}
+                  </p>
+                  <ul className="space-y-2 text-sm mb-5">
                     {(p.features || []).map((f: string, j: number) => (
-                      <li key={j} className="flex items-center gap-2"><Check className="w-4 h-4 text-red-600" />{f}</li>
+                      <li key={j} className="flex items-center gap-2"><Check className="w-4 h-4 text-pink-600" />{f}</li>
                     ))}
                   </ul>
+                  {p.buttonText && (
+                    <a href={editable ? undefined : p.buttonLink} onClick={(e) => editable && e.preventDefault()}
+                      className={`block text-center py-2 rounded-lg text-sm font-semibold ${p.featured ? "bg-pink-600 text-white" : "border border-slate-300"}`}>
+                      {p.buttonText}
+                    </a>
+                  )}
                 </div>
               ))}
             </div>
@@ -192,12 +223,27 @@ function BlockRendererInner({ block, device = "desktop", editable, editorMode, o
       return (
         <section style={css}>
           <div className="max-w-5xl mx-auto px-6">
-            <h2 className="text-4xl font-bold mb-10" {...editableProps("title")}>{block.content.title}</h2>
+            {block.content.title && (
+              <h2 className="text-4xl font-bold mb-10" {...editableProps("title")}>{block.content.title}</h2>
+            )}
             <div className="grid md:grid-cols-2 gap-6">
               {(block.content.items || []).map((t: any, i: number) => (
                 <div key={i} className="p-6 rounded-xl bg-white/5 border border-white/10">
-                  <p className="italic opacity-90 mb-3">"{t.quote}"</p>
-                  <p className="text-sm opacity-60">— {t.author}</p>
+                  {t.rating > 0 && (
+                    <div className="flex gap-0.5 mb-3 text-yellow-400">
+                      {Array.from({ length: Math.min(5, Number(t.rating) || 0) }).map((_, k) => (
+                        <Star key={k} className="w-4 h-4 fill-current" />
+                      ))}
+                    </div>
+                  )}
+                  <p className="italic opacity-90 mb-4">"{t.quote}"</p>
+                  <div className="flex items-center gap-3">
+                    {t.image && <img src={t.image} alt="" className="w-10 h-10 rounded-full object-cover" />}
+                    <div>
+                      {t.author && <p className="text-sm font-semibold">{t.author}</p>}
+                      {t.role && <p className="text-xs opacity-60">{t.role}</p>}
+                    </div>
+                  </div>
                 </div>
               ))}
             </div>
@@ -209,10 +255,12 @@ function BlockRendererInner({ block, device = "desktop", editable, editorMode, o
       return (
         <section style={css}>
           <div className="max-w-6xl mx-auto px-6">
-            <h2 className="text-4xl font-bold mb-10" {...editableProps("title")}>{block.content.title}</h2>
+            {block.content.title && (
+              <h2 className="text-4xl font-bold mb-10" {...editableProps("title")}>{block.content.title}</h2>
+            )}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
               {(block.content.images || []).map((src: string, i: number) => (
-                <img key={i} src={src} alt="" className="rounded-lg aspect-square object-cover w-full" />
+                src ? <img key={i} src={src} alt="" className="rounded-lg aspect-square object-cover w-full hover:scale-[1.02] transition" /> : null
               ))}
             </div>
           </div>
@@ -223,10 +271,10 @@ function BlockRendererInner({ block, device = "desktop", editable, editorMode, o
       return (
         <section style={css}>
           <div className="max-w-2xl mx-auto px-6">
-            <h2 className="text-4xl font-bold mb-3" {...editableProps("title")}>{block.content.title}</h2>
-            <p className="opacity-80 mb-6" {...editableProps("body")}>{block.content.body}</p>
-            {block.content.email && (
-              <a href={editable ? undefined : `mailto:${block.content.email}`} onClick={(e) => editable && e.preventDefault()} className="inline-block bg-red-600 text-white font-semibold px-8 py-3 rounded-full">
+            {block.content.title && <h2 className="text-4xl font-bold mb-3" {...editableProps("title")}>{block.content.title}</h2>}
+            {block.content.body && <p className="opacity-80 mb-6" {...editableProps("body")}>{block.content.body}</p>}
+            {block.content.email && block.content.ctaText && (
+              <a href={editable ? undefined : `mailto:${block.content.email}`} onClick={(e) => editable && e.preventDefault()} className="inline-block bg-pink-600 text-white font-semibold px-8 py-3 rounded-full">
                 <span {...editableProps("ctaText")}>{block.content.ctaText}</span>
               </a>
             )}
@@ -252,8 +300,8 @@ function BlockRendererInner({ block, device = "desktop", editable, editorMode, o
       return (
         <section style={css}>
           <div className="max-w-4xl mx-auto px-6">
-            <h2 className="text-3xl font-bold mb-3" {...editableProps("title")}>{block.content.title}</h2>
-            <p className="opacity-80" {...editableProps("body")}>{block.content.body}</p>
+            {block.content.title && <h2 className="text-3xl font-bold mb-3" {...editableProps("title")}>{block.content.title}</h2>}
+            {block.content.body && <p className="opacity-80" {...editableProps("body")}>{block.content.body}</p>}
           </div>
         </section>
       );

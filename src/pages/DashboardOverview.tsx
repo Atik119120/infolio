@@ -212,16 +212,25 @@ export default function DashboardOverview() {
         </div>
       )}
 
-      {/* Support */}
-      <div className="rounded-xl border border-white/10 bg-white/[0.02] p-4 flex items-center justify-between gap-3">
+      {/* Support - colorful */}
+      <div
+        className="rounded-xl p-4 flex items-center justify-between gap-3 border border-emerald-400/30"
+        style={{ background: "linear-gradient(135deg, rgba(16,185,129,0.18), rgba(59,130,246,0.18) 60%, rgba(168,85,247,0.18))" }}
+      >
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-lg border border-white/15 grid place-items-center"><MessageCircle className="w-5 h-5 text-white" /></div>
+          <div className="w-10 h-10 rounded-lg grid place-items-center" style={{ background: "linear-gradient(135deg, #25D366, #128C7E)" }}>
+            <MessageCircle className="w-5 h-5 text-white" />
+          </div>
           <div>
-            <p className="font-medium text-sm">Need help?</p>
-            <p className="text-xs text-white/50">Chat with us directly on WhatsApp</p>
+            <p className="font-medium text-sm text-white">Need help?</p>
+            <p className="text-xs text-white/70">Chat with us directly on WhatsApp</p>
           </div>
         </div>
-        <Button className="h-9 bg-white text-black hover:bg-white/90" onClick={() => openWhatsApp("Hi! I need help with my Infolio account.")}>
+        <Button
+          className="h-9 text-white border-0 hover:opacity-90"
+          style={{ background: "linear-gradient(135deg, #25D366, #128C7E)" }}
+          onClick={() => openWhatsApp("Hi! I need help with my Infolio account.")}
+        >
           <MessageCircle className="w-4 h-4 mr-1.5" /> WhatsApp
         </Button>
       </div>

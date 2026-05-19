@@ -308,7 +308,59 @@ export function RightPanel() {
           </TabsContent>
 
           <TabsContent value="advanced" className="space-y-4 mt-0">
-            <p className="text-[10px] uppercase tracking-widest text-white/40">Responsive</p>
+            <p className="text-[10px] uppercase tracking-widest text-red-400/80">Motion</p>
+            <div className="space-y-1.5">
+              <Label className="text-xs text-white/70">Entrance Animation</Label>
+              <select
+                value={s.animation || "none"}
+                onChange={(e) => setS({ animation: e.target.value as any })}
+                className="w-full h-8 text-xs rounded-md bg-white/5 border border-white/10 text-white px-2"
+              >
+                {["none","fade-up","fade-down","fade-left","fade-right","zoom-in","zoom-out","flip","blur"].map((v) => (
+                  <option key={v} value={v} className="bg-slate-900">{v}</option>
+                ))}
+              </select>
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-1.5">
+                <div className="flex justify-between">
+                  <Label className="text-xs text-white/70">Duration</Label>
+                  <span className="text-[11px] text-white/50">{(s.animationDuration ?? 0.6).toFixed(1)}s</span>
+                </div>
+                <Slider value={[Math.round((s.animationDuration ?? 0.6) * 10)]} min={1} max={30} step={1}
+                  onValueChange={([v]) => setS({ animationDuration: v / 10 })} />
+              </div>
+              <div className="space-y-1.5">
+                <div className="flex justify-between">
+                  <Label className="text-xs text-white/70">Delay</Label>
+                  <span className="text-[11px] text-white/50">{(s.animationDelay ?? 0).toFixed(1)}s</span>
+                </div>
+                <Slider value={[Math.round((s.animationDelay ?? 0) * 10)]} min={0} max={30} step={1}
+                  onValueChange={([v]) => setS({ animationDelay: v / 10 })} />
+              </div>
+            </div>
+            <div className="space-y-1.5">
+              <Label className="text-xs text-white/70">Hover Effect</Label>
+              <select
+                value={s.hoverEffect || "none"}
+                onChange={(e) => setS({ hoverEffect: e.target.value as any })}
+                className="w-full h-8 text-xs rounded-md bg-white/5 border border-white/10 text-white px-2"
+              >
+                {["none","lift","grow","shrink","tilt","glow"].map((v) => (
+                  <option key={v} value={v} className="bg-slate-900">{v}</option>
+                ))}
+              </select>
+            </div>
+            <div className="space-y-1.5">
+              <div className="flex justify-between">
+                <Label className="text-xs text-white/70">Opacity</Label>
+                <span className="text-[11px] text-white/50">{Math.round((s.opacity ?? 1) * 100)}%</span>
+              </div>
+              <Slider value={[Math.round((s.opacity ?? 1) * 100)]} min={0} max={100} step={1}
+                onValueChange={([v]) => setS({ opacity: v / 100 })} />
+            </div>
+
+            <p className="text-[10px] uppercase tracking-widest text-white/40 pt-3 border-t border-white/10">Responsive</p>
             <div className="flex items-center justify-between">
               <Label className="text-xs text-white/70">Hide on Desktop</Label>
               <Switch checked={!!s.hideDesktop} onCheckedChange={(v) => setS({ hideDesktop: v })} />

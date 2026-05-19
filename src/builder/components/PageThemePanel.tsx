@@ -141,9 +141,7 @@ export function PageThemePanel() {
             <Label className="text-xs text-white/70">Site header</Label>
             <Switch
               checked={!!content.header}
-              onCheckedChange={(v) =>
-                setHeader(v ? { id: crypto.randomUUID(), ...createBlock("navbar") } : null)
-              }
+              onCheckedChange={(v) => setHeader(v ? createBlock("navbar") : null)}
             />
           </div>
           <div className="flex items-center justify-between">

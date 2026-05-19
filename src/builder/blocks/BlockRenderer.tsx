@@ -143,13 +143,25 @@ interface Props {
 
 export function BlockRenderer(props: Props) {
   const { block, editorMode } = props;
-  const content = <BlockRendererInner {...props} />;
-  // Disable entrance animations inside editor canvas; keep hover/opacity.
-  if (editorMode) {
-    const styleNoAnim = { ...block.style, animation: "none" as const };
-    return <AnimationWrapper style={styleNoAnim}>{content}</AnimationWrapper>;
-  }
-  return <AnimationWrapper style={block.style}>{content}</AnimationWrapper>;
+  const inner = <BlockRendererInner {...props} />;
+  const styleProp = editorMode ? { ...block.style, animation: "none" as const } : block.style;
+
+  const bbId = `bb-${block.id.replace(/-/g, "").slice(0, 8)}`;
+  const extraClass = [bbId, block.style.cssClasses || ""].filter(Boolean).join(" ");
+  const customCss = block.style.customCss || "";
+  const hoverCss = block.style.hoverCss || "";
+
+  const cssBlock =
+    (customCss || hoverCss)
+      ? `.${bbId}{${customCss.replace(/selector/g, `.${bbId}`)}} .${bbId}:hover{${hoverCss.replace(/selector/g, `.${bbId}`)}}`
+      : "";
+
+  return (
+    <div id={block.style.htmlId || undefined} className={extraClass}>
+      {cssBlock && <style dangerouslySetInnerHTML={{ __html: cssBlock }} />}
+      <AnimationWrapper style={styleProp}>{inner}</AnimationWrapper>
+    </div>
+  );
 }
 
 function BlockRendererInner({ block, device = "desktop", editable, editorMode, onEditText }: Props) {

@@ -243,11 +243,13 @@ export default function PortfolioEdit() {
               onError={showError}
             />
           )}
-          <CustomCodeForm
-            portfolio={portfolio as any}
-            userId={user?.id || ""}
-            onUpdate={fetchAllData}
-          />
+          {activeTheme === "custom-code" && (
+            <CustomCodeForm
+              portfolio={portfolio as any}
+              userId={user?.id || ""}
+              onUpdate={fetchAllData}
+            />
+          )}
         </TabsContent>
 
         <TabsContent value="branding" className="mt-4 space-y-4">

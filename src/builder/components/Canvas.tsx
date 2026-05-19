@@ -14,11 +14,13 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { Copy, Trash2, GripVertical } from "lucide-react";
+import { Copy, Trash2, GripVertical, BookmarkPlus } from "lucide-react";
 import { useBuilderStore } from "../store";
 import { BlockRenderer } from "../blocks/BlockRenderer";
 import type { Block } from "../types";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/contexts/AuthContext";
+import { saveBlockAsSection } from "./SectionsLibrary";
 import {
   ContextMenu,
   ContextMenuContent,
@@ -37,6 +39,7 @@ const deviceWidth: Record<string, string> = {
 function SortableBlock({ block }: { block: Block }) {
   const { selectedId, setSelected, removeBlock, duplicateBlock, updateBlockContent, device } =
     useBuilderStore();
+  const { user } = useAuth();
   const isSelected = selectedId === block.id;
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: block.id,
@@ -122,6 +125,12 @@ function SortableBlock({ block }: { block: Block }) {
         </ContextMenuItem>
         <ContextMenuItem onClick={() => setSelected(block.id)}>
           Select & Edit
+        </ContextMenuItem>
+        <ContextMenuItem
+          onClick={() => user && saveBlockAsSection(user.id, block)}
+          disabled={!user}
+        >
+          <BookmarkPlus className="w-3.5 h-3.5 mr-2" /> Save as section
         </ContextMenuItem>
         <ContextMenuSeparator />
         <ContextMenuItem

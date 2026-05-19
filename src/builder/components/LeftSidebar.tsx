@@ -1,11 +1,19 @@
+import { useState } from "react";
 import { motion } from "framer-motion";
 import * as Icons from "lucide-react";
 import { BLOCK_DEFS } from "../blocks/defaults";
 import { createBlock } from "../blocks/defaults";
 import { useBuilderStore } from "../store";
+import { SectionsLibrary } from "./SectionsLibrary";
+import { TemplatesDialog } from "./TemplatesDialog";
+import { cn } from "@/lib/utils";
+
+type Tab = "blocks" | "library";
 
 export function LeftSidebar() {
   const addBlock = useBuilderStore((s) => s.addBlock);
+  const [tab, setTab] = useState<Tab>("blocks");
+  const [tplOpen, setTplOpen] = useState(false);
 
   const layout = BLOCK_DEFS.filter((b) => b.category === "layout");
   const sections = BLOCK_DEFS.filter((b) => b.category === "section");
@@ -39,15 +47,43 @@ export function LeftSidebar() {
 
   return (
     <div className="h-full bg-slate-950/95 backdrop-blur-xl border-r border-white/10 flex flex-col text-white">
-      <div className="p-4 border-b border-white/10">
-        <h2 className="text-sm font-semibold tracking-tight">Elements</h2>
-        <p className="text-[11px] text-white/50 mt-0.5">Click to add to canvas</p>
+      <div className="p-3 border-b border-white/10 space-y-2">
+        <button
+          onClick={() => setTplOpen(true)}
+          className="w-full flex items-center justify-center gap-2 h-9 rounded-lg bg-gradient-to-r from-red-600 to-pink-600 text-white text-xs font-semibold hover:brightness-110 transition"
+        >
+          <Icons.LayoutTemplate className="w-3.5 h-3.5" />
+          Browse templates
+        </button>
+        <div className="grid grid-cols-2 gap-1 bg-white/5 p-0.5 rounded-lg">
+          {(["blocks", "library"] as Tab[]).map((t) => (
+            <button
+              key={t}
+              onClick={() => setTab(t)}
+              className={cn(
+                "h-7 rounded-md text-[11px] font-medium capitalize transition",
+                tab === t ? "bg-red-600 text-white" : "text-white/60 hover:text-white"
+              )}
+            >
+              {t === "library" ? "My library" : "Blocks"}
+            </button>
+          ))}
+        </div>
       </div>
+
       <div className="flex-1 overflow-y-auto p-3 space-y-5">
-        <Group title="Layout" items={layout} />
-        <Group title="Sections" items={sections} />
-        <Group title="Elements" items={elements} />
+        {tab === "blocks" ? (
+          <>
+            <Group title="Layout" items={layout} />
+            <Group title="Sections" items={sections} />
+            <Group title="Elements" items={elements} />
+          </>
+        ) : (
+          <SectionsLibrary />
+        )}
       </div>
+
+      <TemplatesDialog open={tplOpen} onOpenChange={setTplOpen} />
     </div>
   );
 }

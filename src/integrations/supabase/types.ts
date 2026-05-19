@@ -98,6 +98,36 @@ export type Database = {
         }
         Relationships: []
       }
+      builder_sections: {
+        Row: {
+          block: Json
+          created_at: string
+          id: string
+          name: string
+          preview_text: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          block: Json
+          created_at?: string
+          id?: string
+          name?: string
+          preview_text?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          block?: Json
+          created_at?: string
+          id?: string
+          name?: string
+          preview_text?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       cleanup_logs: {
         Row: {
           created_at: string

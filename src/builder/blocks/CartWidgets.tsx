@@ -355,14 +355,15 @@ export function CheckoutWidget({ block, css }: Common) {
 
             <button
               type="submit"
-              disabled={items.length === 0}
+              disabled={items.length === 0 || submitting}
               className="w-full h-12 rounded-xl text-white font-semibold inline-flex items-center justify-center gap-2 shadow-lg hover:opacity-90 transition disabled:opacity-40 disabled:cursor-not-allowed"
               style={{ background: accent }}
             >
-              <ShieldCheck className="w-4 h-4" />
-              Place order — {formatPrice(total, currency)}
+              {submitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <ShieldCheck className="w-4 h-4" />}
+              {submitting ? "Placing order..." : `Place order — ${formatPrice(total, currency)}`}
             </button>
           </form>
+
 
           {/* Summary */}
           <aside className="bg-white rounded-2xl p-6 shadow-sm border border-neutral-100 h-fit lg:sticky lg:top-6">

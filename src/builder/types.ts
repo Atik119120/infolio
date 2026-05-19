@@ -65,6 +65,21 @@ export interface BlockStyle {
   alignItems?: "flex-start" | "center" | "flex-end" | "stretch";
   flexWrap?: "wrap" | "nowrap";
   minHeight?: string;
+  // Animation / motion
+  animation?:
+    | "none"
+    | "fade-up"
+    | "fade-down"
+    | "fade-left"
+    | "fade-right"
+    | "zoom-in"
+    | "zoom-out"
+    | "flip"
+    | "blur";
+  animationDuration?: number; // seconds
+  animationDelay?: number; // seconds
+  hoverEffect?: "none" | "lift" | "grow" | "shrink" | "tilt" | "glow";
+  opacity?: number;
 }
 
 export interface Block {
@@ -77,10 +92,14 @@ export interface Block {
 
 export interface PageTheme {
   primaryColor?: string;
+  textColor?: string;
+  mutedColor?: string;
   background?: string;
   fontFamily?: string;
+  headingFontFamily?: string;
   containerWidth?: string;
   buttonRadius?: string;
+  baseFontSize?: string;
 }
 
 export interface PageContent {

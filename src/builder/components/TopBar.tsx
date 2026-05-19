@@ -65,6 +65,16 @@ export function TopBar({ onSave, onPublish, saving, publishing }: Props) {
       <div className="flex items-center gap-1.5 flex-1 justify-end">
         <Button
           variant="ghost"
+          size="sm"
+          className="h-9 gap-1.5 text-white/80 hover:text-white hover:bg-white/10"
+          onClick={() => setAiOpen(true)}
+          title="Generate with AI"
+        >
+          <Sparkles className="w-3.5 h-3.5 text-pink-400" />
+          AI
+        </Button>
+        <Button
+          variant="ghost"
           size="icon"
           className="h-9 w-9 text-white/70 hover:text-white hover:bg-white/10"
           onClick={undo}

@@ -16,6 +16,7 @@ export function LeftSidebar() {
   const { addBlock, selectedId, content } = useBuilderStore();
   const [tab, setTab] = useState<Tab>("blocks");
   const [tplOpen, setTplOpen] = useState(false);
+  const [mktOpen, setMktOpen] = useState(false);
 
   // Find selected block recursively
   const findBlock = (blocks: any[], id: string): any => {

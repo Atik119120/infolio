@@ -366,4 +366,104 @@ export const CONTENT_SCHEMAS: Record<string, ContentSchema> = {
       },
     ],
   },
+
+  productGrid: {
+    groups: [
+      {
+        title: "Heading",
+        defaultOpen: true,
+        fields: [
+          { name: "eyebrow", label: "Eyebrow", type: "text" },
+          { name: "title", label: "Section Title", type: "text" },
+          { name: "subtitle", label: "Subtitle", type: "textarea" },
+        ],
+      },
+      {
+        title: "Layout & Style",
+        fields: [
+          {
+            name: "columns",
+            label: "Columns",
+            type: "select",
+            options: [
+              { value: "2", label: "2 Columns" },
+              { value: "3", label: "3 Columns" },
+              { value: "4", label: "4 Columns" },
+            ],
+          },
+          { name: "accentColor", label: "Accent Color (hex)", type: "text", placeholder: "#0f172a" },
+        ],
+      },
+    ],
+  },
+
+  productCard: {
+    groups: [
+      {
+        title: "Product",
+        defaultOpen: true,
+        fields: [
+          { name: "title", label: "Title", type: "text" },
+          { name: "price", label: "Price", type: "text" },
+          { name: "oldPrice", label: "Old Price", type: "text" },
+          { name: "badge", label: "Badge", type: "text" },
+          { name: "rating", label: "Rating (0-5)", type: "number" },
+          { name: "inStock", label: "In Stock", type: "boolean" },
+        ],
+      },
+      {
+        title: "Media",
+        fields: [
+          { name: "image", label: "Image", type: "image" },
+          { name: "hoverImage", label: "Hover Image", type: "image" },
+        ],
+      },
+      {
+        title: "Style",
+        fields: [
+          { name: "accentColor", label: "Accent Color (hex)", type: "text", placeholder: "#0f172a" },
+        ],
+      },
+    ],
+  },
+
+  categoryGrid: {
+    groups: [
+      {
+        title: "Heading",
+        defaultOpen: true,
+        fields: [
+          { name: "eyebrow", label: "Eyebrow", type: "text" },
+          { name: "title", label: "Section Title", type: "text" },
+        ],
+      },
+      {
+        title: "Layout",
+        fields: [
+          {
+            name: "columns",
+            label: "Columns",
+            type: "select",
+            options: [
+              { value: "2", label: "2 Columns" },
+              { value: "3", label: "3 Columns" },
+              { value: "4", label: "4 Columns" },
+            ],
+          },
+        ],
+      },
+    ],
+  },
+    groups: [
+      {
+        title: "Image",
+        defaultOpen: true,
+        fields: [
+          { name: "src", label: "Image", type: "image" },
+          { name: "alt", label: "Alt text", type: "text" },
+          { name: "link", label: "Link (optional)", type: "url" },
+        ],
+      },
+    ],
+  },
 };

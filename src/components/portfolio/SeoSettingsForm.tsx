@@ -71,6 +71,8 @@ function Inner({ portfolio, userId, onUpdate, onSuccess, onError }: SeoSettingsF
       og_image_url: form.og_image_url.trim() || null,
       google_verification: form.google_verification ? normalizeVerification(form.google_verification) : null,
       custom_head_html: form.custom_head_html.trim() || null,
+      ga_measurement_id: form.ga_measurement_id.trim() || null,
+      gtm_id: form.gtm_id.trim() || null,
     };
     const { error } = await supabase.from("portfolios").update(payload).eq("user_id", userId);
     setSaving(false);

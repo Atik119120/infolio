@@ -473,21 +473,6 @@ export function ThemeSelector({ currentTheme, userId, onUpdate }: ThemeSelectorP
                                 <><Lock className="w-4 h-4 mr-1.5" />Unlock</>
                               )}
                             </Button>
-                            {isUnlocked && !theme.value.startsWith("admin:") && theme.value !== "custom-code" && (
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                className="border-red-500/40 text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  navigate(`/customize/${theme.value}`);
-                                }}
-                                title="Open visual builder pre-loaded with this theme"
-                              >
-                                <Wand2 className="w-4 h-4 mr-1.5" />
-                                Customize
-                              </Button>
-                            )}
                           </div>
                         </div>
                       </div>

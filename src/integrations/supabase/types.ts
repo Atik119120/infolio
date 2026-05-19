@@ -59,6 +59,45 @@ export type Database = {
         }
         Relationships: []
       }
+      builder_pages: {
+        Row: {
+          content: Json
+          created_at: string
+          id: string
+          is_published: boolean
+          name: string
+          published_at: string | null
+          published_content: Json | null
+          slug: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          content?: Json
+          created_at?: string
+          id?: string
+          is_published?: boolean
+          name?: string
+          published_at?: string | null
+          published_content?: Json | null
+          slug: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          content?: Json
+          created_at?: string
+          id?: string
+          is_published?: boolean
+          name?: string
+          published_at?: string | null
+          published_content?: Json | null
+          slug?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       cleanup_logs: {
         Row: {
           created_at: string

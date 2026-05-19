@@ -1,0 +1,150 @@
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  DndContext,
+  closestCenter,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  SortableContext,
+  arrayMove,
+  useSortable,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import { Copy, Trash2, GripVertical } from "lucide-react";
+import { useBuilderStore } from "../store";
+import { BlockRenderer } from "../blocks/BlockRenderer";
+import type { Block } from "../types";
+import { cn } from "@/lib/utils";
+
+const deviceWidth: Record<string, string> = {
+  desktop: "100%",
+  tablet: "768px",
+  mobile: "390px",
+};
+
+function SortableBlock({ block }: { block: Block }) {
+  const { selectedId, setSelected, removeBlock, duplicateBlock, updateBlockContent, device } =
+    useBuilderStore();
+  const isSelected = selectedId === block.id;
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    id: block.id,
+  });
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={{
+        transform: CSS.Transform.toString(transform),
+        transition,
+        opacity: isDragging ? 0.5 : 1,
+      }}
+      onClick={(e) => {
+        e.stopPropagation();
+        setSelected(block.id);
+      }}
+      className={cn(
+        "relative group",
+        isSelected && "ring-2 ring-red-500 ring-offset-2 ring-offset-slate-100"
+      )}
+    >
+      {/* Toolbar */}
+      <AnimatePresence>
+        {isSelected && (
+          <motion.div
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            className="absolute -top-9 left-1/2 -translate-x-1/2 z-20 flex items-center gap-0.5 bg-slate-900 text-white rounded-lg shadow-xl px-1 py-1"
+          >
+            <button
+              {...attributes}
+              {...listeners}
+              className="p-1.5 hover:bg-white/10 rounded cursor-grab active:cursor-grabbing"
+              title="Drag"
+            >
+              <GripVertical className="w-3.5 h-3.5" />
+            </button>
+            <span className="text-[10px] uppercase tracking-wide px-2 opacity-70">
+              {block.type}
+            </span>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                duplicateBlock(block.id);
+              }}
+              className="p-1.5 hover:bg-white/10 rounded"
+              title="Duplicate"
+            >
+              <Copy className="w-3.5 h-3.5" />
+            </button>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                removeBlock(block.id);
+              }}
+              className="p-1.5 hover:bg-red-500 rounded text-red-300 hover:text-white"
+              title="Delete"
+            >
+              <Trash2 className="w-3.5 h-3.5" />
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <BlockRenderer
+        block={block}
+        device={device}
+        editable={isSelected}
+        onEditText={(field, value) => updateBlockContent(block.id, { [field]: value })}
+      />
+    </div>
+  );
+}
+
+export function Canvas() {
+  const { content, device, setSelected, setBlocks } = useBuilderStore();
+  const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 6 } }));
+
+  const handleDragEnd = (e: DragEndEvent) => {
+    const { active, over } = e;
+    if (!over || active.id === over.id) return;
+    const oldIdx = content.blocks.findIndex((b) => b.id === active.id);
+    const newIdx = content.blocks.findIndex((b) => b.id === over.id);
+    if (oldIdx === -1 || newIdx === -1) return;
+    setBlocks(arrayMove(content.blocks, oldIdx, newIdx));
+  };
+
+  return (
+    <div
+      className="h-full overflow-auto bg-slate-200/70 dark:bg-slate-800/40 py-8 px-4 flex justify-center"
+      onClick={() => setSelected(null)}
+    >
+      <motion.div
+        animate={{ width: deviceWidth[device] }}
+        transition={{ duration: 0.3 }}
+        className="bg-white shadow-2xl rounded-lg overflow-hidden min-h-[80vh] w-full"
+        style={{ maxWidth: deviceWidth[device] }}
+      >
+        {content.blocks.length === 0 ? (
+          <div className="flex flex-col items-center justify-center h-[60vh] text-slate-400 text-center px-6">
+            <div className="text-5xl mb-3">✨</div>
+            <p className="text-lg font-medium text-slate-600">Start building</p>
+            <p className="text-sm">Click elements from the left sidebar to add them here</p>
+          </div>
+        ) : (
+          <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+            <SortableContext items={content.blocks.map((b) => b.id)} strategy={verticalListSortingStrategy}>
+              {content.blocks.map((b) => (
+                <SortableBlock key={b.id} block={b} />
+              ))}
+            </SortableContext>
+          </DndContext>
+        )}
+      </motion.div>
+    </div>
+  );
+}

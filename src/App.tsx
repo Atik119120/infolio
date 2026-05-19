@@ -36,6 +36,9 @@ const AdminCustomThemes = lazy(() => import("./pages/admin/AdminCustomThemes"));
 const AdminPlans = lazy(() => import("./pages/admin/AdminPlans"));
 const AdminSettings = lazy(() => import("./pages/admin/AdminSettings"));
 const AdminSiteSettings = lazy(() => import("./pages/admin/AdminSiteSettings"));
+const BuilderList = lazy(() => import("./pages/BuilderList"));
+const BuilderEditor = lazy(() => import("./pages/BuilderEditor"));
+const PublicBuilderPage = lazy(() => import("./pages/PublicBuilderPage"));
 
 const queryClient = new QueryClient();
 
@@ -66,6 +69,12 @@ const App = () => (
                 <Route path="/u/:username" element={<PublicPortfolio />} />
                 {/* Public SEO alias: infolio.online/@username */}
                 <Route path="/@:username" element={<PublicPortfolio />} />
+                <Route path="/p/:slug" element={<PublicBuilderPage />} />
+                <Route path="/dashboard/builder/:id" element={
+                  <ProtectedRoute>
+                    <BuilderEditor />
+                  </ProtectedRoute>
+                } />
                 <Route path="/dashboard" element={
                   <ProtectedRoute>
                     <Dashboard />
@@ -73,6 +82,7 @@ const App = () => (
                 }>
                   <Route index element={<DashboardOverview />} />
                   <Route path="edit" element={<PortfolioEdit />} />
+                  <Route path="builder" element={<BuilderList />} />
                   <Route path="purchases" element={<DashboardPurchases />} />
                   <Route path="settings" element={<DashboardSettings />} />
                   <Route path="domain-status" element={<DashboardDomainStatus />} />

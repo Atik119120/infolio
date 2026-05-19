@@ -65,7 +65,12 @@ export const BLOCK_DEFS: BlockDef[] = [
     create: () => ({
       type: "navbar",
       content: {
+        logoUrl: "",
         brand: "Brand",
+        layout: "split",
+        sticky: false,
+        transparent: false,
+        showCta: true,
         links: [
           { label: "Home", url: "#" },
           { label: "About", url: "#about" },

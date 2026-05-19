@@ -39,6 +39,7 @@ const deviceWidth: Record<string, string> = {
 function SortableBlock({ block }: { block: Block }) {
   const { selectedId, setSelected, removeBlock, duplicateBlock, updateBlockContent, device } =
     useBuilderStore();
+  const { user } = useAuth();
   const isSelected = selectedId === block.id;
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: block.id,

@@ -93,17 +93,17 @@ export default function BuilderList() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 text-white">
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Page Builder</h1>
-          <p className="text-sm text-muted-foreground mt-1">
+          <h1 className="text-2xl font-semibold tracking-tight">Page Builder</h1>
+          <p className="text-sm text-white/50 mt-1">
             Drag-and-drop visual builder for custom pages.
           </p>
         </div>
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
-            <Button className="bg-red-600 hover:bg-red-700 gap-2">
+            <Button className="bg-white text-black hover:bg-white/90 gap-2">
               <Plus className="w-4 h-4" /> New Page
             </Button>
           </DialogTrigger>
@@ -129,7 +129,7 @@ export default function BuilderList() {
               </div>
             </div>
             <DialogFooter>
-              <Button onClick={createPage} disabled={creating} className="bg-red-600 hover:bg-red-700">
+              <Button onClick={createPage} disabled={creating}>
                 {creating && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
                 Create & Edit
               </Button>
@@ -140,13 +140,13 @@ export default function BuilderList() {
 
       {loading ? (
         <div className="flex justify-center py-20">
-          <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
+          <Loader2 className="w-6 h-6 animate-spin text-white/40" />
         </div>
       ) : pages.length === 0 ? (
-        <div className="text-center py-20 border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-xl">
-          <FileEdit className="w-10 h-10 text-muted-foreground mx-auto mb-3" />
-          <p className="font-medium">No pages yet</p>
-          <p className="text-sm text-muted-foreground mt-1">Create your first page to get started.</p>
+        <div className="text-center py-20 border-2 border-dashed border-white/10 rounded-xl">
+          <FileEdit className="w-10 h-10 text-white/40 mx-auto mb-3" />
+          <p className="font-medium text-white">No pages yet</p>
+          <p className="text-sm text-white/50 mt-1">Create your first page to get started.</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -156,31 +156,26 @@ export default function BuilderList() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.04 }}
-              className="group p-5 rounded-xl border bg-card hover:shadow-lg hover:border-red-500/30 transition-all"
+              className="group p-5 rounded-xl border border-white/10 bg-white/[0.02] hover:bg-white/[0.04] hover:border-white/20 transition-all"
             >
               <div className="flex items-start justify-between mb-3">
                 <div className="min-w-0">
-                  <h3 className="font-semibold truncate">{p.name}</h3>
-                  <p className="text-xs text-muted-foreground truncate">/p/{p.slug}</p>
+                  <h3 className="font-semibold truncate text-white">{p.name}</h3>
+                  <p className="text-xs text-white/50 truncate">/p/{p.slug}</p>
                 </div>
-                {p.is_published ? (
-                  <span className="text-[10px] font-medium uppercase tracking-wide px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700">
-                    Live
-                  </span>
-                ) : (
-                  <span className="text-[10px] font-medium uppercase tracking-wide px-2 py-0.5 rounded-full bg-slate-100 text-slate-600">
-                    Draft
-                  </span>
-                )}
+                <span className={`text-[10px] font-medium uppercase tracking-wide px-2 py-0.5 rounded-full border ${
+                  p.is_published ? "border-white/30 text-white" : "border-white/10 text-white/50"
+                }`}>
+                  {p.is_published ? "Live" : "Draft"}
+                </span>
               </div>
-              <p className="text-[11px] text-muted-foreground mb-4">
+              <p className="text-[11px] text-white/40 mb-4">
                 Updated {new Date(p.updated_at).toLocaleDateString()}
               </p>
               <div className="flex gap-2">
                 <Button
                   size="sm"
-                  variant="default"
-                  className="flex-1 gap-1.5 bg-red-600 hover:bg-red-700"
+                  className="flex-1 gap-1.5 bg-white text-black hover:bg-white/90"
                   onClick={() => navigate(`/dashboard/builder/${p.id}`)}
                 >
                   <FileEdit className="w-3.5 h-3.5" /> Edit
@@ -189,13 +184,19 @@ export default function BuilderList() {
                   <Button
                     size="sm"
                     variant="outline"
+                    className="bg-transparent border-white/15 text-white hover:bg-white/5 hover:text-white"
                     onClick={() => window.open(`/p/${p.slug}`, "_blank")}
                   >
                     <ExternalLink className="w-3.5 h-3.5" />
                   </Button>
                 )}
-                <Button size="sm" variant="outline" onClick={() => removePage(p.id)}>
-                  <Trash2 className="w-3.5 h-3.5 text-red-500" />
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="bg-transparent border-white/15 text-white hover:bg-white/5 hover:text-white"
+                  onClick={() => removePage(p.id)}
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
                 </Button>
               </div>
             </motion.div>
@@ -203,7 +204,7 @@ export default function BuilderList() {
         </div>
       )}
 
-      <div className="text-xs text-muted-foreground border-t pt-4 flex items-center gap-2">
+      <div className="text-xs text-white/40 border-t border-white/10 pt-4 flex items-center gap-2">
         <Globe className="w-3.5 h-3.5" />
         Pages auto-save every 8 seconds. Publish to make them publicly accessible.
       </div>

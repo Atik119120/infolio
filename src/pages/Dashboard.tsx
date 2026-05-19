@@ -38,9 +38,11 @@ interface Profile {
 export default function Dashboard() {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({});
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const workspace = useWorkspace();
 
   useEffect(() => {
     if (user) {
@@ -62,16 +64,12 @@ export default function Dashboard() {
 
   const fetchProfile = async () => {
     if (!user) return;
-    
     const { data } = await supabase
       .from("profiles")
       .select("username, display_name, avatar_url")
       .eq("user_id", user.id)
       .single();
-    
-    if (data) {
-      setProfile(data);
-    }
+    if (data) setProfile(data);
   };
 
   const handleSignOut = async () => {
@@ -79,19 +77,27 @@ export default function Dashboard() {
     navigate("/");
   };
 
-  const navItems = [
-    { icon: LayoutDashboard, label: "Overview", path: "/dashboard" },
-    { icon: User, label: "Profile", path: "/dashboard/edit", hash: "basic" },
-    { icon: FileEdit, label: "Edit Portfolio", path: "/dashboard/edit" },
-    { icon: Wand2, label: "Page Builder", path: "/dashboard/builder" },
-    { icon: Package, label: "Products", path: "/dashboard/products" },
-    { icon: ShoppingBag, label: "Orders", path: "/dashboard/orders" },
-    { icon: Store, label: "Store Settings", path: "/dashboard/store" },
-    { icon: BarChart3, label: "Analytics", path: "/dashboard/analytics" },
-    { icon: Globe2, label: "Domain Status", path: "/dashboard/domain-status" },
-    { icon: Rocket, label: "Deploy", path: "/dashboard/deploy" },
-    { icon: Settings, label: "Settings", path: "/dashboard/settings" },
-  ];
+  const nav = buildSidebar(workspace);
+  const planMeta = PLAN_META[workspace.plan] || PLAN_META.basic;
+  const engineMeta = ENGINE_META[workspace.engine];
+
+  const isLeafActive = (path: string, hash?: string) => {
+    if (hash) return false;
+    return location.pathname === path;
+  };
+
+  const handleNavigate = (path: string, hash?: string) => {
+    if (hash) {
+      navigate(path);
+      setTimeout(() => {
+        window.dispatchEvent(new CustomEvent("switchTab", { detail: hash }));
+      }, 100);
+    } else {
+      navigate(path);
+    }
+    setSidebarOpen(false);
+  };
+
 
   return (
     <div className="min-h-screen bg-black text-white">

@@ -14,11 +14,13 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { Copy, Trash2, GripVertical } from "lucide-react";
+import { Copy, Trash2, GripVertical, BookmarkPlus } from "lucide-react";
 import { useBuilderStore } from "../store";
 import { BlockRenderer } from "../blocks/BlockRenderer";
 import type { Block } from "../types";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/contexts/AuthContext";
+import { saveBlockAsSection } from "./SectionsLibrary";
 import {
   ContextMenu,
   ContextMenuContent,

@@ -48,10 +48,6 @@ const signupSchema = z.object({
     .regex(/[0-9]/, { message: "Must include a number" })
     .regex(/[^A-Za-z0-9]/, { message: "Must include a special character" }),
   confirmPassword: z.string(),
-  phone: z.string().trim()
-    .min(10, { message: "Phone number must be at least 10 digits" })
-    .max(15, { message: "Phone number must be less than 15 digits" })
-    .regex(/^[+]?[0-9]+$/, { message: "Phone number can only contain numbers and optional + prefix" }),
 }).refine((d) => d.password === d.confirmPassword, {
   message: "Passwords do not match",
   path: ["confirmPassword"],

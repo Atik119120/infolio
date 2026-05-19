@@ -10,10 +10,20 @@ const VERCEL_TOKEN = Deno.env.get("VERCEL_API_TOKEN") ?? "";
 const RAW_TEAM = (Deno.env.get("VERCEL_TEAM_ID") ?? "").trim();
 const VERCEL_TEAM = RAW_TEAM.startsWith("team_") ? RAW_TEAM : "";
 const teamQuery = VERCEL_TEAM ? `?teamId=${VERCEL_TEAM}` : "";
+const withTeam = (qs = "") => {
+  if (!VERCEL_TEAM) return qs;
+  return qs ? `${qs}&teamId=${VERCEL_TEAM}` : `?teamId=${VERCEL_TEAM}`;
+};
 
-async function attachDomainToLatestProject(supabase: any, userId: string, domain: string) {
-  if (!VERCEL_TOKEN) return { ok: false, reason: "Vercel token missing" };
-  const { data: dep } = await supabase
+interface Domain {
+  id: string;
+  domain: string;
+  verification_token: string | null;
+  user_id: string;
+}
+
+async function getUserVercelProjectId(supabase: any, userId: string): Promise<string | null> {
+  const { data } = await supabase
     .from("deployments")
     .select("vercel_project_id")
     .eq("user_id", userId)
@@ -22,322 +32,171 @@ async function attachDomainToLatestProject(supabase: any, userId: string, domain
     .order("created_at", { ascending: false })
     .limit(1)
     .maybeSingle();
-  if (!dep?.vercel_project_id) return { ok: false, reason: "No Vercel project for user" };
-  const res = await fetch(`https://api.vercel.com/v10/projects/${dep.vercel_project_id}/domains${teamQuery}`, {
-    method: "POST",
-    headers: { Authorization: `Bearer ${VERCEL_TOKEN}`, "Content-Type": "application/json" },
-    body: JSON.stringify({ name: domain }),
-  });
-  const txt = await res.text();
-  if (res.ok) return { ok: true };
-  if (txt.includes("already") || txt.includes("in use") || res.status === 409) return { ok: true };
-  return { ok: false, reason: `Vercel attach failed: ${txt}` };
+  return data?.vercel_project_id ?? null;
 }
 
-interface Domain {
-  id: string;
-  domain: string;
-  verification_token: string;
-  user_id: string;
+async function vercelAttachDomain(projectId: string, domain: string) {
+  const res = await fetch(
+    `https://api.vercel.com/v10/projects/${projectId}/domains${teamQuery}`,
+    {
+      method: "POST",
+      headers: { Authorization: `Bearer ${VERCEL_TOKEN}`, "Content-Type": "application/json" },
+      body: JSON.stringify({ name: domain }),
+    },
+  );
+  const body = await res.json().catch(() => ({}));
+  // 200 ok, 409 already exists -> both fine
+  return { ok: res.ok || res.status === 409, status: res.status, body };
 }
 
-interface UserProfile {
-  email: string;
-  display_name: string | null;
+async function vercelGetDomain(projectId: string, domain: string) {
+  const res = await fetch(
+    `https://api.vercel.com/v9/projects/${projectId}/domains/${domain}${teamQuery}`,
+    { headers: { Authorization: `Bearer ${VERCEL_TOKEN}` } },
+  );
+  if (!res.ok) return null;
+  return await res.json();
 }
 
-// DNS lookup using public DNS-over-HTTPS API
-async function lookupTxtRecords(domain: string): Promise<string[]> {
-  try {
-    const response = await fetch(
-      `https://cloudflare-dns.com/dns-query?name=_lovable.${domain}&type=TXT`,
-      {
-        headers: {
-          Accept: "application/dns-json",
-        },
-      }
-    );
-
-    if (!response.ok) {
-      console.log(`DNS lookup failed for ${domain}: ${response.status}`);
-      return [];
-    }
-
-    const data = await response.json();
-    
-    if (!data.Answer) {
-      console.log(`No TXT records found for _lovable.${domain}`);
-      return [];
-    }
-
-    const txtRecords = data.Answer
-      .filter((record: any) => record.type === 16)
-      .map((record: any) => record.data.replace(/"/g, ""));
-
-    console.log(`Found TXT records for ${domain}:`, txtRecords);
-    return txtRecords;
-  } catch (error) {
-    console.error(`Error looking up DNS for ${domain}:`, error);
-    return [];
-  }
+async function vercelVerifyDomain(projectId: string, domain: string) {
+  const res = await fetch(
+    `https://api.vercel.com/v9/projects/${projectId}/domains/${domain}/verify${teamQuery}`,
+    { method: "POST", headers: { Authorization: `Bearer ${VERCEL_TOKEN}` } },
+  );
+  return await res.json().catch(() => ({}));
 }
 
-// Check A record points to correct IP
-async function checkARecord(domain: string): Promise<boolean> {
-  try {
-    const response = await fetch(
-      `https://cloudflare-dns.com/dns-query?name=${domain}&type=A`,
-      {
-        headers: {
-          Accept: "application/dns-json",
-        },
-      }
-    );
-
-    if (!response.ok) {
-      return false;
-    }
-
-    const data = await response.json();
-    
-    if (!data.Answer) {
-      return false;
-    }
-
-    // Accept Vercel IPs (deploy target). Add more if needed.
-    const acceptedIPs = ["76.76.21.21", "76.76.21.61", "76.76.21.93"];
-    const hasCorrectIP = data.Answer.some(
-      (record: any) => record.type === 1 && acceptedIPs.includes(record.data)
-    );
-
-    console.log(`A record check for ${domain}: ${hasCorrectIP ? "correct" : "incorrect"}`);
-    return hasCorrectIP;
-  } catch (error) {
-    console.error(`Error checking A record for ${domain}:`, error);
-    return false;
-  }
-}
-
-// Send verification success email
-async function sendVerificationEmail(
-  resend: Resend,
-  email: string,
-  displayName: string | null,
-  domain: string
-): Promise<boolean> {
+async function sendVerificationEmail(resend: Resend, email: string, displayName: string | null, domain: string) {
   try {
     const name = displayName || "there";
-    
-    const { error } = await resend.emails.send({
+    await resend.emails.send({
       from: "Infolio <noreply@infolio.online>",
       to: [email],
       subject: `🎉 Your domain ${domain} is now verified!`,
-      html: `
-        <!DOCTYPE html>
-        <html>
-        <head>
-          <meta charset="utf-8">
-          <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        </head>
-        <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
-          <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; border-radius: 12px 12px 0 0; text-align: center;">
-            <h1 style="color: white; margin: 0; font-size: 24px;">🎉 Domain Verified!</h1>
-          </div>
-          
-          <div style="background: #ffffff; padding: 30px; border: 1px solid #e5e7eb; border-top: none; border-radius: 0 0 12px 12px;">
-            <p style="font-size: 16px;">Hi ${name},</p>
-            
-            <p style="font-size: 16px;">Great news! Your custom domain has been successfully verified and is now active:</p>
-            
-            <div style="background: #f0fdf4; border: 1px solid #86efac; border-radius: 8px; padding: 16px; margin: 20px 0; text-align: center;">
-              <p style="margin: 0; font-size: 18px; font-weight: bold; color: #166534;">
-                🌐 ${domain}
-              </p>
-            </div>
-            
-            <p style="font-size: 16px;">Your portfolio is now accessible at:</p>
-            <ul style="font-size: 16px;">
-              <li><a href="https://${domain}" style="color: #667eea;">https://${domain}</a></li>
-              <li><a href="https://www.${domain}" style="color: #667eea;">https://www.${domain}</a></li>
-            </ul>
-            
-            <div style="background: #fef3c7; border: 1px solid #fcd34d; border-radius: 8px; padding: 16px; margin: 20px 0;">
-              <p style="margin: 0; font-size: 14px; color: #92400e;">
-                <strong>💡 Tip:</strong> It may take a few minutes for SSL certificates to be fully provisioned. If you see a security warning initially, please wait a moment and try again.
-              </p>
-            </div>
-            
-            <p style="font-size: 16px;">Thank you for using Infolio!</p>
-            
-            <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 30px 0;">
-            
-            <p style="font-size: 12px; color: #6b7280; text-align: center;">
-              This email was sent by Infolio. If you didn't add this domain, please contact support.
-            </p>
-          </div>
-        </body>
-        </html>
-      `,
+      html: `<p>Hi ${name},</p><p>Your domain <strong>${domain}</strong> is verified and live on Infolio.</p><p>Visit: <a href="https://${domain}">https://${domain}</a></p>`,
     });
-
-    if (error) {
-      console.error("Failed to send verification email:", error);
-      return false;
-    }
-
-    console.log(`Verification email sent to ${email} for domain ${domain}`);
     return true;
-  } catch (error) {
-    console.error("Error sending verification email:", error);
+  } catch (e) {
+    console.error("email error", e);
     return false;
   }
 }
 
 Deno.serve(async (req) => {
-  if (req.method === "OPTIONS") {
-    return new Response(null, { headers: corsHeaders });
-  }
+  if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
-    const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
-    const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-    const resendApiKey = Deno.env.get("RESEND_API_KEY");
+    const supabase = createClient(
+      Deno.env.get("SUPABASE_URL")!,
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
+    );
+    const resendKey = Deno.env.get("RESEND_API_KEY");
+    const resend = resendKey ? new Resend(resendKey) : null;
 
-    const supabase = createClient(supabaseUrl, supabaseServiceKey);
-    const resend = resendApiKey ? new Resend(resendApiKey) : null;
-
-    // Fetch all unverified domains
-    const { data: domains, error: fetchError } = await supabase
+    const { data: domains, error } = await supabase
       .from("domains")
       .select("id, domain, verification_token, user_id")
       .eq("is_verified", false);
 
-    if (fetchError) {
-      console.error("Error fetching domains:", fetchError);
-      return new Response(
-        JSON.stringify({ error: "Failed to fetch domains" }),
-        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
-
-    if (!domains || domains.length === 0) {
-      console.log("No unverified domains to check");
-      return new Response(
-        JSON.stringify({ message: "No domains to verify", verified: 0 }),
-        { headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
-
-    console.log(`Checking ${domains.length} unverified domains`);
-
-    const verificationResults: { domain: string; verified: boolean; reason?: string; emailSent?: boolean }[] = [];
-
-    for (const domain of domains as Domain[]) {
-      console.log(`Verifying domain: ${domain.domain}`);
-
-      const normalizedDomain = domain.domain.toLowerCase();
-      if (normalizedDomain === "infolio.online" || normalizedDomain.endsWith(".infolio.online")) {
-        const { error: updateError } = await supabase
-          .from("domains")
-          .update({ is_verified: true, verified_at: new Date().toISOString() })
-          .eq("id", domain.id);
-
-        verificationResults.push({
-          domain: domain.domain,
-          verified: !updateError,
-          reason: updateError ? "Database update failed" : "Internal Infolio subdomain verified automatically",
-        });
-        continue;
-      }
-
-      // Check TXT record for verification token
-      const txtRecords = await lookupTxtRecords(domain.domain);
-      const tokenFound = txtRecords.some((record) => record === domain.verification_token);
-      if (!tokenFound) {
-        verificationResults.push({ domain: domain.domain, verified: false, reason: "TXT verification record not found" });
-        continue;
-      }
-
-      // Check A record points to correct IP
-      const aRecordCorrect = await checkARecord(domain.domain);
-      if (!aRecordCorrect) {
-        verificationResults.push({ domain: domain.domain, verified: false, reason: "A record does not point to correct IP" });
-        continue;
-      }
-
-
-      // Both checks passed - verify the domain
-      const { error: updateError } = await supabase
-        .from("domains")
-        .update({
-          is_verified: true,
-          verified_at: new Date().toISOString(),
-        })
-        .eq("id", domain.id);
-
-      if (updateError) {
-        console.error(`Error updating domain ${domain.domain}:`, updateError);
-        verificationResults.push({
-          domain: domain.domain,
-          verified: false,
-          reason: "Database update failed",
-        });
-        continue;
-      }
-
-      console.log(`Domain verified: ${domain.domain}`);
-
-      // Attach to user's latest Vercel project so live traffic resolves
-      const attach = await attachDomainToLatestProject(supabase, domain.user_id, domain.domain);
-      if (!attach.ok) console.log(`Vercel attach skipped for ${domain.domain}: ${attach.reason}`);
-
-
-      // Send email notification
-      let emailSent = false;
-      if (resend) {
-        // Get user email from profiles
-        const { data: profile } = await supabase
-          .from("profiles")
-          .select("email, display_name")
-          .eq("user_id", domain.user_id)
-          .maybeSingle();
-
-        if (profile?.email) {
-          emailSent = await sendVerificationEmail(
-            resend,
-            profile.email,
-            profile.display_name,
-            domain.domain
-          );
-        } else {
-          console.log(`No email found for user ${domain.user_id}`);
-        }
-      } else {
-        console.log("Resend API key not configured, skipping email notification");
-      }
-
-      verificationResults.push({
-        domain: domain.domain,
-        verified: true,
-        emailSent,
+    if (error) {
+      return new Response(JSON.stringify({ error: "Failed to fetch" }), {
+        status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
-    const verifiedCount = verificationResults.filter((r) => r.verified).length;
+    if (!domains?.length) {
+      return new Response(JSON.stringify({ message: "No domains to verify", verified: 0 }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
 
-    return new Response(
-      JSON.stringify({
-        message: `Verified ${verifiedCount} of ${domains.length} domains`,
-        verified: verifiedCount,
-        results: verificationResults,
-      }),
-      { headers: { ...corsHeaders, "Content-Type": "application/json" } }
-    );
-  } catch (error) {
-    console.error("Unexpected error:", error);
-    return new Response(
-      JSON.stringify({ error: "Internal server error" }),
-      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-    );
+    const results: any[] = [];
+
+    for (const d of domains as Domain[]) {
+      const normalized = d.domain.toLowerCase();
+
+      // Internal Infolio subdomain: auto-verify
+      if (normalized === "infolio.online" || normalized.endsWith(".infolio.online")) {
+        await supabase.from("domains").update({
+          is_verified: true,
+          verified_at: new Date().toISOString(),
+          verification_token: null,
+        }).eq("id", d.id);
+        results.push({ domain: d.domain, verified: true, reason: "Internal subdomain" });
+        continue;
+      }
+
+      if (!VERCEL_TOKEN) {
+        results.push({ domain: d.domain, verified: false, reason: "Vercel token not configured" });
+        continue;
+      }
+
+      const projectId = await getUserVercelProjectId(supabase, d.user_id);
+      if (!projectId) {
+        results.push({ domain: d.domain, verified: false, reason: "Deploy your site first to enable domain attachment" });
+        continue;
+      }
+
+      // 1. Attach (idempotent)
+      const attach = await vercelAttachDomain(projectId, normalized);
+      if (!attach.ok && attach.status !== 409) {
+        results.push({ domain: d.domain, verified: false, reason: `Vercel attach failed: ${JSON.stringify(attach.body)?.slice(0, 200)}` });
+        continue;
+      }
+
+      // 2. Trigger verify (no-op if already verified or DNS still pending)
+      await vercelVerifyDomain(projectId, normalized);
+
+      // 3. Read current status
+      const info = await vercelGetDomain(projectId, normalized);
+      const verified = info?.verified === true;
+      const verification = Array.isArray(info?.verification) ? info.verification : [];
+      const txt = verification.find((v: any) => v?.type === "TXT");
+
+      if (verified) {
+        await supabase.from("domains").update({
+          is_verified: true,
+          verified_at: new Date().toISOString(),
+          verification_token: null,
+        }).eq("id", d.id);
+
+        let emailSent = false;
+        if (resend) {
+          const { data: profile } = await supabase
+            .from("profiles")
+            .select("email, display_name")
+            .eq("user_id", d.user_id)
+            .maybeSingle();
+          if (profile?.email) {
+            emailSent = await sendVerificationEmail(resend, profile.email, profile.display_name, d.domain);
+          }
+        }
+        results.push({ domain: d.domain, verified: true, emailSent });
+      } else {
+        // Persist Vercel-issued TXT value (if any) so UI can show it
+        const token = txt?.value ?? null;
+        if (token && token !== d.verification_token) {
+          await supabase.from("domains").update({ verification_token: token }).eq("id", d.id);
+        }
+        results.push({
+          domain: d.domain,
+          verified: false,
+          reason: txt ? "Awaiting DNS propagation (TXT/A records)" : "Awaiting DNS propagation",
+          required_txt: txt ? { name: txt.domain, value: txt.value } : null,
+        });
+      }
+    }
+
+    const verifiedCount = results.filter((r) => r.verified).length;
+    return new Response(JSON.stringify({
+      message: `Verified ${verifiedCount} of ${domains.length} domains`,
+      verified: verifiedCount,
+      results,
+    }), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
+  } catch (e) {
+    console.error(e);
+    return new Response(JSON.stringify({ error: "Internal error" }), {
+      status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
   }
 });

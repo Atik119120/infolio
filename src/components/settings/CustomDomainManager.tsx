@@ -229,10 +229,6 @@ export default function CustomDomainManager() {
     setLoading(false);
   };
 
-  const generateVerificationToken = () => {
-    return `lovable_verify_${crypto.randomUUID().split("-")[0]}`;
-  };
-
   const handleAddDomain = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
@@ -243,7 +239,6 @@ export default function CustomDomainManager() {
       return;
     }
 
-    // Remove protocol and trailing slashes
     const cleanDomain = newDomain
       .toLowerCase()
       .replace(/^https?:\/\//, "")
@@ -251,31 +246,34 @@ export default function CustomDomainManager() {
 
     setAdding(true);
 
-    const verificationToken = generateVerificationToken();
-
     const { error } = await supabase.from("domains").insert({
       user_id: user?.id,
       domain: cleanDomain,
-      verification_token: verificationToken,
+      verification_token: null,
       is_verified: false,
     });
 
-    setAdding(false);
-
     if (error) {
-      if (error.code === "23505") {
-        setError("This domain is already registered");
-      } else {
-        setError(error.message);
-      }
-    } else {
-      toast({
-        title: "Domain Added",
-        description: "Please add the DNS records to verify ownership",
-      });
-      setNewDomain("");
-      fetchDomains();
+      setAdding(false);
+      if (error.code === "23505") setError("This domain is already registered");
+      else setError(error.message);
+      return;
     }
+
+    // Attach to Vercel & fetch the required TXT record (if any)
+    try {
+      await supabase.functions.invoke("verify-domains");
+    } catch (err) {
+      console.error("Initial attach failed:", err);
+    }
+
+    setAdding(false);
+    toast({
+      title: "Domain Added",
+      description: "Add the DNS records shown below, then click Verify Now",
+    });
+    setNewDomain("");
+    fetchDomains();
   };
 
   const handleDeleteDomain = async (domainId: string) => {
@@ -643,31 +641,33 @@ export default function CustomDomainManager() {
                         </div>
                       </div>
 
-                      {/* TXT Record */}
-                      <div className="space-y-1">
-                        <p className="font-medium text-muted-foreground">TXT Record (Verification):</p>
-                        <div className="flex items-center gap-2 bg-background rounded p-2 border">
-                          <code className="flex-1 text-xs break-all">
-                            Type: TXT | Name: _lovable | Value: {domain.verification_token}
-                          </code>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-6 w-6 shrink-0"
-                            onClick={() => copyToClipboard(domain.verification_token || "", `${domain.id}-txt`)}
-                          >
-                            {copiedToken === `${domain.id}-txt` ? (
-                              <CheckCircle2 className="w-3 h-3 text-green-500" />
-                            ) : (
-                              <Copy className="w-3 h-3" />
-                            )}
-                          </Button>
+                      {/* Vercel TXT Verification (only if Vercel has issued one) */}
+                      {domain.verification_token && (
+                        <div className="space-y-1">
+                          <p className="font-medium text-muted-foreground">TXT Record (Vercel Verification):</p>
+                          <div className="flex items-center gap-2 bg-background rounded p-2 border">
+                            <code className="flex-1 text-xs break-all">
+                              Type: TXT | Name: _vercel | Value: {domain.verification_token}
+                            </code>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-6 w-6 shrink-0"
+                              onClick={() => copyToClipboard(domain.verification_token || "", `${domain.id}-txt`)}
+                            >
+                              {copiedToken === `${domain.id}-txt` ? (
+                                <CheckCircle2 className="w-3 h-3 text-green-500" />
+                              ) : (
+                                <Copy className="w-3 h-3" />
+                              )}
+                            </Button>
+                          </div>
                         </div>
-                      </div>
+                      )}
                     </div>
 
                     <p className="text-xs text-muted-foreground">
-                      DNS changes can take up to 72 hours to propagate. Once verified, the domain auto-attaches to your live Infolio deployment.
+                      DNS changes can take up to 72 hours to propagate. Verification happens natively through Vercel — no Lovable records required.
                     </p>
                   </div>
                   )

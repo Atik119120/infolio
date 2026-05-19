@@ -182,23 +182,7 @@ function BlockRendererInner({ block, device = "desktop", editable, editorMode, o
 
 
     case "navbar":
-      return (
-        <nav style={css}>
-          <div className="max-w-6xl mx-auto px-6 flex items-center justify-between gap-6">
-            <span className="font-bold text-lg" {...editableProps("brand")}>{block.content.brand}</span>
-            <div className="hidden md:flex items-center gap-6 text-sm">
-              {(block.content.links || []).map((l: any, i: number) => (
-                <a key={i} href={editable ? undefined : l.url} onClick={(e) => editable && e.preventDefault()} className="opacity-80 hover:opacity-100">{l.label}</a>
-              ))}
-            </div>
-            {block.content.ctaText && (
-              <a href={editable ? undefined : block.content.ctaLink} onClick={(e) => editable && e.preventDefault()} className="text-sm font-semibold bg-red-600 text-white px-4 py-2 rounded-full">
-                <span {...editableProps("ctaText")}>{block.content.ctaText}</span>
-              </a>
-            )}
-          </div>
-        </nav>
-      );
+      return <NavbarBlock block={block} css={css} editable={editable} onEditText={onEditText} />;
 
     case "hero":
       return (

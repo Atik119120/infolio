@@ -300,8 +300,8 @@ function BlockRendererInner({ block, device = "desktop", editable, editorMode, o
       return (
         <section style={css}>
           <div className="max-w-4xl mx-auto px-6">
-            <h2 className="text-3xl font-bold mb-3" {...editableProps("title")}>{block.content.title}</h2>
-            <p className="opacity-80" {...editableProps("body")}>{block.content.body}</p>
+            {block.content.title && <h2 className="text-3xl font-bold mb-3" {...editableProps("title")}>{block.content.title}</h2>}
+            {block.content.body && <p className="opacity-80" {...editableProps("body")}>{block.content.body}</p>}
           </div>
         </section>
       );

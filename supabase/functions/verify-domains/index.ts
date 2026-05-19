@@ -6,6 +6,34 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
+const VERCEL_TOKEN = Deno.env.get("VERCEL_API_TOKEN") ?? "";
+const RAW_TEAM = (Deno.env.get("VERCEL_TEAM_ID") ?? "").trim();
+const VERCEL_TEAM = RAW_TEAM.startsWith("team_") ? RAW_TEAM : "";
+const teamQuery = VERCEL_TEAM ? `?teamId=${VERCEL_TEAM}` : "";
+
+async function attachDomainToLatestProject(supabase: any, userId: string, domain: string) {
+  if (!VERCEL_TOKEN) return { ok: false, reason: "Vercel token missing" };
+  const { data: dep } = await supabase
+    .from("deployments")
+    .select("vercel_project_id")
+    .eq("user_id", userId)
+    .eq("is_active", true)
+    .not("vercel_project_id", "is", null)
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  if (!dep?.vercel_project_id) return { ok: false, reason: "No Vercel project for user" };
+  const res = await fetch(`https://api.vercel.com/v10/projects/${dep.vercel_project_id}/domains${teamQuery}`, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${VERCEL_TOKEN}`, "Content-Type": "application/json" },
+    body: JSON.stringify({ name: domain }),
+  });
+  const txt = await res.text();
+  if (res.ok) return { ok: true };
+  if (txt.includes("already") || txt.includes("in use") || res.status === 409) return { ok: true };
+  return { ok: false, reason: `Vercel attach failed: ${txt}` };
+}
+
 interface Domain {
   id: string;
   domain: string;

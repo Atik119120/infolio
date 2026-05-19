@@ -477,14 +477,19 @@ export default function DashboardSettings() {
         </CardContent>
       </Card>
 
-      {/* Support */}
-      <Card>
+      {/* Support - colorful */}
+      <Card
+        className="border-emerald-400/30 text-white"
+        style={{ background: "linear-gradient(135deg, rgba(16,185,129,0.18), rgba(59,130,246,0.18) 60%, rgba(168,85,247,0.18))" }}
+      >
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <MessageSquare className="w-5 h-5" />
+          <CardTitle className="flex items-center gap-2 text-white">
+            <span className="w-8 h-8 rounded-lg grid place-items-center" style={{ background: "linear-gradient(135deg, #25D366, #128C7E)" }}>
+              <MessageSquare className="w-4 h-4 text-white" />
+            </span>
             Need Help?
           </CardTitle>
-          <CardDescription>
+          <CardDescription className="text-white/70">
             Having issues or questions? Send us a message and we'll get back to you.
           </CardDescription>
         </CardHeader>
@@ -494,11 +499,13 @@ export default function DashboardSettings() {
             value={supportMessage}
             onChange={(e) => setSupportMessage(e.target.value)}
             rows={4}
+            className="bg-black/30 border-white/20 text-white placeholder:text-white/40"
           />
-          <Button 
+          <Button
             onClick={handleSendSupport}
             disabled={sendingSupport || !supportMessage.trim()}
-            className="w-full"
+            className="w-full text-white border-0 hover:opacity-90"
+            style={{ background: "linear-gradient(135deg, #6366f1, #a855f7, #ec4899)" }}
           >
             {sendingSupport ? (
               <>

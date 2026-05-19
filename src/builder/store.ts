@@ -217,6 +217,14 @@ export const useBuilderStore = create<BuilderStore>((set, get) => ({
       dirty: true,
     })),
 
+  replaceContent: (content) =>
+    set((s) => ({
+      history: pushHistory(s),
+      content,
+      selectedId: null,
+      dirty: true,
+    })),
+
   markSaved: () => set({ dirty: false }),
   markPublished: () => set({ isPublished: true, dirty: false }),
 

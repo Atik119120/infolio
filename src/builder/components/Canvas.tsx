@@ -145,7 +145,46 @@ function SortableBlock({ block }: { block: Block }) {
   );
 }
 
-export function Canvas() {
+function HeaderFooterWrap({ label, block }: { label: "Header" | "Footer"; block: Block }) {
+  const { selectedId, setSelected, device, updateBlockContent, setHeader, setFooter } = useBuilderStore();
+  const isSel = selectedId === block.id;
+  const remove = () => (label === "Header" ? setHeader(null) : setFooter(null));
+  return (
+    <div
+      onClick={(e) => {
+        e.stopPropagation();
+        setSelected(block.id);
+      }}
+      className={cn(
+        "relative group cursor-pointer",
+        isSel && "ring-2 ring-pink-500 ring-offset-2 ring-offset-slate-100"
+      )}
+    >
+      <div className="absolute top-1 left-1 z-20 text-[9px] uppercase tracking-widest bg-pink-600/90 text-white px-1.5 py-0.5 rounded">
+        {label}
+      </div>
+      {isSel && (
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            remove();
+          }}
+          className="absolute top-1 right-1 z-20 text-[10px] bg-slate-900 hover:bg-red-600 text-white rounded px-1.5 py-0.5"
+          title={`Remove ${label}`}
+        >
+          <Trash2 className="w-3 h-3" />
+        </button>
+      )}
+      <BlockRenderer
+        block={block}
+        device={device}
+        editable={isSel}
+        editorMode
+        onEditText={(field, value) => updateBlockContent(block.id, { [field]: value })}
+      />
+    </div>
+  );
+}
   const { content, device, setSelected, setBlocks } = useBuilderStore();
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 6 } }));
   const theme = content.theme || {};

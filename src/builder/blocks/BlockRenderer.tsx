@@ -13,7 +13,7 @@ const styleToCss = (s: BlockStyle, device: DeviceMode): CSSProperties => {
   ) {
     return { display: "none" };
   }
-  return {
+  const css: CSSProperties = {
     fontSize: s.fontSize,
     fontWeight: s.fontWeight as any,
     fontFamily: s.fontFamily,
@@ -33,7 +33,20 @@ const styleToCss = (s: BlockStyle, device: DeviceMode): CSSProperties => {
     boxShadow: s.boxShadow,
     width: s.width,
     maxWidth: s.maxWidth,
+    minHeight: s.minHeight,
   };
+  if (s.display) css.display = s.display;
+  if (s.display === "flex") {
+    css.flexDirection = s.flexDirection;
+    css.justifyContent = s.justifyContent;
+    css.alignItems = s.alignItems;
+    css.flexWrap = s.flexWrap;
+    css.gap = s.gap;
+  } else if (s.display === "grid") {
+    css.gridTemplateColumns = `repeat(${s.gridColumns || 3}, minmax(0, 1fr))`;
+    css.gap = s.gap;
+  }
+  return css;
 };
 
 const socialIcon: Record<string, any> = {

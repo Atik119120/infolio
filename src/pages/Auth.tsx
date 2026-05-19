@@ -138,7 +138,7 @@ export default function Auth() {
     e.preventDefault();
     setErrors({});
 
-    const result = signupSchema.safeParse({ username, email, password, confirmPassword, phone });
+    const result = signupSchema.safeParse({ username, email, password, confirmPassword });
     if (!result.success) {
       const fieldErrors: Record<string, string> = {};
       result.error.errors.forEach((err) => {
@@ -151,71 +151,26 @@ export default function Auth() {
     }
 
     setIsLoading(true);
-    // Step 1: Send OTP code via Resend (no account created yet)
-    const { data, error: otpError } = await supabase.functions.invoke("otp-verification", {
-      body: { action: "send", email, userName: username },
-    });
+    const { error } = await signUp(email, password, username, "");
     setIsLoading(false);
-
-    if (otpError || (data && data.error)) {
-      const msg = (data?.error || otpError?.message || "").toString();
-      toast({
-        variant: "destructive",
-        title: "Could not send code",
-        description: msg || "Please try again in a moment.",
-      });
-      return;
-    }
-
-    toast({
-      title: "Code sent! 📧",
-      description: "Check your Gmail inbox for a 6-digit verification code.",
-    });
-    setShowOTP(true);
-  };
-
-  const handleOTPVerified = async () => {
-    // Step 2: After OTP verified, actually create the account
-    const { error } = await signUp(email, password, username, phone);
 
     if (error) {
       const errorMsg = error.message.toLowerCase();
       if (errorMsg.includes("already registered") || errorMsg.includes("already been registered")) {
-        toast({
-          variant: "destructive",
-          title: "Account exists",
-          description: "This email is already registered. Please login instead.",
-        });
+        toast({ variant: "destructive", title: "Account exists", description: "This email is already registered. Please login instead." });
       } else if (errorMsg.includes("username") || errorMsg.includes("duplicate key") || errorMsg.includes("profiles_username_key")) {
-        toast({
-          variant: "destructive",
-          title: "Username taken",
-          description: "This username is already in use. Please choose a different one.",
-        });
+        toast({ variant: "destructive", title: "Username taken", description: "Please choose a different username." });
       } else {
-        toast({
-          variant: "destructive",
-          title: "Signup failed",
-          description: error.message,
-        });
+        toast({ variant: "destructive", title: "Signup failed", description: error.message });
       }
-      setShowOTP(false);
       return;
     }
 
-    toast({
-      title: "Account Created! 🎉",
-      description: "Your account is pending admin approval. You can login once approved.",
-    });
-    await supabase.auth.signOut();
-    setShowOTP(false);
-    setActiveTab("login");
-    setUsername("");
-    setEmail("");
-    setPassword("");
-    setConfirmPassword("");
-    setPhone("");
+    toast({ title: "Welcome to Infolio! 🎉", description: "Your account is ready. Redirecting to your dashboard..." });
+    // AuthContext will pick up the session; useEffect above will navigate to /dashboard
   };
+
+  const handleOTPVerified = async () => {};
 
   return (
     <div className="min-h-screen flex relative">

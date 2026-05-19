@@ -103,26 +103,25 @@ export default function Dashboard() {
       )}>
         <div className="flex flex-col h-full">
           {/* Logo Header */}
-          <div className="p-5 border-b border-white/10">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-md bg-white text-black flex items-center justify-center font-bold text-sm">
-                  i
-                </div>
-                <div>
-                  <h1 className="font-semibold text-white tracking-tight text-sm">Infolio</h1>
-                  <p className="text-[10px] text-white/40 uppercase tracking-[0.15em]">Dashboard</p>
-                </div>
+          <div className="px-5 py-6 border-b border-white/10">
+            <div className="flex items-center justify-between gap-2">
+              <div className="flex-1 flex justify-center">
+                <img
+                  src={alphaLogo}
+                  alt="Infolio"
+                  className="h-10 w-auto object-contain brightness-0 invert"
+                />
               </div>
               <Button
                 variant="ghost"
                 size="icon"
-                className="lg:hidden h-8 w-8 text-white/60 hover:text-white hover:bg-white/5"
+                className="lg:hidden h-8 w-8 text-white/60 hover:text-white hover:bg-white/5 shrink-0"
                 onClick={() => setSidebarOpen(false)}
               >
                 <X className="w-4 h-4" />
               </Button>
             </div>
+            <p className="mt-2 text-center text-[10px] text-white/40 uppercase tracking-[0.25em]">Dashboard</p>
           </div>
 
           {/* Navigation */}

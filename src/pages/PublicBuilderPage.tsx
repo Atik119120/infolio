@@ -52,7 +52,8 @@ export default function PublicBuilderPage() {
 
   const theme = content.theme || {};
   return (
-    <div className="min-h-screen" style={{ background: theme.background || "#ffffff", fontFamily: theme.fontFamily }}>
+    <div id="builder-public-scope" className="min-h-screen" style={{ background: theme.background || "#ffffff", fontFamily: theme.fontFamily }}>
+      <ThemeStyle theme={theme} scopeId="builder-public-scope" />
       {content.blocks.map((b) => (
         <BlockRenderer key={b.id} block={b} />
       ))}

@@ -261,7 +261,7 @@ export default function Dashboard() {
         </header>
 
         {/* Scrollable Page Content */}
-        <main className="flex-1 p-4 lg:p-8 overflow-y-auto bg-black">
+        <main className="dashboard-bw flex-1 p-4 lg:p-8 overflow-y-auto bg-black">
           <div className="max-w-6xl mx-auto">
             <Outlet />
           </div>

@@ -258,30 +258,46 @@ export default function DashboardOverview() {
   );
 }
 
-function StatTile({ label, value }: { label: string; value: number }) {
+type Tint = "sky" | "violet" | "amber" | "emerald" | "rose";
+const tintBg: Record<Tint, string> = {
+  sky: "linear-gradient(135deg,#38bdf8,#0ea5e9)",
+  violet: "linear-gradient(135deg,#a78bfa,#7c3aed)",
+  amber: "linear-gradient(135deg,#fbbf24,#f59e0b)",
+  emerald: "linear-gradient(135deg,#34d399,#10b981)",
+  rose: "linear-gradient(135deg,#fb7185,#e11d48)",
+};
+const tintClass: Record<Tint, string> = {
+  sky: "glass-tint-sky",
+  violet: "glass-tint-violet",
+  amber: "glass-tint-amber",
+  emerald: "glass-tint-emerald",
+  rose: "glass-tint-rose",
+};
+
+function StatTile({ label, value, tint = "sky" }: { label: string; value: number; tint?: Tint }) {
   return (
-    <div className="rounded-xl border border-white/10 bg-white/[0.02] p-4">
-      <p className="text-xs text-white/50">{label}</p>
-      <p className="text-2xl font-semibold mt-2">{value}</p>
+    <div className={cn("glass-card rounded-2xl p-4 relative overflow-hidden", tintClass[tint])}>
+      <p className="text-xs text-white/60">{label}</p>
+      <p className="text-2xl font-semibold mt-2 bg-clip-text text-transparent" style={{ backgroundImage: tintBg[tint] }}>{value}</p>
     </div>
   );
 }
 
-function UsageTile({ icon, label, used, total, unit }: { icon: React.ReactNode; label: string; used: number; total: number; unit: string }) {
+function UsageTile({ icon, label, used, total, unit, tint = "sky" }: { icon: React.ReactNode; label: string; used: number; total: number; unit: string; tint?: Tint }) {
   const pct = Math.min(Math.round((used / total) * 100), 100);
   return (
-    <div className="rounded-xl border border-white/10 bg-white/[0.02] p-4 space-y-3">
+    <div className={cn("glass-card rounded-2xl p-4 space-y-3", tintClass[tint])}>
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg border border-white/15 grid place-items-center text-white">{icon}</div>
+          <div className="w-8 h-8 rounded-lg grid place-items-center text-white" style={{ background: tintBg[tint] }}>{icon}</div>
           <span className="text-sm font-medium">{label}</span>
         </div>
-        <span className="text-xs text-white/50">{pct}%</span>
+        <span className="text-xs text-white/60">{pct}%</span>
       </div>
-      <div className="h-1 rounded-full bg-white/10 overflow-hidden">
-        <div className="h-full bg-white" style={{ width: `${pct}%` }} />
+      <div className="h-1.5 rounded-full bg-white/10 overflow-hidden">
+        <div className="h-full" style={{ width: `${pct}%`, background: tintBg[tint] }} />
       </div>
-      <p className="text-xs text-white/50">
+      <p className="text-xs text-white/60">
         <span className="font-semibold text-white">{used}{unit}</span> of {total}{unit} used
       </p>
     </div>

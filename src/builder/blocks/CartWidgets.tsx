@@ -295,8 +295,8 @@ export function CheckoutWidget({ block, css }: Common) {
           <div className="max-w-2xl mx-auto mb-8 p-5 rounded-2xl bg-green-50 border border-green-200 flex items-center gap-3">
             <CheckCircle2 className="w-6 h-6 text-green-600 flex-shrink-0" />
             <div>
-              <p className="font-semibold text-green-900">Order placed successfully!</p>
-              <p className="text-xs text-green-700">A confirmation email is on its way.</p>
+              <p className="font-semibold text-green-900">Order placed — {success}</p>
+              <p className="text-xs text-green-700">A confirmation will be sent to your email.</p>
             </div>
           </div>
         )}

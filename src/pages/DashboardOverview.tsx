@@ -16,6 +16,14 @@ import {
   CheckCircle2,
   Circle,
   MessageCircle,
+  HardDrive,
+  Gauge,
+  Crown,
+  Layers,
+} from "lucide-react";
+  CheckCircle2,
+  Circle,
+  MessageCircle,
 } from "lucide-react";
 import { openWhatsApp } from "@/lib/whatsapp";
 import { getPortfolioUrl } from "@/lib/portfolioUrl";

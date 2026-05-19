@@ -48,10 +48,6 @@ const signupSchema = z.object({
     .regex(/[0-9]/, { message: "Must include a number" })
     .regex(/[^A-Za-z0-9]/, { message: "Must include a special character" }),
   confirmPassword: z.string(),
-  phone: z.string().trim()
-    .min(10, { message: "Phone number must be at least 10 digits" })
-    .max(15, { message: "Phone number must be less than 15 digits" })
-    .regex(/^[+]?[0-9]+$/, { message: "Phone number can only contain numbers and optional + prefix" }),
 }).refine((d) => d.password === d.confirmPassword, {
   message: "Passwords do not match",
   path: ["confirmPassword"],
@@ -142,7 +138,7 @@ export default function Auth() {
     e.preventDefault();
     setErrors({});
 
-    const result = signupSchema.safeParse({ username, email, password, confirmPassword, phone });
+    const result = signupSchema.safeParse({ username, email, password, confirmPassword });
     if (!result.success) {
       const fieldErrors: Record<string, string> = {};
       result.error.errors.forEach((err) => {
@@ -155,71 +151,26 @@ export default function Auth() {
     }
 
     setIsLoading(true);
-    // Step 1: Send OTP code via Resend (no account created yet)
-    const { data, error: otpError } = await supabase.functions.invoke("otp-verification", {
-      body: { action: "send", email, userName: username },
-    });
+    const { error } = await signUp(email, password, username, "");
     setIsLoading(false);
-
-    if (otpError || (data && data.error)) {
-      const msg = (data?.error || otpError?.message || "").toString();
-      toast({
-        variant: "destructive",
-        title: "Could not send code",
-        description: msg || "Please try again in a moment.",
-      });
-      return;
-    }
-
-    toast({
-      title: "Code sent! 📧",
-      description: "Check your Gmail inbox for a 6-digit verification code.",
-    });
-    setShowOTP(true);
-  };
-
-  const handleOTPVerified = async () => {
-    // Step 2: After OTP verified, actually create the account
-    const { error } = await signUp(email, password, username, phone);
 
     if (error) {
       const errorMsg = error.message.toLowerCase();
       if (errorMsg.includes("already registered") || errorMsg.includes("already been registered")) {
-        toast({
-          variant: "destructive",
-          title: "Account exists",
-          description: "This email is already registered. Please login instead.",
-        });
+        toast({ variant: "destructive", title: "Account exists", description: "This email is already registered. Please login instead." });
       } else if (errorMsg.includes("username") || errorMsg.includes("duplicate key") || errorMsg.includes("profiles_username_key")) {
-        toast({
-          variant: "destructive",
-          title: "Username taken",
-          description: "This username is already in use. Please choose a different one.",
-        });
+        toast({ variant: "destructive", title: "Username taken", description: "Please choose a different username." });
       } else {
-        toast({
-          variant: "destructive",
-          title: "Signup failed",
-          description: error.message,
-        });
+        toast({ variant: "destructive", title: "Signup failed", description: error.message });
       }
-      setShowOTP(false);
       return;
     }
 
-    toast({
-      title: "Account Created! 🎉",
-      description: "Your account is pending admin approval. You can login once approved.",
-    });
-    await supabase.auth.signOut();
-    setShowOTP(false);
-    setActiveTab("login");
-    setUsername("");
-    setEmail("");
-    setPassword("");
-    setConfirmPassword("");
-    setPhone("");
+    toast({ title: "Welcome to Infolio! 🎉", description: "Your account is ready. Redirecting to your dashboard..." });
+    // AuthContext will pick up the session; useEffect above will navigate to /dashboard
   };
+
+  const handleOTPVerified = async () => {};
 
   return (
     <div className="min-h-screen flex relative">
@@ -433,24 +384,6 @@ export default function Auth() {
                       </p>
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="signup-phone" className="flex items-center gap-2">
-                        <Phone className="w-4 h-4" />
-                        Phone Number
-                      </Label>
-                      <Input
-                        id="signup-phone"
-                        type="tel"
-                        placeholder="+8801XXXXXXXXX"
-                        value={phone}
-                        onChange={(e) => setPhone(e.target.value)}
-                        className={errors.phone ? "border-destructive" : ""}
-                        disabled={isLoading}
-                      />
-                      {errors.phone && (
-                        <p className="text-sm text-destructive">{errors.phone}</p>
-                      )}
-                    </div>
-                    <div className="space-y-2">
                       <Label htmlFor="signup-password" className="flex items-center gap-2">
                         <Lock className="w-4 h-4" />
                         Password
@@ -554,7 +487,7 @@ export default function Auth() {
                       )}
                     </Button>
                     <p className="text-xs text-center text-muted-foreground">
-                      After signup, your account will need admin approval before you can publish your portfolio.
+                      By creating an account, you'll be redirected to your dashboard instantly.
                     </p>
                   </form>
                 </TabsContent>

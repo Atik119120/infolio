@@ -5,7 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { openWhatsApp } from "@/lib/whatsapp";
-import { MessageCircle } from "lucide-react";
+import { MessageCircle, ChevronDown } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,34 +15,25 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
-  LayoutDashboard,
-  FileEdit,
   Settings,
   ExternalLink,
   LogOut,
   Menu,
   X,
   Eye,
-  User,
-  Sparkles,
-  ChevronRight,
-  Zap,
-  ShoppingBag,
-  Globe2,
-  Rocket,
-  Wand2,
-  BarChart3,
-  Package,
-  Store,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import alphaLogo from "@/assets/alpha-portfolio-logo.png";
+import { useWorkspace } from "@/hooks/useWorkspace";
+import { buildSidebar, isGroup } from "@/components/dashboard/sidebarConfig";
+import { PLAN_META, ENGINE_META } from "@/lib/features";
 
 interface Profile {
   username: string;
   display_name: string | null;
   avatar_url: string | null;
 }
+
 
 export default function Dashboard() {
   const [profile, setProfile] = useState<Profile | null>(null);

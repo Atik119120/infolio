@@ -33,6 +33,7 @@ import {
   Wand2,
   BarChart3,
   Package,
+  Store,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import alphaLogo from "@/assets/alpha-portfolio-logo.png";
@@ -94,6 +95,7 @@ export default function Dashboard() {
     { icon: Wand2, label: "Page Builder", path: "/dashboard/builder" },
     { icon: Package, label: "Products", path: "/dashboard/products" },
     { icon: ShoppingBag, label: "Orders", path: "/dashboard/orders" },
+    { icon: Store, label: "Store Settings", path: "/dashboard/store" },
     { icon: BarChart3, label: "Analytics", path: "/dashboard/analytics" },
     { icon: Globe2, label: "Domain Status", path: "/dashboard/domain-status" },
     { icon: Rocket, label: "Deploy", path: "/dashboard/deploy" },

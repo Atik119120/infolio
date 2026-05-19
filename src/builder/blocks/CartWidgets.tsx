@@ -161,11 +161,19 @@ export function CartFloatingWidget({ block, css }: Common) {
 }
 
 /* ============= Checkout Block ============= */
+type StorePM = {
+  type: string;
+  label?: string;
+  number?: string;
+  account_type?: string;
+  instructions?: string;
+};
+
 export function CheckoutWidget({ block, css }: Common) {
   const accent = block.content.accentColor || "#0f172a";
-  const currency = block.content.currency || "$";
-  const shipping = parsePrice(block.content.shippingFee);
-  const taxRate = Number(block.content.taxRate) || 0;
+  const fallbackCurrency = block.content.currency || "$";
+  const fallbackShipping = parsePrice(block.content.shippingFee);
+  const fallbackTaxRate = Number(block.content.taxRate) || 0;
   const title = block.content.title || "Checkout";
   const storeOwnerId: string | undefined = block.content.storeOwnerId;
 
@@ -175,6 +183,26 @@ export function CheckoutWidget({ block, css }: Common) {
 
   const [success, setSuccess] = useState<null | string>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [storeInfo, setStoreInfo] = useState<{
+    owner: string | null;
+    currency: string;
+    currency_symbol: string;
+    shipping_fee: number;
+    tax_rate: number;
+    payment_methods: StorePM[];
+    payment_instructions: string;
+  }>({
+    owner: storeOwnerId || null,
+    currency: "USD",
+    currency_symbol: fallbackCurrency,
+    shipping_fee: fallbackShipping,
+    tax_rate: fallbackTaxRate,
+    payment_methods: [
+      { type: "cod", label: "Cash on Delivery", instructions: "Pay when you receive your order." },
+    ],
+    payment_instructions: "",
+  });
+
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -183,40 +211,57 @@ export function CheckoutWidget({ block, css }: Common) {
     city: "",
     zip: "",
     country: "",
-    cardNumber: "",
-    expiry: "",
-    cvc: "",
     notes: "",
-    method: "card",
+    method: "cod",
+    transactionId: "",
   });
+
+  // Load store config
+  useEffect(() => {
+    (async () => {
+      let q = supabase.from("stores" as any).select("*").eq("is_active", true).limit(1);
+      if (storeOwnerId) q = supabase.from("stores" as any).select("*").eq("user_id", storeOwnerId).limit(1);
+      const { data } = await q.maybeSingle();
+      const s: any = data;
+      if (!s) return;
+      const methods: StorePM[] = Array.isArray(s.payment_methods) && s.payment_methods.length > 0
+        ? s.payment_methods
+        : storeInfo.payment_methods;
+      setStoreInfo({
+        owner: s.user_id,
+        currency: s.currency || "USD",
+        currency_symbol: s.currency_symbol || fallbackCurrency,
+        shipping_fee: Number(s.shipping_fee) || 0,
+        tax_rate: Number(s.tax_rate) || 0,
+        payment_methods: methods,
+        payment_instructions: s.payment_instructions || "",
+      });
+      setForm((f) => ({ ...f, method: methods[0]?.type || "cod" }));
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [storeOwnerId]);
 
   useEffect(() => {
     if (success) {
-      const t = setTimeout(() => setSuccess(null), 8000);
+      const t = setTimeout(() => setSuccess(null), 10000);
       return () => clearTimeout(t);
     }
   }, [success]);
 
+  const currency = storeInfo.currency_symbol;
+  const shipping = storeInfo.shipping_fee;
+  const taxRate = storeInfo.tax_rate;
   const tax = subtotal * (taxRate / 100);
   const total = subtotal + (subtotal > 0 ? shipping : 0) + tax;
+  const activeMethod = storeInfo.payment_methods.find((m) => m.type === form.method);
+  const requiresTxn = activeMethod && !["cod", "bank"].includes(activeMethod.type);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (items.length === 0 || submitting) return;
     setSubmitting(true);
 
-    // Resolve store owner: from block content, else first active store
-    let ownerId = storeOwnerId;
-    if (!ownerId) {
-      const { data: store } = await supabase
-        .from("stores" as any)
-        .select("user_id")
-        .eq("is_active", true)
-        .limit(1)
-        .maybeSingle();
-      ownerId = (store as any)?.user_id;
-    }
-
+    const ownerId = storeInfo.owner;
     if (!ownerId) {
       setSubmitting(false);
       alert("This store is not yet configured. Please contact the owner.");
@@ -239,10 +284,10 @@ export function CheckoutWidget({ block, css }: Common) {
         shipping_fee: shipping,
         tax,
         total,
-        currency: currency === "$" ? "USD" : currency,
+        currency: storeInfo.currency,
         payment_method: form.method,
-        transaction_id: form.method === "card" && form.cardNumber ? `card-****${form.cardNumber.slice(-4)}` : null,
-        status: form.method === "card" ? "paid" : "pending",
+        transaction_id: form.transactionId || null,
+        status: form.method === "cod" ? "pending" : (form.transactionId ? "paid" : "pending"),
       })
       .select()
       .single();
@@ -267,8 +312,8 @@ export function CheckoutWidget({ block, css }: Common) {
     setSubmitting(false);
     setSuccess((order as any).order_number);
     clear();
+    setForm((f) => ({ ...f, transactionId: "", notes: "" }));
   };
-
 
   const Field = ({
     label, name, type = "text", required = true, full = false,
@@ -296,7 +341,7 @@ export function CheckoutWidget({ block, css }: Common) {
             <CheckCircle2 className="w-6 h-6 text-green-600 flex-shrink-0" />
             <div>
               <p className="font-semibold text-green-900">Order placed — {success}</p>
-              <p className="text-xs text-green-700">A confirmation will be sent to your email.</p>
+              <p className="text-xs text-green-700">We'll contact you soon to confirm payment & delivery.</p>
             </div>
           </div>
         )}
@@ -318,37 +363,65 @@ export function CheckoutWidget({ block, css }: Common) {
               <div className="grid sm:grid-cols-2 gap-4">
                 <Field label="Address" name="address" full />
                 <Field label="City" name="city" />
-                <Field label="ZIP / Postal" name="zip" />
-                <Field label="Country" name="country" full />
+                <Field label="ZIP / Postal" name="zip" required={false} />
+                <Field label="Country" name="country" required={false} full />
               </div>
             </div>
 
             <div>
               <h3 className="text-base font-bold text-neutral-900 mb-4">Payment</h3>
+              {storeInfo.payment_instructions && (
+                <div className="mb-4 p-3 rounded-lg bg-amber-50 border border-amber-200 text-xs text-amber-900 whitespace-pre-wrap">
+                  {storeInfo.payment_instructions}
+                </div>
+              )}
               <div className="flex gap-2 mb-4 flex-wrap">
-                {[
-                  { id: "card", label: "Card", icon: CreditCard },
-                  { id: "cod", label: "Cash on delivery", icon: Truck },
-                ].map((m) => (
-                  <button
-                    key={m.id}
-                    type="button"
-                    onClick={() => setForm({ ...form, method: m.id })}
-                    className={`px-4 h-11 rounded-lg border text-sm font-medium inline-flex items-center gap-2 transition ${
-                      form.method === m.id
-                        ? "border-neutral-900 bg-neutral-900 text-white"
-                        : "border-neutral-200 bg-white text-neutral-700 hover:border-neutral-400"
-                    }`}
-                  >
-                    <m.icon className="w-4 h-4" /> {m.label}
-                  </button>
-                ))}
+                {storeInfo.payment_methods.map((m) => {
+                  const Icon = m.type === "cod" ? Truck : CreditCard;
+                  const active = form.method === m.type;
+                  return (
+                    <button
+                      key={m.type}
+                      type="button"
+                      onClick={() => setForm({ ...form, method: m.type })}
+                      className={`px-4 h-11 rounded-lg border text-sm font-medium inline-flex items-center gap-2 transition ${
+                        active
+                          ? "border-neutral-900 bg-neutral-900 text-white"
+                          : "border-neutral-200 bg-white text-neutral-700 hover:border-neutral-400"
+                      }`}
+                    >
+                      <Icon className="w-4 h-4" /> {m.label || m.type}
+                    </button>
+                  );
+                })}
               </div>
-              {form.method === "card" && (
-                <div className="grid sm:grid-cols-2 gap-4">
-                  <Field label="Card number" name="cardNumber" full />
-                  <Field label="Expiry (MM/YY)" name="expiry" />
-                  <Field label="CVC" name="cvc" />
+
+              {activeMethod && activeMethod.type !== "cod" && (
+                <div className="p-4 rounded-xl border border-neutral-200 bg-neutral-50 space-y-3">
+                  {activeMethod.number && (
+                    <div className="flex items-center justify-between flex-wrap gap-2">
+                      <div>
+                        <p className="text-xs uppercase tracking-wider text-neutral-500">
+                          {activeMethod.label || activeMethod.type}
+                          {activeMethod.account_type ? ` (${activeMethod.account_type})` : ""}
+                        </p>
+                        <p className="text-lg font-bold text-neutral-900 font-mono">{activeMethod.number}</p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => navigator.clipboard?.writeText(activeMethod.number!)}
+                        className="text-xs px-3 py-1.5 rounded-md bg-white border hover:bg-neutral-100"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                  )}
+                  {activeMethod.instructions && (
+                    <p className="text-xs text-neutral-600 whitespace-pre-wrap">{activeMethod.instructions}</p>
+                  )}
+                  {requiresTxn && (
+                    <Field label="Transaction ID" name="transactionId" required={false} full />
+                  )}
                 </div>
               )}
             </div>
@@ -363,7 +436,6 @@ export function CheckoutWidget({ block, css }: Common) {
               {submitting ? "Placing order..." : `Place order — ${formatPrice(total, currency)}`}
             </button>
           </form>
-
 
           {/* Summary */}
           <aside className="bg-white rounded-2xl p-6 shadow-sm border border-neutral-100 h-fit lg:sticky lg:top-6">

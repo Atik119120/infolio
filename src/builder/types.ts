@@ -105,6 +105,8 @@ export interface PageTheme {
 export interface PageContent {
   blocks: Block[];
   theme?: PageTheme;
+  header?: Block | null;
+  footer?: Block | null;
 }
 
 export type DeviceMode = "desktop" | "tablet" | "mobile";

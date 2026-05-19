@@ -31,6 +31,8 @@ interface BuilderStore {
   duplicateBlock: (id: string) => void;
   setBlocks: (blocks: Block[]) => void;
   replaceContent: (content: PageContent) => void;
+  setHeader: (block: Block | null) => void;
+  setFooter: (block: Block | null) => void;
   markSaved: () => void;
   markPublished: () => void;
   undo: () => void;
@@ -222,6 +224,20 @@ export const useBuilderStore = create<BuilderStore>((set, get) => ({
       history: pushHistory(s),
       content,
       selectedId: null,
+      dirty: true,
+    })),
+
+  setHeader: (block) =>
+    set((s) => ({
+      history: pushHistory(s),
+      content: { ...s.content, header: block },
+      dirty: true,
+    })),
+
+  setFooter: (block) =>
+    set((s) => ({
+      history: pushHistory(s),
+      content: { ...s.content, footer: block },
       dirty: true,
     })),
 

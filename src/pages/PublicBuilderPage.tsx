@@ -54,9 +54,11 @@ export default function PublicBuilderPage() {
   return (
     <div id="builder-public-scope" className="min-h-screen" style={{ background: theme.background || "#ffffff", fontFamily: theme.fontFamily }}>
       <ThemeStyle theme={theme} scopeId="builder-public-scope" />
+      {content.header && <BlockRenderer block={content.header} />}
       {content.blocks.map((b) => (
         <BlockRenderer key={b.id} block={b} />
       ))}
+      {content.footer && <BlockRenderer block={content.footer} />}
       <footer className="text-center text-xs text-slate-500 py-6 border-t">
         Built with{" "}
         <a href="/" className="text-red-600 hover:underline font-semibold">

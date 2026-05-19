@@ -1,8 +1,10 @@
+import { useState } from "react";
 import { motion } from "framer-motion";
-import { Monitor, Tablet, Smartphone, Undo2, Redo2, Save, Rocket, ArrowLeft, ExternalLink, Loader2 } from "lucide-react";
+import { Monitor, Tablet, Smartphone, Undo2, Redo2, Save, Rocket, ArrowLeft, ExternalLink, Loader2, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { useBuilderStore } from "../store";
+import { AiGenerateDialog } from "./AiGenerateDialog";
 import { cn } from "@/lib/utils";
 import type { DeviceMode } from "../types";
 
@@ -15,6 +17,7 @@ interface Props {
 
 export function TopBar({ onSave, onPublish, saving, publishing }: Props) {
   const navigate = useNavigate();
+  const [aiOpen, setAiOpen] = useState(false);
   const { pageName, setName, device, setDevice, undo, redo, dirty, isPublished, pageSlug } =
     useBuilderStore();
 
@@ -60,6 +63,16 @@ export function TopBar({ onSave, onPublish, saving, publishing }: Props) {
       </div>
 
       <div className="flex items-center gap-1.5 flex-1 justify-end">
+        <Button
+          variant="ghost"
+          size="sm"
+          className="h-9 gap-1.5 text-white/80 hover:text-white hover:bg-white/10"
+          onClick={() => setAiOpen(true)}
+          title="Generate with AI"
+        >
+          <Sparkles className="w-3.5 h-3.5 text-pink-400" />
+          AI
+        </Button>
         <Button
           variant="ghost"
           size="icon"
@@ -109,6 +122,7 @@ export function TopBar({ onSave, onPublish, saving, publishing }: Props) {
           Publish
         </Button>
       </div>
+      <AiGenerateDialog open={aiOpen} onOpenChange={setAiOpen} />
     </div>
   );
 }

@@ -10,6 +10,7 @@ import {
   ProgressWidget, StatsWidget, FaqWidget, CtaWidget, TeamWidget, LogosWidget,
   CountdownWidget, CarouselWidget,
 } from "./AdvancedWidgets";
+import { ProductGridWidget, ProductCardWidget, CategoryGridWidget } from "./EcommerceWidgets";
 import { AnimationWrapper } from "./AnimationWrapper";
 
 const mergeStyle = (s: BlockStyle, device: DeviceMode): BlockStyle => {

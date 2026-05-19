@@ -92,6 +92,15 @@ export default function Footer() {
         </div>
       </div>
 
+      {/* Disclaimer */}
+      <div className="relative border-t border-border/60">
+        <div className="container mx-auto px-6 py-5">
+          <p className="text-[11px] text-muted-foreground/80 leading-relaxed text-center max-w-4xl mx-auto">
+            Infolio provides website building and deployment tools as-is. Users are fully responsible for their content, code, deployments, domains, products, and business activities.
+          </p>
+        </div>
+      </div>
+
       {/* Bottom bar */}
       <div className="relative border-t border-border/60">
         <div className="container mx-auto px-6 py-5 flex flex-col md:flex-row items-center justify-between gap-3">

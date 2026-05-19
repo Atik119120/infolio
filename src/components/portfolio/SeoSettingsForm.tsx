@@ -47,6 +47,8 @@ function Inner({ portfolio, userId, onUpdate, onSuccess, onError }: SeoSettingsF
     og_image_url: p.og_image_url || "",
     google_verification: p.google_verification || "",
     custom_head_html: p.custom_head_html || "",
+    ga_measurement_id: p.ga_measurement_id || "",
+    gtm_id: p.gtm_id || "",
   });
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {

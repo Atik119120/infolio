@@ -528,3 +528,185 @@ function ContainerBlock({
   );
 }
 
+/* ============== NAVBAR ============== */
+function NavbarBlock({
+  block, css, editable, onEditText,
+}: {
+  block: Block; css: CSSProperties; editable?: boolean; onEditText?: (f: string, v: string) => void;
+}) {
+  const c = block.content || {};
+  const editableProps = (field: string) =>
+    editable
+      ? {
+          contentEditable: true as any,
+          suppressContentEditableWarning: true,
+          onBlur: (e: any) => onEditText?.(field, e.currentTarget.textContent || ""),
+          className: "outline-none focus:ring-2 focus:ring-red-500/50 rounded px-1",
+        }
+      : {};
+  const layout: string = c.layout || "split";
+  const isSticky = !!c.sticky;
+  const isTransparent = !!c.transparent;
+
+  const wrapStyle: CSSProperties = {
+    ...css,
+    ...(isSticky ? { position: "sticky", top: 0, zIndex: 50 } : {}),
+    ...(isTransparent ? { background: "transparent" } : {}),
+    backdropFilter: isTransparent ? "blur(8px)" : (css as any).backdropFilter,
+  };
+
+  const Brand = (
+    <a href={editable ? undefined : "#"} onClick={(e) => editable && e.preventDefault()} className="flex items-center gap-2 shrink-0">
+      {c.logoUrl ? (
+        <img src={c.logoUrl} alt="" className="h-8 w-auto object-contain" />
+      ) : null}
+      {c.brand && (
+        <span className="font-bold text-lg" {...editableProps("brand")}>{c.brand}</span>
+      )}
+    </a>
+  );
+
+  const Links = (
+    <div className="hidden md:flex items-center gap-6 text-sm">
+      {(c.links || []).map((l: any, i: number) => (
+        <a key={i} href={editable ? undefined : l.url}
+          onClick={(e) => editable && e.preventDefault()}
+          className="opacity-80 hover:opacity-100 transition">
+          {l.label}
+        </a>
+      ))}
+    </div>
+  );
+
+  const Cta = c.showCta !== false && c.ctaText ? (
+    <a href={editable ? undefined : c.ctaLink}
+      onClick={(e) => editable && e.preventDefault()}
+      className="hidden md:inline-block text-sm font-semibold bg-red-600 text-white px-4 py-2 rounded-full shrink-0">
+      <span {...editableProps("ctaText")}>{c.ctaText}</span>
+    </a>
+  ) : null;
+
+  return (
+    <nav style={wrapStyle}>
+      <div className="max-w-6xl mx-auto px-6 flex items-center gap-6">
+        {layout === "center" ? (
+          <>
+            <div className="flex-1">{Brand}</div>
+            <div className="flex-1 flex justify-center">{Links}</div>
+            <div className="flex-1 flex justify-end">{Cta}</div>
+          </>
+        ) : layout === "left" ? (
+          <>
+            {Brand}
+            {Links}
+            <div className="ml-auto">{Cta}</div>
+          </>
+        ) : (
+          <>
+            {Brand}
+            <div className="ml-auto flex items-center gap-6">{Links}{Cta}</div>
+          </>
+        )}
+        {/* Mobile menu icon (visual only) */}
+        <button className="md:hidden ml-auto p-2 rounded hover:bg-black/5" aria-label="Menu">
+          <Icons.Menu className="w-5 h-5" />
+        </button>
+      </div>
+    </nav>
+  );
+}
+
+/* ============== FOOTER ============== */
+function FooterBlock({
+  block, css, editable, onEditText,
+}: {
+  block: Block; css: CSSProperties; editable?: boolean; onEditText?: (f: string, v: string) => void;
+}) {
+  const c = block.content || {};
+  const editableProps = (field: string) =>
+    editable
+      ? {
+          contentEditable: true as any,
+          suppressContentEditableWarning: true,
+          onBlur: (e: any) => onEditText?.(field, e.currentTarget.textContent || ""),
+          className: "outline-none focus:ring-2 focus:ring-red-500/50 rounded px-1",
+        }
+      : {};
+
+  const cols: any[] = Array.isArray(c.columns) ? c.columns : [];
+  const social: any[] = Array.isArray(c.socialLinks) ? c.socialLinks : [];
+  const hasModern = cols.length > 0 || c.logoUrl || c.tagline;
+
+  // Legacy single-line footer
+  if (!hasModern) {
+    return (
+      <footer style={css}>
+        <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-3 text-sm">
+          <p {...editableProps("text")}>{c.text || c.copyright}</p>
+          <div className="flex gap-4 opacity-80">
+            {(c.links || []).map((l: any, i: number) => (
+              <a key={i} href={editable ? undefined : l.url} onClick={(e) => editable && e.preventDefault()}>{l.label}</a>
+            ))}
+          </div>
+        </div>
+      </footer>
+    );
+  }
+
+  return (
+    <footer style={css}>
+      <div className="max-w-6xl mx-auto px-6">
+        <div className="grid gap-10 md:grid-cols-12">
+          <div className="md:col-span-4 space-y-3">
+            <a href={editable ? undefined : "#"} onClick={(e) => editable && e.preventDefault()} className="flex items-center gap-2">
+              {c.logoUrl && <img src={c.logoUrl} alt="" className="h-8 w-auto object-contain" />}
+              {c.brand && <span className="font-bold text-lg" {...editableProps("brand")}>{c.brand}</span>}
+            </a>
+            {c.tagline && <p className="text-sm opacity-70 max-w-xs" {...editableProps("tagline")}>{c.tagline}</p>}
+            {social.length > 0 && (
+              <div className="flex items-center gap-3 pt-2">
+                {social.map((s: any, i: number) => {
+                  const Icon = socialIcon[s.platform] || Twitter;
+                  return (
+                    <a key={i} href={editable ? undefined : s.url} onClick={(e) => editable && e.preventDefault()}
+                      className="w-8 h-8 rounded-full bg-white/10 inline-flex items-center justify-center hover:bg-white/20 transition">
+                      <Icon className="w-3.5 h-3.5" />
+                    </a>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+          <div className="md:col-span-8 grid grid-cols-2 md:grid-cols-3 gap-8">
+            {cols.map((col: any, i: number) => {
+              const lines: string[] = String(col.linksText || "").split("\n").filter(Boolean);
+              return (
+                <div key={i}>
+                  {col.title && <p className="text-xs uppercase tracking-widest opacity-60 mb-3">{col.title}</p>}
+                  <ul className="space-y-2 text-sm">
+                    {lines.map((ln, j) => {
+                      const [label, url] = ln.split("|").map((x) => x.trim());
+                      return (
+                        <li key={j}>
+                          <a href={editable ? undefined : (url || "#")} onClick={(e) => editable && e.preventDefault()}
+                            className="opacity-80 hover:opacity-100">{label}</a>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+        {(c.copyright || c.text) && (
+          <div className="mt-10 pt-6 border-t border-white/10 text-xs opacity-60 text-center" {...editableProps("copyright")}>
+            {c.copyright || c.text}
+          </div>
+        )}
+      </div>
+    </footer>
+  );
+}
+
+

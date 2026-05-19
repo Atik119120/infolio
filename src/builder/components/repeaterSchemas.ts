@@ -158,6 +158,33 @@ export const REPEATER_SCHEMAS: Record<string, RepeaterSchema> = {
     ],
     defaultItem: { platform: "twitter", url: "https://" },
   },
+  "productGrid.items": {
+    itemLabel: "Product",
+    titleField: "title",
+    fields: [
+      { name: "title", label: "Title", type: "text" },
+      { name: "price", label: "Price", type: "text", placeholder: "$49" },
+      { name: "oldPrice", label: "Old price (optional)", type: "text", placeholder: "$69" },
+      { name: "image", label: "Image", type: "image" },
+      { name: "hoverImage", label: "Hover image (optional)", type: "image" },
+      { name: "badge", label: "Badge", type: "text", placeholder: "Sale / New" },
+      { name: "rating", label: "Rating (0-5)", type: "number" },
+      { name: "inStock", label: "In stock", type: "boolean" },
+      { name: "link", label: "Link", type: "url" },
+    ],
+    defaultItem: { title: "New product", price: "$0", image: "", rating: 5, inStock: true },
+  },
+  "categoryGrid.items": {
+    itemLabel: "Category",
+    titleField: "name",
+    fields: [
+      { name: "name", label: "Name", type: "text" },
+      { name: "image", label: "Image", type: "image" },
+      { name: "count", label: "Item count", type: "text", placeholder: "120 items" },
+      { name: "link", label: "Link", type: "url" },
+    ],
+    defaultItem: { name: "Category", image: "", link: "#" },
+  },
 };
 
 // Array-of-strings repeaters

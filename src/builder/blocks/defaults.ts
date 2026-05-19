@@ -110,7 +110,7 @@ export const BLOCK_DEFS: BlockDef[] = [
     create: () => ({
       type: "about",
       content: {
-        title: "About me",
+        title: "",
         body: "Tell your story here. Share your journey, mission and what makes you unique.",
         imageUrl: "https://images.unsplash.com/photo-1531297484001-80022131f5a1?w=800",
       },
@@ -125,7 +125,7 @@ export const BLOCK_DEFS: BlockDef[] = [
     create: () => ({
       type: "services",
       content: {
-        title: "Services",
+        title: "",
         items: [
           { title: "Strategy", body: "Plan, research, position." },
           { title: "Design", body: "Interfaces that delight." },
@@ -143,7 +143,7 @@ export const BLOCK_DEFS: BlockDef[] = [
     create: () => ({
       type: "pricing",
       content: {
-        title: "Pricing",
+        title: "",
         plans: [
           { name: "Starter", price: "$0", features: ["1 site", "Basic blocks", "Community"] },
           { name: "Pro", price: "$19", features: ["10 sites", "All blocks", "Priority support"], featured: true },
@@ -161,7 +161,7 @@ export const BLOCK_DEFS: BlockDef[] = [
     create: () => ({
       type: "testimonial",
       content: {
-        title: "What clients say",
+        title: "",
         items: [
           { quote: "Working with them was a dream.", author: "Sara K." },
           { quote: "Delivered beyond expectations.", author: "Daniel R." },
@@ -178,7 +178,7 @@ export const BLOCK_DEFS: BlockDef[] = [
     create: () => ({
       type: "gallery",
       content: {
-        title: "Gallery",
+        title: "",
         images: [
           "https://images.unsplash.com/photo-1503264116251-35a269479413?w=600",
           "https://images.unsplash.com/photo-1502082553048-f009c37129b9?w=600",
@@ -380,7 +380,7 @@ export const BLOCK_DEFS: BlockDef[] = [
         items: [
           { title: "Overview", body: "An overview of your product or service." },
           { title: "Features", body: "All the powerful features you offer." },
-          { title: "Pricing", body: "Transparent pricing for everyone." },
+          { title: "", body: "Transparent pricing for everyone." },
         ],
       },
       style: { paddingTop: "24px", paddingBottom: "24px", color: "#0f172a" },
@@ -456,7 +456,7 @@ export const BLOCK_DEFS: BlockDef[] = [
     create: () => ({
       type: "faq",
       content: {
-        title: "Frequently asked questions",
+        title: "",
         items: [
           { question: "How do I get started?", answer: "Sign up and start building right away." },
           { question: "Can I cancel anytime?", answer: "Yes, cancel anytime — no questions asked." },
@@ -494,7 +494,7 @@ export const BLOCK_DEFS: BlockDef[] = [
     create: () => ({
       type: "team",
       content: {
-        title: "Meet the team",
+        title: "",
         members: [
           { name: "Alex Park", role: "Founder", image: "https://i.pravatar.cc/200?img=12" },
           { name: "Riya Sen", role: "Designer", image: "https://i.pravatar.cc/200?img=47" },

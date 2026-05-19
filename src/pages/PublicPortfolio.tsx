@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { usePortfolioHead } from "@/hooks/usePortfolioHead";
+import { trackView } from "@/lib/trackView";
 
 import {
   FreelancerTheme,
@@ -58,6 +59,7 @@ export default function PublicPortfolio() {
 
     const fetchedUserId = profileData.user_id;
     setUserId(fetchedUserId);
+    trackView({ ownerId: fetchedUserId, pageType: "portfolio", slug: username });
 
     const { data: portfolioData } = await supabase
       .from("portfolios")

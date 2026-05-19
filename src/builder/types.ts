@@ -35,36 +35,102 @@ export type BlockType =
   | "carousel";
 
 export interface BlockStyle {
+  // Typography
   fontSize?: string;
   fontWeight?: string;
   fontFamily?: string;
+  fontStyle?: "normal" | "italic";
+  textTransform?: "none" | "uppercase" | "lowercase" | "capitalize";
+  lineHeight?: string;
+  letterSpacing?: string;
   color?: string;
-  textAlign?: "left" | "center" | "right";
+  textAlign?: "left" | "center" | "right" | "justify";
+  textShadow?: string;
+
+  // Spacing
   paddingTop?: string;
   paddingBottom?: string;
   paddingLeft?: string;
   paddingRight?: string;
   marginTop?: string;
   marginBottom?: string;
+  marginLeft?: string;
+  marginRight?: string;
+
+  // Background
   background?: string;
+  backgroundImage?: string;
+  backgroundSize?: string;
+  backgroundPosition?: string;
+  backgroundRepeat?: string;
+  gradientFrom?: string;
+  gradientTo?: string;
+  gradientAngle?: number;
+  backdropBlur?: number;
+
+  // Border
   borderRadius?: string;
+  borderTopLeftRadius?: string;
+  borderTopRightRadius?: string;
+  borderBottomLeftRadius?: string;
+  borderBottomRightRadius?: string;
   borderWidth?: string;
+  borderTopWidth?: string;
+  borderBottomWidth?: string;
+  borderLeftWidth?: string;
+  borderRightWidth?: string;
   borderColor?: string;
+  borderStyle?: "solid" | "dashed" | "dotted" | "double";
+
+  // Shadow
   boxShadow?: string;
+  shadowX?: number;
+  shadowY?: number;
+  shadowBlur?: number;
+  shadowSpread?: number;
+  shadowColor?: string;
+
+  // Size
   width?: string;
+  height?: string;
   maxWidth?: string;
-  hideMobile?: boolean;
-  hideTablet?: boolean;
-  hideDesktop?: boolean;
+  minHeight?: string;
+
+  // Position
+  position?: "static" | "relative" | "absolute" | "sticky" | "fixed";
+  top?: string;
+  right?: string;
+  bottom?: string;
+  left?: string;
+  zIndex?: number;
+
+  // Transform
+  rotate?: number;
+  scale?: number;
+  translateX?: string;
+  translateY?: string;
+  skewX?: number;
+  skewY?: number;
+
+  // Filters
+  filterBlur?: number;
+  filterBrightness?: number;
+  filterGrayscale?: number;
+
   // Container layout
-  display?: "flex" | "grid" | "block";
-  flexDirection?: "row" | "column";
+  display?: "flex" | "grid" | "block" | "inline-block";
+  flexDirection?: "row" | "column" | "row-reverse" | "column-reverse";
   gridColumns?: number;
   gap?: string;
   justifyContent?: "flex-start" | "center" | "flex-end" | "space-between" | "space-around";
   alignItems?: "flex-start" | "center" | "flex-end" | "stretch";
   flexWrap?: "wrap" | "nowrap";
-  minHeight?: string;
+
+  // Visibility
+  hideMobile?: boolean;
+  hideTablet?: boolean;
+  hideDesktop?: boolean;
+
   // Animation / motion
   animation?:
     | "none"
@@ -76,10 +142,22 @@ export interface BlockStyle {
     | "zoom-out"
     | "flip"
     | "blur";
-  animationDuration?: number; // seconds
-  animationDelay?: number; // seconds
+  animationDuration?: number;
+  animationDelay?: number;
   hoverEffect?: "none" | "lift" | "grow" | "shrink" | "tilt" | "glow";
   opacity?: number;
+
+  // Advanced custom
+  cssClasses?: string;
+  htmlId?: string;
+  customCss?: string;
+  hoverCss?: string;
+
+  // Responsive overrides (recursive)
+  responsive?: {
+    tablet?: Partial<BlockStyle>;
+    mobile?: Partial<BlockStyle>;
+  };
 }
 
 export interface Block {

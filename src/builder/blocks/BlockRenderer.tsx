@@ -12,35 +12,107 @@ import {
 } from "./AdvancedWidgets";
 import { AnimationWrapper } from "./AnimationWrapper";
 
-const styleToCss = (s: BlockStyle, device: DeviceMode): CSSProperties => {
+const mergeStyle = (s: BlockStyle, device: DeviceMode): BlockStyle => {
+  if (device === "desktop") return s;
+  const override = s.responsive?.[device] || {};
+  return { ...s, ...override };
+};
+
+const buildTransform = (s: BlockStyle): string | undefined => {
+  const parts: string[] = [];
+  if (s.translateX || s.translateY)
+    parts.push(`translate(${s.translateX || "0"}, ${s.translateY || "0"})`);
+  if (s.rotate) parts.push(`rotate(${s.rotate}deg)`);
+  if (s.scale && s.scale !== 1) parts.push(`scale(${s.scale})`);
+  if (s.skewX) parts.push(`skewX(${s.skewX}deg)`);
+  if (s.skewY) parts.push(`skewY(${s.skewY}deg)`);
+  return parts.length ? parts.join(" ") : undefined;
+};
+
+const buildFilter = (s: BlockStyle): string | undefined => {
+  const parts: string[] = [];
+  if (s.filterBlur) parts.push(`blur(${s.filterBlur}px)`);
+  if (s.filterBrightness != null && s.filterBrightness !== 1)
+    parts.push(`brightness(${s.filterBrightness})`);
+  if (s.filterGrayscale) parts.push(`grayscale(${s.filterGrayscale})`);
+  return parts.length ? parts.join(" ") : undefined;
+};
+
+const buildBackground = (s: BlockStyle): string | undefined => {
+  if (s.gradientFrom && s.gradientTo) {
+    return `linear-gradient(${s.gradientAngle ?? 135}deg, ${s.gradientFrom}, ${s.gradientTo})`;
+  }
+  if (s.backgroundImage) {
+    return `url("${s.backgroundImage}")${s.background ? `, ${s.background}` : ""}`;
+  }
+  return s.background;
+};
+
+const buildShadow = (s: BlockStyle): string | undefined => {
+  if (s.shadowColor || s.shadowBlur || s.shadowX || s.shadowY || s.shadowSpread) {
+    return `${s.shadowX || 0}px ${s.shadowY || 0}px ${s.shadowBlur || 0}px ${s.shadowSpread || 0}px ${s.shadowColor || "rgba(0,0,0,0.2)"}`;
+  }
+  return s.boxShadow;
+};
+
+const styleToCss = (raw: BlockStyle, device: DeviceMode): CSSProperties => {
   if (
-    (device === "mobile" && s.hideMobile) ||
-    (device === "tablet" && s.hideTablet) ||
-    (device === "desktop" && s.hideDesktop)
+    (device === "mobile" && raw.hideMobile) ||
+    (device === "tablet" && raw.hideTablet) ||
+    (device === "desktop" && raw.hideDesktop)
   ) {
     return { display: "none" };
   }
+  const s = mergeStyle(raw, device);
   const css: CSSProperties = {
     fontSize: s.fontSize,
     fontWeight: s.fontWeight as any,
     fontFamily: s.fontFamily,
+    fontStyle: s.fontStyle,
+    textTransform: s.textTransform,
+    lineHeight: s.lineHeight,
+    letterSpacing: s.letterSpacing,
     color: s.color,
     textAlign: s.textAlign,
+    textShadow: s.textShadow,
     paddingTop: s.paddingTop,
     paddingBottom: s.paddingBottom,
     paddingLeft: s.paddingLeft,
     paddingRight: s.paddingRight,
     marginTop: s.marginTop,
     marginBottom: s.marginBottom,
-    background: s.background,
+    marginLeft: s.marginLeft,
+    marginRight: s.marginRight,
+    background: buildBackground(s),
+    backgroundSize: s.backgroundSize,
+    backgroundPosition: s.backgroundPosition,
+    backgroundRepeat: s.backgroundRepeat,
+    backdropFilter: s.backdropBlur ? `blur(${s.backdropBlur}px)` : undefined,
     borderRadius: s.borderRadius,
+    borderTopLeftRadius: s.borderTopLeftRadius,
+    borderTopRightRadius: s.borderTopRightRadius,
+    borderBottomLeftRadius: s.borderBottomLeftRadius,
+    borderBottomRightRadius: s.borderBottomRightRadius,
     borderWidth: s.borderWidth,
+    borderTopWidth: s.borderTopWidth,
+    borderBottomWidth: s.borderBottomWidth,
+    borderLeftWidth: s.borderLeftWidth,
+    borderRightWidth: s.borderRightWidth,
     borderColor: s.borderColor,
-    borderStyle: s.borderWidth ? "solid" : undefined,
-    boxShadow: s.boxShadow,
+    borderStyle: s.borderStyle || (s.borderWidth || s.borderTopWidth ? "solid" : undefined),
+    boxShadow: buildShadow(s),
     width: s.width,
+    height: s.height,
     maxWidth: s.maxWidth,
     minHeight: s.minHeight,
+    position: s.position,
+    top: s.top,
+    right: s.right,
+    bottom: s.bottom,
+    left: s.left,
+    zIndex: s.zIndex,
+    transform: buildTransform(s),
+    filter: buildFilter(s),
   };
   if (s.display) css.display = s.display;
   if (s.display === "flex") {
@@ -71,13 +143,25 @@ interface Props {
 
 export function BlockRenderer(props: Props) {
   const { block, editorMode } = props;
-  const content = <BlockRendererInner {...props} />;
-  // Disable entrance animations inside editor canvas; keep hover/opacity.
-  if (editorMode) {
-    const styleNoAnim = { ...block.style, animation: "none" as const };
-    return <AnimationWrapper style={styleNoAnim}>{content}</AnimationWrapper>;
-  }
-  return <AnimationWrapper style={block.style}>{content}</AnimationWrapper>;
+  const inner = <BlockRendererInner {...props} />;
+  const styleProp = editorMode ? { ...block.style, animation: "none" as const } : block.style;
+
+  const bbId = `bb-${block.id.replace(/-/g, "").slice(0, 8)}`;
+  const extraClass = [bbId, block.style.cssClasses || ""].filter(Boolean).join(" ");
+  const customCss = block.style.customCss || "";
+  const hoverCss = block.style.hoverCss || "";
+
+  const cssBlock =
+    (customCss || hoverCss)
+      ? `.${bbId}{${customCss.replace(/selector/g, `.${bbId}`)}} .${bbId}:hover{${hoverCss.replace(/selector/g, `.${bbId}`)}}`
+      : "";
+
+  return (
+    <div id={block.style.htmlId || undefined} className={extraClass}>
+      {cssBlock && <style dangerouslySetInnerHTML={{ __html: cssBlock }} />}
+      <AnimationWrapper style={styleProp}>{inner}</AnimationWrapper>
+    </div>
+  );
 }
 
 function BlockRendererInner({ block, device = "desktop", editable, editorMode, onEditText }: Props) {

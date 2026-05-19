@@ -16,6 +16,10 @@ import {
   CheckCircle2,
   Circle,
   MessageCircle,
+  HardDrive,
+  Gauge,
+  Crown,
+  Layers,
 } from "lucide-react";
 import { openWhatsApp } from "@/lib/whatsapp";
 import { getPortfolioUrl } from "@/lib/portfolioUrl";
@@ -220,6 +224,31 @@ export default function DashboardOverview() {
         </CardContent>
       </Card>
 
+      {/* USAGE & PLAN */}
+      <div className="grid md:grid-cols-3 gap-3">
+        <UsageTile icon={<HardDrive className="w-4 h-4" />} label="Storage" used={120} total={500} unit="MB" tone="primary" />
+        <UsageTile icon={<Gauge className="w-4 h-4" />} label="Bandwidth" used={2.4} total={10} unit="GB" tone="secondary" />
+        <UsageTile icon={<Layers className="w-4 h-4" />} label="Projects" used={1} total={1} unit="" tone="accent" />
+      </div>
+
+      <Card className="border-primary/30 bg-gradient-to-r from-primary/8 via-card to-card">
+        <CardContent className="p-4 flex items-center justify-between gap-3">
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="w-10 h-10 rounded-xl gradient-primary grid place-items-center shadow-md shadow-primary/30">
+              <Crown className="w-5 h-5 text-white" />
+            </div>
+            <div className="min-w-0">
+              <p className="font-semibold text-sm">You're on the Basic plan</p>
+              <p className="text-xs text-muted-foreground">Upgrade for custom domains, GitHub deploys & more.</p>
+            </div>
+          </div>
+          <Button size="sm" className="gradient-primary text-white h-9 shrink-0" onClick={() => navigate("/#pricing")}>
+            Upgrade <ArrowRight className="w-3.5 h-3.5 ml-1" />
+          </Button>
+        </CardContent>
+      </Card>
+
+
       {profile && (
         <Card className="border-dashed border-primary/30 bg-gradient-to-r from-primary/5 to-secondary/5">
           <CardContent className="p-4 flex items-center justify-between gap-3">
@@ -250,5 +279,31 @@ export default function DashboardOverview() {
         </CardContent>
       </Card>
     </div>
+  );
+}
+
+function UsageTile({ icon, label, used, total, unit, tone }: { icon: React.ReactNode; label: string; used: number; total: number; unit: string; tone: "primary" | "secondary" | "accent" }) {
+  const pct = Math.min(Math.round((used / total) * 100), 100);
+  const tones = {
+    primary: "bg-primary/15 text-primary",
+    secondary: "bg-secondary/15 text-secondary",
+    accent: "bg-accent/15 text-accent",
+  } as const;
+  return (
+    <Card className="overflow-hidden">
+      <CardContent className="p-4 space-y-3">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className={`w-8 h-8 rounded-lg grid place-items-center ${tones[tone]}`}>{icon}</div>
+            <span className="text-sm font-medium">{label}</span>
+          </div>
+          <span className="text-xs text-muted-foreground">{pct}%</span>
+        </div>
+        <Progress value={pct} className="h-1.5" />
+        <p className="text-xs text-muted-foreground">
+          <span className="font-semibold text-foreground">{used}{unit}</span> of {total}{unit} used
+        </p>
+      </CardContent>
+    </Card>
   );
 }

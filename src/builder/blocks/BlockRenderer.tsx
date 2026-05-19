@@ -335,34 +335,8 @@ function BlockRendererInner({ block, device = "desktop", editable, editorMode, o
         </section>
       );
 
-    case "contact":
-      return (
-        <section style={css}>
-          <div className="max-w-2xl mx-auto px-6">
-            {block.content.title && <h2 className="text-4xl font-bold mb-3" {...editableProps("title")}>{block.content.title}</h2>}
-            {block.content.body && <p className="opacity-80 mb-6" {...editableProps("body")}>{block.content.body}</p>}
-            {block.content.email && block.content.ctaText && (
-              <a href={editable ? undefined : `mailto:${block.content.email}`} onClick={(e) => editable && e.preventDefault()} className="inline-block bg-pink-600 text-white font-semibold px-8 py-3 rounded-full">
-                <span {...editableProps("ctaText")}>{block.content.ctaText}</span>
-              </a>
-            )}
-          </div>
-        </section>
-      );
-
     case "footer":
-      return (
-        <footer style={css}>
-          <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-3 text-sm">
-            <p {...editableProps("text")}>{block.content.text}</p>
-            <div className="flex gap-4 opacity-80">
-              {(block.content.links || []).map((l: any, i: number) => (
-                <a key={i} href={editable ? undefined : l.url} onClick={(e) => editable && e.preventDefault()}>{l.label}</a>
-              ))}
-            </div>
-          </div>
-        </footer>
-      );
+      return <FooterBlock block={block} css={css} editable={editable} onEditText={onEditText} />;
 
     case "section":
       return (

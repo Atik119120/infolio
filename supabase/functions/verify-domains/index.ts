@@ -6,6 +6,34 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
+const VERCEL_TOKEN = Deno.env.get("VERCEL_API_TOKEN") ?? "";
+const RAW_TEAM = (Deno.env.get("VERCEL_TEAM_ID") ?? "").trim();
+const VERCEL_TEAM = RAW_TEAM.startsWith("team_") ? RAW_TEAM : "";
+const teamQuery = VERCEL_TEAM ? `?teamId=${VERCEL_TEAM}` : "";
+
+async function attachDomainToLatestProject(supabase: any, userId: string, domain: string) {
+  if (!VERCEL_TOKEN) return { ok: false, reason: "Vercel token missing" };
+  const { data: dep } = await supabase
+    .from("deployments")
+    .select("vercel_project_id")
+    .eq("user_id", userId)
+    .eq("is_active", true)
+    .not("vercel_project_id", "is", null)
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  if (!dep?.vercel_project_id) return { ok: false, reason: "No Vercel project for user" };
+  const res = await fetch(`https://api.vercel.com/v10/projects/${dep.vercel_project_id}/domains${teamQuery}`, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${VERCEL_TOKEN}`, "Content-Type": "application/json" },
+    body: JSON.stringify({ name: domain }),
+  });
+  const txt = await res.text();
+  if (res.ok) return { ok: true };
+  if (txt.includes("already") || txt.includes("in use") || res.status === 409) return { ok: true };
+  return { ok: false, reason: `Vercel attach failed: ${txt}` };
+}
+
 interface Domain {
   id: string;
   domain: string;
@@ -224,30 +252,19 @@ Deno.serve(async (req) => {
 
       // Check TXT record for verification token
       const txtRecords = await lookupTxtRecords(domain.domain);
-      const tokenFound = txtRecords.some(
-        (record) => record === domain.verification_token
-      );
-
+      const tokenFound = txtRecords.some((record) => record === domain.verification_token);
       if (!tokenFound) {
-        verificationResults.push({
-          domain: domain.domain,
-          verified: false,
-          reason: "TXT verification record not found",
-        });
+        verificationResults.push({ domain: domain.domain, verified: false, reason: "TXT verification record not found" });
         continue;
       }
 
       // Check A record points to correct IP
       const aRecordCorrect = await checkARecord(domain.domain);
-
       if (!aRecordCorrect) {
-        verificationResults.push({
-          domain: domain.domain,
-          verified: false,
-          reason: "A record does not point to correct IP",
-        });
+        verificationResults.push({ domain: domain.domain, verified: false, reason: "A record does not point to correct IP" });
         continue;
       }
+
 
       // Both checks passed - verify the domain
       const { error: updateError } = await supabase
@@ -269,6 +286,11 @@ Deno.serve(async (req) => {
       }
 
       console.log(`Domain verified: ${domain.domain}`);
+
+      // Attach to user's latest Vercel project so live traffic resolves
+      const attach = await attachDomainToLatestProject(supabase, domain.user_id, domain.domain);
+      if (!attach.ok) console.log(`Vercel attach skipped for ${domain.domain}: ${attach.reason}`);
+
 
       // Send email notification
       let emailSent = false;

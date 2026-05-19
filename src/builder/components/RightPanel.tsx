@@ -10,6 +10,8 @@ import { useBuilderStore } from "../store";
 import type { BlockStyle } from "../types";
 import { AlignLeft, AlignCenter, AlignRight } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { ImageUploader } from "./ImageUploader";
+import { PageThemePanel } from "./PageThemePanel";
 
 function ColorField({ label, value, onChange }: { label: string; value?: string; onChange: (v: string) => void }) {
   return (
@@ -68,11 +70,8 @@ export function RightPanel() {
 
   if (!block) {
     return (
-      <div className="h-full bg-slate-950/95 border-l border-white/10 text-white/50 flex items-center justify-center text-center px-6">
-        <div>
-          <p className="text-sm font-medium text-white/80">Select an element</p>
-          <p className="text-xs mt-1">Click anything on the canvas to edit its properties</p>
-        </div>
+      <div className="h-full bg-slate-950/95 border-l border-white/10">
+        <PageThemePanel />
       </div>
     );
   }

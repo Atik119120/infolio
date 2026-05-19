@@ -122,6 +122,7 @@ export function TopBar({ onSave, onPublish, saving, publishing }: Props) {
           Publish
         </Button>
       </div>
+      <AiGenerateDialog open={aiOpen} onOpenChange={setAiOpen} />
     </div>
   );
 }

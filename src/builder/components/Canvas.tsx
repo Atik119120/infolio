@@ -19,6 +19,13 @@ import { useBuilderStore } from "../store";
 import { BlockRenderer } from "../blocks/BlockRenderer";
 import type { Block } from "../types";
 import { cn } from "@/lib/utils";
+import {
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuSeparator,
+  ContextMenuTrigger,
+} from "@/components/ui/context-menu";
 
 const deviceWidth: Record<string, string> = {
   desktop: "100%",

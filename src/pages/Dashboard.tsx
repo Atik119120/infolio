@@ -32,6 +32,7 @@ import {
   Rocket,
   Wand2,
   BarChart3,
+  Package,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import alphaLogo from "@/assets/alpha-portfolio-logo.png";

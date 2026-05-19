@@ -16,6 +16,7 @@ import { cn } from "@/lib/utils";
 import { ImageUploader } from "./ImageUploader";
 import { RepeaterControl, StringListControl } from "./RepeaterControl";
 import { REPEATER_SCHEMAS, STRING_LIST_SCHEMAS } from "./repeaterSchemas";
+import { CONTENT_SCHEMAS, type ContentField } from "./contentSchemas";
 
 /* ---------- Reusable controls ---------- */
 

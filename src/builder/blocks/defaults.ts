@@ -694,6 +694,7 @@ export const BLOCK_DEFS: BlockDef[] = [
       },
       style: {},
     }),
+  },
   {
     type: "container",
     label: "Container",

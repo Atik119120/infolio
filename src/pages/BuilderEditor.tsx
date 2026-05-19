@@ -13,6 +13,8 @@ import { LeftSidebar } from "@/builder/components/LeftSidebar";
 import { Canvas } from "@/builder/components/Canvas";
 import { RightPanel } from "@/builder/components/RightPanel";
 import { TopBar } from "@/builder/components/TopBar";
+import { Navigator } from "@/builder/components/Navigator";
+import { useKeyboardShortcuts } from "@/builder/hooks/useKeyboardShortcuts";
 import { Loader2 } from "lucide-react";
 
 export default function BuilderEditor() {
@@ -109,6 +111,8 @@ export default function BuilderEditor() {
     });
   };
 
+  useKeyboardShortcuts(() => save(false));
+
   if (loading) {
     return (
       <div className="fixed inset-0 bg-slate-950 flex items-center justify-center text-white">
@@ -116,6 +120,7 @@ export default function BuilderEditor() {
       </div>
     );
   }
+
 
   return (
     <div className="fixed inset-0 bg-slate-900 flex flex-col text-white z-50">
@@ -126,7 +131,10 @@ export default function BuilderEditor() {
         </ResizablePanel>
         <ResizableHandle />
         <ResizablePanel defaultSize={60}>
-          <Canvas />
+          <div className="relative h-full">
+            <Canvas />
+            <Navigator />
+          </div>
         </ResizablePanel>
         <ResizableHandle />
         <ResizablePanel defaultSize={22} minSize={16} maxSize={32}>

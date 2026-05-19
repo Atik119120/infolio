@@ -19,6 +19,13 @@ import { useBuilderStore } from "../store";
 import { BlockRenderer } from "../blocks/BlockRenderer";
 import type { Block } from "../types";
 import { cn } from "@/lib/utils";
+import {
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuSeparator,
+  ContextMenuTrigger,
+} from "@/components/ui/context-menu";
 
 const deviceWidth: Record<string, string> = {
   desktop: "100%",
@@ -35,73 +42,94 @@ function SortableBlock({ block }: { block: Block }) {
   });
 
   return (
-    <div
-      ref={setNodeRef}
-      style={{
-        transform: CSS.Transform.toString(transform),
-        transition,
-        opacity: isDragging ? 0.5 : 1,
-      }}
-      onClick={(e) => {
-        e.stopPropagation();
-        setSelected(block.id);
-      }}
-      className={cn(
-        "relative group",
-        isSelected && "ring-2 ring-red-500 ring-offset-2 ring-offset-slate-100"
-      )}
-    >
-      {/* Toolbar */}
-      <AnimatePresence>
-        {isSelected && (
-          <motion.div
-            initial={{ opacity: 0, y: -8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            className="absolute -top-9 left-1/2 -translate-x-1/2 z-20 flex items-center gap-0.5 bg-slate-900 text-white rounded-lg shadow-xl px-1 py-1"
-          >
-            <button
-              {...attributes}
-              {...listeners}
-              className="p-1.5 hover:bg-white/10 rounded cursor-grab active:cursor-grabbing"
-              title="Drag"
-            >
-              <GripVertical className="w-3.5 h-3.5" />
-            </button>
-            <span className="text-[10px] uppercase tracking-wide px-2 opacity-70">
-              {block.type}
-            </span>
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                duplicateBlock(block.id);
-              }}
-              className="p-1.5 hover:bg-white/10 rounded"
-              title="Duplicate"
-            >
-              <Copy className="w-3.5 h-3.5" />
-            </button>
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                removeBlock(block.id);
-              }}
-              className="p-1.5 hover:bg-red-500 rounded text-red-300 hover:text-white"
-              title="Delete"
-            >
-              <Trash2 className="w-3.5 h-3.5" />
-            </button>
-          </motion.div>
-        )}
-      </AnimatePresence>
+    <ContextMenu>
+      <ContextMenuTrigger asChild>
+        <div
+          ref={setNodeRef}
+          style={{
+            transform: CSS.Transform.toString(transform),
+            transition,
+            opacity: isDragging ? 0.5 : 1,
+          }}
+          onClick={(e) => {
+            e.stopPropagation();
+            setSelected(block.id);
+          }}
+          className={cn(
+            "relative group",
+            isSelected && "ring-2 ring-red-500 ring-offset-2 ring-offset-slate-100"
+          )}
+        >
+          {/* Toolbar */}
+          <AnimatePresence>
+            {isSelected && (
+              <motion.div
+                initial={{ opacity: 0, y: -8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }}
+                className="absolute -top-9 left-1/2 -translate-x-1/2 z-20 flex items-center gap-0.5 bg-slate-900 text-white rounded-lg shadow-xl px-1 py-1"
+              >
+                <button
+                  {...attributes}
+                  {...listeners}
+                  className="p-1.5 hover:bg-white/10 rounded cursor-grab active:cursor-grabbing"
+                  title="Drag"
+                >
+                  <GripVertical className="w-3.5 h-3.5" />
+                </button>
+                <span className="text-[10px] uppercase tracking-wide px-2 opacity-70">
+                  {block.type}
+                </span>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    duplicateBlock(block.id);
+                  }}
+                  className="p-1.5 hover:bg-white/10 rounded"
+                  title="Duplicate (Cmd+D)"
+                >
+                  <Copy className="w-3.5 h-3.5" />
+                </button>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    removeBlock(block.id);
+                  }}
+                  className="p-1.5 hover:bg-red-500 rounded text-red-300 hover:text-white"
+                  title="Delete (Del)"
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                </button>
+              </motion.div>
+            )}
+          </AnimatePresence>
 
-      <BlockRenderer
-        block={block}
-        device={device}
-        editable={isSelected}
-        onEditText={(field, value) => updateBlockContent(block.id, { [field]: value })}
-      />
-    </div>
+          <BlockRenderer
+            block={block}
+            device={device}
+            editable={isSelected}
+            onEditText={(field, value) => updateBlockContent(block.id, { [field]: value })}
+          />
+        </div>
+      </ContextMenuTrigger>
+      <ContextMenuContent className="w-52">
+        <ContextMenuItem onClick={() => duplicateBlock(block.id)}>
+          <Copy className="w-3.5 h-3.5 mr-2" /> Duplicate
+          <span className="ml-auto text-xs text-muted-foreground">⌘D</span>
+        </ContextMenuItem>
+        <ContextMenuItem onClick={() => setSelected(block.id)}>
+          Select & Edit
+        </ContextMenuItem>
+        <ContextMenuSeparator />
+        <ContextMenuItem
+          className="text-red-500 focus:text-red-500"
+          onClick={() => removeBlock(block.id)}
+        >
+          <Trash2 className="w-3.5 h-3.5 mr-2" /> Delete
+          <span className="ml-auto text-xs text-muted-foreground">Del</span>
+        </ContextMenuItem>
+      </ContextMenuContent>
+    </ContextMenu>
   );
 }
 

@@ -397,6 +397,52 @@ export default function Index() {
 
 /* ---------------- data & helpers ---------------- */
 
+function Eyebrow({ text }: { text: string }) {
+  return (
+    <div className="inline-flex items-center gap-2 text-[11px] font-semibold tracking-[0.2em] uppercase text-primary">
+      <span className="w-6 h-px bg-primary/40" /> {text} <span className="w-6 h-px bg-primary/40" />
+    </div>
+  );
+}
+
+function SectionHeader({ eyebrow, title, subtitle }: { eyebrow: string; title: string; subtitle: string }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 16 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-50px" }}
+      transition={{ duration: 0.5 }}
+      className="text-center max-w-2xl mx-auto"
+    >
+      <Eyebrow text={eyebrow} />
+      <h2 className="text-3xl md:text-5xl font-semibold tracking-[-0.025em] mt-4 mb-3">{title}</h2>
+      <p className="text-base text-muted-foreground leading-relaxed">{subtitle}</p>
+    </motion.div>
+  );
+}
+
+function FeatureCard({ icon, title, description }: { icon: React.ReactNode; title: string; description: string }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 16 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-50px" }}
+      transition={{ duration: 0.4 }}
+      className="bg-card p-4 md:p-6 hover:bg-primary/5 transition-colors group relative"
+    >
+      <div className="w-10 h-10 rounded-xl bg-primary/10 text-primary grid place-items-center mb-4 group-hover:gradient-primary group-hover:text-white group-hover:shadow-md group-hover:shadow-primary/30 transition-all">
+        {icon}
+      </div>
+      <h3 className="text-sm font-semibold mb-1.5 tracking-tight flex items-center gap-2">
+        {title}
+        <ArrowUpRight className="w-3.5 h-3.5 text-primary opacity-0 group-hover:opacity-100 -translate-x-1 group-hover:translate-x-0 transition-all" />
+      </h3>
+      <p className="text-xs text-muted-foreground leading-relaxed">{description}</p>
+    </motion.div>
+  );
+}
+
+
 const FAQS = [
   { q: "Can I connect my own domain?", a: "Yes — on Creator Premium and above, connect any domain with auto-issued SSL straight from your dashboard." },
   { q: "Can I deploy React or Next.js apps?", a: "Yes. Developer Pro and Studio plans support React, Next.js and Vite — connect GitHub or pick a template." },

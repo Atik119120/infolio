@@ -133,7 +133,6 @@ export default function BuilderEditor() {
         <ResizablePanel defaultSize={60}>
           <div className="relative h-full">
             <Canvas />
-            <Navigator />
           </div>
         </ResizablePanel>
         <ResizableHandle />

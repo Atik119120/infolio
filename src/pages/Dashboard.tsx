@@ -86,40 +86,38 @@ export default function Dashboard() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950">
+    <div className="min-h-screen bg-black text-white">
       {/* Mobile Overlay */}
       {sidebarOpen && (
-        <div 
-          className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 lg:hidden"
+        <div
+          className="fixed inset-0 bg-black/70 z-40 lg:hidden"
           onClick={() => setSidebarOpen(false)}
         />
       )}
 
       {/* Fixed Sidebar */}
       <aside className={cn(
-        "fixed inset-y-0 left-0 z-50 w-64 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border-r border-slate-200 dark:border-slate-800/50 transform transition-transform duration-300 ease-out",
+        "fixed inset-y-0 left-0 z-50 w-64 bg-black border-r border-white/10 transform transition-transform duration-200 ease-out",
         "lg:translate-x-0",
         sidebarOpen ? "translate-x-0" : "-translate-x-full"
       )}>
         <div className="flex flex-col h-full">
           {/* Logo Header */}
-          <div className="p-4 border-b border-slate-200 dark:border-slate-800/50">
+          <div className="p-5 border-b border-white/10">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2.5">
-                <div className="relative">
-                  <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-violet-500 via-purple-500 to-fuchsia-500 flex items-center justify-center shadow-lg shadow-purple-500/25">
-                    <img src={alphaLogo} alt="Infolio" className="h-6 w-auto object-contain" />
-                  </div>
+                <div className="w-8 h-8 rounded-md bg-white text-black flex items-center justify-center font-bold text-sm">
+                  i
                 </div>
                 <div>
-                  <h1 className="font-bold text-slate-900 dark:text-white tracking-tight">Infolio</h1>
-                  <p className="text-[10px] text-slate-500 uppercase tracking-wider">WebBuilder</p>
+                  <h1 className="font-semibold text-white tracking-tight text-sm">Infolio</h1>
+                  <p className="text-[10px] text-white/40 uppercase tracking-[0.15em]">Dashboard</p>
                 </div>
               </div>
-              <Button 
-                variant="ghost" 
-                size="icon" 
-                className="lg:hidden h-8 w-8"
+              <Button
+                variant="ghost"
+                size="icon"
+                className="lg:hidden h-8 w-8 text-white/60 hover:text-white hover:bg-white/5"
                 onClick={() => setSidebarOpen(false)}
               >
                 <X className="w-4 h-4" />
@@ -128,16 +126,16 @@ export default function Dashboard() {
           </div>
 
           {/* Navigation */}
-          <nav className="flex-1 p-3 space-y-1 overflow-y-auto">
-            <p className="px-3 py-2 text-[10px] font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
+          <nav className="flex-1 p-3 space-y-0.5 overflow-y-auto">
+            <p className="px-3 py-2 text-[10px] font-medium text-white/30 uppercase tracking-[0.2em]">
               Menu
             </p>
             {navItems.map((item) => {
-              const isActive = item.hash 
+              const isActive = item.hash
                 ? false
-                : location.pathname === item.path || 
+                : location.pathname === item.path ||
                   (item.path === "/dashboard" && location.pathname === "/dashboard");
-              
+
               return (
                 <button
                   key={item.label}
@@ -154,20 +152,14 @@ export default function Dashboard() {
                     setSidebarOpen(false);
                   }}
                   className={cn(
-                    "w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200",
-                    isActive 
-                      ? "bg-gradient-to-r from-violet-500/15 to-fuchsia-500/10 text-violet-600 dark:text-violet-400 shadow-sm" 
-                      : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800/50"
+                    "w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-colors",
+                    isActive
+                      ? "bg-white text-black font-medium"
+                      : "text-white/60 hover:text-white hover:bg-white/5"
                   )}
                 >
-                  <item.icon className={cn(
-                    "w-4 h-4",
-                    isActive && "text-violet-500"
-                  )} />
+                  <item.icon className="w-4 h-4" strokeWidth={1.75} />
                   <span className="flex-1 text-left">{item.label}</span>
-                  {isActive && (
-                    <ChevronRight className="w-4 h-4 text-violet-500" />
-                  )}
                 </button>
               );
             })}
@@ -175,56 +167,55 @@ export default function Dashboard() {
 
           {/* View Portfolio Link */}
           {profile && (
-            <div className="px-3 pb-2">
+            <div className="px-3 pb-3 space-y-1.5">
               <button
                 onClick={() => window.open(`/${profile.username}`, "_blank")}
-                className="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm font-medium bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white shadow-lg shadow-violet-500/25 hover:shadow-violet-500/40 transition-all duration-200"
+                className="w-full flex items-center gap-2 px-3 py-2 rounded-md text-sm text-white/70 hover:text-white hover:bg-white/5 transition-colors border border-white/10"
               >
-                <Eye className="w-4 h-4" />
+                <Eye className="w-4 h-4" strokeWidth={1.75} />
                 <span className="flex-1 text-left">View Portfolio</span>
-                <ExternalLink className="w-3.5 h-3.5 opacity-75" />
+                <ExternalLink className="w-3.5 h-3.5 opacity-50" />
               </button>
               <button
                 onClick={() => openWhatsApp("Hi! I need help with my Infolio account.")}
-                className="mt-2 w-full flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm font-medium bg-[#25D366] text-white hover:bg-[#1fbb59] transition-all duration-200"
+                className="w-full flex items-center gap-2 px-3 py-2 rounded-md text-sm text-white/70 hover:text-white hover:bg-white/5 transition-colors"
               >
-                <MessageCircle className="w-4 h-4" />
-                <span className="flex-1 text-left">WhatsApp Support</span>
+                <MessageCircle className="w-4 h-4" strokeWidth={1.75} />
+                <span className="flex-1 text-left">Support</span>
               </button>
             </div>
           )}
 
           {/* User Profile */}
-          <div className="p-3 border-t border-slate-200 dark:border-slate-800/50">
+          <div className="p-3 border-t border-white/10">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <button className="w-full flex items-center gap-3 p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800/50 transition-colors">
-                  <Avatar className="w-9 h-9 ring-2 ring-violet-500/30">
+                <button className="w-full flex items-center gap-3 p-2 rounded-md hover:bg-white/5 transition-colors">
+                  <Avatar className="w-8 h-8 ring-1 ring-white/10">
                     <AvatarImage src={profile?.avatar_url || undefined} />
-                    <AvatarFallback className="bg-gradient-to-br from-violet-500 to-fuchsia-500 text-white text-sm font-medium">
+                    <AvatarFallback className="bg-white/10 text-white text-xs font-medium">
                       {profile?.display_name?.[0]?.toUpperCase() || user?.email?.[0]?.toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
                   <div className="flex-1 text-left min-w-0">
-                    <p className="text-sm font-medium text-slate-900 dark:text-white truncate">
+                    <p className="text-sm font-medium text-white truncate">
                       {profile?.display_name || "User"}
                     </p>
-                    <p className="text-xs text-slate-500 truncate">
+                    <p className="text-xs text-white/40 truncate">
                       {user?.email}
                     </p>
                   </div>
-                  <Zap className="w-4 h-4 text-violet-500" />
                 </button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="start" className="w-56">
-                <DropdownMenuLabel className="text-slate-500 text-xs">My Account</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => navigate("/dashboard/settings")} className="text-sm">
+              <DropdownMenuContent align="start" className="w-56 bg-black border-white/10 text-white">
+                <DropdownMenuLabel className="text-white/40 text-xs">My Account</DropdownMenuLabel>
+                <DropdownMenuSeparator className="bg-white/10" />
+                <DropdownMenuItem onClick={() => navigate("/dashboard/settings")} className="text-sm focus:bg-white/5 focus:text-white">
                   <Settings className="w-4 h-4 mr-2" />
                   Settings
                 </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={handleSignOut} className="text-red-500 text-sm">
+                <DropdownMenuSeparator className="bg-white/10" />
+                <DropdownMenuItem onClick={handleSignOut} className="text-sm focus:bg-white/5 text-white/70 focus:text-white">
                   <LogOut className="w-4 h-4 mr-2" />
                   Sign out
                 </DropdownMenuItem>
@@ -237,26 +228,23 @@ export default function Dashboard() {
       {/* Main Content - Scrollable */}
       <div className="lg:pl-64 min-h-screen flex flex-col">
         {/* Top Bar - Fixed */}
-        <header className="sticky top-0 z-30 h-14 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800/50 flex items-center justify-between px-4">
+        <header className="sticky top-0 z-30 h-14 bg-black/80 backdrop-blur-xl border-b border-white/10 flex items-center justify-between px-5">
           <div className="flex items-center gap-3">
-            <Button 
-              variant="ghost" 
+            <Button
+              variant="ghost"
               size="icon"
-              className="lg:hidden h-8 w-8"
+              className="lg:hidden h-8 w-8 text-white/60 hover:text-white hover:bg-white/5"
               onClick={() => setSidebarOpen(true)}
             >
               <Menu className="w-5 h-5" />
             </Button>
-            
-            <div className="hidden lg:flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-violet-500" />
-              <h1 className="text-sm font-semibold text-slate-900 dark:text-white">
-                {navItems.find(item => 
-                  !item.hash && (location.pathname === item.path || 
-                  (item.path === "/dashboard" && location.pathname === "/dashboard"))
-                )?.label || "Dashboard"}
-              </h1>
-            </div>
+
+            <h1 className="text-sm font-medium text-white tracking-tight">
+              {navItems.find(item =>
+                !item.hash && (location.pathname === item.path ||
+                (item.path === "/dashboard" && location.pathname === "/dashboard"))
+              )?.label || "Dashboard"}
+            </h1>
           </div>
 
           <div className="flex items-center gap-2">
@@ -264,7 +252,7 @@ export default function Dashboard() {
               <Button
                 size="sm"
                 onClick={() => window.open(`/${profile.username}`, "_blank")}
-                className="hidden sm:flex gap-1.5 h-8 text-xs bg-gradient-to-r from-violet-500 to-fuchsia-500 hover:from-violet-600 hover:to-fuchsia-600 text-white shadow-md shadow-violet-500/20"
+                className="hidden sm:flex gap-1.5 h-8 text-xs bg-white text-black hover:bg-white/90"
               >
                 <Eye className="w-3.5 h-3.5" />
                 Preview
@@ -274,7 +262,7 @@ export default function Dashboard() {
         </header>
 
         {/* Scrollable Page Content */}
-        <main className="flex-1 p-4 lg:p-6 overflow-y-auto">
+        <main className="flex-1 p-4 lg:p-8 overflow-y-auto bg-black">
           <div className="max-w-6xl mx-auto">
             <Outlet />
           </div>
@@ -283,3 +271,4 @@ export default function Dashboard() {
     </div>
   );
 }
+

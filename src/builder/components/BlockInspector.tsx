@@ -192,6 +192,33 @@ export function BlockInspector({ block }: { block: Block }) {
               const isImageField = /^(imageUrl|src|image|logoUrl|avatarUrl)$/i.test(key);
               const isHtmlField = block.type === "customCode" && key === "html";
               const isLong = typeof val === "string" && val.length > 60;
+              const isBoolean = typeof val === "boolean";
+              const layoutKeys = ["layout", "variant", "align"];
+              const isLayoutSelect = block.type === "navbar" && key === "layout";
+
+              if (isBoolean) {
+                return (
+                  <div key={key} className="flex items-center justify-between py-1.5 px-2 rounded-md bg-white/5 border border-white/10">
+                    <Label className="text-xs text-white/80 capitalize">{key}</Label>
+                    <Switch checked={!!val} onCheckedChange={(v) => setC({ [key]: v })} />
+                  </div>
+                );
+              }
+              if (isLayoutSelect) {
+                return (
+                  <SelectField
+                    key={key}
+                    label="Navbar Layout"
+                    value={String(val ?? "split")}
+                    onChange={(v) => setC({ [key]: v })}
+                    options={[
+                      { value: "split", label: "Split (logo left, menu right)" },
+                      { value: "center", label: "Centered menu" },
+                      { value: "left", label: "Left aligned" },
+                    ]}
+                  />
+                );
+              }
 
               if (isImageField) {
                 return <ImageUploader key={key} label={key} value={String(val ?? "")} onChange={(v) => setC({ [key]: v })} />;

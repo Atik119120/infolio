@@ -75,31 +75,6 @@ export function buildSidebar(w: Workspace): NavEntry[] {
   // Engine switcher (always present so users can switch)
   nav.push({ icon: Crown, label: "Website Engine", path: "/dashboard/engine" });
 
-  // Ecommerce group
-  if (ecommerceEnabled) {
-    nav.push({
-      label: "Commerce",
-      icon: Store,
-      items: [
-        { icon: Store, label: "Store Settings", path: "/dashboard/store" },
-        { icon: Package, label: "Products", path: "/dashboard/products" },
-        { icon: ShoppingBag, label: "Orders", path: "/dashboard/orders" },
-        ...(features.inventory
-          ? [{ icon: Boxes, label: "Inventory", path: "/dashboard/products" } as NavLeaf]
-          : []),
-        ...(features.coupons
-          ? [{ icon: Tag, label: "Coupons", path: "/dashboard/store" } as NavLeaf]
-          : []),
-        ...(features.shipping
-          ? [{ icon: Truck, label: "Shipping", path: "/dashboard/store" } as NavLeaf]
-          : []),
-        ...(features.paymentGateways
-          ? [{ icon: CreditCard, label: "Payments", path: "/dashboard/store" } as NavLeaf]
-          : []),
-        { icon: Users, label: "Customers", path: "/dashboard/orders" },
-      ],
-    });
-  }
 
   // SEO
   nav.push({ icon: Search, label: "SEO", path: "/dashboard/seo" });

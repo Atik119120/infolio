@@ -28,7 +28,7 @@ export function isGroup(e: NavEntry): e is NavGroup {
 }
 
 export function buildSidebar(w: Workspace): NavEntry[] {
-  const { features, engine, ecommerceEnabled } = w;
+  const { features, engine } = w;
   const nav: NavEntry[] = [];
 
   nav.push({ icon: LayoutDashboard, label: "Overview", path: "/dashboard" });

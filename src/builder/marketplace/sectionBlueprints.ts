@@ -12,7 +12,6 @@ export type BlueprintCategory =
   | "Testimonials"
   | "CTA"
   | "Stats"
-  | "Ecommerce"
   | "Footer"
   | "Contact";
 

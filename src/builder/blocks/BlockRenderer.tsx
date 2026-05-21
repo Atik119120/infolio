@@ -448,12 +448,6 @@ function BlockRendererInner({ block, device = "desktop", editable, editorMode, o
     case "countdown": return <CountdownWidget block={block} css={css} editable={editable} onEditText={onEditText} />;
     case "carousel":  return <CarouselWidget block={block} css={css} editable={editable} onEditText={onEditText} />;
 
-    case "productGrid":  return <ProductGridWidget block={block} css={css} editable={editable} onEditText={onEditText} />;
-    case "productCard":  return <ProductCardWidget block={block} css={css} editable={editable} onEditText={onEditText} />;
-    case "categoryGrid": return <CategoryGridWidget block={block} css={css} editable={editable} onEditText={onEditText} />;
-    case "cartFloating": return <CartFloatingWidget block={block} css={css} />;
-    case "checkout":     return <CheckoutWidget block={block} css={css} />;
-
     default:
       return null;
   }

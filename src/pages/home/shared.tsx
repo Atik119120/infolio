@@ -78,8 +78,6 @@ export const PLANS: Plan[] = [
     features: ["Everything in Creator", "GitHub Connect", "React / Next.js / Vite", "Custom HTML/CSS", "Advanced SEO", "Full Theme Access", "5GB Storage", "200GB Bandwidth"] },
   { name: "Studio", short: "Studio", tagline: "Agencies & multi-project", monthly: 399, yearly: 3999,
     features: ["Everything in Pro", "Up to 10 Projects", "Multiple Domains", "CDN Support", "Team Workspace", "Priority Hosting", "5GB Storage", "500GB Bandwidth"] },
-  { name: "Commerce Pro", short: "Commerce", tagline: "E-commerce businesses", monthly: 199, yearly: 1999, badge: "Upcoming",
-    features: ["Everything in Studio", "E-commerce Themes", "Product Management", "Payment Integration", "Order System", "Store Analytics", "3GB Storage", "300GB Bandwidth"] },
 ];
 
 export const COMPARE_ROWS: { label: string; values: (string | boolean)[] }[] = [

@@ -1,7 +1,7 @@
 import { Helmet } from "react-helmet-async";
 import {
   Palette, Zap, Globe, Users, Rocket, Server, Github, Code2,
-  Layers, FileCode, FolderGit2, Search, Cloud, Database, BarChart3, ShoppingBag,
+  Layers, FileCode, FolderGit2, Search, Cloud, Database, BarChart3,
 } from "lucide-react";
 import SiteHeader from "@/components/home/SiteHeader";
 import Footer from "@/components/home/Footer";

@@ -7,7 +7,7 @@ import {
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { TEMPLATES, cloneTemplate, type TemplateDef } from "../templates";
-import { ECOMMERCE_TEMPLATES } from "../marketplace/ecommerceTemplates";
+
 import {
   SECTION_BLUEPRINTS,
   BLUEPRINT_CATEGORIES,
@@ -47,7 +47,6 @@ const ALL_TEMPLATES: UnifiedTemplate[] = [
     id: t.id, name: t.name, category: t.category, tier: "Free" as Tier,
     preview: t.preview, content: t.content,
   })),
-  ...ECOMMERCE_TEMPLATES,
 ];
 
 export function MarketplaceDialog({

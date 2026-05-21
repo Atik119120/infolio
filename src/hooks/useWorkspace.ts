@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
-import { getFeatures, type FeatureFlags, type Engine, type WebsiteType, isEcommerceType } from "@/lib/features";
+import { getFeatures, type FeatureFlags, type Engine, type WebsiteType } from "@/lib/features";
 
 export interface Workspace {
   loading: boolean;
@@ -9,7 +9,6 @@ export interface Workspace {
   features: FeatureFlags;
   engine: Engine;
   websiteType: WebsiteType;
-  ecommerceEnabled: boolean;
   reload: () => Promise<void>;
   setEngine: (engine: Engine) => Promise<void>;
   setWebsiteType: (t: WebsiteType) => Promise<void>;
@@ -64,7 +63,6 @@ export function useWorkspace(): Workspace {
   };
 
   const features = getFeatures(plan);
-  const ecommerceEnabled = features.ecommerce || isEcommerceType(websiteType);
 
   return {
     loading,
@@ -72,7 +70,6 @@ export function useWorkspace(): Workspace {
     features,
     engine,
     websiteType,
-    ecommerceEnabled,
     reload: load,
     setEngine,
     setWebsiteType,

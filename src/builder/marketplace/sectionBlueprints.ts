@@ -12,7 +12,6 @@ export type BlueprintCategory =
   | "Testimonials"
   | "CTA"
   | "Stats"
-  | "Ecommerce"
   | "Footer"
   | "Contact";
 
@@ -282,77 +281,6 @@ export const SECTION_BLUEPRINTS: SectionBlueprint[] = [
       ),
   },
 
-  // ---------- ECOMMERCE ----------
-  {
-    id: "ec-product-grid",
-    name: "Featured Products",
-    category: "Ecommerce",
-    tier: "Free",
-    tags: ["shop", "store"],
-    preview: "https://images.unsplash.com/photo-1483985988355-763728e1935b?w=600",
-    build: () =>
-      mk(
-        "productGrid",
-        {
-          eyebrow: "Bestsellers",
-          title: "Featured this week",
-          subtitle: "Hand-picked favourites our customers love.",
-          columns: 4,
-          accentColor: "#0f172a",
-          items: [
-            { title: "Minimalist Sneaker", price: "$129", oldPrice: "$159", image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600", badge: "Sale", rating: 5, inStock: true },
-            { title: "Wool Knit Sweater", price: "$89", image: "https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?w=600", badge: "New", rating: 4, inStock: true },
-            { title: "Leather Watch", price: "$249", image: "https://images.unsplash.com/photo-1524592094714-0f0654e20314?w=600", rating: 5, inStock: true },
-            { title: "Canvas Tote", price: "$39", image: "https://images.unsplash.com/photo-1544816155-12df9643f363?w=600", rating: 4, inStock: false },
-          ],
-        },
-        { background: "#fafafa", paddingTop: "80px", paddingBottom: "80px" }
-      ),
-  },
-  {
-    id: "ec-category-grid",
-    name: "Shop by Category",
-    category: "Ecommerce",
-    tier: "Free",
-    tags: ["shop", "categories"],
-    preview: "https://images.unsplash.com/photo-1490114538077-0a7f8cb49891?w=600",
-    build: () =>
-      mk(
-        "categoryGrid",
-        {
-          eyebrow: "Browse",
-          title: "Shop by category",
-          columns: 4,
-          items: [
-            { name: "Men", image: "https://images.unsplash.com/photo-1490114538077-0a7f8cb49891?w=600", count: "120 items" },
-            { name: "Women", image: "https://images.unsplash.com/photo-1483985988355-763728e1935b?w=600", count: "240 items" },
-            { name: "Accessories", image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600", count: "85 items" },
-            { name: "Footwear", image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600", count: "60 items" },
-          ],
-        },
-        {}
-      ),
-  },
-  {
-    id: "ec-checkout",
-    name: "Checkout Section",
-    category: "Ecommerce",
-    tier: "Pro",
-    tags: ["checkout", "cart"],
-    preview: "https://images.unsplash.com/photo-1556742502-ec7c0e9f34b1?w=600",
-    build: () =>
-      mk(
-        "checkout",
-        {
-          title: "Checkout",
-          accentColor: "#0f172a",
-          currency: "$",
-          shippingFee: "5",
-          taxRate: 0,
-        },
-        {}
-      ),
-  },
 
   // ---------- CONTACT ----------
   {
@@ -389,6 +317,6 @@ export const BLUEPRINT_CATEGORIES: BlueprintCategory[] = [
   "Pricing",
   "Testimonials",
   "CTA",
-  "Ecommerce",
+  
   "Contact",
 ];

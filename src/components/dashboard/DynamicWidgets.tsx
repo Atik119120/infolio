@@ -3,8 +3,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useWorkspace } from "@/hooks/useWorkspace";
 import {
-  ShoppingBag, Package, DollarSign, AlertTriangle, Download, BarChart3,
-  Calendar, Utensils, Truck, MessageCircle, Eye, FileText, Trophy
+  BarChart3, Calendar, Utensils, Truck, MessageCircle, Eye, FileText, Trophy
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
@@ -25,33 +24,13 @@ export default function DynamicWidgets() {
     if (!user || w.loading) return;
     load();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user, w.loading, w.websiteType, w.ecommerceEnabled]);
+  }, [user, w.loading, w.websiteType]);
 
   const load = async () => {
     if (!user) return;
     const list: Widget[] = [];
 
-    if (w.ecommerceEnabled) {
-      const [{ data: orders }, { count: productCount }, { data: lowStock }] = await Promise.all([
-        supabase.from("orders").select("total, status, created_at").eq("store_owner_id", user.id),
-        supabase.from("products").select("id", { count: "exact", head: true }).eq("user_id", user.id),
-        supabase.from("products").select("id").eq("user_id", user.id).lte("stock", 5).eq("track_inventory", true),
-      ]);
-      const revenue = (orders || []).filter((o: any) => o.status === "paid" || o.status === "fulfilled")
-        .reduce((s: number, o: any) => s + Number(o.total || 0), 0);
-      const pending = (orders || []).filter((o: any) => o.status === "pending").length;
-
-      list.push(
-        { icon: DollarSign, label: "Revenue", value: `৳${revenue.toFixed(0)}`, color: "from-emerald-500 to-teal-500" },
-        { icon: ShoppingBag, label: "Total Orders", value: orders?.length || 0, hint: `${pending} pending`, color: "from-blue-500 to-cyan-500" },
-        { icon: Package, label: "Products", value: productCount || 0, color: "from-violet-500 to-fuchsia-500" },
-        { icon: AlertTriangle, label: "Low Stock", value: lowStock?.length || 0, hint: "≤ 5 units", color: "from-amber-500 to-orange-500" },
-      );
-
-      if (w.websiteType === "digital") {
-        list.push({ icon: Download, label: "Downloads", value: orders?.length || 0, color: "from-pink-500 to-rose-500" });
-      }
-    } else if (w.websiteType === "restaurant") {
+    if (w.websiteType === "restaurant") {
       list.push(
         { icon: Calendar, label: "Reservations", value: 0, hint: "this week", color: "from-amber-500 to-red-500" },
         { icon: Utensils, label: "Menu Items", value: 0, color: "from-orange-500 to-pink-500" },
@@ -59,7 +38,6 @@ export default function DynamicWidgets() {
         { icon: Truck, label: "Delivery Requests", value: 0, color: "from-red-500 to-rose-500" },
       );
     } else {
-      // Portfolio default widgets
       const [{ count: views }, { count: messages }, { count: projects }] = await Promise.all([
         supabase.from("page_views").select("id", { count: "exact", head: true }).eq("owner_id", user.id),
         supabase.from("contact_messages").select("id", { count: "exact", head: true }).eq("portfolio_owner_id", user.id),

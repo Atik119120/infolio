@@ -24,14 +24,10 @@ const DashboardPurchases = lazy(() => import("./pages/DashboardPurchases"));
 const DashboardDomainStatus = lazy(() => import("./pages/DashboardDomainStatus"));
 const DashboardDeploy = lazy(() => import("./pages/DashboardDeploy"));
 const DashboardAnalytics = lazy(() => import("./pages/DashboardAnalytics"));
-const DashboardProducts = lazy(() => import("./pages/DashboardProducts"));
-const DashboardOrders = lazy(() => import("./pages/DashboardOrders"));
 const DashboardEngine = lazy(() => import("./pages/DashboardEngine"));
 const DashboardSEO = lazy(() => import("./pages/DashboardSEO"));
-const DashboardStoreSettings = lazy(() => import("./pages/DashboardStoreSettings"));
 const DashboardSiteSettings = lazy(() => import("./pages/DashboardSiteSettings"));
 const DashboardIntegrations = lazy(() => import("./pages/DashboardIntegrations"));
-const EcommerceThemes = lazy(() => import("./pages/EcommerceThemes"));
 const PublicPortfolio = lazy(() => import("./pages/PublicPortfolio"));
 const ThemeDemo = lazy(() => import("./pages/ThemeDemo"));
 const ThemeCollection = lazy(() => import("./pages/ThemeCollection"));
@@ -77,7 +73,6 @@ const App = () => (
                 <Route path="/auth" element={<Auth />} />
                 <Route path="/reset-password" element={<ResetPassword />} />
                 <Route path="/themes" element={<ThemeCollection />} />
-                <Route path="/themes/ecommerce" element={<EcommerceThemes />} />
                 <Route path="/features" element={<Features />} />
                 <Route path="/pricing" element={<Pricing />} />
                 <Route path="/faq" element={<Faq />} />
@@ -110,9 +105,6 @@ const App = () => (
                   <Route path="domain-status" element={<DashboardDomainStatus />} />
                   <Route path="deploy" element={<DashboardDeploy />} />
                   <Route path="analytics" element={<DashboardAnalytics />} />
-                  <Route path="products" element={<DashboardProducts />} />
-                  <Route path="orders" element={<DashboardOrders />} />
-                  <Route path="store" element={<DashboardStoreSettings />} />
                   <Route path="site" element={<DashboardSiteSettings />} />
                   <Route path="integrations" element={<DashboardIntegrations />} />
                   <Route path="engine" element={<DashboardEngine />} />

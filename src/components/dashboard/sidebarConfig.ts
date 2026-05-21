@@ -39,7 +39,6 @@ export function buildSidebar(w: Workspace): NavEntry[] {
     icon: User,
     items: [
       { icon: User, label: "Personal Info", path: "/dashboard/edit", hash: "basic" },
-      { icon: Plug, label: "Contact Info", path: "/dashboard/edit", hash: "contact" },
       { icon: Sparkles, label: "Social Links", path: "/dashboard/edit", hash: "social" },
       { icon: Settings, label: "Account", path: "/dashboard/settings" },
     ],
@@ -50,11 +49,11 @@ export function buildSidebar(w: Workspace): NavEntry[] {
     label: "Portfolio",
     icon: Layers,
     items: [
-      { icon: FileEdit, label: "Edit Portfolio", path: "/dashboard/edit", hash: "sections" },
-      { icon: Boxes, label: "Sections", path: "/dashboard/edit", hash: "sections" },
-      { icon: FileText, label: "Resume", path: "/dashboard/edit", hash: "resume" },
-      { icon: ImageIcon, label: "Gallery", path: "/dashboard/edit", hash: "projects" },
-      { icon: Star, label: "Testimonials", path: "/dashboard/edit", hash: "testimonials" },
+      { icon: FileEdit, label: "Edit Portfolio", path: "/dashboard/edit", hash: "theme" },
+      { icon: Boxes, label: "Customize", path: "/dashboard/edit", hash: "customize" },
+      { icon: FileText, label: "Experience", path: "/dashboard/edit", hash: "experience" },
+      { icon: ImageIcon, label: "Projects", path: "/dashboard/edit", hash: "projects" },
+      { icon: Star, label: "Skills", path: "/dashboard/edit", hash: "skills" },
     ],
   });
 

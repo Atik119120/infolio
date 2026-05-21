@@ -119,9 +119,6 @@ export default function DashboardEngine() {
               >
                 <div className="text-2xl">{t.emoji}</div>
                 <p className="text-xs font-medium text-white mt-1">{t.label}</p>
-                {t.ecommerce && (
-                  <p className="text-[9px] uppercase tracking-wider text-emerald-400 mt-0.5">Ecommerce</p>
-                )}
               </button>
             );
           })}

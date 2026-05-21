@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
-import { getFeatures, type FeatureFlags, type Engine, type WebsiteType, isEcommerceType } from "@/lib/features";
+import { getFeatures, type FeatureFlags, type Engine, type WebsiteType } from "@/lib/features";
 
 export interface Workspace {
   loading: boolean;

@@ -82,13 +82,14 @@ export default function Dashboard() {
   const engineMeta = ENGINE_META[workspace.engine];
 
   const isLeafActive = (path: string, hash?: string) => {
-    if (hash) return false;
-    return location.pathname === path;
+    if (location.pathname !== path) return false;
+    if (hash) return location.hash === `#${hash}`;
+    return !location.hash;
   };
 
   const handleNavigate = (path: string, hash?: string) => {
     if (hash) {
-      navigate(path);
+      navigate(`${path}#${hash}`);
       setTimeout(() => {
         window.dispatchEvent(new CustomEvent("switchTab", { detail: hash }));
       }, 100);

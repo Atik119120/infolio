@@ -9,7 +9,6 @@ export interface Workspace {
   features: FeatureFlags;
   engine: Engine;
   websiteType: WebsiteType;
-  ecommerceEnabled: boolean;
   reload: () => Promise<void>;
   setEngine: (engine: Engine) => Promise<void>;
   setWebsiteType: (t: WebsiteType) => Promise<void>;

@@ -57,10 +57,8 @@ export function buildSidebar(w: Workspace): NavEntry[] {
     ],
   });
 
-  // Engine-specific builder access
-  if (engine === "builder" && features.pageBuilder) {
-    nav.push({ icon: Wand2, label: "Page Builder", path: "/dashboard/builder" });
-  }
+  // Builder always accessible (regardless of active engine)
+  nav.push({ icon: Wand2, label: "Page Builder", path: "/dashboard/builder" });
   if (engine === "react" && features.reactProjects) {
     nav.push({ icon: Code2, label: "React Projects", path: "/dashboard/builder" });
   }

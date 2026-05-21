@@ -100,7 +100,7 @@ export const TERMS = [
   { icon: Sparkles, title: "Beta / Evolving Platform", items: ["Some features are experimental or in beta", "UI/UX may evolve over time", "Occasional bugs may occur", "Active development on new systems"] },
   { icon: BadgeCheck, title: "Refund Policy", items: ["Monthly plans: refund within 7 days", "Yearly plans: refund within 15 days", "Heavy usage may void refund", "Domain & third-party costs non-refundable", "Abuse voids refund eligibility"] },
   { icon: Lock, title: "Liability Notice", items: ["Not responsible for business or revenue loss", "Not responsible for SEO ranking loss", "Not responsible for deployment / build errors caused by user code", "Not responsible for domain propagation delays"] },
-  { icon: Server, title: "Plan-Specific Limits", items: ["Basic: subdomain-only, 500MB / 10GB", "Creator: bring your own domain, 1GB / 50GB", "Developer Pro: you own your code, 5GB / 200GB", "Studio: max 10 projects, no account sharing", "Commerce Pro: you're responsible for products & orders"] },
+  { icon: Server, title: "Plan-Specific Limits", items: ["Basic: subdomain-only, 500MB / 10GB", "Creator: bring your own domain, 1GB / 50GB", "Developer Pro: you own your code, 5GB / 200GB", "Studio: max 10 projects, no account sharing"] },
 ];
 
 export function PlanCard({ plan, billing, onClick }: { plan: Plan; billing: "monthly" | "yearly"; onClick: () => void }) {

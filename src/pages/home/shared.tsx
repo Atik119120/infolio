@@ -81,18 +81,17 @@ export const PLANS: Plan[] = [
 ];
 
 export const COMPARE_ROWS: { label: string; values: (string | boolean)[] }[] = [
-  { label: "Websites / Projects", values: ["1", "1", "3", "10", "Unlimited"] },
-  { label: "Themes", values: ["Basic", "Premium", "Full", "Full", "Commerce"] },
-  { label: "Custom Domain", values: [false, true, true, true, true] },
-  { label: "SEO Management", values: [false, true, true, true, true] },
-  { label: "GitHub Deploy", values: [false, false, true, true, true] },
-  { label: "React / Next / Vite", values: [false, false, true, true, true] },
-  { label: "Custom HTML/CSS", values: [false, true, true, true, true] },
-  { label: "CDN", values: [true, true, true, true, true] },
-  { label: "Team Workspace", values: [false, false, false, true, true] },
-  { label: "E-commerce", values: [false, false, false, false, true] },
-  { label: "Storage", values: ["500MB", "1GB", "5GB", "5GB", "3GB"] },
-  { label: "Bandwidth / mo", values: ["10GB", "50GB", "200GB", "500GB", "300GB"] },
+  { label: "Websites / Projects", values: ["1", "1", "3", "10"] },
+  { label: "Themes", values: ["Basic", "Premium", "Full", "Full"] },
+  { label: "Custom Domain", values: [false, true, true, true] },
+  { label: "SEO Management", values: [false, true, true, true] },
+  { label: "GitHub Deploy", values: [false, false, true, true] },
+  { label: "React / Next / Vite", values: [false, false, true, true] },
+  { label: "Custom HTML/CSS", values: [false, true, true, true] },
+  { label: "CDN", values: [true, true, true, true] },
+  { label: "Team Workspace", values: [false, false, false, true] },
+  { label: "Storage", values: ["500MB", "1GB", "5GB", "5GB"] },
+  { label: "Bandwidth / mo", values: ["10GB", "50GB", "200GB", "500GB"] },
 ];
 
 export const TERMS = [

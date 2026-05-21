@@ -47,7 +47,6 @@ const ALL_TEMPLATES: UnifiedTemplate[] = [
     id: t.id, name: t.name, category: t.category, tier: "Free" as Tier,
     preview: t.preview, content: t.content,
   })),
-  ...ECOMMERCE_TEMPLATES,
 ];
 
 export function MarketplaceDialog({

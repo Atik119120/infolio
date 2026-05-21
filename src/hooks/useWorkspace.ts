@@ -63,7 +63,6 @@ export function useWorkspace(): Workspace {
   };
 
   const features = getFeatures(plan);
-  const ecommerceEnabled = features.ecommerce || isEcommerceType(websiteType);
 
   return {
     loading,
@@ -71,7 +70,6 @@ export function useWorkspace(): Workspace {
     features,
     engine,
     websiteType,
-    ecommerceEnabled,
     reload: load,
     setEngine,
     setWebsiteType,

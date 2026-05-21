@@ -53,7 +53,7 @@ export const FAQS = [
   { q: "Is SSL included?", a: "Always. Every site (subdomain or custom) gets free auto-renewing SSL." },
   { q: "Can I switch themes later?", a: "Anytime. Your content carries over when you switch themes from the dashboard." },
   { q: "Do you support GitHub deployment?", a: "Yes. Authorize once, then deploy any public or private repo with one click." },
-  { q: "Will e-commerce features come later?", a: "Commerce Pro is on the roadmap — products, orders, checkout and store analytics, all included." },
+  
   { q: "How do payments work?", a: "Pay monthly or yearly via bKash, Nagad or Rocket. Yearly saves around 15%." },
   { q: "Is Infolio really free to start?", a: "Yes. Build, publish and host on a free subdomain — no credit card required." },
 ];

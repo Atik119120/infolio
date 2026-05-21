@@ -568,7 +568,6 @@ export const BLOCK_DEFS: BlockDef[] = [
       style: { paddingTop: "24px", paddingBottom: "24px", borderRadius: "16px" },
     }),
   },
-
   {
     type: "container",
     label: "Container",

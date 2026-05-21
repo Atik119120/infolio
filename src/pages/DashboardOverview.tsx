@@ -20,7 +20,6 @@ import {
 import { openWhatsApp } from "@/lib/whatsapp";
 import { getPortfolioUrl } from "@/lib/portfolioUrl";
 import { cn } from "@/lib/utils";
-import DynamicWidgets from "@/components/dashboard/DynamicWidgets";
 
 interface Portfolio { is_published: boolean; headline: string | null; bio: string | null; }
 interface Profile { username: string; display_name: string | null; avatar_url: string | null; }
@@ -108,7 +107,6 @@ export default function DashboardOverview() {
 
   return (
     <div className="space-y-4 animate-fade-in text-white">
-      <DynamicWidgets />
       {/* Welcome */}
       <div className="rounded-xl border border-white/10 bg-white/[0.02] p-5">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">

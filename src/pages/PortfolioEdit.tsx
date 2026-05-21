@@ -109,24 +109,14 @@ export default function PortfolioEdit() {
     if (user) {
       fetchAllData();
     }
-
-    const initial = window.location.hash.replace("#", "");
-    if (initial) setActiveTab(initial);
-
+    
+    // Listen for tab switch events from sidebar
     const handleTabSwitch = (e: CustomEvent) => {
       setActiveTab(e.detail);
     };
-    const handleHash = () => {
-      const h = window.location.hash.replace("#", "");
-      if (h) setActiveTab(h);
-    };
-
+    
     window.addEventListener('switchTab', handleTabSwitch as EventListener);
-    window.addEventListener('hashchange', handleHash);
-    return () => {
-      window.removeEventListener('switchTab', handleTabSwitch as EventListener);
-      window.removeEventListener('hashchange', handleHash);
-    };
+    return () => window.removeEventListener('switchTab', handleTabSwitch as EventListener);
   }, [user]);
 
   const fetchAllData = async () => {

@@ -32,12 +32,7 @@ export type BlockType =
   | "team"
   | "logos"
   | "countdown"
-  | "carousel"
-  | "productGrid"
-  | "productCard"
-  | "categoryGrid"
-  | "cartFloating"
-  | "checkout";
+  | "carousel";
 
 export interface BlockStyle {
   // Typography

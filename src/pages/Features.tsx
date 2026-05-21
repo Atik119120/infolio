@@ -1,7 +1,7 @@
 import { Helmet } from "react-helmet-async";
 import {
   Palette, Zap, Globe, Users, Rocket, Server, Github, Code2,
-  Layers, FileCode, FolderGit2, Search, Cloud, Database, BarChart3,
+  Layers, FileCode, FolderGit2, Search, Cloud, Database, BarChart3, ShoppingBag,
 } from "lucide-react";
 import SiteHeader from "@/components/home/SiteHeader";
 import Footer from "@/components/home/Footer";
@@ -35,7 +35,7 @@ export default function Features() {
             <FeatureCard icon={<Users className="w-5 h-5" />} title="Team Workspace" description="Collaborate across projects." />
             <FeatureCard icon={<Database className="w-5 h-5" />} title="Multi-Project" description="Run up to 10 projects per account." />
             <FeatureCard icon={<BarChart3 className="w-5 h-5" />} title="Analytics" description="Visitor insights — coming soon." />
-            
+            <FeatureCard icon={<ShoppingBag className="w-5 h-5" />} title="E-commerce" description="Store, products, checkout — soon." />
           </div>
         </div>
       </section>

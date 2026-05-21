@@ -6,7 +6,6 @@ import { createBlock } from "../blocks/defaults";
 import { useBuilderStore } from "../store";
 import { SectionsLibrary } from "./SectionsLibrary";
 import { TemplatesDialog } from "./TemplatesDialog";
-import { MarketplaceDialog } from "./MarketplaceDialog";
 import { BlockInspector } from "./BlockInspector";
 import { cn } from "@/lib/utils";
 
@@ -16,7 +15,6 @@ export function LeftSidebar() {
   const { addBlock, selectedId, content } = useBuilderStore();
   const [tab, setTab] = useState<Tab>("blocks");
   const [tplOpen, setTplOpen] = useState(false);
-  const [mktOpen, setMktOpen] = useState(false);
 
   // Find selected block recursively
   const findBlock = (blocks: any[], id: string): any => {
@@ -82,18 +80,11 @@ export function LeftSidebar() {
       </div>
       <div className="p-3 border-b border-white/10 space-y-2">
         <button
-          onClick={() => setMktOpen(true)}
+          onClick={() => setTplOpen(true)}
           className="w-full flex items-center justify-center gap-2 h-9 rounded-lg bg-gradient-to-r from-pink-600 to-fuchsia-600 text-white text-xs font-semibold hover:brightness-110 transition shadow-lg shadow-pink-600/20"
         >
-          <Icons.Sparkles className="w-3.5 h-3.5" />
-          Marketplace
-        </button>
-        <button
-          onClick={() => setTplOpen(true)}
-          className="w-full flex items-center justify-center gap-2 h-8 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-white/80 text-[11px] font-medium transition"
-        >
-          <Icons.LayoutTemplate className="w-3 h-3" />
-          Classic templates
+          <Icons.LayoutTemplate className="w-3.5 h-3.5" />
+          Browse templates
         </button>
         <div className="grid grid-cols-2 gap-1 bg-white/5 p-0.5 rounded-lg">
           {(["blocks", "library"] as Tab[]).map((t) => (
@@ -124,7 +115,6 @@ export function LeftSidebar() {
       </div>
 
       <TemplatesDialog open={tplOpen} onOpenChange={setTplOpen} />
-      <MarketplaceDialog open={mktOpen} onOpenChange={setMktOpen} />
     </div>
   );
 }

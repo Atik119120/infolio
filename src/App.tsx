@@ -24,10 +24,6 @@ const DashboardPurchases = lazy(() => import("./pages/DashboardPurchases"));
 const DashboardDomainStatus = lazy(() => import("./pages/DashboardDomainStatus"));
 const DashboardDeploy = lazy(() => import("./pages/DashboardDeploy"));
 const DashboardAnalytics = lazy(() => import("./pages/DashboardAnalytics"));
-const DashboardEngine = lazy(() => import("./pages/DashboardEngine"));
-const DashboardSEO = lazy(() => import("./pages/DashboardSEO"));
-const DashboardSiteSettings = lazy(() => import("./pages/DashboardSiteSettings"));
-const DashboardIntegrations = lazy(() => import("./pages/DashboardIntegrations"));
 const PublicPortfolio = lazy(() => import("./pages/PublicPortfolio"));
 const ThemeDemo = lazy(() => import("./pages/ThemeDemo"));
 const ThemeCollection = lazy(() => import("./pages/ThemeCollection"));
@@ -105,10 +101,6 @@ const App = () => (
                   <Route path="domain-status" element={<DashboardDomainStatus />} />
                   <Route path="deploy" element={<DashboardDeploy />} />
                   <Route path="analytics" element={<DashboardAnalytics />} />
-                  <Route path="site" element={<DashboardSiteSettings />} />
-                  <Route path="integrations" element={<DashboardIntegrations />} />
-                  <Route path="engine" element={<DashboardEngine />} />
-                  <Route path="seo" element={<DashboardSEO />} />
                 </Route>
                 <Route path="/admin" element={
                   <AdminRoute>

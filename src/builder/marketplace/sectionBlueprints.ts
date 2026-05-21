@@ -317,6 +317,6 @@ export const BLUEPRINT_CATEGORIES: BlueprintCategory[] = [
   "Pricing",
   "Testimonials",
   "CTA",
-  "Ecommerce",
+  
   "Contact",
 ];

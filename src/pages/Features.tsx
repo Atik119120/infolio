@@ -35,7 +35,7 @@ export default function Features() {
             <FeatureCard icon={<Users className="w-5 h-5" />} title="Team Workspace" description="Collaborate across projects." />
             <FeatureCard icon={<Database className="w-5 h-5" />} title="Multi-Project" description="Run up to 10 projects per account." />
             <FeatureCard icon={<BarChart3 className="w-5 h-5" />} title="Analytics" description="Visitor insights — coming soon." />
-            <FeatureCard icon={<ShoppingBag className="w-5 h-5" />} title="E-commerce" description="Store, products, checkout — soon." />
+            
           </div>
         </div>
       </section>

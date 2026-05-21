@@ -7,7 +7,7 @@ import {
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { TEMPLATES, cloneTemplate, type TemplateDef } from "../templates";
-import { ECOMMERCE_TEMPLATES } from "../marketplace/ecommerceTemplates";
+
 import {
   SECTION_BLUEPRINTS,
   BLUEPRINT_CATEGORIES,

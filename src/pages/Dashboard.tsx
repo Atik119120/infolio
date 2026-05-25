@@ -61,9 +61,11 @@ export default function Dashboard() {
     const prevBody = document.body.style.backgroundColor;
     document.documentElement.style.backgroundColor = "#000";
     document.body.style.backgroundColor = "#000";
+    document.body.classList.add("dashboard-bw");
     return () => {
       document.documentElement.style.backgroundColor = prevHtml;
       document.body.style.backgroundColor = prevBody;
+      document.body.classList.remove("dashboard-bw");
     };
   }, []);
 

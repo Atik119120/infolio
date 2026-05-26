@@ -45,6 +45,7 @@ const CustomizeTheme = lazy(() => import("./pages/CustomizeTheme"));
 const Features = lazy(() => import("./pages/Features"));
 const Pricing = lazy(() => import("./pages/Pricing"));
 const Faq = lazy(() => import("./pages/Faq"));
+const BuyDomain = lazy(() => import("./pages/BuyDomain"));
 
 const queryClient = new QueryClient();
 

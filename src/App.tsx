@@ -45,6 +45,7 @@ const CustomizeTheme = lazy(() => import("./pages/CustomizeTheme"));
 const Features = lazy(() => import("./pages/Features"));
 const Pricing = lazy(() => import("./pages/Pricing"));
 const Faq = lazy(() => import("./pages/Faq"));
+const BuyDomain = lazy(() => import("./pages/BuyDomain"));
 
 const queryClient = new QueryClient();
 
@@ -73,6 +74,7 @@ const App = () => (
                 <Route path="/features" element={<Features />} />
                 <Route path="/pricing" element={<Pricing />} />
                 <Route path="/faq" element={<Faq />} />
+                <Route path="/buy-domain" element={<BuyDomain />} />
                 <Route path="/admin/login" element={<AdminAuth />} />
                 <Route path="/demo/:themeName" element={<ThemeDemo />} />
                 <Route path="/u/:username" element={<PublicPortfolio />} />

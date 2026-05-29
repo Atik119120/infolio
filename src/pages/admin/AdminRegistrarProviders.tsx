@@ -191,6 +191,7 @@ export default function AdminRegistrarProviders() {
                   </Badge>
                   <div className="min-w-0 flex-1">
                     <div className="font-mono text-slate-200">{a.action}</div>
+                    <div className="text-slate-500 break-all">Path: {a.generated_path ?? "—"}</div>
                     <div className="text-slate-500 break-all">{a.endpoint}</div>
                     <div className="text-slate-400 mt-0.5 break-all">{a.message}</div>
                   </div>
@@ -208,13 +209,22 @@ export default function AdminRegistrarProviders() {
                 <Badge className={status.last_request.ok ? "bg-green-500/20 text-green-300 border-green-500/30" : "bg-red-500/20 text-red-300 border-red-500/30"}>
                   {status.last_request.http_status || "ERR"}
                 </Badge>
-                <span className="font-mono text-slate-200">{status.last_request.action}</span>
+                <span className="font-mono text-slate-200">{status.last_request.action_name ?? status.last_request.action}</span>
+                <span className="font-mono text-slate-400">{status.last_request.method}</span>
                 <span className="text-slate-500">{status.last_request.duration_ms} ms</span>
                 <span className="text-slate-600">{status.last_request.at}</span>
               </div>
               <div>
-                <div className="text-slate-500">URL</div>
+                <div className="text-slate-500">Generated Path</div>
+                <div className="font-mono text-slate-300 break-all">{status.last_request.generated_path ?? status.last_request.action}</div>
+              </div>
+              <div>
+                <div className="text-slate-500">Full Request URL</div>
                 <div className="font-mono text-slate-300 break-all">{status.last_request.url}</div>
+              </div>
+              <div>
+                <div className="text-slate-500">Request Payload</div>
+                <pre className="font-mono text-slate-300 break-all whitespace-pre-wrap">{JSON.stringify(status.last_request.request_payload ?? {}, null, 2)}</pre>
               </div>
               <div>
                 <div className="text-slate-500">Request Body</div>

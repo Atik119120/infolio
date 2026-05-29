@@ -126,12 +126,59 @@ export class HostneedError extends Error {
   }
 }
 
+type HnMethod = "GET" | "POST";
+type HnRoute = { method: HnMethod; path: string; description: string };
+const HOSTNEED_ROUTES = {
+  connectionTest: { method: "GET", path: "/billing/credits", description: "Connection/auth test" },
+  checkAvailability: { method: "POST", path: "/domains/lookup", description: "Domain availability lookup" },
+  registerDomain: { method: "POST", path: "/order/domains/register", description: "Register domain" },
+  transferDomain: { method: "POST", path: "/order/domains/transfer", description: "Transfer domain" },
+  renewDomain: { method: "POST", path: "/order/domains/renew", description: "Renew domain" },
+  releaseDomain: { method: "POST", path: "/domains/{domain}/release", description: "Release domain" },
+  getEPPCode: { method: "GET", path: "/domains/{domain}/eppcode", description: "Get EPP code" },
+  getContactDetails: { method: "GET", path: "/domains/{domain}/contact", description: "Get contact details" },
+  saveContactDetails: { method: "POST", path: "/domains/{domain}/contact", description: "Save contact details" },
+  getRegistrarLock: { method: "GET", path: "/domains/{domain}/lock", description: "Get registrar lock" },
+  toggleDomainLock: { method: "POST", path: "/domains/{domain}/lock", description: "Set registrar lock" },
+  getDNSRecords: { method: "GET", path: "/domains/{domain}/dns", description: "Get DNS records" },
+  saveDNSRecords: { method: "POST", path: "/domains/{domain}/dns", description: "Save DNS records" },
+  requestDelete: { method: "POST", path: "/domains/{domain}/delete", description: "Request domain deletion" },
+  syncTransfer: { method: "POST", path: "/domains/{domain}/transfersync", description: "Sync transfer status" },
+  syncDomain: { method: "POST", path: "/domains/{domain}/sync", description: "Sync domain status" },
+  getEmailForwarding: { method: "GET", path: "/domains/{domain}/email", description: "Get email forwarding" },
+  saveEmailForwarding: { method: "POST", path: "/domains/{domain}/email", description: "Save email forwarding" },
+  toggleWhoisPrivacy: { method: "POST", path: "/domains/{domain}/protectid", description: "Toggle ID protection" },
+  getNameservers: { method: "GET", path: "/domains/{domain}/nameservers", description: "Get nameservers" },
+  saveNameservers: { method: "POST", path: "/domains/{domain}/nameservers", description: "Save nameservers" },
+  registerNameserver: { method: "POST", path: "/domains/{domain}/nameservers/register", description: "Register nameserver" },
+  modifyNameserver: { method: "POST", path: "/domains/{domain}/nameservers/modify", description: "Modify nameserver" },
+  deleteNameserver: { method: "POST", path: "/domains/{domain}/nameservers/delete", description: "Delete nameserver" },
+  getPricingRegister: { method: "GET", path: "/order/pricing/domains/register", description: "Registration pricing" },
+  getPricingRenew: { method: "GET", path: "/order/pricing/domains/renew", description: "Renewal pricing" },
+  getPricingTransfer: { method: "GET", path: "/order/pricing/domains/transfer", description: "Transfer pricing" },
+  getTlds: { method: "GET", path: "/tlds", description: "Available TLDs" },
+  getVersion: { method: "GET", path: "/version", description: "API version" },
+} as const satisfies Record<string, HnRoute>;
+type HnRouteName = keyof typeof HOSTNEED_ROUTES;
+
+function buildHostneedRoute(routeName: HnRouteName, pathParams: Record<string, string> = {}) {
+  const route = HOSTNEED_ROUTES[routeName];
+  const base = (HN_URL ?? "").replace(/\/+$/, "");
+  const generatedPath = route.path.replace(/\{(\w+)\}/g, (_, key) => encodeURIComponent(pathParams[key] ?? ""));
+  return { actionName: routeName, method: route.method, generatedPath, fullUrl: `${base}${generatedPath}` };
+}
+
 // In-memory debug capture for the admin debug panel.
 // Keeps last N request/response pairs (per worker instance — best-effort, not persistent).
 interface HnDebugEntry {
   at: string;
   action: string;
+  action_name: string;
+  method: HnMethod;
+  base_endpoint: string;
+  generated_path: string;
   url: string;
+  request_payload: Record<string, any>;
   request_body: string;
   request_headers_safe: Record<string, string>;
   http_status: number;
@@ -147,7 +194,12 @@ function pushDebug(e: HnDebugEntry) {
   if (HN_DEBUG.length > 20) HN_DEBUG.length = 20;
 }
 
-async function hnCall(action: string, params: Record<string, any> = {}, attempt = 1): Promise<any> {
+async function hnCall(
+  routeName: HnRouteName,
+  params: Record<string, any> = {},
+  pathParams: Record<string, string> = {},
+  attempt = 1,
+): Promise<any> {
   // Validate creds presence with explicit kind
   if (!HN_URL) throw new HostneedError("Invalid endpoint", "HOSTNEED_API_URL is not set", "", 0, "");
   if (!HN_USER) throw new HostneedError("Invalid username", "HOSTNEED_USERNAME is not set", HN_URL, 0, "");
@@ -160,17 +212,21 @@ async function hnCall(action: string, params: Record<string, any> = {}, attempt 
     throw new HostneedError("Invalid token generation", (e as Error).message, HN_URL, 0, "");
   }
 
-  const url = `${HN_URL}${action.startsWith("/") ? action : `/${action}`}`;
+  const route = buildHostneedRoute(routeName, pathParams);
   const body = formEncode(params);
+  const url = route.method === "GET" && body ? `${route.fullUrl}?${body}` : route.fullUrl;
   const safeHeaders = { ...headers, token: headers.token ? `${headers.token.slice(0, 6)}…(${headers.token.length})` : "" };
-  console.log(`[hostneed] -> POST ${url} (attempt ${attempt}) body=${body.slice(0, 200)}`);
+  console.log(`[hostneed.route] action=${route.actionName} path=${route.generatedPath} url=${url}`);
+  console.log(`[hostneed] -> ${route.method} ${url} (attempt ${attempt}) body=${body.slice(0, 200)}`);
 
   const started = Date.now();
   let res: Response;
   try {
     const ctrl = new AbortController();
     const timer = setTimeout(() => ctrl.abort(), 20_000);
-    res = await fetch(url, { method: "POST", headers, body, signal: ctrl.signal });
+    const requestInit: RequestInit = { method: route.method, headers, signal: ctrl.signal };
+    if (route.method === "POST") requestInit.body = body;
+    res = await fetch(url, requestInit);
     clearTimeout(timer);
   } catch (e) {
     const msg = (e as Error).message || String(e);
@@ -178,11 +234,13 @@ async function hnCall(action: string, params: Record<string, any> = {}, attempt 
       ? "Timeout" : "Network error";
     console.error(`[hostneed] ${kind}: ${msg}`);
     pushDebug({
-      at: new Date().toISOString(), action, url, request_body: body,
+      at: new Date().toISOString(), action: route.generatedPath, action_name: route.actionName,
+      method: route.method, base_endpoint: HN_URL, generated_path: route.generatedPath,
+      url, request_payload: params, request_body: body,
       request_headers_safe: safeHeaders, http_status: 0, response_body: "",
       duration_ms: Date.now() - started, ok: false, error_kind: kind, error_message: msg,
     });
-    if (attempt < 2) return hnCall(action, params, attempt + 1);
+    if (attempt < 2) return hnCall(routeName, params, pathParams, attempt + 1);
     throw new HostneedError(kind, msg, url, 0, "");
   }
 
@@ -194,13 +252,15 @@ async function hnCall(action: string, params: Record<string, any> = {}, attempt 
   try { json = JSON.parse(text); } catch { /* not json */ }
 
   const baseDebug = {
-    at: new Date().toISOString(), action, url, request_body: body,
+    at: new Date().toISOString(), action: route.generatedPath, action_name: route.actionName,
+    method: route.method, base_endpoint: HN_URL, generated_path: route.generatedPath,
+    url, request_payload: params, request_body: body,
     request_headers_safe: safeHeaders, http_status: res.status,
     response_body: text.slice(0, 2000), duration_ms: Date.now() - started,
   };
 
   if (!res.ok) {
-    if (res.status >= 500 && attempt < 2) return hnCall(action, params, attempt + 1);
+    if (res.status >= 500 && attempt < 2) return hnCall(routeName, params, pathParams, attempt + 1);
     const apiMsg = json?.message ?? json?.error ?? text.slice(0, 300) ?? `HTTP ${res.status}`;
     let kind = res.status === 401 || res.status === 403 ? "Authentication failure" : "HostNeed API rejection";
     if (res.status === 404 || /action not found/i.test(text)) kind = "Invalid action path";
@@ -211,7 +271,7 @@ async function hnCall(action: string, params: Record<string, any> = {}, attempt 
   if (json?.result === "error" || json?.status === "error") {
     const apiMsg = json.message ?? json.error ?? "Unknown error";
     pushDebug({ ...baseDebug, ok: false, error_kind: "HostNeed API rejection", error_message: apiMsg });
-    throw new HostneedError("HostNeed API rejection", `HostNeed ${action}: ${apiMsg}`, url, res.status, text);
+    throw new HostneedError("HostNeed API rejection", `HostNeed ${route.generatedPath}: ${apiMsg}`, url, res.status, text);
   }
 
   pushDebug({ ...baseDebug, ok: true });
@@ -412,6 +472,7 @@ const mockDriver = {
 // ============================================================
 const hostneedDriver = {
   kind: "hostneed" as const,
+  routes: HOSTNEED_ROUTES,
 
   async testConnection() {
     const diag = {
@@ -434,54 +495,35 @@ const hostneedDriver = {
       return { ok: false, provider: "hostneed", kind: "Missing credentials", message: `Missing secrets: ${missing}`, diag };
     }
 
-    // Probe a list of candidate DomainsReseller actions. The first one that
-    // returns a non-404 (real API response — even if it's a domain-specific
-    // error) means the auth + endpoint are working.
-    const candidates: Array<{ action: string; params: Record<string, any> }> = [
-      { action: "/domains/check", params: { domain: "hostneed-connection-test.com" } },
-      { action: "/account/balance", params: {} },
-      { action: "/account/getbalance", params: {} },
-      { action: "/domains/getpricing", params: {} },
-      { action: "/domain/availability/check", params: { domain: "hostneed-connection-test.com" } },
-    ];
-
-    const attempts: Array<{ action: string; ok: boolean; http_status: number; message: string; endpoint: string }> = [];
-    let firstSuccess: { action: string; data: any; endpoint: string } | null = null;
-
-    for (const c of candidates) {
-      const url = `${HN_URL}${c.action}`;
-      try {
-        const r = await hnCall(c.action, c.params);
-        attempts.push({ action: c.action, ok: true, http_status: 200, message: "OK", endpoint: url });
-        firstSuccess = { action: c.action, data: r, endpoint: url };
-        break;
-      } catch (e) {
-        const he = e as HostneedError;
-        attempts.push({
-          action: c.action,
-          ok: false,
-          http_status: he.status ?? 0,
-          message: he.message,
-          endpoint: he.endpoint ?? url,
-        });
-        if (he.kind === "Authentication failure") break;
-      }
-    }
-
-    if (firstSuccess) {
+    const route = buildHostneedRoute("connectionTest");
+    const attempts: Array<{ action: string; generated_path: string; ok: boolean; http_status: number; message: string; endpoint: string }> = [];
+    try {
+      const r = await hnCall("connectionTest");
+      attempts.push({ action: "connectionTest", generated_path: route.generatedPath, ok: true, http_status: 200, message: "OK", endpoint: route.fullUrl });
       return {
         ok: true,
         provider: "hostneed",
-        message: `Connected via ${firstSuccess.action}`,
-        endpoint: firstSuccess.endpoint,
-        working_action: firstSuccess.action,
-        data: firstSuccess.data,
+        message: `Connected via ${route.generatedPath}`,
+        endpoint: route.fullUrl,
+        action_name: "connectionTest",
+        generated_path: route.generatedPath,
+        data: r,
         attempts,
         diag,
       };
+    } catch (e) {
+      const he = e as HostneedError;
+      attempts.push({
+        action: "connectionTest",
+        generated_path: route.generatedPath,
+        ok: false,
+        http_status: he.status ?? 0,
+        message: he.message,
+        endpoint: he.endpoint ?? route.fullUrl,
+      });
     }
 
-    const last = attempts[attempts.length - 1];
+    const last = attempts[0];
     return {
       ok: false,
       provider: "hostneed",
@@ -498,47 +540,45 @@ const hostneedDriver = {
 
 
   async checkAvailability(payload: { domain: string }) {
-    // HostNeed: /domains/check  params: domain=example.com
-
     const base = payload.domain.toLowerCase().replace(/\..*$/, "").trim();
     const tlds = payload.domain.includes(".") ? [`.${payload.domain.split(".").slice(1).join(".")}`] : POPULAR_TLDS;
-    const results = await Promise.all(tlds.map(async (tld) => {
-      const full = `${base}${tld}`;
-      try {
-        const r = await hnCall("/domains/check", { domain: full });
-        const available = String(r?.available ?? r?.status ?? "").toLowerCase().includes("available");
-        return {
-          domain: full, tld, available,
-          premium: !!r?.premium,
-          price: Number(r?.price ?? 0),
-          currency: r?.currency ?? "BDT",
-          info: r?.message ?? (available ? "Available" : "Taken"),
-        };
-      } catch {
-        return { domain: full, tld, available: false, premium: false, price: 0, currency: "BDT", info: "Unavailable" };
-      }
-    }));
-    return results;
+    const r = await hnCall("checkAvailability", {
+      searchTerm: base,
+      punyCodeSearchTerm: base,
+      tldsToInclude: tlds.map((tld) => tld.replace(/^\./, "")),
+      isIdnDomain: false,
+      premiumEnabled: true,
+    });
+    const list = Array.isArray(r?.results) ? r.results : Array.isArray(r?.domains) ? r.domains : Array.isArray(r) ? r : [];
+    if (!list.length) {
+      return tlds.map((tld) => ({ domain: `${base}${tld}`, tld, available: false, premium: false, price: 0, currency: "BDT", info: r?.message ?? "No lookup result" }));
+    }
+    return list.map((d: any) => {
+      const domain = d.domain ?? d.name ?? `${base}.${String(d.tld ?? "").replace(/^\./, "")}`;
+      return {
+        domain,
+        tld: d.tld ? `.${String(d.tld).replace(/^\./, "")}` : `.${String(domain).split(".").slice(1).join(".")}`,
+        available: String(d.status ?? d.availability ?? d.available ?? "").toLowerCase().includes("available") || d.available === true,
+        premium: !!d.premium,
+        price: Number(d.price ?? d.register ?? 0),
+        currency: d.currency ?? "BDT",
+        info: d.message ?? d.status ?? "Lookup result",
+      };
+    });
   },
 
   async getDomainSuggestions(payload: { keyword: string }) {
     try {
-      const r = await hnCall("/domains/suggest", { keyword: payload.keyword });
-      const list = Array.isArray(r?.suggestions) ? r.suggestions : Array.isArray(r) ? r : [];
-      return list.map((d: any) => ({
-        domain: d.domain ?? d.name, tld: d.tld ?? `.${(d.domain ?? "").split(".").slice(1).join(".")}`,
-        available: true, premium: !!d.premium, price: Number(d.price ?? 0),
-        currency: d.currency ?? "BDT", info: "Suggestion",
-      }));
+      return await hostneedDriver.checkAvailability({ domain: payload.keyword });
     } catch { return []; }
   },
 
   async getDomainInfo(payload: { domain: string }) {
-    return await hnCall("/domains/getinfo", { domain: payload.domain });
+    return await hnCall("syncDomain", {}, { domain: payload.domain });
   },
 
   async registerDomain(payload: { domain: string; years: number }, admin: any, userId: string, providerId: string) {
-    const r = await hnCall("/order/domains/register", {
+    const r = await hnCall("registerDomain", {
       domain: payload.domain,
       regperiod: String(payload.years),
       addons: { dnsmanagement: 1, emailforwarding: 1, idprotection: 1 },
@@ -556,7 +596,7 @@ const hostneedDriver = {
   },
 
   async transferDomain(payload: { domain: string; auth_code: string }, admin: any, userId: string, providerId: string) {
-    const r = await hnCall("/order/domains/transfer", { domain: payload.domain, eppcode: payload.auth_code });
+    const r = await hnCall("transferDomain", { domain: payload.domain, eppcode: payload.auth_code, regperiod: "1" });
     const { data: order, error } = await admin.from("domain_orders").insert({
       user_id: userId, provider_id: providerId, order_type: "transfer",
       domain_name: payload.domain, years: 1,
@@ -571,7 +611,7 @@ const hostneedDriver = {
   async renewDomain(payload: { domain_id: string; years: number }, admin: any, userId: string, providerId: string) {
     const { data: dom } = await admin.from("registrar_domains").select("domain_name").eq("id", payload.domain_id).maybeSingle();
     if (!dom) throw new Error("Domain not found");
-    const r = await hnCall("/order/domains/renew", {
+    const r = await hnCall("renewDomain", {
       domain: dom.domain_name, regperiod: String(payload.years),
       addons: { dnsmanagement: 0, emailforwarding: 1, idprotection: 1 },
     });
@@ -587,16 +627,16 @@ const hostneedDriver = {
 
   async getNameservers(p: { domain_id: string }, admin: any) {
     const { data: dom } = await admin.from("registrar_domains").select("domain_name").eq("id", p.domain_id).maybeSingle();
-    const r = await hnCall("/domains/getnameservers", { domain: dom.domain_name });
+    const r = await hnCall("getNameservers", {}, { domain: dom.domain_name });
     const nameservers = [r?.ns1, r?.ns2, r?.ns3, r?.ns4, r?.ns5].filter(Boolean);
     return { nameservers };
   },
 
   async saveNameservers(p: { domain_id: string; nameservers: string[] }, admin: any) {
     const { data: dom } = await admin.from("registrar_domains").select("domain_name").eq("id", p.domain_id).maybeSingle();
-    const params: any = { domain: dom.domain_name };
+    const params: any = {};
     p.nameservers.slice(0, 5).forEach((n, i) => params[`ns${i + 1}`] = n);
-    await hnCall("/domains/savenameservers", params);
+    await hnCall("saveNameservers", params, { domain: dom.domain_name });
     const { data } = await admin.from("registrar_domains").update({ nameservers: p.nameservers }).eq("id", p.domain_id).select().single();
     return data;
   },
@@ -607,42 +647,42 @@ const hostneedDriver = {
 
   async getDNSRecords(p: { domain_id: string }, admin: any) {
     const { data: dom } = await admin.from("registrar_domains").select("domain_name").eq("id", p.domain_id).maybeSingle();
-    const r = await hnCall("/domains/getdnsrecords", { domain: dom.domain_name });
+    const r = await hnCall("getDNSRecords", {}, { domain: dom.domain_name });
     return r?.records ?? r ?? [];
   },
 
   async saveDNSRecords(p: { domain_id: string; records: any[] }, admin: any) {
     const { data: dom } = await admin.from("registrar_domains").select("domain_name").eq("id", p.domain_id).maybeSingle();
-    await hnCall("/domains/savednsrecords", { domain: dom.domain_name, records: p.records });
+    await hnCall("saveDNSRecords", { dnsrecords: p.records }, { domain: dom.domain_name });
     return { ok: true };
   },
 
   async getContactDetails(p: { domain_id: string }, admin: any) {
     const { data: dom } = await admin.from("registrar_domains").select("domain_name").eq("id", p.domain_id).maybeSingle();
-    return await hnCall("/domains/getcontactdetails", { domain: dom.domain_name });
+    return await hnCall("getContactDetails", {}, { domain: dom.domain_name });
   },
 
   async saveContactDetails(p: { domain_id: string; contacts: any }, admin: any) {
     const { data: dom } = await admin.from("registrar_domains").select("domain_name").eq("id", p.domain_id).maybeSingle();
-    return await hnCall("/domains/savecontactdetails", { domain: dom.domain_name, contactdetails: p.contacts });
+    return await hnCall("saveContactDetails", { contactdetails: p.contacts }, { domain: dom.domain_name });
   },
 
   async getEPPCode(p: { domain_id: string }, admin: any) {
     const { data: dom } = await admin.from("registrar_domains").select("domain_name").eq("id", p.domain_id).maybeSingle();
-    const r = await hnCall("/domains/getepp", { domain: dom.domain_name });
+    const r = await hnCall("getEPPCode", {}, { domain: dom.domain_name });
     return { code: r?.eppcode ?? r?.code ?? "" };
   },
 
   async toggleDomainLock(p: { domain_id: string; enabled: boolean }, admin: any) {
     const { data: dom } = await admin.from("registrar_domains").select("domain_name").eq("id", p.domain_id).maybeSingle();
-    await hnCall("/domains/updatelockstatus", { domain: dom.domain_name, lockstatus: p.enabled ? 1 : 0 });
+    await hnCall("toggleDomainLock", { lockstatus: p.enabled ? 1 : 0 }, { domain: dom.domain_name });
     await admin.from("registrar_domains").update({ registrar_lock: p.enabled }).eq("id", p.domain_id);
     return { ok: true };
   },
 
   async toggleWhoisPrivacy(p: { domain_id: string; enabled: boolean }, admin: any) {
     const { data: dom } = await admin.from("registrar_domains").select("domain_name").eq("id", p.domain_id).maybeSingle();
-    await hnCall("/domains/idprotect", { domain: dom.domain_name, idprotection: p.enabled ? 1 : 0 });
+    await hnCall("toggleWhoisPrivacy", { status: p.enabled ? 1 : 0 }, { domain: dom.domain_name });
     await admin.from("registrar_domains").update({ whois_privacy: p.enabled, id_protection: p.enabled }).eq("id", p.domain_id);
     return { ok: true };
   },
@@ -662,30 +702,36 @@ const hostneedDriver = {
 
   async getEmailForwarding(p: { domain_id: string }, admin: any) {
     const { data: dom } = await admin.from("registrar_domains").select("domain_name").eq("id", p.domain_id).maybeSingle();
-    return await hnCall("/domains/getemailforwarding", { domain: dom.domain_name });
+    return await hnCall("getEmailForwarding", {}, { domain: dom.domain_name });
   },
 
   async saveEmailForwarding(p: { domain_id: string; forwarders: any[] }, admin: any) {
     const { data: dom } = await admin.from("registrar_domains").select("domain_name").eq("id", p.domain_id).maybeSingle();
-    return await hnCall("/domains/saveemailforwarding", { domain: dom.domain_name, forwarders: p.forwarders });
+    const params = Array.isArray(p.forwarders)
+      ? {
+        prefix: p.forwarders.map((f: any) => f.prefix ?? f.source ?? ""),
+        forwardto: p.forwarders.map((f: any) => f.forwardto ?? f.destination ?? ""),
+      }
+      : {};
+    return await hnCall("saveEmailForwarding", params, { domain: dom.domain_name });
   },
 
   async releaseDomain(p: { domain_id: string }, admin: any) {
     const { data: dom } = await admin.from("registrar_domains").select("domain_name").eq("id", p.domain_id).maybeSingle();
-    await hnCall("/domains/release", { domain: dom.domain_name });
+    await hnCall("releaseDomain", {}, { domain: dom.domain_name });
     return { ok: true };
   },
 
   async requestDelete(p: { domain_id: string }, admin: any) {
     const { data: dom } = await admin.from("registrar_domains").select("domain_name").eq("id", p.domain_id).maybeSingle();
-    await hnCall("/domains/requestdelete", { domain: dom.domain_name });
+    await hnCall("requestDelete", {}, { domain: dom.domain_name });
     return { ok: true };
   },
 
   async syncDomain(p: { domain_id: string }, admin: any) {
     const { data: dom } = await admin.from("registrar_domains").select("*").eq("id", p.domain_id).maybeSingle();
     if (!dom) throw new Error("Domain not found");
-    const r = await hnCall("/domains/getinfo", { domain: dom.domain_name });
+    const r = await hnCall("syncDomain", {}, { domain: dom.domain_name });
     const updates: any = {};
     if (r?.expirydate) updates.expires_at = new Date(r.expirydate).toISOString();
     if (r?.status) updates.status = String(r.status).toLowerCase();
@@ -699,12 +745,12 @@ const hostneedDriver = {
 
   async syncTransfer(p: { domain_id: string }, admin: any) {
     const { data: dom } = await admin.from("registrar_domains").select("*").eq("id", p.domain_id).maybeSingle();
-    const r = await hnCall("/domains/transfersync", { domain: dom?.domain_name });
+    const r = await hnCall("syncTransfer", {}, { domain: dom?.domain_name });
     return r;
   },
 
   async getTldPricing(_p: {}, admin: any) {
-    const r = await hnCall("/domains/getpricing", {});
+    const r = await hnCall("getTlds", {});
     return r;
   },
 };
@@ -786,6 +832,7 @@ Deno.serve(async (req) => {
           active_provider: activeProv ?? null,
           using_mock: !activeProv || activeProv.is_mock || (activeProv.provider_type === "hostneed" && !hostneedReady()),
           providers: providers ?? [],
+          hostneed_route_registry: Object.entries(hostneedDriver.routes).map(([action, route]) => ({ action, ...route })),
           last_request: HN_DEBUG[0] ?? null,
           recent_requests: HN_DEBUG.slice(0, 10),
         },

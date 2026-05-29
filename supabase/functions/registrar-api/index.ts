@@ -126,6 +126,27 @@ export class HostneedError extends Error {
   }
 }
 
+// In-memory debug capture for the admin debug panel.
+// Keeps last N request/response pairs (per worker instance — best-effort, not persistent).
+interface HnDebugEntry {
+  at: string;
+  action: string;
+  url: string;
+  request_body: string;
+  request_headers_safe: Record<string, string>;
+  http_status: number;
+  response_body: string;
+  duration_ms: number;
+  ok: boolean;
+  error_kind?: string;
+  error_message?: string;
+}
+const HN_DEBUG: HnDebugEntry[] = [];
+function pushDebug(e: HnDebugEntry) {
+  HN_DEBUG.unshift(e);
+  if (HN_DEBUG.length > 20) HN_DEBUG.length = 20;
+}
+
 async function hnCall(action: string, params: Record<string, any> = {}, attempt = 1): Promise<any> {
   // Validate creds presence with explicit kind
   if (!HN_URL) throw new HostneedError("Invalid endpoint", "HOSTNEED_API_URL is not set", "", 0, "");
@@ -141,8 +162,10 @@ async function hnCall(action: string, params: Record<string, any> = {}, attempt 
 
   const url = `${HN_URL}${action.startsWith("/") ? action : `/${action}`}`;
   const body = formEncode(params);
-  console.log(`[hostneed] -> POST ${url} (attempt ${attempt})`);
+  const safeHeaders = { ...headers, token: headers.token ? `${headers.token.slice(0, 6)}…(${headers.token.length})` : "" };
+  console.log(`[hostneed] -> POST ${url} (attempt ${attempt}) body=${body.slice(0, 200)}`);
 
+  const started = Date.now();
   let res: Response;
   try {
     const ctrl = new AbortController();
@@ -154,6 +177,11 @@ async function hnCall(action: string, params: Record<string, any> = {}, attempt 
     const kind = msg.toLowerCase().includes("abort") || msg.toLowerCase().includes("timeout")
       ? "Timeout" : "Network error";
     console.error(`[hostneed] ${kind}: ${msg}`);
+    pushDebug({
+      at: new Date().toISOString(), action, url, request_body: body,
+      request_headers_safe: safeHeaders, http_status: 0, response_body: "",
+      duration_ms: Date.now() - started, ok: false, error_kind: kind, error_message: msg,
+    });
     if (attempt < 2) return hnCall(action, params, attempt + 1);
     throw new HostneedError(kind, msg, url, 0, "");
   }
@@ -165,20 +193,31 @@ async function hnCall(action: string, params: Record<string, any> = {}, attempt 
   let json: any = null;
   try { json = JSON.parse(text); } catch { /* not json */ }
 
+  const baseDebug = {
+    at: new Date().toISOString(), action, url, request_body: body,
+    request_headers_safe: safeHeaders, http_status: res.status,
+    response_body: text.slice(0, 2000), duration_ms: Date.now() - started,
+  };
+
   if (!res.ok) {
     if (res.status >= 500 && attempt < 2) return hnCall(action, params, attempt + 1);
     const apiMsg = json?.message ?? json?.error ?? text.slice(0, 300) ?? `HTTP ${res.status}`;
-    const kind = res.status === 401 || res.status === 403 ? "Authentication failure" : "HostNeed API rejection";
+    let kind = res.status === 401 || res.status === 403 ? "Authentication failure" : "HostNeed API rejection";
+    if (res.status === 404 || /action not found/i.test(text)) kind = "Invalid action path";
+    pushDebug({ ...baseDebug, ok: false, error_kind: kind, error_message: apiMsg });
     throw new HostneedError(kind, `${kind} (HTTP ${res.status}): ${apiMsg}`, url, res.status, text);
   }
 
   if (json?.result === "error" || json?.status === "error") {
     const apiMsg = json.message ?? json.error ?? "Unknown error";
+    pushDebug({ ...baseDebug, ok: false, error_kind: "HostNeed API rejection", error_message: apiMsg });
     throw new HostneedError("HostNeed API rejection", `HostNeed ${action}: ${apiMsg}`, url, res.status, text);
   }
 
+  pushDebug({ ...baseDebug, ok: true });
   return json ?? { raw: text };
 }
+
 
 
 // ============================================================

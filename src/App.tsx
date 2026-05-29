@@ -51,8 +51,6 @@ const AdminRegistrarDomains = lazy(() => import("./pages/admin/AdminRegistrarDom
 const AdminRegistrarPricing = lazy(() => import("./pages/admin/AdminRegistrarPricing"));
 const AdminRegistrarProviders = lazy(() => import("./pages/admin/AdminRegistrarProviders"));
 const AdminRegistrarLogs = lazy(() => import("./pages/admin/AdminRegistrarLogs"));
-const Faq = lazy(() => import("./pages/Faq"));
-const BuyDomain = lazy(() => import("./pages/BuyDomain"));
 
 const queryClient = new QueryClient();
 

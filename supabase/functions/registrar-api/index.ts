@@ -373,18 +373,45 @@ const mockDriver = {
 // ============================================================
 const hostneedDriver = {
   kind: "hostneed" as const,
-
   async testConnection() {
-    // Lightweight ping — HostNeed has /account/getbalance which most resellers can call
+    const diag = {
+      env: {
+        HOSTNEED_API_URL: !!HN_URL,
+        HOSTNEED_USERNAME: !!HN_USER,
+        HOSTNEED_API_SECRET: !!HN_SECRET,
+      },
+      endpoint: HN_URL ? `${HN_URL}/account/getbalance` : null,
+      username_preview: HN_USER ? `${HN_USER.slice(0, 3)}***` : null,
+    };
+    console.log("[hostneed.testConnection] diag", JSON.stringify(diag));
+
+    if (!HN_URL || !HN_USER || !HN_SECRET) {
+      const missing = [
+        !HN_URL && "HOSTNEED_API_URL",
+        !HN_USER && "HOSTNEED_USERNAME",
+        !HN_SECRET && "HOSTNEED_API_SECRET",
+      ].filter(Boolean).join(", ");
+      return { ok: false, provider: "hostneed", kind: "Missing credentials", message: `Missing secrets: ${missing}`, diag };
+    }
+
     try {
       const r = await hnCall("/account/getbalance", {});
-      return { ok: true, provider: "hostneed", message: "Connected", data: r };
+      return { ok: true, provider: "hostneed", message: "Connected", data: r, diag };
     } catch (e) {
-      return { ok: false, provider: "hostneed", message: (e as Error).message };
+      const he = e as HostneedError;
+      return {
+        ok: false,
+        provider: "hostneed",
+        kind: he.kind ?? "Unknown",
+        message: he.message,
+        http_status: he.status ?? 0,
+        response_body: (he.body ?? "").slice(0, 1000),
+        endpoint: he.endpoint ?? diag.endpoint,
+        diag,
+      };
     }
   },
 
-  async checkAvailability(payload: { domain: string }) {
     // HostNeed: /domains/check  params: domain=example.com
     const base = payload.domain.toLowerCase().replace(/\..*$/, "").trim();
     const tlds = payload.domain.includes(".") ? [`.${payload.domain.split(".").slice(1).join(".")}`] : POPULAR_TLDS;

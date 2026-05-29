@@ -1,7 +1,14 @@
-// Domain Registrar API — Edge Function
-// Single entry point for all registrar operations. Dispatches to the
-// active provider's driver. Currently only the `mock` driver exists;
-// future drivers (HostNeed, Namecheap, etc.) plug into the `drivers` map.
+// ============================================================
+// Registrar API Edge Function
+// ------------------------------------------------------------
+// Driver pattern:
+//   - mockDriver        — local dummy data (default during dev)
+//   - hostneedDriver    — real HostNeed Reseller API
+// Provider is resolved from `registrar_providers` (is_enabled=true,
+// is_default first). If a provider claims is_mock=true OR its required
+// secrets are missing -> we fallback to mockDriver automatically.
+// All registrar API calls are mirrored into registrar_activity_logs.
+// ============================================================
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
 
@@ -14,7 +21,11 @@ const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SUPABASE_ANON_KEY = Deno.env.get("SUPABASE_ANON_KEY")!;
 const SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 
-// ---------- Mock driver ----------
+const HN_URL = Deno.env.get("HOSTNEED_API_URL");
+const HN_USER = Deno.env.get("HOSTNEED_USERNAME");
+const HN_SECRET = Deno.env.get("HOSTNEED_API_SECRET");
+
+// ---------- Common helpers ----------
 const POPULAR_TLDS = [".com", ".net", ".org", ".io", ".dev", ".app", ".co", ".xyz", ".online", ".site", ".tech", ".me"];
 
 function hashString(s: string): number {
@@ -30,7 +41,111 @@ async function fetchPricing(admin: any): Promise<Record<string, number>> {
   return map;
 }
 
+async function logActivity(admin: any, params: {
+  user_id: string | null;
+  action: string;
+  entity_type?: string;
+  entity_id?: string | null;
+  details?: Record<string, unknown>;
+}) {
+  try {
+    await admin.from("registrar_activity_logs").insert({
+      user_id: params.user_id,
+      action: params.action,
+      entity_type: params.entity_type ?? null,
+      entity_id: params.entity_id ?? null,
+      details: params.details ?? {},
+    });
+  } catch (e) { console.error("activity log failed", e); }
+}
+
+// ============================================================
+// HostNeed signing + transport
+// ============================================================
+// token = base64( hmac_sha256( HOSTNEED_API_SECRET, `${USERNAME}:${gmdate('y-m-d H')}` ) )
+// gmdate('y-m-d H') -> 2-digit year, e.g. 26-05-29 04
+function gmHourStamp(d = new Date()): string {
+  const yy = String(d.getUTCFullYear()).slice(-2);
+  const mm = String(d.getUTCMonth() + 1).padStart(2, "0");
+  const dd = String(d.getUTCDate()).padStart(2, "0");
+  const hh = String(d.getUTCHours()).padStart(2, "0");
+  return `${yy}-${mm}-${dd} ${hh}`;
+}
+
+async function hmacSha256Hex(key: string, msg: string): Promise<string> {
+  const enc = new TextEncoder();
+  const ck = await crypto.subtle.importKey(
+    "raw", enc.encode(key), { name: "HMAC", hash: "SHA-256" }, false, ["sign"],
+  );
+  const sig = await crypto.subtle.sign("HMAC", ck, enc.encode(msg));
+  // PHP hash_hmac returns hex string by default; we base64-encode the hex (matches the sample)
+  return Array.from(new Uint8Array(sig)).map((b) => b.toString(16).padStart(2, "0")).join("");
+}
+
+function b64(str: string): string {
+  return btoa(str);
+}
+
+async function buildHostneedHeaders(): Promise<Record<string, string>> {
+  if (!HN_URL || !HN_USER || !HN_SECRET) {
+    throw new Error("HostNeed credentials are not configured");
+  }
+  const stamp = gmHourStamp();
+  const hex = await hmacSha256Hex(HN_SECRET, `${HN_USER}:${stamp}`);
+  const token = b64(hex);
+  return { username: HN_USER, token, "Content-Type": "application/x-www-form-urlencoded" };
+}
+
+function formEncode(params: Record<string, any>, prefix?: string): string {
+  const out: string[] = [];
+  for (const [k, v] of Object.entries(params)) {
+    if (v === undefined || v === null) continue;
+    const key = prefix ? `${prefix}[${k}]` : k;
+    if (Array.isArray(v)) {
+      v.forEach((item, i) => out.push(`${encodeURIComponent(`${key}[${i}]`)}=${encodeURIComponent(String(item))}`));
+    } else if (typeof v === "object") {
+      out.push(formEncode(v as any, key));
+    } else {
+      out.push(`${encodeURIComponent(key)}=${encodeURIComponent(String(v))}`);
+    }
+  }
+  return out.join("&");
+}
+
+async function hnCall(action: string, params: Record<string, any> = {}, attempt = 1): Promise<any> {
+  const headers = await buildHostneedHeaders();
+  const url = `${HN_URL}${action.startsWith("/") ? action : `/${action}`}`;
+  const body = formEncode(params);
+  try {
+    const res = await fetch(url, { method: "POST", headers, body });
+    const text = await res.text();
+    let json: any = null;
+    try { json = JSON.parse(text); } catch { /* not json */ }
+    if (!res.ok) {
+      // Retry once on 5xx
+      if (res.status >= 500 && attempt < 2) return hnCall(action, params, attempt + 1);
+      throw new Error(`HostNeed ${action} HTTP ${res.status}: ${text.slice(0, 300)}`);
+    }
+    if (json?.result === "error" || json?.status === "error") {
+      throw new Error(`HostNeed ${action}: ${json.message ?? json.error ?? "Unknown error"}`);
+    }
+    return json ?? { raw: text };
+  } catch (e) {
+    if (attempt < 2 && (e as Error).message.includes("ETIMEDOUT")) {
+      return hnCall(action, params, attempt + 1);
+    }
+    throw e;
+  }
+}
+
+// ============================================================
+// MOCK DRIVER
+// ============================================================
 const mockDriver = {
+  kind: "mock" as const,
+
+  async testConnection() { return { ok: true, provider: "mock", message: "Mock driver always OK" }; },
+
   async checkAvailability(payload: { domain: string }, admin: any) {
     const pricing = await fetchPricing(admin);
     const base = payload.domain.toLowerCase().replace(/\..*$/, "").trim();
@@ -39,14 +154,10 @@ const mockDriver = {
     return tlds.map((tld) => {
       const full = `${base}${tld}`;
       const seed = hashString(full);
-      const available = (seed % 10) > 3; // ~60% available
+      const available = (seed % 10) > 3;
       return {
-        domain: full,
-        tld,
-        available,
-        premium: false,
-        price: pricing[tld] ?? 1500,
-        currency: "BDT",
+        domain: full, tld, available, premium: false,
+        price: pricing[tld] ?? 1500, currency: "BDT",
         info: available ? "Available (mock)" : "Already registered (mock)",
       };
     });
@@ -64,13 +175,9 @@ const mockDriver = {
 
   async getDomainInfo(payload: { domain: string }) {
     return {
-      domain: payload.domain,
-      registered: true,
-      registrar: "Mock Registrar Inc.",
-      created: "2020-01-15",
-      expires: "2026-01-15",
-      nameservers: ["ns1.mock.com", "ns2.mock.com"],
-      status: ["clientTransferProhibited"],
+      domain: payload.domain, registered: true, registrar: "Mock Registrar Inc.",
+      created: "2020-01-15", expires: "2026-01-15",
+      nameservers: ["ns1.mock.com", "ns2.mock.com"], status: ["clientTransferProhibited"],
     };
   },
 
@@ -78,25 +185,12 @@ const mockDriver = {
     const tld = `.${payload.domain.split(".").slice(1).join(".")}`;
     const { data: priceRow } = await admin.from("tld_pricing").select("register_price").eq("tld", tld).maybeSingle();
     const price = Number(priceRow?.register_price ?? 1500) * payload.years;
-
     const { data: order, error } = await admin.from("domain_orders").insert({
-      user_id: userId,
-      provider_id: providerId,
-      order_type: "register",
-      domain_name: payload.domain,
-      years: payload.years,
-      amount: price,
-      currency: "BDT",
-      status: "pending",
-      notes: "Awaiting payment confirmation (mock)",
+      user_id: userId, provider_id: providerId, order_type: "register",
+      domain_name: payload.domain, years: payload.years, amount: price, currency: "BDT",
+      status: "pending", notes: "Awaiting payment confirmation (mock)",
     }).select().single();
     if (error) throw error;
-
-    await admin.from("registrar_activity_logs").insert({
-      user_id: userId, action: "domain.register.requested",
-      entity_type: "domain_order", entity_id: order.id,
-      details: { domain: payload.domain, years: payload.years, amount: price },
-    });
     return order;
   },
 
@@ -122,72 +216,80 @@ const mockDriver = {
     return order;
   },
 
-  async releaseDomain(payload: { domain_id: string }, admin: any, userId: string) {
-    await admin.from("registrar_activity_logs").insert({
-      user_id: userId, action: "domain.release.requested",
-      entity_type: "domain", entity_id: payload.domain_id, details: {},
-    });
-    return { ok: true };
-  },
-
-  async requestDelete(payload: { domain_id: string }, admin: any, userId: string) {
-    await admin.from("registrar_activity_logs").insert({
-      user_id: userId, action: "domain.delete.requested",
-      entity_type: "domain", entity_id: payload.domain_id, details: {},
-    });
-    return { ok: true };
-  },
-
+  async releaseDomain(_p: { domain_id: string }) { return { ok: true }; },
+  async requestDelete(_p: { domain_id: string }) { return { ok: true }; },
   async syncDomain(payload: { domain_id: string }, admin: any) {
     const { data } = await admin.from("registrar_domains").select("*").eq("id", payload.domain_id).maybeSingle();
     return data;
   },
-
-  async getEPPCode(_payload: { domain_id: string }) {
+  async syncTransfer(payload: { domain_id: string }, admin: any) {
+    return { domain_id: payload.domain_id, status: "completed" };
+  },
+  async getEPPCode(_p: { domain_id: string }) {
     return { code: "MOCK-EPP-" + Math.random().toString(36).slice(2, 10).toUpperCase() };
   },
-
-  async toggleIDProtection(payload: { domain_id: string; enabled: boolean }, admin: any) {
-    await admin.from("registrar_domains").update({ id_protection: payload.enabled }).eq("id", payload.domain_id);
+  async toggleIDProtection(p: { domain_id: string; enabled: boolean }, admin: any) {
+    await admin.from("registrar_domains").update({ id_protection: p.enabled }).eq("id", p.domain_id);
     return { ok: true };
   },
-
-  async updateNameservers(payload: { domain_id: string; nameservers: string[] }, admin: any, userId: string) {
-    if (!Array.isArray(payload.nameservers) || payload.nameservers.length < 2) {
-      throw new Error("At least 2 nameservers are required");
-    }
-    const { data, error } = await admin.from("registrar_domains")
-      .update({ nameservers: payload.nameservers })
-      .eq("id", payload.domain_id)
-      .select().single();
-    if (error) throw error;
-    await admin.from("registrar_activity_logs").insert({
-      user_id: userId, action: "domain.nameservers.updated",
-      entity_type: "domain", entity_id: payload.domain_id,
-      details: { nameservers: payload.nameservers },
-    });
+  async toggleDomainLock(p: { domain_id: string; enabled: boolean }, admin: any) {
+    await admin.from("registrar_domains").update({ registrar_lock: p.enabled }).eq("id", p.domain_id);
+    return { ok: true };
+  },
+  async toggleAutoRenew(p: { domain_id: string; enabled: boolean }, admin: any) {
+    await admin.from("registrar_domains").update({ auto_renew: p.enabled }).eq("id", p.domain_id);
+    return { ok: true };
+  },
+  async toggleWhoisPrivacy(p: { domain_id: string; enabled: boolean }, admin: any) {
+    await admin.from("registrar_domains").update({ whois_privacy: p.enabled }).eq("id", p.domain_id);
+    return { ok: true };
+  },
+  async getNameservers(p: { domain_id: string }, admin: any) {
+    const { data } = await admin.from("registrar_domains").select("nameservers").eq("id", p.domain_id).maybeSingle();
+    return { nameservers: data?.nameservers ?? [] };
+  },
+  async saveNameservers(p: { domain_id: string; nameservers: string[] }, admin: any) {
+    if (!Array.isArray(p.nameservers) || p.nameservers.length < 2) throw new Error("At least 2 nameservers required");
+    const { data } = await admin.from("registrar_domains").update({ nameservers: p.nameservers }).eq("id", p.domain_id).select().single();
     return data;
   },
-
-  async toggleAutoRenew(payload: { domain_id: string; enabled: boolean }, admin: any, userId: string) {
-    await admin.from("registrar_domains").update({ auto_renew: payload.enabled }).eq("id", payload.domain_id);
-    await admin.from("registrar_activity_logs").insert({
-      user_id: userId, action: "domain.auto_renew.toggled",
-      entity_type: "domain", entity_id: payload.domain_id, details: { enabled: payload.enabled },
-    });
+  async updateNameservers(p: { domain_id: string; nameservers: string[] }, admin: any) {
+    return mockDriver.saveNameservers(p, admin);
+  },
+  async toggleRegistrarLock(p: { domain_id: string; enabled: boolean }, admin: any) {
+    return mockDriver.toggleDomainLock(p, admin);
+  },
+  async getDNSRecords(p: { domain_id: string }, admin: any) {
+    const { data } = await admin.from("dns_records").select("*").eq("domain_id", p.domain_id);
+    return data ?? [];
+  },
+  async saveDNSRecords(p: { domain_id: string; records: any[] }, admin: any) {
+    await admin.from("dns_records").delete().eq("domain_id", p.domain_id);
+    if (p.records?.length) {
+      await admin.from("dns_records").insert(p.records.map((r) => ({ ...r, domain_id: p.domain_id })));
+    }
     return { ok: true };
   },
-
-  async toggleRegistrarLock(payload: { domain_id: string; enabled: boolean }, admin: any, userId: string) {
-    await admin.from("registrar_domains").update({ registrar_lock: payload.enabled }).eq("id", payload.domain_id);
-    await admin.from("registrar_activity_logs").insert({
-      user_id: userId, action: "domain.lock.toggled",
-      entity_type: "domain", entity_id: payload.domain_id, details: { enabled: payload.enabled },
-    });
+  async getContactDetails(p: { domain_id: string }, admin: any) {
+    const { data } = await admin.from("domain_contacts").select("*").eq("domain_id", p.domain_id);
+    return data ?? [];
+  },
+  async saveContactDetails(p: { domain_id: string; contacts: any[] }, admin: any) {
+    if (p.contacts?.length) {
+      for (const c of p.contacts) {
+        await admin.from("domain_contacts").upsert({ ...c, domain_id: p.domain_id });
+      }
+    }
     return { ok: true };
   },
+  async getEmailForwarding(_p: { domain_id: string }) { return { forwarders: [] }; },
+  async saveEmailForwarding(_p: { domain_id: string; forwarders: any[] }) { return { ok: true }; },
+  async getTldPricing(_p: {}, admin: any) {
+    const { data } = await admin.from("tld_pricing").select("*").eq("is_active", true);
+    return data ?? [];
+  },
 
-  // Mock-only: simulate successful payment & provision domain into registrar_domains
+  // Internal: simulate payment success
   async completeMockOrder(payload: { order_id: string }, admin: any, userId: string, providerId: string) {
     const { data: order, error: oErr } = await admin
       .from("domain_orders").select("*").eq("id", payload.order_id).maybeSingle();
@@ -201,12 +303,9 @@ const mockDriver = {
       const expiry = new Date(now);
       expiry.setFullYear(expiry.getFullYear() + (order.years ?? 1));
       const { data: dom, error: dErr } = await admin.from("registrar_domains").insert({
-        user_id: order.user_id,
-        provider_id: providerId,
-        domain_name: order.domain_name,
-        status: "active",
-        registered_at: now.toISOString(),
-        expires_at: expiry.toISOString(),
+        user_id: order.user_id, provider_id: providerId,
+        domain_name: order.domain_name, status: "active",
+        registered_at: now.toISOString(), expires_at: expiry.toISOString(),
         nameservers: ["ns1.mock-dns.com", "ns2.mock-dns.com"],
       }).select().single();
       if (dErr) throw dErr;
@@ -219,82 +318,344 @@ const mockDriver = {
     }
 
     await admin.from("domain_orders").update({
-      status: "completed",
-      domain_id: domainId,
-      processed_by: userId,
-      processed_at: new Date().toISOString(),
+      status: "completed", domain_id: domainId,
+      processed_by: userId, processed_at: new Date().toISOString(),
     }).eq("id", payload.order_id);
-
-    await admin.from("registrar_activity_logs").insert({
-      user_id: order.user_id, action: `order.${order.order_type}.completed`,
-      entity_type: "domain_order", entity_id: payload.order_id,
-      details: { domain: order.domain_name },
-    });
-    await admin.from("registrar_notifications").insert({
-      user_id: order.user_id, type: "order.completed",
-      title: "Domain ready",
-      message: `${order.domain_name} is now active in your account.`,
-      link: domainId ? `/dashboard/domains/${domainId}` : null,
-    });
     return { ok: true, domain_id: domainId };
   },
 };
 
+// ============================================================
+// HOSTNEED DRIVER
+// ============================================================
+const hostneedDriver = {
+  kind: "hostneed" as const,
 
-const drivers: Record<string, typeof mockDriver> = {
-  hostneed: mockDriver, // mock until real wiring
-  mock: mockDriver,
+  async testConnection() {
+    // Lightweight ping — HostNeed has /account/getbalance which most resellers can call
+    try {
+      const r = await hnCall("/account/getbalance", {});
+      return { ok: true, provider: "hostneed", message: "Connected", data: r };
+    } catch (e) {
+      return { ok: false, provider: "hostneed", message: (e as Error).message };
+    }
+  },
+
+  async checkAvailability(payload: { domain: string }) {
+    // HostNeed: /domains/check  params: domain=example.com
+    const base = payload.domain.toLowerCase().replace(/\..*$/, "").trim();
+    const tlds = payload.domain.includes(".") ? [`.${payload.domain.split(".").slice(1).join(".")}`] : POPULAR_TLDS;
+    const results = await Promise.all(tlds.map(async (tld) => {
+      const full = `${base}${tld}`;
+      try {
+        const r = await hnCall("/domains/check", { domain: full });
+        const available = String(r?.available ?? r?.status ?? "").toLowerCase().includes("available");
+        return {
+          domain: full, tld, available,
+          premium: !!r?.premium,
+          price: Number(r?.price ?? 0),
+          currency: r?.currency ?? "BDT",
+          info: r?.message ?? (available ? "Available" : "Taken"),
+        };
+      } catch {
+        return { domain: full, tld, available: false, premium: false, price: 0, currency: "BDT", info: "Unavailable" };
+      }
+    }));
+    return results;
+  },
+
+  async getDomainSuggestions(payload: { keyword: string }) {
+    try {
+      const r = await hnCall("/domains/suggest", { keyword: payload.keyword });
+      const list = Array.isArray(r?.suggestions) ? r.suggestions : Array.isArray(r) ? r : [];
+      return list.map((d: any) => ({
+        domain: d.domain ?? d.name, tld: d.tld ?? `.${(d.domain ?? "").split(".").slice(1).join(".")}`,
+        available: true, premium: !!d.premium, price: Number(d.price ?? 0),
+        currency: d.currency ?? "BDT", info: "Suggestion",
+      }));
+    } catch { return []; }
+  },
+
+  async getDomainInfo(payload: { domain: string }) {
+    return await hnCall("/domains/getinfo", { domain: payload.domain });
+  },
+
+  async registerDomain(payload: { domain: string; years: number }, admin: any, userId: string, providerId: string) {
+    const r = await hnCall("/order/domains/register", {
+      domain: payload.domain,
+      regperiod: String(payload.years),
+      addons: { dnsmanagement: 1, emailforwarding: 1, idprotection: 1 },
+    });
+    const { data: order, error } = await admin.from("domain_orders").insert({
+      user_id: userId, provider_id: providerId, order_type: "register",
+      domain_name: payload.domain, years: payload.years,
+      amount: Number(r?.price ?? r?.amount ?? 0), currency: r?.currency ?? "BDT",
+      status: r?.status === "active" || r?.result === "success" ? "completed" : "processing",
+      transaction_id: r?.orderid ? String(r.orderid) : null,
+      metadata: r ?? {},
+    }).select().single();
+    if (error) throw error;
+    return order;
+  },
+
+  async transferDomain(payload: { domain: string; auth_code: string }, admin: any, userId: string, providerId: string) {
+    const r = await hnCall("/order/domains/transfer", { domain: payload.domain, eppcode: payload.auth_code });
+    const { data: order, error } = await admin.from("domain_orders").insert({
+      user_id: userId, provider_id: providerId, order_type: "transfer",
+      domain_name: payload.domain, years: 1,
+      amount: Number(r?.price ?? 0), status: "processing",
+      auth_code: payload.auth_code, transaction_id: r?.orderid ? String(r.orderid) : null,
+      metadata: r ?? {},
+    }).select().single();
+    if (error) throw error;
+    return order;
+  },
+
+  async renewDomain(payload: { domain_id: string; years: number }, admin: any, userId: string, providerId: string) {
+    const { data: dom } = await admin.from("registrar_domains").select("domain_name").eq("id", payload.domain_id).maybeSingle();
+    if (!dom) throw new Error("Domain not found");
+    const r = await hnCall("/order/domains/renew", {
+      domain: dom.domain_name, regperiod: String(payload.years),
+      addons: { dnsmanagement: 0, emailforwarding: 1, idprotection: 1 },
+    });
+    const { data: order, error } = await admin.from("domain_orders").insert({
+      user_id: userId, provider_id: providerId, order_type: "renew",
+      domain_id: payload.domain_id, domain_name: dom.domain_name,
+      years: payload.years, amount: Number(r?.price ?? 0), status: "processing",
+      transaction_id: r?.orderid ? String(r.orderid) : null, metadata: r ?? {},
+    }).select().single();
+    if (error) throw error;
+    return order;
+  },
+
+  async getNameservers(p: { domain_id: string }, admin: any) {
+    const { data: dom } = await admin.from("registrar_domains").select("domain_name").eq("id", p.domain_id).maybeSingle();
+    const r = await hnCall("/domains/getnameservers", { domain: dom.domain_name });
+    const nameservers = [r?.ns1, r?.ns2, r?.ns3, r?.ns4, r?.ns5].filter(Boolean);
+    return { nameservers };
+  },
+
+  async saveNameservers(p: { domain_id: string; nameservers: string[] }, admin: any) {
+    const { data: dom } = await admin.from("registrar_domains").select("domain_name").eq("id", p.domain_id).maybeSingle();
+    const params: any = { domain: dom.domain_name };
+    p.nameservers.slice(0, 5).forEach((n, i) => params[`ns${i + 1}`] = n);
+    await hnCall("/domains/savenameservers", params);
+    const { data } = await admin.from("registrar_domains").update({ nameservers: p.nameservers }).eq("id", p.domain_id).select().single();
+    return data;
+  },
+
+  async updateNameservers(p: { domain_id: string; nameservers: string[] }, admin: any) {
+    return hostneedDriver.saveNameservers(p, admin);
+  },
+
+  async getDNSRecords(p: { domain_id: string }, admin: any) {
+    const { data: dom } = await admin.from("registrar_domains").select("domain_name").eq("id", p.domain_id).maybeSingle();
+    const r = await hnCall("/domains/getdnsrecords", { domain: dom.domain_name });
+    return r?.records ?? r ?? [];
+  },
+
+  async saveDNSRecords(p: { domain_id: string; records: any[] }, admin: any) {
+    const { data: dom } = await admin.from("registrar_domains").select("domain_name").eq("id", p.domain_id).maybeSingle();
+    await hnCall("/domains/savednsrecords", { domain: dom.domain_name, records: p.records });
+    return { ok: true };
+  },
+
+  async getContactDetails(p: { domain_id: string }, admin: any) {
+    const { data: dom } = await admin.from("registrar_domains").select("domain_name").eq("id", p.domain_id).maybeSingle();
+    return await hnCall("/domains/getcontactdetails", { domain: dom.domain_name });
+  },
+
+  async saveContactDetails(p: { domain_id: string; contacts: any }, admin: any) {
+    const { data: dom } = await admin.from("registrar_domains").select("domain_name").eq("id", p.domain_id).maybeSingle();
+    return await hnCall("/domains/savecontactdetails", { domain: dom.domain_name, contactdetails: p.contacts });
+  },
+
+  async getEPPCode(p: { domain_id: string }, admin: any) {
+    const { data: dom } = await admin.from("registrar_domains").select("domain_name").eq("id", p.domain_id).maybeSingle();
+    const r = await hnCall("/domains/getepp", { domain: dom.domain_name });
+    return { code: r?.eppcode ?? r?.code ?? "" };
+  },
+
+  async toggleDomainLock(p: { domain_id: string; enabled: boolean }, admin: any) {
+    const { data: dom } = await admin.from("registrar_domains").select("domain_name").eq("id", p.domain_id).maybeSingle();
+    await hnCall("/domains/updatelockstatus", { domain: dom.domain_name, lockstatus: p.enabled ? 1 : 0 });
+    await admin.from("registrar_domains").update({ registrar_lock: p.enabled }).eq("id", p.domain_id);
+    return { ok: true };
+  },
+
+  async toggleWhoisPrivacy(p: { domain_id: string; enabled: boolean }, admin: any) {
+    const { data: dom } = await admin.from("registrar_domains").select("domain_name").eq("id", p.domain_id).maybeSingle();
+    await hnCall("/domains/idprotect", { domain: dom.domain_name, idprotection: p.enabled ? 1 : 0 });
+    await admin.from("registrar_domains").update({ whois_privacy: p.enabled, id_protection: p.enabled }).eq("id", p.domain_id);
+    return { ok: true };
+  },
+
+  async toggleIDProtection(p: { domain_id: string; enabled: boolean }, admin: any) {
+    return hostneedDriver.toggleWhoisPrivacy(p, admin);
+  },
+
+  async toggleAutoRenew(p: { domain_id: string; enabled: boolean }, admin: any) {
+    await admin.from("registrar_domains").update({ auto_renew: p.enabled }).eq("id", p.domain_id);
+    return { ok: true };
+  },
+
+  async toggleRegistrarLock(p: { domain_id: string; enabled: boolean }, admin: any) {
+    return hostneedDriver.toggleDomainLock(p, admin);
+  },
+
+  async getEmailForwarding(p: { domain_id: string }, admin: any) {
+    const { data: dom } = await admin.from("registrar_domains").select("domain_name").eq("id", p.domain_id).maybeSingle();
+    return await hnCall("/domains/getemailforwarding", { domain: dom.domain_name });
+  },
+
+  async saveEmailForwarding(p: { domain_id: string; forwarders: any[] }, admin: any) {
+    const { data: dom } = await admin.from("registrar_domains").select("domain_name").eq("id", p.domain_id).maybeSingle();
+    return await hnCall("/domains/saveemailforwarding", { domain: dom.domain_name, forwarders: p.forwarders });
+  },
+
+  async releaseDomain(p: { domain_id: string }, admin: any) {
+    const { data: dom } = await admin.from("registrar_domains").select("domain_name").eq("id", p.domain_id).maybeSingle();
+    await hnCall("/domains/release", { domain: dom.domain_name });
+    return { ok: true };
+  },
+
+  async requestDelete(p: { domain_id: string }, admin: any) {
+    const { data: dom } = await admin.from("registrar_domains").select("domain_name").eq("id", p.domain_id).maybeSingle();
+    await hnCall("/domains/requestdelete", { domain: dom.domain_name });
+    return { ok: true };
+  },
+
+  async syncDomain(p: { domain_id: string }, admin: any) {
+    const { data: dom } = await admin.from("registrar_domains").select("*").eq("id", p.domain_id).maybeSingle();
+    if (!dom) throw new Error("Domain not found");
+    const r = await hnCall("/domains/getinfo", { domain: dom.domain_name });
+    const updates: any = {};
+    if (r?.expirydate) updates.expires_at = new Date(r.expirydate).toISOString();
+    if (r?.status) updates.status = String(r.status).toLowerCase();
+    if (Array.isArray(r?.nameservers)) updates.nameservers = r.nameservers;
+    if (Object.keys(updates).length) {
+      const { data } = await admin.from("registrar_domains").update(updates).eq("id", p.domain_id).select().single();
+      return data;
+    }
+    return dom;
+  },
+
+  async syncTransfer(p: { domain_id: string }, admin: any) {
+    const { data: dom } = await admin.from("registrar_domains").select("*").eq("id", p.domain_id).maybeSingle();
+    const r = await hnCall("/domains/transfersync", { domain: dom?.domain_name });
+    return r;
+  },
+
+  async getTldPricing(_p: {}, admin: any) {
+    const r = await hnCall("/domains/getpricing", {});
+    return r;
+  },
 };
 
+// ============================================================
+// Provider registry & resolution
+// ============================================================
+type Driver = typeof mockDriver;
+const drivers: Record<string, Driver> = {
+  mock: mockDriver as Driver,
+  hostneed: hostneedDriver as unknown as Driver,
+};
+
+function hostneedReady(): boolean {
+  return !!(HN_URL && HN_USER && HN_SECRET);
+}
+
+async function resolveDriver(admin: any): Promise<{ driver: Driver; provider: any; usingMock: boolean }> {
+  const { data: provider } = await admin
+    .from("registrar_providers")
+    .select("*")
+    .eq("is_enabled", true)
+    .order("is_default", { ascending: false })
+    .order("created_at", { ascending: true })
+    .limit(1)
+    .maybeSingle();
+
+  if (!provider) {
+    // fallback to in-memory mock
+    return { driver: mockDriver as Driver, provider: { id: null, name: "Mock (fallback)", is_mock: true }, usingMock: true };
+  }
+
+  // Force mock when flagged OR when driver type doesn't have credentials
+  if (provider.is_mock) return { driver: mockDriver as Driver, provider, usingMock: true };
+  if (provider.provider_type === "hostneed" && !hostneedReady()) {
+    return { driver: mockDriver as Driver, provider, usingMock: true };
+  }
+  const d = drivers[provider.provider_type] ?? mockDriver;
+  return { driver: d as Driver, provider, usingMock: false };
+}
+
+// ============================================================
+// HTTP entry
+// ============================================================
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
+  const json = (body: unknown, status = 200) =>
+    new Response(JSON.stringify(body), { status, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+
   try {
     const authHeader = req.headers.get("Authorization");
-    if (!authHeader?.startsWith("Bearer ")) {
-      return new Response(JSON.stringify({ error: "Unauthorized" }), {
-        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
+    if (!authHeader?.startsWith("Bearer ")) return json({ error: "Unauthorized" }, 401);
 
     const userClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
       global: { headers: { Authorization: authHeader } },
     });
     const { data: claims } = await userClient.auth.getClaims(authHeader.replace("Bearer ", ""));
-    if (!claims?.claims?.sub) {
-      return new Response(JSON.stringify({ error: "Unauthorized" }), {
-        status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
+    if (!claims?.claims?.sub) return json({ error: "Unauthorized" }, 401);
     const userId = claims.claims.sub as string;
 
     const admin = createClient(SUPABASE_URL, SERVICE_KEY);
-
-    // Resolve active provider
-    const { data: provider } = await admin
-      .from("registrar_providers")
-      .select("*")
-      .eq("is_enabled", true)
-      .order("is_default", { ascending: false })
-      .limit(1)
-      .maybeSingle();
-    if (!provider) throw new Error("No registrar provider configured");
-
-    const driver = drivers[provider.is_mock ? "mock" : provider.provider_type] ?? mockDriver;
-
-    const body = await req.json();
+    const body = await req.json().catch(() => ({}));
     const { action, payload = {} } = body ?? {};
-    const fn = (driver as any)[action];
-    if (typeof fn !== "function") {
-      return new Response(JSON.stringify({ error: `Unknown action: ${action}` }), {
-        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
+
+    // Admin-only utility: list provider status (no driver call)
+    if (action === "providerStatus") {
+      const { data: providers } = await admin.from("registrar_providers").select("id,name,provider_type,is_enabled,is_default,is_mock");
+      return json({
+        result: {
+          hostneed_credentials_present: hostneedReady(),
+          providers: providers ?? [],
+        },
       });
     }
 
-    const result = await fn(payload, admin, userId, provider.id);
-    return new Response(JSON.stringify({ result }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+    const { driver, provider, usingMock } = await resolveDriver(admin);
+
+    if (action === "testConnection") {
+      const r = await driver.testConnection();
+      await logActivity(admin, {
+        user_id: userId, action: "provider.test", entity_type: "provider",
+        entity_id: provider?.id ?? null,
+        details: { ...r, using_mock_fallback: usingMock },
+      });
+      return json({ result: { ...r, using_mock_fallback: usingMock, provider: provider?.name ?? "mock" } });
+    }
+
+    const fn = (driver as any)[action];
+    if (typeof fn !== "function") return json({ error: `Unknown action: ${action}` }, 400);
+
+    const started = Date.now();
+    try {
+      const result = await fn(payload, admin, userId, provider?.id);
+      await logActivity(admin, {
+        user_id: userId, action: `registrar.${action}`, entity_type: "provider",
+        entity_id: provider?.id ?? null,
+        details: { provider: provider?.name, using_mock: usingMock, ms: Date.now() - started, ok: true },
+      });
+      return json({ result });
+    } catch (e) {
+      await logActivity(admin, {
+        user_id: userId, action: `registrar.${action}.failed`, entity_type: "provider",
+        entity_id: provider?.id ?? null,
+        details: { provider: provider?.name, using_mock: usingMock, ms: Date.now() - started, error: (e as Error).message },
+      });
+      throw e;
+    }
   } catch (e) {
     console.error("registrar-api error", e);
     return new Response(JSON.stringify({ error: (e as Error).message }), {

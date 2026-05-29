@@ -260,6 +260,152 @@ export type Database = {
         }
         Relationships: []
       }
+      domain_contacts: {
+        Row: {
+          address_line1: string | null
+          address_line2: string | null
+          city: string | null
+          contact_type: string
+          country: string | null
+          created_at: string
+          domain_id: string
+          email: string | null
+          first_name: string | null
+          id: string
+          last_name: string | null
+          organization: string | null
+          phone: string | null
+          postal_code: string | null
+          state: string | null
+          updated_at: string
+        }
+        Insert: {
+          address_line1?: string | null
+          address_line2?: string | null
+          city?: string | null
+          contact_type: string
+          country?: string | null
+          created_at?: string
+          domain_id: string
+          email?: string | null
+          first_name?: string | null
+          id?: string
+          last_name?: string | null
+          organization?: string | null
+          phone?: string | null
+          postal_code?: string | null
+          state?: string | null
+          updated_at?: string
+        }
+        Update: {
+          address_line1?: string | null
+          address_line2?: string | null
+          city?: string | null
+          contact_type?: string
+          country?: string | null
+          created_at?: string
+          domain_id?: string
+          email?: string | null
+          first_name?: string | null
+          id?: string
+          last_name?: string | null
+          organization?: string | null
+          phone?: string | null
+          postal_code?: string | null
+          state?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "domain_contacts_domain_id_fkey"
+            columns: ["domain_id"]
+            isOneToOne: false
+            referencedRelation: "registrar_domains"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      domain_orders: {
+        Row: {
+          amount: number
+          auth_code: string | null
+          created_at: string
+          currency: string
+          domain_id: string | null
+          domain_name: string
+          id: string
+          metadata: Json
+          notes: string | null
+          order_type: string
+          payment_method: string | null
+          processed_at: string | null
+          processed_by: string | null
+          provider_id: string | null
+          status: string
+          transaction_id: string | null
+          updated_at: string
+          user_id: string
+          years: number
+        }
+        Insert: {
+          amount?: number
+          auth_code?: string | null
+          created_at?: string
+          currency?: string
+          domain_id?: string | null
+          domain_name: string
+          id?: string
+          metadata?: Json
+          notes?: string | null
+          order_type: string
+          payment_method?: string | null
+          processed_at?: string | null
+          processed_by?: string | null
+          provider_id?: string | null
+          status?: string
+          transaction_id?: string | null
+          updated_at?: string
+          user_id: string
+          years?: number
+        }
+        Update: {
+          amount?: number
+          auth_code?: string | null
+          created_at?: string
+          currency?: string
+          domain_id?: string | null
+          domain_name?: string
+          id?: string
+          metadata?: Json
+          notes?: string | null
+          order_type?: string
+          payment_method?: string | null
+          processed_at?: string | null
+          processed_by?: string | null
+          provider_id?: string | null
+          status?: string
+          transaction_id?: string | null
+          updated_at?: string
+          user_id?: string
+          years?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "domain_orders_domain_id_fkey"
+            columns: ["domain_id"]
+            isOneToOne: false
+            referencedRelation: "registrar_domains"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "domain_orders_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "registrar_providers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       domains: {
         Row: {
           created_at: string
@@ -725,6 +871,212 @@ export type Database = {
         }
         Relationships: []
       }
+      registrar_activity_logs: {
+        Row: {
+          action: string
+          created_at: string
+          details: Json
+          domain_id: string | null
+          entity_id: string | null
+          entity_type: string | null
+          id: string
+          ip_address: string | null
+          user_id: string | null
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          details?: Json
+          domain_id?: string | null
+          entity_id?: string | null
+          entity_type?: string | null
+          id?: string
+          ip_address?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          details?: Json
+          domain_id?: string | null
+          entity_id?: string | null
+          entity_type?: string | null
+          id?: string
+          ip_address?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      registrar_domains: {
+        Row: {
+          auto_renew: boolean
+          created_at: string
+          domain_name: string
+          epp_code: string | null
+          expires_at: string | null
+          id: string
+          id_protection: boolean
+          metadata: Json
+          nameservers: Json
+          provider_id: string | null
+          registered_at: string | null
+          registrar_lock: boolean
+          status: string
+          updated_at: string
+          user_id: string
+          whois_privacy: boolean
+        }
+        Insert: {
+          auto_renew?: boolean
+          created_at?: string
+          domain_name: string
+          epp_code?: string | null
+          expires_at?: string | null
+          id?: string
+          id_protection?: boolean
+          metadata?: Json
+          nameservers?: Json
+          provider_id?: string | null
+          registered_at?: string | null
+          registrar_lock?: boolean
+          status?: string
+          updated_at?: string
+          user_id: string
+          whois_privacy?: boolean
+        }
+        Update: {
+          auto_renew?: boolean
+          created_at?: string
+          domain_name?: string
+          epp_code?: string | null
+          expires_at?: string | null
+          id?: string
+          id_protection?: boolean
+          metadata?: Json
+          nameservers?: Json
+          provider_id?: string | null
+          registered_at?: string | null
+          registrar_lock?: boolean
+          status?: string
+          updated_at?: string
+          user_id?: string
+          whois_privacy?: boolean
+        }
+        Relationships: [
+          {
+            foreignKeyName: "registrar_domains_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "registrar_providers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      registrar_notifications: {
+        Row: {
+          created_at: string
+          id: string
+          is_read: boolean
+          link: string | null
+          message: string
+          metadata: Json
+          title: string
+          type: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          link?: string | null
+          message: string
+          metadata?: Json
+          title: string
+          type: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_read?: boolean
+          link?: string | null
+          message?: string
+          metadata?: Json
+          title?: string
+          type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      registrar_providers: {
+        Row: {
+          api_endpoint: string | null
+          created_at: string
+          credentials: Json
+          id: string
+          is_default: boolean
+          is_enabled: boolean
+          is_mock: boolean
+          name: string
+          notes: string | null
+          provider_type: string
+          updated_at: string
+        }
+        Insert: {
+          api_endpoint?: string | null
+          created_at?: string
+          credentials?: Json
+          id?: string
+          is_default?: boolean
+          is_enabled?: boolean
+          is_mock?: boolean
+          name: string
+          notes?: string | null
+          provider_type: string
+          updated_at?: string
+        }
+        Update: {
+          api_endpoint?: string | null
+          created_at?: string
+          credentials?: Json
+          id?: string
+          is_default?: boolean
+          is_enabled?: boolean
+          is_mock?: boolean
+          name?: string
+          notes?: string | null
+          provider_type?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      registrar_settings: {
+        Row: {
+          description: string | null
+          id: string
+          is_public: boolean
+          key: string
+          updated_at: string
+          value: Json
+        }
+        Insert: {
+          description?: string | null
+          id?: string
+          is_public?: boolean
+          key: string
+          updated_at?: string
+          value?: Json
+        }
+        Update: {
+          description?: string | null
+          id?: string
+          is_public?: boolean
+          key?: string
+          updated_at?: string
+          value?: Json
+        }
+        Relationships: []
+      }
       services: {
         Row: {
           created_at: string
@@ -883,6 +1235,56 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      tld_pricing: {
+        Row: {
+          created_at: string
+          currency: string
+          display_order: number
+          id: string
+          is_active: boolean
+          provider_id: string | null
+          register_price: number
+          renew_price: number
+          tld: string
+          transfer_price: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          currency?: string
+          display_order?: number
+          id?: string
+          is_active?: boolean
+          provider_id?: string | null
+          register_price?: number
+          renew_price?: number
+          tld: string
+          transfer_price?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          currency?: string
+          display_order?: number
+          id?: string
+          is_active?: boolean
+          provider_id?: string | null
+          register_price?: number
+          renew_price?: number
+          tld?: string
+          transfer_price?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tld_pricing_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "registrar_providers"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_integrations: {
         Row: {

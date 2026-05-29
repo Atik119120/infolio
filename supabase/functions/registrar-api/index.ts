@@ -494,54 +494,35 @@ const hostneedDriver = {
       return { ok: false, provider: "hostneed", kind: "Missing credentials", message: `Missing secrets: ${missing}`, diag };
     }
 
-    // Probe a list of candidate DomainsReseller actions. The first one that
-    // returns a non-404 (real API response — even if it's a domain-specific
-    // error) means the auth + endpoint are working.
-    const candidates: Array<{ action: string; params: Record<string, any> }> = [
-      { action: "/domains/check", params: { domain: "hostneed-connection-test.com" } },
-      { action: "/account/balance", params: {} },
-      { action: "/account/getbalance", params: {} },
-      { action: "/domains/getpricing", params: {} },
-      { action: "/domain/availability/check", params: { domain: "hostneed-connection-test.com" } },
-    ];
-
-    const attempts: Array<{ action: string; ok: boolean; http_status: number; message: string; endpoint: string }> = [];
-    let firstSuccess: { action: string; data: any; endpoint: string } | null = null;
-
-    for (const c of candidates) {
-      const url = `${HN_URL}${c.action}`;
-      try {
-        const r = await hnCall(c.action, c.params);
-        attempts.push({ action: c.action, ok: true, http_status: 200, message: "OK", endpoint: url });
-        firstSuccess = { action: c.action, data: r, endpoint: url };
-        break;
-      } catch (e) {
-        const he = e as HostneedError;
-        attempts.push({
-          action: c.action,
-          ok: false,
-          http_status: he.status ?? 0,
-          message: he.message,
-          endpoint: he.endpoint ?? url,
-        });
-        if (he.kind === "Authentication failure") break;
-      }
-    }
-
-    if (firstSuccess) {
+    const route = buildHostneedRoute("connectionTest");
+    const attempts: Array<{ action: string; generated_path: string; ok: boolean; http_status: number; message: string; endpoint: string }> = [];
+    try {
+      const r = await hnCall("connectionTest");
+      attempts.push({ action: "connectionTest", generated_path: route.generatedPath, ok: true, http_status: 200, message: "OK", endpoint: route.fullUrl });
       return {
         ok: true,
         provider: "hostneed",
-        message: `Connected via ${firstSuccess.action}`,
-        endpoint: firstSuccess.endpoint,
-        working_action: firstSuccess.action,
-        data: firstSuccess.data,
+        message: `Connected via ${route.generatedPath}`,
+        endpoint: route.fullUrl,
+        action_name: "connectionTest",
+        generated_path: route.generatedPath,
+        data: r,
         attempts,
         diag,
       };
+    } catch (e) {
+      const he = e as HostneedError;
+      attempts.push({
+        action: "connectionTest",
+        generated_path: route.generatedPath,
+        ok: false,
+        http_status: he.status ?? 0,
+        message: he.message,
+        endpoint: he.endpoint ?? route.fullUrl,
+      });
     }
 
-    const last = attempts[attempts.length - 1];
+    const last = attempts[0];
     return {
       ok: false,
       provider: "hostneed",
@@ -558,43 +539,41 @@ const hostneedDriver = {
 
 
   async checkAvailability(payload: { domain: string }) {
-    // HostNeed: /domains/check  params: domain=example.com
-
     const base = payload.domain.toLowerCase().replace(/\..*$/, "").trim();
     const tlds = payload.domain.includes(".") ? [`.${payload.domain.split(".").slice(1).join(".")}`] : POPULAR_TLDS;
-    const results = await Promise.all(tlds.map(async (tld) => {
-      const full = `${base}${tld}`;
-      try {
-        const r = await hnCall("/domains/check", { domain: full });
-        const available = String(r?.available ?? r?.status ?? "").toLowerCase().includes("available");
-        return {
-          domain: full, tld, available,
-          premium: !!r?.premium,
-          price: Number(r?.price ?? 0),
-          currency: r?.currency ?? "BDT",
-          info: r?.message ?? (available ? "Available" : "Taken"),
-        };
-      } catch {
-        return { domain: full, tld, available: false, premium: false, price: 0, currency: "BDT", info: "Unavailable" };
-      }
-    }));
-    return results;
+    const r = await hnCall("checkAvailability", {
+      searchTerm: base,
+      punyCodeSearchTerm: base,
+      tldsToInclude: tlds.map((tld) => tld.replace(/^\./, "")),
+      isIdnDomain: false,
+      premiumEnabled: true,
+    });
+    const list = Array.isArray(r?.results) ? r.results : Array.isArray(r?.domains) ? r.domains : Array.isArray(r) ? r : [];
+    if (!list.length) {
+      return tlds.map((tld) => ({ domain: `${base}${tld}`, tld, available: false, premium: false, price: 0, currency: "BDT", info: r?.message ?? "No lookup result" }));
+    }
+    return list.map((d: any) => {
+      const domain = d.domain ?? d.name ?? `${base}.${String(d.tld ?? "").replace(/^\./, "")}`;
+      return {
+        domain,
+        tld: d.tld ? `.${String(d.tld).replace(/^\./, "")}` : `.${String(domain).split(".").slice(1).join(".")}`,
+        available: String(d.status ?? d.availability ?? d.available ?? "").toLowerCase().includes("available") || d.available === true,
+        premium: !!d.premium,
+        price: Number(d.price ?? d.register ?? 0),
+        currency: d.currency ?? "BDT",
+        info: d.message ?? d.status ?? "Lookup result",
+      };
+    });
   },
 
   async getDomainSuggestions(payload: { keyword: string }) {
     try {
-      const r = await hnCall("/domains/suggest", { keyword: payload.keyword });
-      const list = Array.isArray(r?.suggestions) ? r.suggestions : Array.isArray(r) ? r : [];
-      return list.map((d: any) => ({
-        domain: d.domain ?? d.name, tld: d.tld ?? `.${(d.domain ?? "").split(".").slice(1).join(".")}`,
-        available: true, premium: !!d.premium, price: Number(d.price ?? 0),
-        currency: d.currency ?? "BDT", info: "Suggestion",
-      }));
+      return await hostneedDriver.checkAvailability({ domain: payload.keyword });
     } catch { return []; }
   },
 
   async getDomainInfo(payload: { domain: string }) {
-    return await hnCall("/domains/getinfo", { domain: payload.domain });
+    return await hnCall("syncDomain", {}, { domain: payload.domain });
   },
 
   async registerDomain(payload: { domain: string; years: number }, admin: any, userId: string, providerId: string) {

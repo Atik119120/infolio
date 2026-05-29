@@ -87,8 +87,8 @@ export interface AvailabilityResult {
   price?: number;
   currency?: string;
   info?: string;
-  info?: string;
 }
+
 
 export type DnsRecordType = "A" | "AAAA" | "CNAME" | "MX" | "TXT" | "NS" | "SRV" | "CAA";
 

@@ -405,6 +405,14 @@ const mockDriver = {
     }).eq("id", payload.order_id);
     return { ok: true, domain_id: domainId };
   },
+};
+
+// ============================================================
+// HOSTNEED DRIVER
+// ============================================================
+const hostneedDriver = {
+  kind: "hostneed" as const,
+
   async testConnection() {
     const diag = {
       env: {
@@ -456,7 +464,6 @@ const mockDriver = {
           message: he.message,
           endpoint: he.endpoint ?? url,
         });
-        // If it's an auth failure, no point trying more actions
         if (he.kind === "Authentication failure") break;
       }
     }
@@ -489,12 +496,6 @@ const mockDriver = {
     };
   },
 
-        response_body: (he.body ?? "").slice(0, 1000),
-        endpoint: he.endpoint ?? diag.endpoint,
-        diag,
-      };
-    }
-  },
 
   async checkAvailability(payload: { domain: string }) {
     // HostNeed: /domains/check  params: domain=example.com

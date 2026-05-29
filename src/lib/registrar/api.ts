@@ -94,8 +94,11 @@ export async function listMyOrders(userId: string): Promise<DomainOrder[]> {
     .from("domain_orders")
     .select("*")
     .eq("user_id", userId)
+    .order("created_at", { ascending: false });
+  if (error) throw error;
   return (data as DomainOrder[]) ?? [];
 }
+
 
 // ---------- DNS records ----------
 export async function listDnsRecords(domainId: string): Promise<DnsRecord[]> {
@@ -136,6 +139,3 @@ export const toggleRegistrarLock = (params: { domain_id: string; enabled: boolea
 
 export const completeMockOrder = (params: { order_id: string }) =>
   call<{ ok: boolean; domain_id?: string }>("completeMockOrder", params);
-
-  return (data as DomainOrder[]) ?? [];
-}

@@ -46,6 +46,13 @@ const Features = lazy(() => import("./pages/Features"));
 const Pricing = lazy(() => import("./pages/Pricing"));
 const Faq = lazy(() => import("./pages/Faq"));
 const BuyDomain = lazy(() => import("./pages/BuyDomain"));
+const DashboardMyDomains = lazy(() => import("./pages/DashboardMyDomains"));
+const AdminRegistrarDomains = lazy(() => import("./pages/admin/AdminRegistrarDomains"));
+const AdminRegistrarPricing = lazy(() => import("./pages/admin/AdminRegistrarPricing"));
+const AdminRegistrarProviders = lazy(() => import("./pages/admin/AdminRegistrarProviders"));
+const AdminRegistrarLogs = lazy(() => import("./pages/admin/AdminRegistrarLogs"));
+const Faq = lazy(() => import("./pages/Faq"));
+const BuyDomain = lazy(() => import("./pages/BuyDomain"));
 
 const queryClient = new QueryClient();
 

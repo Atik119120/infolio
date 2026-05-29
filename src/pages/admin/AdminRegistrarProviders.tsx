@@ -142,6 +142,105 @@ export default function AdminRegistrarProviders() {
           ))}
         </div>
       )}
+
+      {/* ---------- Debug Panel ---------- */}
+      <Card className="p-5 bg-slate-900/50 border-slate-800">
+        <div className="flex items-center justify-between mb-4 gap-2 flex-wrap">
+          <div className="flex items-center gap-2">
+            <Bug className="w-4 h-4 text-orange-400" />
+            <h2 className="text-lg font-medium text-white">HostNeed Debug Panel</h2>
+          </div>
+          <Button size="sm" variant="outline" className="border-slate-700 text-slate-300"
+            onClick={async () => { const s = await getProviderStatus(); setStatus(s); toast.success("Refreshed"); }}>
+            <RefreshCw className="w-3 h-3 mr-1" /> Refresh
+          </Button>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4 text-xs">
+          <div className="p-3 rounded bg-slate-950/60 border border-slate-800">
+            <div className="text-slate-500 mb-1">Base Endpoint</div>
+            <div className="text-slate-200 font-mono break-all">{status?.hostneed_endpoint ?? "—"}</div>
+          </div>
+          <div className="p-3 rounded bg-slate-950/60 border border-slate-800">
+            <div className="text-slate-500 mb-1">Active Provider</div>
+            <div className="text-slate-200">
+              {status?.active_provider?.name ?? "—"}{" "}
+              <Badge variant="outline" className="ml-1 border-slate-700 text-slate-400 capitalize">
+                {status?.active_provider?.provider_type ?? "n/a"}
+              </Badge>
+            </div>
+          </div>
+          <div className="p-3 rounded bg-slate-950/60 border border-slate-800">
+            <div className="text-slate-500 mb-1">Mock Status</div>
+            <div className="text-slate-200">{status?.using_mock ? "Mock driver (fallback)" : "Live driver"}</div>
+          </div>
+          <div className="p-3 rounded bg-slate-950/60 border border-slate-800">
+            <div className="text-slate-500 mb-1">Username</div>
+            <div className="text-slate-200 font-mono">{status?.hostneed_username_preview ?? "—"}</div>
+          </div>
+        </div>
+
+        {lastTest && (
+          <div className="mb-4">
+            <div className="text-xs text-slate-400 mb-1">Last Test Connection Attempts</div>
+            <div className="rounded bg-slate-950/80 border border-slate-800 divide-y divide-slate-800 text-xs">
+              {(lastTest.attempts ?? []).map((a: any, i: number) => (
+                <div key={i} className="px-3 py-2 flex items-start gap-2">
+                  <Badge className={a.ok ? "bg-green-500/20 text-green-300 border-green-500/30" : "bg-red-500/20 text-red-300 border-red-500/30"}>
+                    {a.http_status || "ERR"}
+                  </Badge>
+                  <div className="min-w-0 flex-1">
+                    <div className="font-mono text-slate-200">{a.action}</div>
+                    <div className="text-slate-500 break-all">{a.endpoint}</div>
+                    <div className="text-slate-400 mt-0.5 break-all">{a.message}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        <div>
+          <div className="text-xs text-slate-400 mb-1">Last API Request / Response</div>
+          {status?.last_request ? (
+            <div className="rounded bg-slate-950/80 border border-slate-800 p-3 text-xs space-y-2">
+              <div className="flex items-center gap-2 flex-wrap">
+                <Badge className={status.last_request.ok ? "bg-green-500/20 text-green-300 border-green-500/30" : "bg-red-500/20 text-red-300 border-red-500/30"}>
+                  {status.last_request.http_status || "ERR"}
+                </Badge>
+                <span className="font-mono text-slate-200">{status.last_request.action}</span>
+                <span className="text-slate-500">{status.last_request.duration_ms} ms</span>
+                <span className="text-slate-600">{status.last_request.at}</span>
+              </div>
+              <div>
+                <div className="text-slate-500">URL</div>
+                <div className="font-mono text-slate-300 break-all">{status.last_request.url}</div>
+              </div>
+              <div>
+                <div className="text-slate-500">Request Body</div>
+                <pre className="font-mono text-slate-300 break-all whitespace-pre-wrap">{status.last_request.request_body || "(empty)"}</pre>
+              </div>
+              <div>
+                <div className="text-slate-500">Headers (token redacted)</div>
+                <pre className="font-mono text-slate-300 break-all whitespace-pre-wrap">{JSON.stringify(status.last_request.request_headers_safe, null, 2)}</pre>
+              </div>
+              <div>
+                <div className="text-slate-500">Response Body</div>
+                <pre className="font-mono text-slate-300 break-all whitespace-pre-wrap max-h-64 overflow-auto">{status.last_request.response_body || "(empty)"}</pre>
+              </div>
+              {status.last_request.error_kind && (
+                <div className="text-red-300">
+                  <span className="text-slate-500">Error: </span>
+                  {status.last_request.error_kind} — {status.last_request.error_message}
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="text-xs text-slate-500 italic">No requests captured yet. Click "Test Active Provider" to capture diagnostics.</div>
+          )}
+        </div>
+      </Card>
     </div>
   );
 }
+

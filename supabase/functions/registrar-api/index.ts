@@ -701,30 +701,36 @@ const hostneedDriver = {
 
   async getEmailForwarding(p: { domain_id: string }, admin: any) {
     const { data: dom } = await admin.from("registrar_domains").select("domain_name").eq("id", p.domain_id).maybeSingle();
-    return await hnCall("/domains/getemailforwarding", { domain: dom.domain_name });
+    return await hnCall("getEmailForwarding", {}, { domain: dom.domain_name });
   },
 
   async saveEmailForwarding(p: { domain_id: string; forwarders: any[] }, admin: any) {
     const { data: dom } = await admin.from("registrar_domains").select("domain_name").eq("id", p.domain_id).maybeSingle();
-    return await hnCall("/domains/saveemailforwarding", { domain: dom.domain_name, forwarders: p.forwarders });
+    const params = Array.isArray(p.forwarders)
+      ? {
+        prefix: p.forwarders.map((f: any) => f.prefix ?? f.source ?? ""),
+        forwardto: p.forwarders.map((f: any) => f.forwardto ?? f.destination ?? ""),
+      }
+      : {};
+    return await hnCall("saveEmailForwarding", params, { domain: dom.domain_name });
   },
 
   async releaseDomain(p: { domain_id: string }, admin: any) {
     const { data: dom } = await admin.from("registrar_domains").select("domain_name").eq("id", p.domain_id).maybeSingle();
-    await hnCall("/domains/release", { domain: dom.domain_name });
+    await hnCall("releaseDomain", {}, { domain: dom.domain_name });
     return { ok: true };
   },
 
   async requestDelete(p: { domain_id: string }, admin: any) {
     const { data: dom } = await admin.from("registrar_domains").select("domain_name").eq("id", p.domain_id).maybeSingle();
-    await hnCall("/domains/requestdelete", { domain: dom.domain_name });
+    await hnCall("requestDelete", {}, { domain: dom.domain_name });
     return { ok: true };
   },
 
   async syncDomain(p: { domain_id: string }, admin: any) {
     const { data: dom } = await admin.from("registrar_domains").select("*").eq("id", p.domain_id).maybeSingle();
     if (!dom) throw new Error("Domain not found");
-    const r = await hnCall("/domains/getinfo", { domain: dom.domain_name });
+    const r = await hnCall("syncDomain", {}, { domain: dom.domain_name });
     const updates: any = {};
     if (r?.expirydate) updates.expires_at = new Date(r.expirydate).toISOString();
     if (r?.status) updates.status = String(r.status).toLowerCase();
@@ -738,12 +744,12 @@ const hostneedDriver = {
 
   async syncTransfer(p: { domain_id: string }, admin: any) {
     const { data: dom } = await admin.from("registrar_domains").select("*").eq("id", p.domain_id).maybeSingle();
-    const r = await hnCall("/domains/transfersync", { domain: dom?.domain_name });
+    const r = await hnCall("syncTransfer", {}, { domain: dom?.domain_name });
     return r;
   },
 
   async getTldPricing(_p: {}, admin: any) {
-    const r = await hnCall("/domains/getpricing", {});
+    const r = await hnCall("getPricingRegister", {});
     return r;
   },
 };

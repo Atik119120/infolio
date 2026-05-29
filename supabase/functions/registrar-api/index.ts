@@ -577,7 +577,7 @@ const hostneedDriver = {
   },
 
   async registerDomain(payload: { domain: string; years: number }, admin: any, userId: string, providerId: string) {
-    const r = await hnCall("/order/domains/register", {
+    const r = await hnCall("registerDomain", {
       domain: payload.domain,
       regperiod: String(payload.years),
       addons: { dnsmanagement: 1, emailforwarding: 1, idprotection: 1 },
@@ -595,7 +595,7 @@ const hostneedDriver = {
   },
 
   async transferDomain(payload: { domain: string; auth_code: string }, admin: any, userId: string, providerId: string) {
-    const r = await hnCall("/order/domains/transfer", { domain: payload.domain, eppcode: payload.auth_code });
+    const r = await hnCall("transferDomain", { domain: payload.domain, eppcode: payload.auth_code, regperiod: "1" });
     const { data: order, error } = await admin.from("domain_orders").insert({
       user_id: userId, provider_id: providerId, order_type: "transfer",
       domain_name: payload.domain, years: 1,
@@ -610,7 +610,7 @@ const hostneedDriver = {
   async renewDomain(payload: { domain_id: string; years: number }, admin: any, userId: string, providerId: string) {
     const { data: dom } = await admin.from("registrar_domains").select("domain_name").eq("id", payload.domain_id).maybeSingle();
     if (!dom) throw new Error("Domain not found");
-    const r = await hnCall("/order/domains/renew", {
+    const r = await hnCall("renewDomain", {
       domain: dom.domain_name, regperiod: String(payload.years),
       addons: { dnsmanagement: 0, emailforwarding: 1, idprotection: 1 },
     });
@@ -626,16 +626,16 @@ const hostneedDriver = {
 
   async getNameservers(p: { domain_id: string }, admin: any) {
     const { data: dom } = await admin.from("registrar_domains").select("domain_name").eq("id", p.domain_id).maybeSingle();
-    const r = await hnCall("/domains/getnameservers", { domain: dom.domain_name });
+    const r = await hnCall("getNameservers", {}, { domain: dom.domain_name });
     const nameservers = [r?.ns1, r?.ns2, r?.ns3, r?.ns4, r?.ns5].filter(Boolean);
     return { nameservers };
   },
 
   async saveNameservers(p: { domain_id: string; nameservers: string[] }, admin: any) {
     const { data: dom } = await admin.from("registrar_domains").select("domain_name").eq("id", p.domain_id).maybeSingle();
-    const params: any = { domain: dom.domain_name };
+    const params: any = {};
     p.nameservers.slice(0, 5).forEach((n, i) => params[`ns${i + 1}`] = n);
-    await hnCall("/domains/savenameservers", params);
+    await hnCall("saveNameservers", params, { domain: dom.domain_name });
     const { data } = await admin.from("registrar_domains").update({ nameservers: p.nameservers }).eq("id", p.domain_id).select().single();
     return data;
   },
@@ -646,42 +646,42 @@ const hostneedDriver = {
 
   async getDNSRecords(p: { domain_id: string }, admin: any) {
     const { data: dom } = await admin.from("registrar_domains").select("domain_name").eq("id", p.domain_id).maybeSingle();
-    const r = await hnCall("/domains/getdnsrecords", { domain: dom.domain_name });
+    const r = await hnCall("getDNSRecords", {}, { domain: dom.domain_name });
     return r?.records ?? r ?? [];
   },
 
   async saveDNSRecords(p: { domain_id: string; records: any[] }, admin: any) {
     const { data: dom } = await admin.from("registrar_domains").select("domain_name").eq("id", p.domain_id).maybeSingle();
-    await hnCall("/domains/savednsrecords", { domain: dom.domain_name, records: p.records });
+    await hnCall("saveDNSRecords", { dnsrecords: p.records }, { domain: dom.domain_name });
     return { ok: true };
   },
 
   async getContactDetails(p: { domain_id: string }, admin: any) {
     const { data: dom } = await admin.from("registrar_domains").select("domain_name").eq("id", p.domain_id).maybeSingle();
-    return await hnCall("/domains/getcontactdetails", { domain: dom.domain_name });
+    return await hnCall("getContactDetails", {}, { domain: dom.domain_name });
   },
 
   async saveContactDetails(p: { domain_id: string; contacts: any }, admin: any) {
     const { data: dom } = await admin.from("registrar_domains").select("domain_name").eq("id", p.domain_id).maybeSingle();
-    return await hnCall("/domains/savecontactdetails", { domain: dom.domain_name, contactdetails: p.contacts });
+    return await hnCall("saveContactDetails", { contactdetails: p.contacts }, { domain: dom.domain_name });
   },
 
   async getEPPCode(p: { domain_id: string }, admin: any) {
     const { data: dom } = await admin.from("registrar_domains").select("domain_name").eq("id", p.domain_id).maybeSingle();
-    const r = await hnCall("/domains/getepp", { domain: dom.domain_name });
+    const r = await hnCall("getEPPCode", {}, { domain: dom.domain_name });
     return { code: r?.eppcode ?? r?.code ?? "" };
   },
 
   async toggleDomainLock(p: { domain_id: string; enabled: boolean }, admin: any) {
     const { data: dom } = await admin.from("registrar_domains").select("domain_name").eq("id", p.domain_id).maybeSingle();
-    await hnCall("/domains/updatelockstatus", { domain: dom.domain_name, lockstatus: p.enabled ? 1 : 0 });
+    await hnCall("toggleDomainLock", { lockstatus: p.enabled ? 1 : 0 }, { domain: dom.domain_name });
     await admin.from("registrar_domains").update({ registrar_lock: p.enabled }).eq("id", p.domain_id);
     return { ok: true };
   },
 
   async toggleWhoisPrivacy(p: { domain_id: string; enabled: boolean }, admin: any) {
     const { data: dom } = await admin.from("registrar_domains").select("domain_name").eq("id", p.domain_id).maybeSingle();
-    await hnCall("/domains/idprotect", { domain: dom.domain_name, idprotection: p.enabled ? 1 : 0 });
+    await hnCall("toggleWhoisPrivacy", { status: p.enabled ? 1 : 0 }, { domain: dom.domain_name });
     await admin.from("registrar_domains").update({ whois_privacy: p.enabled, id_protection: p.enabled }).eq("id", p.domain_id);
     return { ok: true };
   },

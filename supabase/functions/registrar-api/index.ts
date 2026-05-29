@@ -112,31 +112,74 @@ function formEncode(params: Record<string, any>, prefix?: string): string {
   return out.join("&");
 }
 
-async function hnCall(action: string, params: Record<string, any> = {}, attempt = 1): Promise<any> {
-  const headers = await buildHostneedHeaders();
-  const url = `${HN_URL}${action.startsWith("/") ? action : `/${action}`}`;
-  const body = formEncode(params);
-  try {
-    const res = await fetch(url, { method: "POST", headers, body });
-    const text = await res.text();
-    let json: any = null;
-    try { json = JSON.parse(text); } catch { /* not json */ }
-    if (!res.ok) {
-      // Retry once on 5xx
-      if (res.status >= 500 && attempt < 2) return hnCall(action, params, attempt + 1);
-      throw new Error(`HostNeed ${action} HTTP ${res.status}: ${text.slice(0, 300)}`);
-    }
-    if (json?.result === "error" || json?.status === "error") {
-      throw new Error(`HostNeed ${action}: ${json.message ?? json.error ?? "Unknown error"}`);
-    }
-    return json ?? { raw: text };
-  } catch (e) {
-    if (attempt < 2 && (e as Error).message.includes("ETIMEDOUT")) {
-      return hnCall(action, params, attempt + 1);
-    }
-    throw e;
+export class HostneedError extends Error {
+  status: number;
+  body: string;
+  endpoint: string;
+  kind: string;
+  constructor(kind: string, message: string, endpoint: string, status = 0, body = "") {
+    super(message);
+    this.kind = kind;
+    this.endpoint = endpoint;
+    this.status = status;
+    this.body = body;
   }
 }
+
+async function hnCall(action: string, params: Record<string, any> = {}, attempt = 1): Promise<any> {
+  // Validate creds presence with explicit kind
+  if (!HN_URL) throw new HostneedError("Invalid endpoint", "HOSTNEED_API_URL is not set", "", 0, "");
+  if (!HN_USER) throw new HostneedError("Invalid username", "HOSTNEED_USERNAME is not set", HN_URL, 0, "");
+  if (!HN_SECRET) throw new HostneedError("Invalid API secret", "HOSTNEED_API_SECRET is not set", HN_URL, 0, "");
+
+  let headers: Record<string, string>;
+  try {
+    headers = await buildHostneedHeaders();
+  } catch (e) {
+    throw new HostneedError("Invalid token generation", (e as Error).message, HN_URL, 0, "");
+  }
+
+  const url = `${HN_URL}${action.startsWith("/") ? action : `/${action}`}`;
+  const body = formEncode(params);
+  console.log(`[hostneed] -> POST ${url} (attempt ${attempt})`);
+
+  let res: Response;
+  try {
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), 20_000);
+    res = await fetch(url, { method: "POST", headers, body, signal: ctrl.signal });
+    clearTimeout(timer);
+  } catch (e) {
+    const msg = (e as Error).message || String(e);
+    const kind = msg.toLowerCase().includes("abort") || msg.toLowerCase().includes("timeout")
+      ? "Timeout" : "Network error";
+    console.error(`[hostneed] ${kind}: ${msg}`);
+    if (attempt < 2) return hnCall(action, params, attempt + 1);
+    throw new HostneedError(kind, msg, url, 0, "");
+  }
+
+  const text = await res.text();
+  console.log(`[hostneed] <- HTTP ${res.status} ${url} bodyLen=${text.length}`);
+  console.log(`[hostneed] body: ${text.slice(0, 500)}`);
+
+  let json: any = null;
+  try { json = JSON.parse(text); } catch { /* not json */ }
+
+  if (!res.ok) {
+    if (res.status >= 500 && attempt < 2) return hnCall(action, params, attempt + 1);
+    const apiMsg = json?.message ?? json?.error ?? text.slice(0, 300) ?? `HTTP ${res.status}`;
+    const kind = res.status === 401 || res.status === 403 ? "Authentication failure" : "HostNeed API rejection";
+    throw new HostneedError(kind, `${kind} (HTTP ${res.status}): ${apiMsg}`, url, res.status, text);
+  }
+
+  if (json?.result === "error" || json?.status === "error") {
+    const apiMsg = json.message ?? json.error ?? "Unknown error";
+    throw new HostneedError("HostNeed API rejection", `HostNeed ${action}: ${apiMsg}`, url, res.status, text);
+  }
+
+  return json ?? { raw: text };
+}
+
 
 // ============================================================
 // MOCK DRIVER
@@ -330,19 +373,48 @@ const mockDriver = {
 // ============================================================
 const hostneedDriver = {
   kind: "hostneed" as const,
-
   async testConnection() {
-    // Lightweight ping — HostNeed has /account/getbalance which most resellers can call
+    const diag = {
+      env: {
+        HOSTNEED_API_URL: !!HN_URL,
+        HOSTNEED_USERNAME: !!HN_USER,
+        HOSTNEED_API_SECRET: !!HN_SECRET,
+      },
+      endpoint: HN_URL ? `${HN_URL}/account/getbalance` : null,
+      username_preview: HN_USER ? `${HN_USER.slice(0, 3)}***` : null,
+    };
+    console.log("[hostneed.testConnection] diag", JSON.stringify(diag));
+
+    if (!HN_URL || !HN_USER || !HN_SECRET) {
+      const missing = [
+        !HN_URL && "HOSTNEED_API_URL",
+        !HN_USER && "HOSTNEED_USERNAME",
+        !HN_SECRET && "HOSTNEED_API_SECRET",
+      ].filter(Boolean).join(", ");
+      return { ok: false, provider: "hostneed", kind: "Missing credentials", message: `Missing secrets: ${missing}`, diag };
+    }
+
     try {
       const r = await hnCall("/account/getbalance", {});
-      return { ok: true, provider: "hostneed", message: "Connected", data: r };
+      return { ok: true, provider: "hostneed", message: "Connected", data: r, diag };
     } catch (e) {
-      return { ok: false, provider: "hostneed", message: (e as Error).message };
+      const he = e as HostneedError;
+      return {
+        ok: false,
+        provider: "hostneed",
+        kind: he.kind ?? "Unknown",
+        message: he.message,
+        http_status: he.status ?? 0,
+        response_body: (he.body ?? "").slice(0, 1000),
+        endpoint: he.endpoint ?? diag.endpoint,
+        diag,
+      };
     }
   },
 
   async checkAvailability(payload: { domain: string }) {
     // HostNeed: /domains/check  params: domain=example.com
+
     const base = payload.domain.toLowerCase().replace(/\..*$/, "").trim();
     const tlds = payload.domain.includes(".") ? [`.${payload.domain.split(".").slice(1).join(".")}`] : POPULAR_TLDS;
     const results = await Promise.all(tlds.map(async (tld) => {
@@ -605,9 +677,10 @@ Deno.serve(async (req) => {
     const userClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
       global: { headers: { Authorization: authHeader } },
     });
-    const { data: claims } = await userClient.auth.getClaims(authHeader.replace("Bearer ", ""));
-    if (!claims?.claims?.sub) return json({ error: "Unauthorized" }, 401);
-    const userId = claims.claims.sub as string;
+    const { data: userData, error: userErr } = await userClient.auth.getUser();
+    if (userErr || !userData?.user?.id) return json({ error: "Unauthorized" }, 401);
+    const userId = userData.user.id;
+
 
     const admin = createClient(SUPABASE_URL, SERVICE_KEY);
     const body = await req.json().catch(() => ({}));

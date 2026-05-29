@@ -472,6 +472,7 @@ const mockDriver = {
 // ============================================================
 const hostneedDriver = {
   kind: "hostneed" as const,
+  routes: HOSTNEED_ROUTES,
 
   async testConnection() {
     const diag = {
@@ -831,7 +832,7 @@ Deno.serve(async (req) => {
           active_provider: activeProv ?? null,
           using_mock: !activeProv || activeProv.is_mock || (activeProv.provider_type === "hostneed" && !hostneedReady()),
           providers: providers ?? [],
-          hostneed_route_registry: Object.entries(HOSTNEED_ROUTES).map(([action, route]) => ({ action, ...route })),
+          hostneed_route_registry: Object.entries(hostneedDriver.routes).map(([action, route]) => ({ action, ...route })),
           last_request: HN_DEBUG[0] ?? null,
           recent_requests: HN_DEBUG.slice(0, 10),
         },

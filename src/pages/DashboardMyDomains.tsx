@@ -48,9 +48,10 @@ export default function DashboardMyDomains() {
           <h1 className="text-2xl font-semibold text-white">My Domains</h1>
           <p className="text-sm text-white/50 mt-1">Manage your registered domains and orders</p>
         </div>
-        <Button onClick={() => navigate("/dashboard/buy-domain")} className="bg-white text-black hover:bg-white/90">
+        <Button onClick={() => navigate("/dashboard/register-domain")} className="bg-white text-black hover:bg-white/90">
           <Plus className="w-4 h-4 mr-2" /> Register Domain
         </Button>
+
       </div>
 
       <section>
@@ -80,9 +81,10 @@ export default function DashboardMyDomains() {
                   </p>
                 </div>
                 <div className="flex gap-2">
-                  <Button size="sm" variant="outline" className="border-white/20 text-white/80 hover:bg-white/5">Manage</Button>
+                  <Button size="sm" variant="outline" onClick={() => navigate(`/dashboard/domains/${d.id}`)} className="border-white/20 text-white/80 hover:bg-white/5">Manage</Button>
                   <Button size="sm" variant="outline" className="border-white/20 text-white/80 hover:bg-white/5">Renew</Button>
                 </div>
+
               </Card>
             ))}
           </div>

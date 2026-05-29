@@ -95,6 +95,7 @@ export default function Dashboard() {
     { icon: Wand2, label: "Page Builder", path: "/dashboard/builder" },
     { icon: BarChart3, label: "Analytics", path: "/dashboard/analytics" },
     { icon: Globe2, label: "Domain Status", path: "/dashboard/domain-status" },
+    { icon: Globe2, label: "My Domains", path: "/dashboard/my-domains" },
     { icon: ShoppingBag, label: "Buy Domain", path: "/dashboard/buy-domain" },
     { icon: Rocket, label: "Deploy", path: "/dashboard/deploy" },
     { icon: Settings, label: "Settings", path: "/dashboard/settings" },

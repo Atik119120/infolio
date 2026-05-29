@@ -7,10 +7,12 @@
 import { supabase } from "@/integrations/supabase/client";
 import type {
   AvailabilityResult,
+  DnsRecord,
   DomainOrder,
   RegistrarDomain,
   TldPricing,
 } from "./types";
+
 
 async function call<T>(action: string, payload: Record<string, unknown> = {}): Promise<T> {
   const { data, error } = await supabase.functions.invoke("registrar-api", {
@@ -96,3 +98,44 @@ export async function listMyOrders(userId: string): Promise<DomainOrder[]> {
   if (error) throw error;
   return (data as DomainOrder[]) ?? [];
 }
+
+
+// ---------- DNS records ----------
+export async function listDnsRecords(domainId: string): Promise<DnsRecord[]> {
+  const { data, error } = await supabase
+    .from("dns_records")
+    .select("*")
+    .eq("domain_id", domainId)
+    .order("type")
+    .order("name");
+  if (error) throw error;
+  return (data as DnsRecord[]) ?? [];
+}
+
+export async function upsertDnsRecord(record: Partial<DnsRecord> & { domain_id: string; type: string; name: string; content: string }) {
+  const { data, error } = await supabase
+    .from("dns_records")
+    .upsert(record as any)
+    .select()
+    .single();
+  if (error) throw error;
+  return data as DnsRecord;
+}
+
+export async function deleteDnsRecord(id: string) {
+  const { error } = await supabase.from("dns_records").delete().eq("id", id);
+  if (error) throw error;
+}
+
+// ---------- Nameservers ----------
+export const updateNameservers = (params: { domain_id: string; nameservers: string[] }) =>
+  call<RegistrarDomain>("updateNameservers", params);
+
+export const toggleAutoRenew = (params: { domain_id: string; enabled: boolean }) =>
+  call<{ ok: boolean }>("toggleAutoRenew", params);
+
+export const toggleRegistrarLock = (params: { domain_id: string; enabled: boolean }) =>
+  call<{ ok: boolean }>("toggleRegistrarLock", params);
+
+export const completeMockOrder = (params: { order_id: string }) =>
+  call<{ ok: boolean; domain_id?: string }>("completeMockOrder", params);

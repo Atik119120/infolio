@@ -260,6 +260,51 @@ export type Database = {
         }
         Relationships: []
       }
+      dns_records: {
+        Row: {
+          content: string
+          created_at: string
+          domain_id: string
+          id: string
+          is_locked: boolean
+          metadata: Json
+          name: string
+          priority: number | null
+          proxied: boolean
+          ttl: number
+          type: string
+          updated_at: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          domain_id: string
+          id?: string
+          is_locked?: boolean
+          metadata?: Json
+          name: string
+          priority?: number | null
+          proxied?: boolean
+          ttl?: number
+          type: string
+          updated_at?: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          domain_id?: string
+          id?: string
+          is_locked?: boolean
+          metadata?: Json
+          name?: string
+          priority?: number | null
+          proxied?: boolean
+          ttl?: number
+          type?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       domain_contacts: {
         Row: {
           address_line1: string | null

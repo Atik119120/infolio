@@ -88,3 +88,29 @@ export interface AvailabilityResult {
   currency?: string;
   info?: string;
 }
+
+
+export type DnsRecordType = "A" | "AAAA" | "CNAME" | "MX" | "TXT" | "NS" | "SRV" | "CAA";
+
+export interface DnsRecord {
+  id: string;
+  domain_id: string;
+  type: DnsRecordType;
+  name: string;
+  content: string;
+  ttl: number;
+  priority: number | null;
+  proxied: boolean;
+  is_locked: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CartItem {
+  domain: string;
+  tld: string;
+  years: number;
+  price: number;
+  currency: string;
+}
+

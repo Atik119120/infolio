@@ -51,6 +51,9 @@ const AdminRegistrarDomains = lazy(() => import("./pages/admin/AdminRegistrarDom
 const AdminRegistrarPricing = lazy(() => import("./pages/admin/AdminRegistrarPricing"));
 const AdminRegistrarProviders = lazy(() => import("./pages/admin/AdminRegistrarProviders"));
 const AdminRegistrarLogs = lazy(() => import("./pages/admin/AdminRegistrarLogs"));
+const DashboardDomainDetail = lazy(() => import("./pages/DashboardDomainDetail"));
+const DashboardDomainCheckout = lazy(() => import("./pages/DashboardDomainCheckout"));
+
 
 const queryClient = new QueryClient();
 
@@ -111,6 +114,9 @@ const App = () => (
                   <Route path="deploy" element={<DashboardDeploy />} />
                   <Route path="analytics" element={<DashboardAnalytics />} />
                   <Route path="my-domains" element={<DashboardMyDomains />} />
+                  <Route path="domains/:id" element={<DashboardDomainDetail />} />
+                  <Route path="register-domain" element={<DashboardDomainCheckout />} />
+
                 </Route>
                 <Route path="/admin" element={
                   <AdminRoute>

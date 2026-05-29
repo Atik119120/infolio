@@ -7,10 +7,12 @@
 import { supabase } from "@/integrations/supabase/client";
 import type {
   AvailabilityResult,
+  DnsRecord,
   DomainOrder,
   RegistrarDomain,
   TldPricing,
 } from "./types";
+
 
 async function call<T>(action: string, payload: Record<string, unknown> = {}): Promise<T> {
   const { data, error } = await supabase.functions.invoke("registrar-api", {

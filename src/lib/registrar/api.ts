@@ -138,11 +138,22 @@ export const toggleRegistrarLock = (params: { domain_id: string; enabled: boolea
   call<{ ok: boolean }>("toggleRegistrarLock", params);
 
 export const completeMockOrder = (params: { order_id: string }) =>
-  call<{ ok: boolean; domain_id?: string }>("completeMockOrder", params);
-
 // ---------- Provider admin ----------
 export const testConnection = () =>
-  call<{ ok: boolean; provider: string; message: string; using_mock_fallback: boolean }>("testConnection");
+  call<any>("testConnection");
+
+export const getProviderStatus = () =>
+  call<{
+    hostneed_credentials_present: boolean;
+    hostneed_endpoint: string | null;
+    hostneed_username_preview: string | null;
+    active_provider: any;
+    using_mock: boolean;
+    providers: any[];
+    last_request: any;
+    recent_requests: any[];
+  }>("providerStatus");
+
 
 export const getProviderStatus = () =>
   call<{ hostneed_credentials_present: boolean; providers: any[] }>("providerStatus");

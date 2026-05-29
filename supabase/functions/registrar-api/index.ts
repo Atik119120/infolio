@@ -112,31 +112,74 @@ function formEncode(params: Record<string, any>, prefix?: string): string {
   return out.join("&");
 }
 
-async function hnCall(action: string, params: Record<string, any> = {}, attempt = 1): Promise<any> {
-  const headers = await buildHostneedHeaders();
-  const url = `${HN_URL}${action.startsWith("/") ? action : `/${action}`}`;
-  const body = formEncode(params);
-  try {
-    const res = await fetch(url, { method: "POST", headers, body });
-    const text = await res.text();
-    let json: any = null;
-    try { json = JSON.parse(text); } catch { /* not json */ }
-    if (!res.ok) {
-      // Retry once on 5xx
-      if (res.status >= 500 && attempt < 2) return hnCall(action, params, attempt + 1);
-      throw new Error(`HostNeed ${action} HTTP ${res.status}: ${text.slice(0, 300)}`);
-    }
-    if (json?.result === "error" || json?.status === "error") {
-      throw new Error(`HostNeed ${action}: ${json.message ?? json.error ?? "Unknown error"}`);
-    }
-    return json ?? { raw: text };
-  } catch (e) {
-    if (attempt < 2 && (e as Error).message.includes("ETIMEDOUT")) {
-      return hnCall(action, params, attempt + 1);
-    }
-    throw e;
+export class HostneedError extends Error {
+  status: number;
+  body: string;
+  endpoint: string;
+  kind: string;
+  constructor(kind: string, message: string, endpoint: string, status = 0, body = "") {
+    super(message);
+    this.kind = kind;
+    this.endpoint = endpoint;
+    this.status = status;
+    this.body = body;
   }
 }
+
+async function hnCall(action: string, params: Record<string, any> = {}, attempt = 1): Promise<any> {
+  // Validate creds presence with explicit kind
+  if (!HN_URL) throw new HostneedError("Invalid endpoint", "HOSTNEED_API_URL is not set", "", 0, "");
+  if (!HN_USER) throw new HostneedError("Invalid username", "HOSTNEED_USERNAME is not set", HN_URL, 0, "");
+  if (!HN_SECRET) throw new HostneedError("Invalid API secret", "HOSTNEED_API_SECRET is not set", HN_URL, 0, "");
+
+  let headers: Record<string, string>;
+  try {
+    headers = await buildHostneedHeaders();
+  } catch (e) {
+    throw new HostneedError("Invalid token generation", (e as Error).message, HN_URL, 0, "");
+  }
+
+  const url = `${HN_URL}${action.startsWith("/") ? action : `/${action}`}`;
+  const body = formEncode(params);
+  console.log(`[hostneed] -> POST ${url} (attempt ${attempt})`);
+
+  let res: Response;
+  try {
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), 20_000);
+    res = await fetch(url, { method: "POST", headers, body, signal: ctrl.signal });
+    clearTimeout(timer);
+  } catch (e) {
+    const msg = (e as Error).message || String(e);
+    const kind = msg.toLowerCase().includes("abort") || msg.toLowerCase().includes("timeout")
+      ? "Timeout" : "Network error";
+    console.error(`[hostneed] ${kind}: ${msg}`);
+    if (attempt < 2) return hnCall(action, params, attempt + 1);
+    throw new HostneedError(kind, msg, url, 0, "");
+  }
+
+  const text = await res.text();
+  console.log(`[hostneed] <- HTTP ${res.status} ${url} bodyLen=${text.length}`);
+  console.log(`[hostneed] body: ${text.slice(0, 500)}`);
+
+  let json: any = null;
+  try { json = JSON.parse(text); } catch { /* not json */ }
+
+  if (!res.ok) {
+    if (res.status >= 500 && attempt < 2) return hnCall(action, params, attempt + 1);
+    const apiMsg = json?.message ?? json?.error ?? text.slice(0, 300) ?? `HTTP ${res.status}`;
+    const kind = res.status === 401 || res.status === 403 ? "Authentication failure" : "HostNeed API rejection";
+    throw new HostneedError(kind, `${kind} (HTTP ${res.status}): ${apiMsg}`, url, res.status, text);
+  }
+
+  if (json?.result === "error" || json?.status === "error") {
+    const apiMsg = json.message ?? json.error ?? "Unknown error";
+    throw new HostneedError("HostNeed API rejection", `HostNeed ${action}: ${apiMsg}`, url, res.status, text);
+  }
+
+  return json ?? { raw: text };
+}
+
 
 // ============================================================
 // MOCK DRIVER

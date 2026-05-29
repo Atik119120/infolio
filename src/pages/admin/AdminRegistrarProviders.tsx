@@ -8,13 +8,15 @@ import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
 import type { RegistrarProvider } from "@/lib/registrar/types";
 import { testConnection, getProviderStatus } from "@/lib/registrar/api";
-import { Server, CheckCircle2, AlertTriangle, Plug, Loader2 } from "lucide-react";
+import { Server, CheckCircle2, AlertTriangle, Plug, Loader2, RefreshCw, Bug } from "lucide-react";
 
 export default function AdminRegistrarProviders() {
   const [providers, setProviders] = useState<RegistrarProvider[]>([]);
   const [loading, setLoading] = useState(true);
   const [testing, setTesting] = useState(false);
   const [credsPresent, setCredsPresent] = useState(false);
+  const [status, setStatus] = useState<any>(null);
+  const [lastTest, setLastTest] = useState<any>(null);
 
   const load = async () => {
     setLoading(true);
@@ -22,12 +24,12 @@ export default function AdminRegistrarProviders() {
     setProviders((data as RegistrarProvider[]) ?? []);
     try {
       const s = await getProviderStatus();
+      setStatus(s);
       setCredsPresent(s.hostneed_credentials_present);
     } catch { /* ignore */ }
     setLoading(false);
   };
 
-  useEffect(() => { load(); }, []);
 
   const updateField = async (p: RegistrarProvider, patch: Partial<RegistrarProvider>, msg: string) => {
     const { error } = await supabase.from("registrar_providers").update(patch as any).eq("id", p.id);

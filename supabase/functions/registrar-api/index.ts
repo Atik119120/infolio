@@ -213,8 +213,8 @@ async function hnCall(
   }
 
   const route = buildHostneedRoute(routeName, pathParams);
-  const url = route.fullUrl;
   const body = formEncode(params);
+  const url = route.method === "GET" && body ? `${route.fullUrl}?${body}` : route.fullUrl;
   const safeHeaders = { ...headers, token: headers.token ? `${headers.token.slice(0, 6)}…(${headers.token.length})` : "" };
   console.log(`[hostneed.route] action=${route.actionName} path=${route.generatedPath} url=${url}`);
   console.log(`[hostneed] -> ${route.method} ${url} (attempt ${attempt}) body=${body.slice(0, 200)}`);

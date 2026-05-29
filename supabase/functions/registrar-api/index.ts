@@ -749,7 +749,7 @@ const hostneedDriver = {
   },
 
   async getTldPricing(_p: {}, admin: any) {
-    const r = await hnCall("getPricingRegister", {});
+    const r = await hnCall("getTlds", {});
     return r;
   },
 };
@@ -831,6 +831,7 @@ Deno.serve(async (req) => {
           active_provider: activeProv ?? null,
           using_mock: !activeProv || activeProv.is_mock || (activeProv.provider_type === "hostneed" && !hostneedReady()),
           providers: providers ?? [],
+          hostneed_route_registry: Object.entries(HOSTNEED_ROUTES).map(([action, route]) => ({ action, ...route })),
           last_request: HN_DEBUG[0] ?? null,
           recent_requests: HN_DEBUG.slice(0, 10),
         },

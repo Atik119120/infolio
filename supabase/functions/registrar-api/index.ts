@@ -405,13 +405,6 @@ const mockDriver = {
     }).eq("id", payload.order_id);
     return { ok: true, domain_id: domainId };
   },
-};
-
-// ============================================================
-// HOSTNEED DRIVER
-// ============================================================
-const hostneedDriver = {
-  kind: "hostneed" as const,
   async testConnection() {
     const diag = {
       env: {
@@ -419,7 +412,7 @@ const hostneedDriver = {
         HOSTNEED_USERNAME: !!HN_USER,
         HOSTNEED_API_SECRET: !!HN_SECRET,
       },
-      endpoint: HN_URL ? `${HN_URL}/account/getbalance` : null,
+      base_endpoint: HN_URL,
       username_preview: HN_USER ? `${HN_USER.slice(0, 3)}***` : null,
     };
     console.log("[hostneed.testConnection] diag", JSON.stringify(diag));
@@ -433,17 +426,69 @@ const hostneedDriver = {
       return { ok: false, provider: "hostneed", kind: "Missing credentials", message: `Missing secrets: ${missing}`, diag };
     }
 
-    try {
-      const r = await hnCall("/account/getbalance", {});
-      return { ok: true, provider: "hostneed", message: "Connected", data: r, diag };
-    } catch (e) {
-      const he = e as HostneedError;
+    // Probe a list of candidate DomainsReseller actions. The first one that
+    // returns a non-404 (real API response — even if it's a domain-specific
+    // error) means the auth + endpoint are working.
+    const candidates: Array<{ action: string; params: Record<string, any> }> = [
+      { action: "/domains/check", params: { domain: "hostneed-connection-test.com" } },
+      { action: "/account/balance", params: {} },
+      { action: "/account/getbalance", params: {} },
+      { action: "/domains/getpricing", params: {} },
+      { action: "/domain/availability/check", params: { domain: "hostneed-connection-test.com" } },
+    ];
+
+    const attempts: Array<{ action: string; ok: boolean; http_status: number; message: string; endpoint: string }> = [];
+    let firstSuccess: { action: string; data: any; endpoint: string } | null = null;
+
+    for (const c of candidates) {
+      const url = `${HN_URL}${c.action}`;
+      try {
+        const r = await hnCall(c.action, c.params);
+        attempts.push({ action: c.action, ok: true, http_status: 200, message: "OK", endpoint: url });
+        firstSuccess = { action: c.action, data: r, endpoint: url };
+        break;
+      } catch (e) {
+        const he = e as HostneedError;
+        attempts.push({
+          action: c.action,
+          ok: false,
+          http_status: he.status ?? 0,
+          message: he.message,
+          endpoint: he.endpoint ?? url,
+        });
+        // If it's an auth failure, no point trying more actions
+        if (he.kind === "Authentication failure") break;
+      }
+    }
+
+    if (firstSuccess) {
       return {
-        ok: false,
+        ok: true,
         provider: "hostneed",
-        kind: he.kind ?? "Unknown",
-        message: he.message,
-        http_status: he.status ?? 0,
+        message: `Connected via ${firstSuccess.action}`,
+        endpoint: firstSuccess.endpoint,
+        working_action: firstSuccess.action,
+        data: firstSuccess.data,
+        attempts,
+        diag,
+      };
+    }
+
+    const last = attempts[attempts.length - 1];
+    return {
+      ok: false,
+      provider: "hostneed",
+      kind: last?.http_status === 404 ? "Invalid action path"
+        : last?.http_status === 401 || last?.http_status === 403 ? "Authentication failure"
+        : "HostNeed API rejection",
+      message: last?.message ?? "All candidate actions failed",
+      http_status: last?.http_status ?? 0,
+      endpoint: last?.endpoint,
+      attempts,
+      diag,
+    };
+  },
+
         response_body: (he.body ?? "").slice(0, 1000),
         endpoint: he.endpoint ?? diag.endpoint,
         diag,

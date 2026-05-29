@@ -41,15 +41,25 @@ export default function AdminRegistrarProviders() {
   };
 
   const runTest = async () => {
+  const runTest = async () => {
     setTesting(true);
     try {
-      const r = await testConnection();
+      const r: any = await testConnection();
+      console.log("[testConnection] full response", r);
       if (r.ok && !r.using_mock_fallback) toast.success(`✓ ${r.provider}: ${r.message}`);
       else if (r.using_mock_fallback) toast.warning(`Using Mock fallback: ${r.message}`);
-      else toast.error(`✗ ${r.provider}: ${r.message}`);
-    } catch (e: any) { toast.error(e.message); }
+      else {
+        const detail = [r.kind, r.message, r.http_status ? `HTTP ${r.http_status}` : null]
+          .filter(Boolean).join(" — ");
+        toast.error(`✗ ${r.provider}: ${detail}`, { duration: 12000, description: r.endpoint });
+      }
+    } catch (e: any) {
+      console.error("[testConnection] threw", e);
+      toast.error(e?.message ?? "Test failed", { duration: 12000 });
+    }
     finally { setTesting(false); }
   };
+
 
   return (
     <div className="space-y-5">

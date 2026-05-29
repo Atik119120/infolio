@@ -41,7 +41,7 @@ export default function AdminRegistrarProviders() {
   };
 
   const runTest = async () => {
-  const runTest = async () => {
+
     setTesting(true);
     try {
       const r: any = await testConnection();

@@ -126,12 +126,59 @@ export class HostneedError extends Error {
   }
 }
 
+type HnMethod = "GET" | "POST";
+type HnRoute = { method: HnMethod; path: string; description: string };
+const HOSTNEED_ROUTES = {
+  connectionTest: { method: "GET", path: "/billing/credits", description: "Connection/auth test" },
+  checkAvailability: { method: "POST", path: "/domains/lookup", description: "Domain availability lookup" },
+  registerDomain: { method: "POST", path: "/order/domains/register", description: "Register domain" },
+  transferDomain: { method: "POST", path: "/order/domains/transfer", description: "Transfer domain" },
+  renewDomain: { method: "POST", path: "/order/domains/renew", description: "Renew domain" },
+  releaseDomain: { method: "POST", path: "/domains/{domain}/release", description: "Release domain" },
+  getEPPCode: { method: "GET", path: "/domains/{domain}/eppcode", description: "Get EPP code" },
+  getContactDetails: { method: "GET", path: "/domains/{domain}/contact", description: "Get contact details" },
+  saveContactDetails: { method: "POST", path: "/domains/{domain}/contact", description: "Save contact details" },
+  getRegistrarLock: { method: "GET", path: "/domains/{domain}/lock", description: "Get registrar lock" },
+  toggleDomainLock: { method: "POST", path: "/domains/{domain}/lock", description: "Set registrar lock" },
+  getDNSRecords: { method: "GET", path: "/domains/{domain}/dns", description: "Get DNS records" },
+  saveDNSRecords: { method: "POST", path: "/domains/{domain}/dns", description: "Save DNS records" },
+  requestDelete: { method: "POST", path: "/domains/{domain}/delete", description: "Request domain deletion" },
+  syncTransfer: { method: "POST", path: "/domains/{domain}/transfersync", description: "Sync transfer status" },
+  syncDomain: { method: "POST", path: "/domains/{domain}/sync", description: "Sync domain status" },
+  getEmailForwarding: { method: "GET", path: "/domains/{domain}/email", description: "Get email forwarding" },
+  saveEmailForwarding: { method: "POST", path: "/domains/{domain}/email", description: "Save email forwarding" },
+  toggleWhoisPrivacy: { method: "POST", path: "/domains/{domain}/protectid", description: "Toggle ID protection" },
+  getNameservers: { method: "GET", path: "/domains/{domain}/nameservers", description: "Get nameservers" },
+  saveNameservers: { method: "POST", path: "/domains/{domain}/nameservers", description: "Save nameservers" },
+  registerNameserver: { method: "POST", path: "/domains/{domain}/nameservers/register", description: "Register nameserver" },
+  modifyNameserver: { method: "POST", path: "/domains/{domain}/nameservers/modify", description: "Modify nameserver" },
+  deleteNameserver: { method: "POST", path: "/domains/{domain}/nameservers/delete", description: "Delete nameserver" },
+  getPricingRegister: { method: "GET", path: "/order/pricing/domains/register", description: "Registration pricing" },
+  getPricingRenew: { method: "GET", path: "/order/pricing/domains/renew", description: "Renewal pricing" },
+  getPricingTransfer: { method: "GET", path: "/order/pricing/domains/transfer", description: "Transfer pricing" },
+  getTlds: { method: "GET", path: "/tlds", description: "Available TLDs" },
+  getVersion: { method: "GET", path: "/version", description: "API version" },
+} as const satisfies Record<string, HnRoute>;
+type HnRouteName = keyof typeof HOSTNEED_ROUTES;
+
+function buildHostneedRoute(routeName: HnRouteName, pathParams: Record<string, string> = {}) {
+  const route = HOSTNEED_ROUTES[routeName];
+  const base = (HN_URL ?? "").replace(/\/+$/, "");
+  const generatedPath = route.path.replace(/\{(\w+)\}/g, (_, key) => encodeURIComponent(pathParams[key] ?? ""));
+  return { actionName: routeName, method: route.method, generatedPath, fullUrl: `${base}${generatedPath}` };
+}
+
 // In-memory debug capture for the admin debug panel.
 // Keeps last N request/response pairs (per worker instance — best-effort, not persistent).
 interface HnDebugEntry {
   at: string;
   action: string;
+  action_name: string;
+  method: HnMethod;
+  base_endpoint: string;
+  generated_path: string;
   url: string;
+  request_payload: Record<string, any>;
   request_body: string;
   request_headers_safe: Record<string, string>;
   http_status: number;

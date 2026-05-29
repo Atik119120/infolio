@@ -59,14 +59,14 @@ export default function DashboardMyDomains() {
         {loading ? (
           <div className="grid gap-3"><Skeleton className="h-20" /><Skeleton className="h-20" /></div>
         ) : domains.length === 0 ? (
+          <Card className="p-10 bg-white/[0.02] border-white/10 text-center">
             <Globe2 className="w-10 h-10 mx-auto text-white/30 mb-3" />
             <p className="text-white/60">No domains yet.</p>
             <Button variant="link" className="text-white" onClick={() => navigate("/dashboard/register-domain")}>
               Search & register your first domain →
             </Button>
-
-            </Button>
           </Card>
+
         ) : (
           <div className="grid gap-3">
             {domains.map((d) => (

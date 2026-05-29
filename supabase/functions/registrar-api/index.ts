@@ -412,7 +412,9 @@ const hostneedDriver = {
     }
   },
 
+  async checkAvailability(payload: { domain: string }) {
     // HostNeed: /domains/check  params: domain=example.com
+
     const base = payload.domain.toLowerCase().replace(/\..*$/, "").trim();
     const tlds = payload.domain.includes(".") ? [`.${payload.domain.split(".").slice(1).join(".")}`] : POPULAR_TLDS;
     const results = await Promise.all(tlds.map(async (tld) => {

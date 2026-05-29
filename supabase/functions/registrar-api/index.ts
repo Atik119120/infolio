@@ -151,7 +151,95 @@ const mockDriver = {
     await admin.from("registrar_domains").update({ id_protection: payload.enabled }).eq("id", payload.domain_id);
     return { ok: true };
   },
+
+  async updateNameservers(payload: { domain_id: string; nameservers: string[] }, admin: any, userId: string) {
+    if (!Array.isArray(payload.nameservers) || payload.nameservers.length < 2) {
+      throw new Error("At least 2 nameservers are required");
+    }
+    const { data, error } = await admin.from("registrar_domains")
+      .update({ nameservers: payload.nameservers })
+      .eq("id", payload.domain_id)
+      .select().single();
+    if (error) throw error;
+    await admin.from("registrar_activity_logs").insert({
+      user_id: userId, action: "domain.nameservers.updated",
+      entity_type: "domain", entity_id: payload.domain_id,
+      details: { nameservers: payload.nameservers },
+    });
+    return data;
+  },
+
+  async toggleAutoRenew(payload: { domain_id: string; enabled: boolean }, admin: any, userId: string) {
+    await admin.from("registrar_domains").update({ auto_renew: payload.enabled }).eq("id", payload.domain_id);
+    await admin.from("registrar_activity_logs").insert({
+      user_id: userId, action: "domain.auto_renew.toggled",
+      entity_type: "domain", entity_id: payload.domain_id, details: { enabled: payload.enabled },
+    });
+    return { ok: true };
+  },
+
+  async toggleRegistrarLock(payload: { domain_id: string; enabled: boolean }, admin: any, userId: string) {
+    await admin.from("registrar_domains").update({ registrar_lock: payload.enabled }).eq("id", payload.domain_id);
+    await admin.from("registrar_activity_logs").insert({
+      user_id: userId, action: "domain.lock.toggled",
+      entity_type: "domain", entity_id: payload.domain_id, details: { enabled: payload.enabled },
+    });
+    return { ok: true };
+  },
+
+  // Mock-only: simulate successful payment & provision domain into registrar_domains
+  async completeMockOrder(payload: { order_id: string }, admin: any, userId: string, providerId: string) {
+    const { data: order, error: oErr } = await admin
+      .from("domain_orders").select("*").eq("id", payload.order_id).maybeSingle();
+    if (oErr) throw oErr;
+    if (!order) throw new Error("Order not found");
+    if (order.status === "completed") return { ok: true, domain_id: order.domain_id };
+
+    let domainId = order.domain_id;
+    if (order.order_type === "register" || order.order_type === "transfer") {
+      const now = new Date();
+      const expiry = new Date(now);
+      expiry.setFullYear(expiry.getFullYear() + (order.years ?? 1));
+      const { data: dom, error: dErr } = await admin.from("registrar_domains").insert({
+        user_id: order.user_id,
+        provider_id: providerId,
+        domain_name: order.domain_name,
+        status: "active",
+        registered_at: now.toISOString(),
+        expires_at: expiry.toISOString(),
+        nameservers: ["ns1.mock-dns.com", "ns2.mock-dns.com"],
+      }).select().single();
+      if (dErr) throw dErr;
+      domainId = dom.id;
+    } else if (order.order_type === "renew" && domainId) {
+      const { data: dom } = await admin.from("registrar_domains").select("expires_at").eq("id", domainId).maybeSingle();
+      const base = dom?.expires_at ? new Date(dom.expires_at) : new Date();
+      base.setFullYear(base.getFullYear() + (order.years ?? 1));
+      await admin.from("registrar_domains").update({ expires_at: base.toISOString() }).eq("id", domainId);
+    }
+
+    await admin.from("domain_orders").update({
+      status: "completed",
+      domain_id: domainId,
+      processed_by: userId,
+      processed_at: new Date().toISOString(),
+    }).eq("id", payload.order_id);
+
+    await admin.from("registrar_activity_logs").insert({
+      user_id: order.user_id, action: `order.${order.order_type}.completed`,
+      entity_type: "domain_order", entity_id: payload.order_id,
+      details: { domain: order.domain_name },
+    });
+    await admin.from("registrar_notifications").insert({
+      user_id: order.user_id, type: "order.completed",
+      title: "Domain ready",
+      message: `${order.domain_name} is now active in your account.`,
+      link: domainId ? `/dashboard/domains/${domainId}` : null,
+    });
+    return { ok: true, domain_id: domainId };
+  },
 };
+
 
 const drivers: Record<string, typeof mockDriver> = {
   hostneed: mockDriver, // mock until real wiring

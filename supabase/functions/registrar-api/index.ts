@@ -126,6 +126,27 @@ export class HostneedError extends Error {
   }
 }
 
+// In-memory debug capture for the admin debug panel.
+// Keeps last N request/response pairs (per worker instance — best-effort, not persistent).
+interface HnDebugEntry {
+  at: string;
+  action: string;
+  url: string;
+  request_body: string;
+  request_headers_safe: Record<string, string>;
+  http_status: number;
+  response_body: string;
+  duration_ms: number;
+  ok: boolean;
+  error_kind?: string;
+  error_message?: string;
+}
+const HN_DEBUG: HnDebugEntry[] = [];
+function pushDebug(e: HnDebugEntry) {
+  HN_DEBUG.unshift(e);
+  if (HN_DEBUG.length > 20) HN_DEBUG.length = 20;
+}
+
 async function hnCall(action: string, params: Record<string, any> = {}, attempt = 1): Promise<any> {
   // Validate creds presence with explicit kind
   if (!HN_URL) throw new HostneedError("Invalid endpoint", "HOSTNEED_API_URL is not set", "", 0, "");
@@ -141,8 +162,10 @@ async function hnCall(action: string, params: Record<string, any> = {}, attempt 
 
   const url = `${HN_URL}${action.startsWith("/") ? action : `/${action}`}`;
   const body = formEncode(params);
-  console.log(`[hostneed] -> POST ${url} (attempt ${attempt})`);
+  const safeHeaders = { ...headers, token: headers.token ? `${headers.token.slice(0, 6)}…(${headers.token.length})` : "" };
+  console.log(`[hostneed] -> POST ${url} (attempt ${attempt}) body=${body.slice(0, 200)}`);
 
+  const started = Date.now();
   let res: Response;
   try {
     const ctrl = new AbortController();
@@ -154,6 +177,11 @@ async function hnCall(action: string, params: Record<string, any> = {}, attempt 
     const kind = msg.toLowerCase().includes("abort") || msg.toLowerCase().includes("timeout")
       ? "Timeout" : "Network error";
     console.error(`[hostneed] ${kind}: ${msg}`);
+    pushDebug({
+      at: new Date().toISOString(), action, url, request_body: body,
+      request_headers_safe: safeHeaders, http_status: 0, response_body: "",
+      duration_ms: Date.now() - started, ok: false, error_kind: kind, error_message: msg,
+    });
     if (attempt < 2) return hnCall(action, params, attempt + 1);
     throw new HostneedError(kind, msg, url, 0, "");
   }
@@ -165,20 +193,31 @@ async function hnCall(action: string, params: Record<string, any> = {}, attempt 
   let json: any = null;
   try { json = JSON.parse(text); } catch { /* not json */ }
 
+  const baseDebug = {
+    at: new Date().toISOString(), action, url, request_body: body,
+    request_headers_safe: safeHeaders, http_status: res.status,
+    response_body: text.slice(0, 2000), duration_ms: Date.now() - started,
+  };
+
   if (!res.ok) {
     if (res.status >= 500 && attempt < 2) return hnCall(action, params, attempt + 1);
     const apiMsg = json?.message ?? json?.error ?? text.slice(0, 300) ?? `HTTP ${res.status}`;
-    const kind = res.status === 401 || res.status === 403 ? "Authentication failure" : "HostNeed API rejection";
+    let kind = res.status === 401 || res.status === 403 ? "Authentication failure" : "HostNeed API rejection";
+    if (res.status === 404 || /action not found/i.test(text)) kind = "Invalid action path";
+    pushDebug({ ...baseDebug, ok: false, error_kind: kind, error_message: apiMsg });
     throw new HostneedError(kind, `${kind} (HTTP ${res.status}): ${apiMsg}`, url, res.status, text);
   }
 
   if (json?.result === "error" || json?.status === "error") {
     const apiMsg = json.message ?? json.error ?? "Unknown error";
+    pushDebug({ ...baseDebug, ok: false, error_kind: "HostNeed API rejection", error_message: apiMsg });
     throw new HostneedError("HostNeed API rejection", `HostNeed ${action}: ${apiMsg}`, url, res.status, text);
   }
 
+  pushDebug({ ...baseDebug, ok: true });
   return json ?? { raw: text };
 }
+
 
 
 // ============================================================
@@ -373,6 +412,7 @@ const mockDriver = {
 // ============================================================
 const hostneedDriver = {
   kind: "hostneed" as const,
+
   async testConnection() {
     const diag = {
       env: {
@@ -380,7 +420,7 @@ const hostneedDriver = {
         HOSTNEED_USERNAME: !!HN_USER,
         HOSTNEED_API_SECRET: !!HN_SECRET,
       },
-      endpoint: HN_URL ? `${HN_URL}/account/getbalance` : null,
+      base_endpoint: HN_URL,
       username_preview: HN_USER ? `${HN_USER.slice(0, 3)}***` : null,
     };
     console.log("[hostneed.testConnection] diag", JSON.stringify(diag));
@@ -394,23 +434,68 @@ const hostneedDriver = {
       return { ok: false, provider: "hostneed", kind: "Missing credentials", message: `Missing secrets: ${missing}`, diag };
     }
 
-    try {
-      const r = await hnCall("/account/getbalance", {});
-      return { ok: true, provider: "hostneed", message: "Connected", data: r, diag };
-    } catch (e) {
-      const he = e as HostneedError;
+    // Probe a list of candidate DomainsReseller actions. The first one that
+    // returns a non-404 (real API response — even if it's a domain-specific
+    // error) means the auth + endpoint are working.
+    const candidates: Array<{ action: string; params: Record<string, any> }> = [
+      { action: "/domains/check", params: { domain: "hostneed-connection-test.com" } },
+      { action: "/account/balance", params: {} },
+      { action: "/account/getbalance", params: {} },
+      { action: "/domains/getpricing", params: {} },
+      { action: "/domain/availability/check", params: { domain: "hostneed-connection-test.com" } },
+    ];
+
+    const attempts: Array<{ action: string; ok: boolean; http_status: number; message: string; endpoint: string }> = [];
+    let firstSuccess: { action: string; data: any; endpoint: string } | null = null;
+
+    for (const c of candidates) {
+      const url = `${HN_URL}${c.action}`;
+      try {
+        const r = await hnCall(c.action, c.params);
+        attempts.push({ action: c.action, ok: true, http_status: 200, message: "OK", endpoint: url });
+        firstSuccess = { action: c.action, data: r, endpoint: url };
+        break;
+      } catch (e) {
+        const he = e as HostneedError;
+        attempts.push({
+          action: c.action,
+          ok: false,
+          http_status: he.status ?? 0,
+          message: he.message,
+          endpoint: he.endpoint ?? url,
+        });
+        if (he.kind === "Authentication failure") break;
+      }
+    }
+
+    if (firstSuccess) {
       return {
-        ok: false,
+        ok: true,
         provider: "hostneed",
-        kind: he.kind ?? "Unknown",
-        message: he.message,
-        http_status: he.status ?? 0,
-        response_body: (he.body ?? "").slice(0, 1000),
-        endpoint: he.endpoint ?? diag.endpoint,
+        message: `Connected via ${firstSuccess.action}`,
+        endpoint: firstSuccess.endpoint,
+        working_action: firstSuccess.action,
+        data: firstSuccess.data,
+        attempts,
         diag,
       };
     }
+
+    const last = attempts[attempts.length - 1];
+    return {
+      ok: false,
+      provider: "hostneed",
+      kind: last?.http_status === 404 ? "Invalid action path"
+        : last?.http_status === 401 || last?.http_status === 403 ? "Authentication failure"
+        : "HostNeed API rejection",
+      message: last?.message ?? "All candidate actions failed",
+      http_status: last?.http_status ?? 0,
+      endpoint: last?.endpoint,
+      attempts,
+      diag,
+    };
   },
+
 
   async checkAvailability(payload: { domain: string }) {
     // HostNeed: /domains/check  params: domain=example.com
@@ -688,14 +773,25 @@ Deno.serve(async (req) => {
 
     // Admin-only utility: list provider status (no driver call)
     if (action === "providerStatus") {
-      const { data: providers } = await admin.from("registrar_providers").select("id,name,provider_type,is_enabled,is_default,is_mock");
+      const { data: providers } = await admin.from("registrar_providers").select("id,name,provider_type,is_enabled,is_default,is_mock,api_endpoint");
+      const { data: activeProv } = await admin
+        .from("registrar_providers").select("*")
+        .eq("is_enabled", true).order("is_default", { ascending: false })
+        .order("created_at", { ascending: true }).limit(1).maybeSingle();
       return json({
         result: {
           hostneed_credentials_present: hostneedReady(),
+          hostneed_endpoint: HN_URL ?? null,
+          hostneed_username_preview: HN_USER ? `${HN_USER.slice(0, 3)}***` : null,
+          active_provider: activeProv ?? null,
+          using_mock: !activeProv || activeProv.is_mock || (activeProv.provider_type === "hostneed" && !hostneedReady()),
           providers: providers ?? [],
+          last_request: HN_DEBUG[0] ?? null,
+          recent_requests: HN_DEBUG.slice(0, 10),
         },
       });
     }
+
 
     const { driver, provider, usingMock } = await resolveDriver(admin);
 

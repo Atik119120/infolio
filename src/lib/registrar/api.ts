@@ -142,8 +142,17 @@ export const completeMockOrder = (params: { order_id: string }) =>
 
 // ---------- Provider admin ----------
 export const testConnection = () =>
-  call<{ ok: boolean; provider: string; message: string; using_mock_fallback: boolean }>("testConnection");
+  call<any>("testConnection");
 
 export const getProviderStatus = () =>
-  call<{ hostneed_credentials_present: boolean; providers: any[] }>("providerStatus");
+  call<{
+    hostneed_credentials_present: boolean;
+    hostneed_endpoint: string | null;
+    hostneed_username_preview: string | null;
+    active_provider: any;
+    using_mock: boolean;
+    providers: any[];
+    last_request: any;
+    recent_requests: any[];
+  }>("providerStatus");
 

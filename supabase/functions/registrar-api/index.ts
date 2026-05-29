@@ -773,14 +773,25 @@ Deno.serve(async (req) => {
 
     // Admin-only utility: list provider status (no driver call)
     if (action === "providerStatus") {
-      const { data: providers } = await admin.from("registrar_providers").select("id,name,provider_type,is_enabled,is_default,is_mock");
+      const { data: providers } = await admin.from("registrar_providers").select("id,name,provider_type,is_enabled,is_default,is_mock,api_endpoint");
+      const { data: activeProv } = await admin
+        .from("registrar_providers").select("*")
+        .eq("is_enabled", true).order("is_default", { ascending: false })
+        .order("created_at", { ascending: true }).limit(1).maybeSingle();
       return json({
         result: {
           hostneed_credentials_present: hostneedReady(),
+          hostneed_endpoint: HN_URL ?? null,
+          hostneed_username_preview: HN_USER ? `${HN_USER.slice(0, 3)}***` : null,
+          active_provider: activeProv ?? null,
+          using_mock: !activeProv || activeProv.is_mock || (activeProv.provider_type === "hostneed" && !hostneedReady()),
           providers: providers ?? [],
+          last_request: HN_DEBUG[0] ?? null,
+          recent_requests: HN_DEBUG.slice(0, 10),
         },
       });
     }
+
 
     const { driver, provider, usingMock } = await resolveDriver(admin);
 

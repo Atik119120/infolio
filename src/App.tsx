@@ -110,6 +110,7 @@ const App = () => (
                   <Route path="buy-domain" element={<DashboardBuyDomain />} />
                   <Route path="deploy" element={<DashboardDeploy />} />
                   <Route path="analytics" element={<DashboardAnalytics />} />
+                  <Route path="my-domains" element={<DashboardMyDomains />} />
                 </Route>
                 <Route path="/admin" element={
                   <AdminRoute>
@@ -123,6 +124,10 @@ const App = () => (
                   <Route path="plans" element={<AdminPlans />} />
                   <Route path="settings" element={<AdminSettings />} />
                   <Route path="site-settings" element={<AdminSiteSettings />} />
+                  <Route path="registrar/domains" element={<AdminRegistrarDomains />} />
+                  <Route path="registrar/pricing" element={<AdminRegistrarPricing />} />
+                  <Route path="registrar/providers" element={<AdminRegistrarProviders />} />
+                  <Route path="registrar/logs" element={<AdminRegistrarLogs />} />
                 </Route>
                 {/* Public portfolio at root: /:username (must be LAST) */}
                 <Route path="/:username" element={<PublicPortfolio />} />

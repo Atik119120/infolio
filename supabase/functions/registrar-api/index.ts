@@ -147,11 +147,74 @@ function pushDebug(e: HnDebugEntry) {
   if (HN_DEBUG.length > 20) HN_DEBUG.length = 20;
 }
 
-async function hnCall(action: string, params: Record<string, any> = {}, attempt = 1): Promise<any> {
-  // Validate creds presence with explicit kind
+// ============================================================
+// HostNeed official route registry (DomainsReseller API)
+// Do NOT generate routes dynamically — these match the docs 1:1.
+// `{domain}` is a placeholder replaced at call-time.
+// ============================================================
+export const HN_ROUTES = {
+  // Health / catalogue
+  VERSION:              { method: "GET",  path: "/version" },
+  BILLING_CREDITS:      { method: "GET",  path: "/billing/credits" },
+  TLDS:                 { method: "GET",  path: "/tlds" },
+  TLDS_PRICING:         { method: "GET",  path: "/tlds/pricing" },
+
+  // Availability / suggestions
+  LOOKUP:               { method: "POST", path: "/domains/lookup" },
+  LOOKUP_SUGGESTIONS:   { method: "POST", path: "/domains/lookup/suggestions" },
+
+  // Orders
+  ORDER_REGISTER:       { method: "POST", path: "/order/domains/register" },
+  ORDER_TRANSFER:       { method: "POST", path: "/order/domains/transfer" },
+  ORDER_RENEW:          { method: "POST", path: "/order/domains/renew" },
+
+  // Per-domain
+  INFORMATION:          { method: "GET",  path: "/domains/{domain}/information" },
+  NAMESERVERS_GET:      { method: "GET",  path: "/domains/{domain}/nameservers" },
+  NAMESERVERS_SAVE:     { method: "POST", path: "/domains/{domain}/nameservers" },
+  NAMESERVER_REGISTER:  { method: "POST", path: "/domains/{domain}/nameservers/register" },
+  NAMESERVER_MODIFY:    { method: "POST", path: "/domains/{domain}/nameservers/modify" },
+  NAMESERVER_DELETE:    { method: "POST", path: "/domains/{domain}/nameservers/delete" },
+  DNS_GET:              { method: "GET",  path: "/domains/{domain}/dns" },
+  DNS_SAVE:             { method: "POST", path: "/domains/{domain}/dns" },
+  CONTACT_GET:          { method: "GET",  path: "/domains/{domain}/contact" },
+  CONTACT_SAVE:         { method: "POST", path: "/domains/{domain}/contact" },
+  EPP_CODE:             { method: "GET",  path: "/domains/{domain}/eppcode" },
+  EMAIL_GET:            { method: "GET",  path: "/domains/{domain}/email" },
+  EMAIL_SAVE:           { method: "POST", path: "/domains/{domain}/email" },
+  LOCK_GET:             { method: "GET",  path: "/domains/{domain}/lock" },
+  LOCK_SAVE:            { method: "POST", path: "/domains/{domain}/lock" },
+  PROTECT_ID:           { method: "POST", path: "/domains/{domain}/protectid" },
+  RELEASE:              { method: "POST", path: "/domains/{domain}/release" },
+  DELETE:               { method: "POST", path: "/domains/{domain}/delete" },
+  SYNC:                 { method: "POST", path: "/domains/{domain}/sync" },
+  TRANSFER_SYNC:        { method: "POST", path: "/domains/{domain}/transfersync" },
+} as const;
+
+type HnRoute = { method: "GET" | "POST"; path: string };
+
+function buildRoutePath(route: HnRoute, domain?: string): string {
+  if (route.path.includes("{domain}")) {
+    if (!domain) throw new Error(`Route ${route.path} requires {domain}`);
+    return route.path.replace("{domain}", encodeURIComponent(domain));
+  }
+  return route.path;
+}
+
+async function hnCall(
+  route: HnRoute | string,
+  params: Record<string, any> = {},
+  opts: { domain?: string; attempt?: number } = {},
+): Promise<any> {
+  const attempt = opts.attempt ?? 1;
   if (!HN_URL) throw new HostneedError("Invalid endpoint", "HOSTNEED_API_URL is not set", "", 0, "");
   if (!HN_USER) throw new HostneedError("Invalid username", "HOSTNEED_USERNAME is not set", HN_URL, 0, "");
   if (!HN_SECRET) throw new HostneedError("Invalid API secret", "HOSTNEED_API_SECRET is not set", HN_URL, 0, "");
+
+  // Back-compat: string path defaults to POST
+  const r: HnRoute = typeof route === "string"
+    ? { method: "POST", path: route.startsWith("/") ? route : `/${route}` }
+    : route;
 
   let headers: Record<string, string>;
   try {
@@ -160,17 +223,27 @@ async function hnCall(action: string, params: Record<string, any> = {}, attempt 
     throw new HostneedError("Invalid token generation", (e as Error).message, HN_URL, 0, "");
   }
 
-  const url = `${HN_URL}${action.startsWith("/") ? action : `/${action}`}`;
-  const body = formEncode(params);
+  const resolvedPath = buildRoutePath(r, opts.domain);
+  const formBody = formEncode(params);
+  let url = `${HN_URL}${resolvedPath}`;
+  let fetchInit: RequestInit;
+  if (r.method === "GET") {
+    if (formBody) url += (url.includes("?") ? "&" : "?") + formBody;
+    fetchInit = { method: "GET", headers };
+  } else {
+    fetchInit = { method: "POST", headers, body: formBody };
+  }
+
   const safeHeaders = { ...headers, token: headers.token ? `${headers.token.slice(0, 6)}…(${headers.token.length})` : "" };
-  console.log(`[hostneed] -> POST ${url} (attempt ${attempt}) body=${body.slice(0, 200)}`);
+  const action = `${r.method} ${r.path}`;
+  console.log(`[hostneed] -> ${r.method} ${url} (attempt ${attempt}) body=${formBody.slice(0, 200)}`);
 
   const started = Date.now();
   let res: Response;
   try {
     const ctrl = new AbortController();
     const timer = setTimeout(() => ctrl.abort(), 20_000);
-    res = await fetch(url, { method: "POST", headers, body, signal: ctrl.signal });
+    res = await fetch(url, { ...fetchInit, signal: ctrl.signal });
     clearTimeout(timer);
   } catch (e) {
     const msg = (e as Error).message || String(e);
@@ -178,11 +251,11 @@ async function hnCall(action: string, params: Record<string, any> = {}, attempt 
       ? "Timeout" : "Network error";
     console.error(`[hostneed] ${kind}: ${msg}`);
     pushDebug({
-      at: new Date().toISOString(), action, url, request_body: body,
+      at: new Date().toISOString(), action, url, request_body: formBody,
       request_headers_safe: safeHeaders, http_status: 0, response_body: "",
       duration_ms: Date.now() - started, ok: false, error_kind: kind, error_message: msg,
     });
-    if (attempt < 2) return hnCall(action, params, attempt + 1);
+    if (attempt < 2) return hnCall(r, params, { ...opts, attempt: attempt + 1 });
     throw new HostneedError(kind, msg, url, 0, "");
   }
 
@@ -190,32 +263,32 @@ async function hnCall(action: string, params: Record<string, any> = {}, attempt 
   console.log(`[hostneed] <- HTTP ${res.status} ${url} bodyLen=${text.length}`);
   console.log(`[hostneed] body: ${text.slice(0, 500)}`);
 
-  let json: any = null;
-  try { json = JSON.parse(text); } catch { /* not json */ }
+  let parsed: any = null;
+  try { parsed = JSON.parse(text); } catch { /* not json */ }
 
   const baseDebug = {
-    at: new Date().toISOString(), action, url, request_body: body,
+    at: new Date().toISOString(), action, url, request_body: formBody,
     request_headers_safe: safeHeaders, http_status: res.status,
     response_body: text.slice(0, 2000), duration_ms: Date.now() - started,
   };
 
   if (!res.ok) {
-    if (res.status >= 500 && attempt < 2) return hnCall(action, params, attempt + 1);
-    const apiMsg = json?.message ?? json?.error ?? text.slice(0, 300) ?? `HTTP ${res.status}`;
+    if (res.status >= 500 && attempt < 2) return hnCall(r, params, { ...opts, attempt: attempt + 1 });
+    const apiMsg = parsed?.message ?? parsed?.error ?? text.slice(0, 300) ?? `HTTP ${res.status}`;
     let kind = res.status === 401 || res.status === 403 ? "Authentication failure" : "HostNeed API rejection";
     if (res.status === 404 || /action not found/i.test(text)) kind = "Invalid action path";
     pushDebug({ ...baseDebug, ok: false, error_kind: kind, error_message: apiMsg });
     throw new HostneedError(kind, `${kind} (HTTP ${res.status}): ${apiMsg}`, url, res.status, text);
   }
 
-  if (json?.result === "error" || json?.status === "error") {
-    const apiMsg = json.message ?? json.error ?? "Unknown error";
+  if (parsed?.result === "error" || parsed?.status === "error") {
+    const apiMsg = parsed.message ?? parsed.error ?? "Unknown error";
     pushDebug({ ...baseDebug, ok: false, error_kind: "HostNeed API rejection", error_message: apiMsg });
     throw new HostneedError("HostNeed API rejection", `HostNeed ${action}: ${apiMsg}`, url, res.status, text);
   }
 
   pushDebug({ ...baseDebug, ok: true });
-  return json ?? { raw: text };
+  return parsed ?? { raw: text };
 }
 
 

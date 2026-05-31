@@ -22,8 +22,10 @@ const SUPABASE_ANON_KEY = Deno.env.get("SUPABASE_ANON_KEY")!;
 const SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 
 const HN_URL = Deno.env.get("HOSTNEED_API_URL")?.trim().replace(/\/+$/, "");
-const HN_USER = Deno.env.get("HOSTNEED_USERNAME");
-const HN_SECRET = Deno.env.get("HOSTNEED_API_SECRET");
+const HN_USER_RAW = Deno.env.get("HOSTNEED_USERNAME");
+const HN_SECRET_RAW = Deno.env.get("HOSTNEED_API_SECRET");
+const HN_USER = HN_USER_RAW?.trim();
+const HN_SECRET = HN_SECRET_RAW?.trim();
 
 // ---------- Common helpers ----------
 const POPULAR_TLDS = [".com", ".net", ".org", ".io", ".dev", ".app", ".co", ".xyz", ".online", ".site", ".tech", ".me"];

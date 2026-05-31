@@ -848,13 +848,44 @@ Deno.serve(async (req) => {
         .from("registrar_providers").select("*")
         .eq("is_enabled", true).order("is_default", { ascending: false })
         .order("created_at", { ascending: true }).limit(1).maybeSingle();
+
+      // Live auth diagnostics — generate a token NOW so admin can see exact values
+      const stamp = gmHourStamp();
+      let tokenLen = 0;
+      let tokenPreview: string | null = null;
+      let tokenError: string | null = null;
+      if (HN_USER && HN_SECRET) {
+        try {
+          const hex = await hmacSha256Hex(HN_SECRET, `${HN_USER}:${stamp}`);
+          const tok = b64(hex);
+          tokenLen = tok.length;
+          tokenPreview = `${tok.slice(0, 6)}…${tok.slice(-4)}`;
+        } catch (e) { tokenError = (e as Error).message; }
+      }
+      const usingMock = !activeProv || activeProv.is_mock || (activeProv.provider_type === "hostneed" && !hostneedReady());
+
       return json({
         result: {
           hostneed_credentials_present: hostneedReady(),
           hostneed_endpoint: HN_URL ?? null,
           hostneed_username_preview: HN_USER ? `${HN_USER.slice(0, 3)}***` : null,
+          auth_diagnostics: {
+            api_url_detected: !!HN_URL,
+            username_detected: !!HN_USER,
+            secret_detected: !!HN_SECRET,
+            api_url_length: HN_URL?.length ?? 0,
+            username_length: HN_USER?.length ?? 0,
+            secret_length: HN_SECRET?.length ?? 0,
+            generated_timestamp_utc: stamp,
+            server_time_utc: new Date().toISOString(),
+            token_length: tokenLen,
+            token_preview: tokenPreview,
+            token_error: tokenError,
+            algorithm: "base64( hex( hmac_sha256( secret, `${username}:${gmdate('y-m-d H')}` ) ) )",
+          },
+          current_provider_mode: usingMock ? "mock" : (activeProv?.provider_type ?? "mock"),
           active_provider: activeProv ?? null,
-          using_mock: !activeProv || activeProv.is_mock || (activeProv.provider_type === "hostneed" && !hostneedReady()),
+          using_mock: usingMock,
           providers: providers ?? [],
           last_request: HN_DEBUG[0] ?? null,
           recent_requests: HN_DEBUG.slice(0, 10),

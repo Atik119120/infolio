@@ -180,6 +180,44 @@ export default function AdminRegistrarProviders() {
           </div>
         </div>
 
+        {/* Auth diagnostics */}
+        {status?.auth_diagnostics && (
+          <div className="mb-4 rounded bg-slate-950/80 border border-slate-800 p-3 text-xs space-y-2">
+            <div className="text-slate-400 font-medium">Authentication Diagnostics</div>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+              {[
+                ["API URL detected", status.auth_diagnostics.api_url_detected, `len ${status.auth_diagnostics.api_url_length}`],
+                ["Username detected", status.auth_diagnostics.username_detected, `len ${status.auth_diagnostics.username_length}`],
+                ["Secret detected", status.auth_diagnostics.secret_detected, `len ${status.auth_diagnostics.secret_length}`],
+              ].map(([label, ok, meta]: any) => (
+                <div key={label} className="flex items-center gap-2">
+                  <Badge className={ok ? "bg-green-500/20 text-green-300 border-green-500/30" : "bg-red-500/20 text-red-300 border-red-500/30"}>
+                    {ok ? "yes" : "no"}
+                  </Badge>
+                  <span className="text-slate-300">{label}</span>
+                  <span className="text-slate-500">({meta})</span>
+                </div>
+              ))}
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-2 pt-1">
+              <div><span className="text-slate-500">Generated timestamp (UTC): </span><span className="font-mono text-slate-200">{status.auth_diagnostics.generated_timestamp_utc}</span></div>
+              <div><span className="text-slate-500">Server time (UTC): </span><span className="font-mono text-slate-200">{status.auth_diagnostics.server_time_utc}</span></div>
+              <div><span className="text-slate-500">Token length: </span><span className="font-mono text-slate-200">{status.auth_diagnostics.token_length}</span></div>
+              <div><span className="text-slate-500">Token preview: </span><span className="font-mono text-slate-200">{status.auth_diagnostics.token_preview ?? "—"}</span></div>
+              <div><span className="text-slate-500">Provider mode: </span><span className="font-mono text-slate-200">{status.current_provider_mode}</span></div>
+              {status.auth_diagnostics.token_error && (
+                <div className="text-red-300 md:col-span-2">Token error: {status.auth_diagnostics.token_error}</div>
+              )}
+            </div>
+            <div className="text-slate-500 break-all pt-1">
+              Algorithm: <span className="font-mono text-slate-400">{status.auth_diagnostics.algorithm}</span>
+            </div>
+            <div className="text-slate-500">
+              Headers sent: <span className="font-mono text-slate-400">{`{ username: "${status.hostneed_username_preview ?? "?"}", token: "<base64-hmac>" }`}</span>
+            </div>
+          </div>
+        )}
+
         {lastTest && (
           <div className="mb-4">
             <div className="text-xs text-slate-400 mb-1">Last Test Connection Attempts</div>

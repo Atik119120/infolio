@@ -360,6 +360,7 @@ async function hnCall(
   const action = `${r.method} ${r.path}`;
   console.log(`[hostneed] -> ${r.method} ${url} (attempt ${attempt}) body=${formBody.slice(0, 200)}`);
   console.log(`[hostneed.auth] variant=${authDiagnostics.variant_id} stamp=${authDiagnostics.generated_timestamp_utc} raw=${authDiagnostics.raw_string_used_for_signing} tokenLen=${authDiagnostics.token_length} endpointOk=${authDiagnostics.endpoint_shape_valid}`);
+  console.log(`[hostneed.auth] signature=${authDiagnostics.generated_signature} token=${authDiagnostics.generated_token}`);
 
   const started = Date.now();
   let res: Response;

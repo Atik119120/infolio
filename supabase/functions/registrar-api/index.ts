@@ -180,6 +180,31 @@ class HostNeedAuthService {
     if (method === "POST") headers["Content-Type"] = "application/x-www-form-urlencoded";
     return { headers, auth };
   }
+
+  static variants(): HostNeedAuthVariantId[] {
+    return [
+      "docs_secret_data_userstamp_key_hex_b64",
+      "php_conventional_userstamp_data_secret_key_hex_b64",
+      "docs_secret_data_userstamp_key_raw_b64",
+      "php_conventional_userstamp_data_secret_key_raw_b64",
+      "docs_previous_utc_hour_hex_b64",
+      "docs_next_utc_hour_hex_b64",
+    ];
+  }
+
+  static diagnoseFailure(status: number, body: string, variant: HostNeedAuthVariantId): string[] {
+    const issues: string[] = [];
+    if (!HN_URL) issues.push("Wrong endpoint: HOSTNEED_API_URL is missing.");
+    else if (!this.endpointShapeValid()) issues.push(`Wrong endpoint: expected suffix ${this.EXPECTED_ENDPOINT_SUFFIX}.`);
+    if (!HN_USER) issues.push("Wrong username: HOSTNEED_USERNAME is missing.");
+    if (!HN_SECRET) issues.push("Wrong secret: HOSTNEED_API_SECRET is missing.");
+    if (status === 401 || /invalid api token|unauthori[sz]ed|authentication/i.test(body)) {
+      if (variant !== this.DOCS_VARIANT) issues.push("Wrong token algorithm: tested an alternate algorithm, not the official documented algorithm.");
+      else issues.push("Authentication failure: official documented token was rejected; likely wrong username, wrong API secret, IP whitelist, or provider-side token settings.");
+    }
+    if (variant.includes("previous") || variant.includes("next")) issues.push("Wrong timezone/server clock: adjacent UTC hour was tested for clock drift.");
+    return issues;
+  }
 }
 
 function formEncode(params: Record<string, any>, prefix?: string): string {

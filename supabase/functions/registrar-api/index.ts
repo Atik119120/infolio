@@ -21,9 +21,11 @@ const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SUPABASE_ANON_KEY = Deno.env.get("SUPABASE_ANON_KEY")!;
 const SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 
-const HN_URL = Deno.env.get("HOSTNEED_API_URL");
-const HN_USER = Deno.env.get("HOSTNEED_USERNAME");
-const HN_SECRET = Deno.env.get("HOSTNEED_API_SECRET");
+const HN_URL = Deno.env.get("HOSTNEED_API_URL")?.trim().replace(/\/+$/, "");
+const HN_USER_RAW = Deno.env.get("HOSTNEED_USERNAME");
+const HN_SECRET_RAW = Deno.env.get("HOSTNEED_API_SECRET");
+const HN_USER = HN_USER_RAW?.trim();
+const HN_SECRET = HN_SECRET_RAW?.trim();
 
 // ---------- Common helpers ----------
 const POPULAR_TLDS = [".com", ".net", ".org", ".io", ".dev", ".app", ".co", ".xyz", ".online", ".site", ".tech", ".me"];
@@ -60,40 +62,151 @@ async function logActivity(admin: any, params: {
 }
 
 // ============================================================
-// HostNeed signing + transport
+// HostNeed Authentication Service
 // ============================================================
-// token = base64( hmac_sha256( HOSTNEED_API_SECRET, `${USERNAME}:${gmdate('y-m-d H')}` ) )
-// gmdate('y-m-d H') -> 2-digit year, e.g. 26-05-29 04
-function gmHourStamp(d = new Date()): string {
-  const yy = String(d.getUTCFullYear()).slice(-2);
-  const mm = String(d.getUTCMonth() + 1).padStart(2, "0");
-  const dd = String(d.getUTCDate()).padStart(2, "0");
-  const hh = String(d.getUTCHours()).padStart(2, "0");
-  return `${yy}-${mm}-${dd} ${hh}`;
+type HostNeedAuthVariantId =
+  | "docs_secret_data_userstamp_key_hex_b64"
+  | "php_conventional_userstamp_data_secret_key_hex_b64"
+  | "docs_secret_data_userstamp_key_raw_b64"
+  | "php_conventional_userstamp_data_secret_key_raw_b64"
+  | "docs_previous_utc_hour_hex_b64"
+  | "docs_next_utc_hour_hex_b64";
+
+interface HostNeedAuthDiagnostics {
+  variant_id: HostNeedAuthVariantId;
+  algorithm: string;
+  generated_timestamp_utc: string;
+  local_timestamp: string;
+  server_time_utc: string;
+  raw_string_used_for_signing: string;
+  hmac_data_description: string;
+  hmac_key_description: string;
+  generated_signature: string;
+  generated_token: string;
+  token_length: number;
+  token_preview: string;
+  token_sha256_fingerprint: string;
+  endpoint_shape_valid: boolean;
+  endpoint_expected_suffix: string;
 }
 
-async function hmacSha256Hex(key: string, msg: string): Promise<string> {
-  const enc = new TextEncoder();
-  const ck = await crypto.subtle.importKey(
-    "raw", enc.encode(key), { name: "HMAC", hash: "SHA-256" }, false, ["sign"],
-  );
-  const sig = await crypto.subtle.sign("HMAC", ck, enc.encode(msg));
-  // PHP hash_hmac returns hex string by default; we base64-encode the hex (matches the sample)
-  return Array.from(new Uint8Array(sig)).map((b) => b.toString(16).padStart(2, "0")).join("");
-}
+let HN_ACTIVE_AUTH_VARIANT: HostNeedAuthVariantId | null = null;
 
-function b64(str: string): string {
-  return btoa(str);
-}
+class HostNeedAuthService {
+  static readonly DOCS_VARIANT: HostNeedAuthVariantId = "docs_secret_data_userstamp_key_hex_b64";
+  static readonly EXPECTED_ENDPOINT_SUFFIX = "/modules/addons/DomainsReseller/api/index.php";
 
-async function buildHostneedHeaders(): Promise<Record<string, string>> {
-  if (!HN_URL || !HN_USER || !HN_SECRET) {
-    throw new Error("HostNeed credentials are not configured");
+  static utcHourStamp(d = new Date(), offsetHours = 0): string {
+    const shifted = new Date(d.getTime() + offsetHours * 60 * 60 * 1000);
+    const yy = String(shifted.getUTCFullYear()).slice(-2);
+    const mm = String(shifted.getUTCMonth() + 1).padStart(2, "0");
+    const dd = String(shifted.getUTCDate()).padStart(2, "0");
+    const hh = String(shifted.getUTCHours()).padStart(2, "0");
+    return `${yy}-${mm}-${dd} ${hh}`;
   }
-  const stamp = gmHourStamp();
-  const hex = await hmacSha256Hex(HN_SECRET, `${HN_USER}:${stamp}`);
-  const token = b64(hex);
-  return { username: HN_USER, token, "Content-Type": "application/x-www-form-urlencoded" };
+
+  static localHourStamp(d = new Date()): string {
+    const yy = String(d.getFullYear()).slice(-2);
+    const mm = String(d.getMonth() + 1).padStart(2, "0");
+    const dd = String(d.getDate()).padStart(2, "0");
+    const hh = String(d.getHours()).padStart(2, "0");
+    return `${yy}-${mm}-${dd} ${hh}`;
+  }
+
+  static endpointShapeValid(): boolean {
+    return !!HN_URL && HN_URL.endsWith(this.EXPECTED_ENDPOINT_SUFFIX);
+  }
+
+  private static bytesToHex(bytes: ArrayBuffer): string {
+    return Array.from(new Uint8Array(bytes)).map((b) => b.toString(16).padStart(2, "0")).join("");
+  }
+
+  private static bytesToB64(bytes: ArrayBuffer): string {
+    let binary = "";
+    for (const b of new Uint8Array(bytes)) binary += String.fromCharCode(b);
+    return btoa(binary);
+  }
+
+  private static async hmacSha256(key: string, data: string): Promise<ArrayBuffer> {
+    const enc = new TextEncoder();
+    const cryptoKey = await crypto.subtle.importKey(
+      "raw", enc.encode(key), { name: "HMAC", hash: "SHA-256" }, false, ["sign"],
+    );
+    return crypto.subtle.sign("HMAC", cryptoKey, enc.encode(data));
+  }
+
+  private static async sha256Hex(value: string): Promise<string> {
+    return this.bytesToHex(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(value)));
+  }
+
+  static async generateToken(variant: HostNeedAuthVariantId = HN_ACTIVE_AUTH_VARIANT ?? this.DOCS_VARIANT): Promise<HostNeedAuthDiagnostics> {
+    if (!HN_USER || !HN_SECRET) throw new Error("HOSTNEED_USERNAME or HOSTNEED_API_SECRET is not configured");
+
+    const now = new Date();
+    const offset = variant === "docs_previous_utc_hour_hex_b64" ? -1 : variant === "docs_next_utc_hour_hex_b64" ? 1 : 0;
+    const stamp = this.utcHourStamp(now, offset);
+    const userStamp = `${HN_USER}:${stamp}`;
+    const useDocsOrder = variant.startsWith("docs_");
+    const useRawOutput = variant.includes("raw_b64");
+    const data = useDocsOrder ? HN_SECRET : userStamp;
+    const key = useDocsOrder ? userStamp : HN_SECRET;
+    const signatureBytes = await this.hmacSha256(key, data);
+    const signatureHex = this.bytesToHex(signatureBytes);
+    const token = useRawOutput ? this.bytesToB64(signatureBytes) : btoa(signatureHex);
+
+    return {
+      variant_id: variant,
+      algorithm: useDocsOrder
+        ? "base64_encode(hash_hmac('sha256', HOSTNEED_API_SECRET, HOSTNEED_USERNAME . ':' . gmdate('y-m-d H')))"
+        : "base64_encode(hash_hmac('sha256', HOSTNEED_USERNAME . ':' . gmdate('y-m-d H'), HOSTNEED_API_SECRET))",
+      generated_timestamp_utc: stamp,
+      local_timestamp: this.localHourStamp(now),
+      server_time_utc: now.toISOString(),
+      raw_string_used_for_signing: userStamp,
+      hmac_data_description: useDocsOrder ? `HOSTNEED_API_SECRET(len ${HN_SECRET.length})` : userStamp,
+      hmac_key_description: useDocsOrder ? userStamp : `HOSTNEED_API_SECRET(len ${HN_SECRET.length})`,
+      generated_signature: useRawOutput ? signatureHex : signatureHex,
+      generated_token: token,
+      token_length: token.length,
+      token_preview: `${token.slice(0, 8)}…${token.slice(-6)}`,
+      token_sha256_fingerprint: await this.sha256Hex(token),
+      endpoint_shape_valid: this.endpointShapeValid(),
+      endpoint_expected_suffix: this.EXPECTED_ENDPOINT_SUFFIX,
+    };
+  }
+
+  static async headers(method: "GET" | "POST", variant?: HostNeedAuthVariantId): Promise<{ headers: Record<string, string>; auth: HostNeedAuthDiagnostics }> {
+    if (!HN_URL || !HN_USER || !HN_SECRET) throw new Error("HostNeed credentials are not configured");
+    const auth = await this.generateToken(variant);
+    const headers: Record<string, string> = { username: HN_USER, token: auth.generated_token };
+    if (method === "POST") headers["Content-Type"] = "application/x-www-form-urlencoded";
+    return { headers, auth };
+  }
+
+  static variants(): HostNeedAuthVariantId[] {
+    return [
+      "docs_secret_data_userstamp_key_hex_b64",
+      "php_conventional_userstamp_data_secret_key_hex_b64",
+      "docs_secret_data_userstamp_key_raw_b64",
+      "php_conventional_userstamp_data_secret_key_raw_b64",
+      "docs_previous_utc_hour_hex_b64",
+      "docs_next_utc_hour_hex_b64",
+    ];
+  }
+
+  static diagnoseFailure(status: number, body: string, variant: HostNeedAuthVariantId): string[] {
+    const issues: string[] = [];
+    if (!HN_URL) issues.push("Wrong endpoint: HOSTNEED_API_URL is missing.");
+    else if (!this.endpointShapeValid()) issues.push(`Wrong endpoint: expected suffix ${this.EXPECTED_ENDPOINT_SUFFIX}.`);
+    if (!HN_USER) issues.push("Wrong username: HOSTNEED_USERNAME is missing.");
+    if (!HN_SECRET) issues.push("Wrong secret: HOSTNEED_API_SECRET is missing.");
+    if (status === 401 || /invalid api token|unauthori[sz]ed|authentication/i.test(body)) {
+      if (variant !== this.DOCS_VARIANT) issues.push("Wrong token algorithm: tested an alternate algorithm, not the official documented algorithm.");
+      else issues.push("Authentication failure: official documented token was rejected; likely wrong username, wrong API secret, IP whitelist, or provider-side token settings.");
+    }
+    if (variant.includes("previous") || variant.includes("next")) issues.push("Wrong timezone/server clock: adjacent UTC hour was tested for clock drift.");
+    return issues;
+  }
 }
 
 function formEncode(params: Record<string, any>, prefix?: string): string {
@@ -132,14 +245,19 @@ interface HnDebugEntry {
   at: string;
   action: string;
   url: string;
+  base_endpoint: string;
+  action_path: string;
   request_body: string;
   request_headers_safe: Record<string, string>;
+  request_headers_exact: Record<string, string>;
   http_status: number;
+  response_headers: Record<string, string>;
   response_body: string;
   duration_ms: number;
   ok: boolean;
   error_kind?: string;
   error_message?: string;
+  auth_diagnostics?: HostNeedAuthDiagnostics;
 }
 const HN_DEBUG: HnDebugEntry[] = [];
 function pushDebug(e: HnDebugEntry) {
@@ -204,7 +322,7 @@ function buildRoutePath(route: HnRoute, domain?: string): string {
 async function hnCall(
   route: HnRoute | string,
   params: Record<string, any> = {},
-  opts: { domain?: string; attempt?: number } = {},
+  opts: { domain?: string; attempt?: number; authVariant?: HostNeedAuthVariantId } = {},
 ): Promise<any> {
   const attempt = opts.attempt ?? 1;
   if (!HN_URL) throw new HostneedError("Invalid endpoint", "HOSTNEED_API_URL is not set", "", 0, "");
@@ -217,8 +335,11 @@ async function hnCall(
     : route;
 
   let headers: Record<string, string>;
+  let authDiagnostics: HostNeedAuthDiagnostics | undefined;
   try {
-    headers = await buildHostneedHeaders();
+    const auth = await HostNeedAuthService.headers(r.method, opts.authVariant);
+    headers = auth.headers;
+    authDiagnostics = auth.auth;
   } catch (e) {
     throw new HostneedError("Invalid token generation", (e as Error).message, HN_URL, 0, "");
   }
@@ -234,9 +355,12 @@ async function hnCall(
     fetchInit = { method: "POST", headers, body: formBody };
   }
 
-  const safeHeaders = { ...headers, token: headers.token ? `${headers.token.slice(0, 6)}…(${headers.token.length})` : "" };
+  const safeHeaders = { ...headers, token: headers.token ? `${headers.token.slice(0, 8)}…${headers.token.slice(-6)} (${headers.token.length})` : "" };
+  const exactHeaders = { username: headers.username, token: headers.token, ...(headers["Content-Type"] ? { "Content-Type": headers["Content-Type"] } : {}) };
   const action = `${r.method} ${r.path}`;
   console.log(`[hostneed] -> ${r.method} ${url} (attempt ${attempt}) body=${formBody.slice(0, 200)}`);
+  console.log(`[hostneed.auth] variant=${authDiagnostics.variant_id} stamp=${authDiagnostics.generated_timestamp_utc} raw=${authDiagnostics.raw_string_used_for_signing} tokenLen=${authDiagnostics.token_length} endpointOk=${authDiagnostics.endpoint_shape_valid}`);
+  console.log(`[hostneed.auth] signature=${authDiagnostics.generated_signature} token=${authDiagnostics.generated_token}`);
 
   const started = Date.now();
   let res: Response;
@@ -251,25 +375,30 @@ async function hnCall(
       ? "Timeout" : "Network error";
     console.error(`[hostneed] ${kind}: ${msg}`);
     pushDebug({
-      at: new Date().toISOString(), action, url, request_body: formBody,
-      request_headers_safe: safeHeaders, http_status: 0, response_body: "",
+      at: new Date().toISOString(), action, url, base_endpoint: HN_URL, action_path: resolvedPath, request_body: formBody,
+      request_headers_safe: safeHeaders, request_headers_exact: exactHeaders, http_status: 0, response_headers: {}, response_body: "",
       duration_ms: Date.now() - started, ok: false, error_kind: kind, error_message: msg,
+      auth_diagnostics: authDiagnostics,
     });
     if (attempt < 2) return hnCall(r, params, { ...opts, attempt: attempt + 1 });
     throw new HostneedError(kind, msg, url, 0, "");
   }
 
   const text = await res.text();
+  const responseHeaders = Object.fromEntries(res.headers.entries());
   console.log(`[hostneed] <- HTTP ${res.status} ${url} bodyLen=${text.length}`);
+  console.log(`[hostneed] response headers: ${JSON.stringify(responseHeaders)}`);
   console.log(`[hostneed] body: ${text.slice(0, 500)}`);
 
   let parsed: any = null;
   try { parsed = JSON.parse(text); } catch { /* not json */ }
 
   const baseDebug = {
-    at: new Date().toISOString(), action, url, request_body: formBody,
-    request_headers_safe: safeHeaders, http_status: res.status,
+    at: new Date().toISOString(), action, url, base_endpoint: HN_URL, action_path: resolvedPath, request_body: formBody,
+    request_headers_safe: safeHeaders, request_headers_exact: exactHeaders, http_status: res.status,
+    response_headers: responseHeaders,
     response_body: text.slice(0, 2000), duration_ms: Date.now() - started,
+    auth_diagnostics: authDiagnostics,
   };
 
   if (!res.ok) {
@@ -487,13 +616,24 @@ const hostneedDriver = {
   kind: "hostneed" as const,
 
   async testConnection() {
+    HN_ACTIVE_AUTH_VARIANT = null;
     const diag = {
       env: {
         HOSTNEED_API_URL: !!HN_URL,
         HOSTNEED_USERNAME: !!HN_USER,
         HOSTNEED_API_SECRET: !!HN_SECRET,
       },
+      secret_detection: {
+        api_url_detected: !!HN_URL,
+        username_detected: !!HN_USER,
+        secret_detected: !!HN_SECRET,
+        username_trimmed: HN_USER_RAW !== HN_USER,
+        secret_trimmed: HN_SECRET_RAW !== HN_SECRET,
+        api_url_shape_valid: HostNeedAuthService.endpointShapeValid(),
+        expected_endpoint_suffix: HostNeedAuthService.EXPECTED_ENDPOINT_SUFFIX,
+      },
       base_endpoint: HN_URL,
+      required_endpoint: `${HN_URL}${HN_ROUTES.VERSION.path}`,
       username_preview: HN_USER ? `${HN_USER.slice(0, 3)}***` : null,
     };
     console.log("[hostneed.testConnection] diag", JSON.stringify(diag));
@@ -507,33 +647,66 @@ const hostneedDriver = {
       return { ok: false, provider: "hostneed", kind: "Missing credentials", message: `Missing secrets: ${missing}`, diag };
     }
 
-    // Health-check using official routes only.
-    const candidates: Array<{ label: string; route: HnRoute; params?: Record<string, any>; domain?: string }> = [
-      { label: "GET /version", route: HN_ROUTES.VERSION },
-      { label: "GET /billing/credits", route: HN_ROUTES.BILLING_CREDITS },
-      { label: "GET /tlds", route: HN_ROUTES.TLDS },
-    ];
+    const authTests: Array<any> = [];
+    const attempts: Array<any> = [];
+    let firstSuccess: { action: string; data: any; endpoint: string; auth: HostNeedAuthDiagnostics } | null = null;
 
-    const attempts: Array<{ action: string; ok: boolean; http_status: number; message: string; endpoint: string }> = [];
-    let firstSuccess: { action: string; data: any; endpoint: string } | null = null;
-
-    for (const c of candidates) {
-      const url = `${HN_URL}${buildRoutePath(c.route, c.domain)}`;
+    // Authentication Test section: always use official GET /version first.
+    for (const variant of HostNeedAuthService.variants()) {
+      const url = `${HN_URL}${HN_ROUTES.VERSION.path}`;
       try {
-        const r = await hnCall(c.route, c.params ?? {}, { domain: c.domain });
-        attempts.push({ action: c.label, ok: true, http_status: 200, message: "OK", endpoint: url });
-        firstSuccess = { action: c.label, data: r, endpoint: url };
+        const auth = await HostNeedAuthService.generateToken(variant);
+        const r = await hnCall(HN_ROUTES.VERSION, {}, { authVariant: variant });
+        HN_ACTIVE_AUTH_VARIANT = variant;
+        const test = {
+          variant,
+          action: "GET /version",
+          ok: true,
+          http_status: 200,
+          endpoint: url,
+          username_validation: !!HN_USER,
+          secret_validation: !!HN_SECRET,
+          token_validation: true,
+          server_time_validation: true,
+          time_difference_check: auth.generated_timestamp_utc === auth.local_timestamp ? "UTC matches local hour" : "UTC differs from local hour; UTC is used",
+          diagnosis: variant === HostNeedAuthService.DOCS_VARIANT ? ["Official HostNeed auth algorithm accepted."] : ["Alternate auth variant accepted; HostNeed documentation/account behavior differs from expected formula."],
+          auth,
+        };
+        authTests.push(test);
+        attempts.push({ action: "GET /version", ok: true, http_status: 200, message: "OK", endpoint: url, auth_variant: variant, auth });
+        firstSuccess = { action: "GET /version", data: r, endpoint: url, auth };
         break;
       } catch (e) {
         const he = e as HostneedError;
+        const auth = await HostNeedAuthService.generateToken(variant).catch(() => null);
+        const diagnosis = HostNeedAuthService.diagnoseFailure(he.status ?? 0, he.body ?? he.message, variant);
+        authTests.push({
+          variant,
+          action: "GET /version",
+          ok: false,
+          http_status: he.status ?? 0,
+          endpoint: he.endpoint ?? url,
+          username_validation: !!HN_USER,
+          secret_validation: !!HN_SECRET,
+          token_validation: false,
+          server_time_validation: true,
+          time_difference_check: auth?.generated_timestamp_utc === auth?.local_timestamp ? "UTC matches local hour" : "UTC differs from local hour; UTC is used",
+          diagnosis,
+          message: he.message,
+          full_api_response: he.body,
+          auth,
+        });
         attempts.push({
-          action: c.label,
+          action: "GET /version",
           ok: false,
           http_status: he.status ?? 0,
           message: he.message,
           endpoint: he.endpoint ?? url,
+          auth_variant: variant,
+          auth,
+          diagnosis,
+          full_api_response: he.body,
         });
-        if (he.kind === "Authentication failure") break;
       }
     }
 
@@ -544,22 +717,32 @@ const hostneedDriver = {
         message: `Connected via ${firstSuccess.action}`,
         endpoint: firstSuccess.endpoint,
         working_action: firstSuccess.action,
+        active_auth_variant: HN_ACTIVE_AUTH_VARIANT,
         data: firstSuccess.data,
         attempts,
+        auth_tests: authTests,
+        auth_diagnostics: firstSuccess.auth,
         diag,
       };
     }
 
     const last = attempts[attempts.length - 1];
+    const official = attempts.find((a) => a.auth_variant === HostNeedAuthService.DOCS_VARIANT) ?? attempts[0];
     return {
       ok: false,
       provider: "hostneed",
-      kind: last?.http_status === 404 ? "Invalid action path"
-        : last?.http_status === 401 || last?.http_status === 403 ? "Authentication failure"
+      kind: official?.http_status === 404 ? "Invalid action path"
+        : official?.http_status === 401 || official?.http_status === 403 ? "Authentication failure"
         : "HostNeed API rejection",
-      message: last?.message ?? "All candidate actions failed",
-      http_status: last?.http_status ?? 0,
-      endpoint: last?.endpoint,
+      message: official?.message ?? "GET /version authentication failed",
+      http_status: official?.http_status ?? 0,
+      endpoint: official?.endpoint,
+      request_url: official?.endpoint,
+      username_used: HN_USER ? `${HN_USER.slice(0, 3)}***${HN_USER.slice(-2)}` : null,
+      date_used_for_token: official?.auth?.generated_timestamp_utc,
+      token_generation_method: official?.auth?.algorithm,
+      full_api_response: official?.full_api_response,
+      auth_tests: authTests,
       attempts,
       diag,
     };
@@ -850,16 +1033,11 @@ Deno.serve(async (req) => {
         .order("created_at", { ascending: true }).limit(1).maybeSingle();
 
       // Live auth diagnostics — generate a token NOW so admin can see exact values
-      const stamp = gmHourStamp();
-      let tokenLen = 0;
-      let tokenPreview: string | null = null;
+      let authDiagnostics: HostNeedAuthDiagnostics | null = null;
       let tokenError: string | null = null;
       if (HN_USER && HN_SECRET) {
         try {
-          const hex = await hmacSha256Hex(HN_SECRET, `${HN_USER}:${stamp}`);
-          const tok = b64(hex);
-          tokenLen = tok.length;
-          tokenPreview = `${tok.slice(0, 6)}…${tok.slice(-4)}`;
+          authDiagnostics = await HostNeedAuthService.generateToken(HN_ACTIVE_AUTH_VARIANT ?? HostNeedAuthService.DOCS_VARIANT);
         } catch (e) { tokenError = (e as Error).message; }
       }
       const usingMock = !activeProv || activeProv.is_mock || (activeProv.provider_type === "hostneed" && !hostneedReady());
@@ -868,20 +1046,32 @@ Deno.serve(async (req) => {
         result: {
           hostneed_credentials_present: hostneedReady(),
           hostneed_endpoint: HN_URL ?? null,
-          hostneed_username_preview: HN_USER ? `${HN_USER.slice(0, 3)}***` : null,
+          hostneed_username_preview: HN_USER ? `${HN_USER.slice(0, 3)}***${HN_USER.slice(-2)}` : null,
           auth_diagnostics: {
             api_url_detected: !!HN_URL,
             username_detected: !!HN_USER,
             secret_detected: !!HN_SECRET,
+            username_trimmed: HN_USER_RAW !== HN_USER,
+            secret_trimmed: HN_SECRET_RAW !== HN_SECRET,
             api_url_length: HN_URL?.length ?? 0,
             username_length: HN_USER?.length ?? 0,
             secret_length: HN_SECRET?.length ?? 0,
-            generated_timestamp_utc: stamp,
-            server_time_utc: new Date().toISOString(),
-            token_length: tokenLen,
-            token_preview: tokenPreview,
+            generated_timestamp_utc: authDiagnostics?.generated_timestamp_utc ?? null,
+            local_timestamp: authDiagnostics?.local_timestamp ?? null,
+            server_time_utc: authDiagnostics?.server_time_utc ?? new Date().toISOString(),
+            raw_string_used_for_signing: authDiagnostics?.raw_string_used_for_signing ?? null,
+            hmac_data_description: authDiagnostics?.hmac_data_description ?? null,
+            hmac_key_description: authDiagnostics?.hmac_key_description ?? null,
+            generated_signature: authDiagnostics?.generated_signature ?? null,
+            generated_token: authDiagnostics?.generated_token ?? null,
+            token_length: authDiagnostics?.token_length ?? 0,
+            token_preview: authDiagnostics?.token_preview ?? null,
+            token_sha256_fingerprint: authDiagnostics?.token_sha256_fingerprint ?? null,
+            endpoint_shape_valid: authDiagnostics?.endpoint_shape_valid ?? HostNeedAuthService.endpointShapeValid(),
+            endpoint_expected_suffix: HostNeedAuthService.EXPECTED_ENDPOINT_SUFFIX,
+            active_auth_variant: HN_ACTIVE_AUTH_VARIANT ?? HostNeedAuthService.DOCS_VARIANT,
             token_error: tokenError,
-            algorithm: "base64( hex( hmac_sha256( secret, `${username}:${gmdate('y-m-d H')}` ) ) )",
+            algorithm: authDiagnostics?.algorithm ?? "base64_encode(hash_hmac('sha256', HOSTNEED_API_SECRET, HOSTNEED_USERNAME . ':' . gmdate('y-m-d H')))",
           },
           current_provider_mode: usingMock ? "mock" : (activeProv?.provider_type ?? "mock"),
           active_provider: activeProv ?? null,

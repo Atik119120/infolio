@@ -295,7 +295,7 @@ function buildRoutePath(route: HnRoute, domain?: string): string {
 async function hnCall(
   route: HnRoute | string,
   params: Record<string, any> = {},
-  opts: { domain?: string; attempt?: number } = {},
+  opts: { domain?: string; attempt?: number; authVariant?: HostNeedAuthVariantId } = {},
 ): Promise<any> {
   const attempt = opts.attempt ?? 1;
   if (!HN_URL) throw new HostneedError("Invalid endpoint", "HOSTNEED_API_URL is not set", "", 0, "");
@@ -310,7 +310,7 @@ async function hnCall(
   let headers: Record<string, string>;
   let authDiagnostics: HostNeedAuthDiagnostics;
   try {
-    const auth = await HostNeedAuthService.headers(r.method);
+    const auth = await HostNeedAuthService.headers(r.method, opts.authVariant);
     headers = auth.headers;
     authDiagnostics = auth.auth;
   } catch (e) {

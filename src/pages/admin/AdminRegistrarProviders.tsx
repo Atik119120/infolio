@@ -8,7 +8,7 @@ import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
 import type { RegistrarProvider } from "@/lib/registrar/types";
 import { testConnection, getProviderStatus } from "@/lib/registrar/api";
-import { Server, CheckCircle2, AlertTriangle, Plug, Loader2, RefreshCw, Bug } from "lucide-react";
+import { Server, CheckCircle2, AlertTriangle, Plug, Loader2, RefreshCw, Bug, ClipboardCopy } from "lucide-react";
 
 export default function AdminRegistrarProviders() {
   const [providers, setProviders] = useState<RegistrarProvider[]>([]);
@@ -63,6 +63,16 @@ export default function AdminRegistrarProviders() {
       console.error("[testConnection] threw", e);
       toast.error(e?.message ?? "Test failed", { duration: 14000 });
     } finally { setTesting(false); }
+  };
+
+  const copyDebugReport = async () => {
+    const report = {
+      generated_at: new Date().toISOString(),
+      provider_status: status,
+      last_connection_test: lastTest,
+    };
+    await navigator.clipboard.writeText(JSON.stringify(report, null, 2));
+    toast.success("Debug report copied");
   };
 
 
@@ -150,10 +160,15 @@ export default function AdminRegistrarProviders() {
             <Bug className="w-4 h-4 text-orange-400" />
             <h2 className="text-lg font-medium text-white">HostNeed Debug Panel</h2>
           </div>
-          <Button size="sm" variant="outline" className="border-slate-700 text-slate-300"
-            onClick={async () => { const s = await getProviderStatus(); setStatus(s); toast.success("Refreshed"); }}>
-            <RefreshCw className="w-3 h-3 mr-1" /> Refresh
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button size="sm" variant="outline" className="border-slate-700 text-slate-300" onClick={copyDebugReport}>
+              <ClipboardCopy className="w-3 h-3 mr-1" /> Copy Debug Report
+            </Button>
+            <Button size="sm" variant="outline" className="border-slate-700 text-slate-300"
+              onClick={async () => { const s = await getProviderStatus(); setStatus(s); toast.success("Refreshed"); }}>
+              <RefreshCw className="w-3 h-3 mr-1" /> Refresh
+            </Button>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4 text-xs">
@@ -201,19 +216,61 @@ export default function AdminRegistrarProviders() {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-2 pt-1">
               <div><span className="text-slate-500">Generated timestamp (UTC): </span><span className="font-mono text-slate-200">{status.auth_diagnostics.generated_timestamp_utc}</span></div>
+              <div><span className="text-slate-500">Local timestamp: </span><span className="font-mono text-slate-200">{status.auth_diagnostics.local_timestamp}</span></div>
               <div><span className="text-slate-500">Server time (UTC): </span><span className="font-mono text-slate-200">{status.auth_diagnostics.server_time_utc}</span></div>
               <div><span className="text-slate-500">Token length: </span><span className="font-mono text-slate-200">{status.auth_diagnostics.token_length}</span></div>
               <div><span className="text-slate-500">Token preview: </span><span className="font-mono text-slate-200">{status.auth_diagnostics.token_preview ?? "—"}</span></div>
               <div><span className="text-slate-500">Provider mode: </span><span className="font-mono text-slate-200">{status.current_provider_mode}</span></div>
+              <div><span className="text-slate-500">Auth variant: </span><span className="font-mono text-slate-200">{status.auth_diagnostics.active_auth_variant}</span></div>
+              <div><span className="text-slate-500">Endpoint shape: </span><span className="font-mono text-slate-200">{status.auth_diagnostics.endpoint_shape_valid ? "valid" : "invalid"}</span></div>
               {status.auth_diagnostics.token_error && (
                 <div className="text-red-300 md:col-span-2">Token error: {status.auth_diagnostics.token_error}</div>
               )}
+            </div>
+            <div className="grid grid-cols-1 gap-2 pt-1">
+              <div><span className="text-slate-500">Raw string used for signing: </span><span className="font-mono text-slate-200 break-all">{status.auth_diagnostics.raw_string_used_for_signing ?? "—"}</span></div>
+              <div><span className="text-slate-500">HMAC data: </span><span className="font-mono text-slate-200 break-all">{status.auth_diagnostics.hmac_data_description ?? "—"}</span></div>
+              <div><span className="text-slate-500">HMAC key: </span><span className="font-mono text-slate-200 break-all">{status.auth_diagnostics.hmac_key_description ?? "—"}</span></div>
+              <div><span className="text-slate-500">Generated signature: </span><span className="font-mono text-slate-200 break-all">{status.auth_diagnostics.generated_signature ?? "—"}</span></div>
+              <div><span className="text-slate-500">Generated token: </span><span className="font-mono text-slate-200 break-all">{status.auth_diagnostics.generated_token ?? "—"}</span></div>
+              <div><span className="text-slate-500">Token fingerprint: </span><span className="font-mono text-slate-200 break-all">{status.auth_diagnostics.token_sha256_fingerprint ?? "—"}</span></div>
             </div>
             <div className="text-slate-500 break-all pt-1">
               Algorithm: <span className="font-mono text-slate-400">{status.auth_diagnostics.algorithm}</span>
             </div>
             <div className="text-slate-500">
-              Headers sent: <span className="font-mono text-slate-400">{`{ username: "${status.hostneed_username_preview ?? "?"}", token: "<base64-hmac>" }`}</span>
+              Headers sent: <span className="font-mono text-slate-400">{`{ username: "${status.hostneed_username_preview ?? "?"}", token: "${status.auth_diagnostics.token_preview ?? "<base64-hmac>"}" }`}</span>
+            </div>
+          </div>
+        )}
+
+        {lastTest?.auth_tests?.length > 0 && (
+          <div className="mb-4">
+            <div className="text-xs text-slate-400 mb-1">Authentication Test</div>
+            <div className="rounded bg-slate-950/80 border border-slate-800 divide-y divide-slate-800 text-xs">
+              {lastTest.auth_tests.map((t: any, i: number) => (
+                <div key={i} className="px-3 py-3 space-y-1">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <Badge className={t.ok ? "bg-green-500/20 text-green-300 border-green-500/30" : "bg-red-500/20 text-red-300 border-red-500/30"}>
+                      {t.http_status || "ERR"}
+                    </Badge>
+                    <span className="font-mono text-slate-200">{t.variant}</span>
+                    <span className="text-slate-500">{t.action}</span>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-1 text-slate-400">
+                    <div>Username validation: <span className="text-slate-200">{t.username_validation ? "pass" : "fail"}</span></div>
+                    <div>Secret validation: <span className="text-slate-200">{t.secret_validation ? "pass" : "fail"}</span></div>
+                    <div>Token validation: <span className="text-slate-200">{t.token_validation ? "pass" : "fail"}</span></div>
+                    <div>Server time validation: <span className="text-slate-200">{t.server_time_validation ? "pass" : "fail"}</span></div>
+                    <div className="md:col-span-2">Time difference check: <span className="text-slate-200">{t.time_difference_check}</span></div>
+                  </div>
+                  <div className="text-slate-500 break-all">URL: <span className="font-mono text-slate-300">{t.endpoint}</span></div>
+                  <div className="text-slate-500 break-all">Date used: <span className="font-mono text-slate-300">{t.auth?.generated_timestamp_utc ?? "—"}</span></div>
+                  <div className="text-slate-500 break-all">Method: <span className="font-mono text-slate-300">{t.auth?.algorithm ?? "—"}</span></div>
+                  {t.diagnosis?.length > 0 && <div className="text-yellow-300">Diagnosis: {t.diagnosis.join(" ")}</div>}
+                  {t.full_api_response && <pre className="font-mono text-red-200 whitespace-pre-wrap break-all max-h-28 overflow-auto">{t.full_api_response}</pre>}
+                </div>
+              ))}
             </div>
           </div>
         )}

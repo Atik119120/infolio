@@ -218,14 +218,19 @@ interface HnDebugEntry {
   at: string;
   action: string;
   url: string;
+  base_endpoint: string;
+  action_path: string;
   request_body: string;
   request_headers_safe: Record<string, string>;
+  request_headers_exact: Record<string, string>;
   http_status: number;
+  response_headers: Record<string, string>;
   response_body: string;
   duration_ms: number;
   ok: boolean;
   error_kind?: string;
   error_message?: string;
+  auth_diagnostics?: HostNeedAuthDiagnostics;
 }
 const HN_DEBUG: HnDebugEntry[] = [];
 function pushDebug(e: HnDebugEntry) {
@@ -303,8 +308,11 @@ async function hnCall(
     : route;
 
   let headers: Record<string, string>;
+  let authDiagnostics: HostNeedAuthDiagnostics;
   try {
-    headers = await buildHostneedHeaders();
+    const auth = await HostNeedAuthService.headers(r.method);
+    headers = auth.headers;
+    authDiagnostics = auth.auth;
   } catch (e) {
     throw new HostneedError("Invalid token generation", (e as Error).message, HN_URL, 0, "");
   }
@@ -320,9 +328,11 @@ async function hnCall(
     fetchInit = { method: "POST", headers, body: formBody };
   }
 
-  const safeHeaders = { ...headers, token: headers.token ? `${headers.token.slice(0, 6)}…(${headers.token.length})` : "" };
+  const safeHeaders = { ...headers, token: headers.token ? `${headers.token.slice(0, 8)}…${headers.token.slice(-6)} (${headers.token.length})` : "" };
+  const exactHeaders = { username: headers.username, token: headers.token, ...(headers["Content-Type"] ? { "Content-Type": headers["Content-Type"] } : {}) };
   const action = `${r.method} ${r.path}`;
   console.log(`[hostneed] -> ${r.method} ${url} (attempt ${attempt}) body=${formBody.slice(0, 200)}`);
+  console.log(`[hostneed.auth] variant=${authDiagnostics.variant_id} stamp=${authDiagnostics.generated_timestamp_utc} raw=${authDiagnostics.raw_string_used_for_signing} tokenLen=${authDiagnostics.token_length} endpointOk=${authDiagnostics.endpoint_shape_valid}`);
 
   const started = Date.now();
   let res: Response;
@@ -337,25 +347,30 @@ async function hnCall(
       ? "Timeout" : "Network error";
     console.error(`[hostneed] ${kind}: ${msg}`);
     pushDebug({
-      at: new Date().toISOString(), action, url, request_body: formBody,
-      request_headers_safe: safeHeaders, http_status: 0, response_body: "",
+      at: new Date().toISOString(), action, url, base_endpoint: HN_URL, action_path: resolvedPath, request_body: formBody,
+      request_headers_safe: safeHeaders, request_headers_exact: exactHeaders, http_status: 0, response_headers: {}, response_body: "",
       duration_ms: Date.now() - started, ok: false, error_kind: kind, error_message: msg,
+      auth_diagnostics: authDiagnostics,
     });
     if (attempt < 2) return hnCall(r, params, { ...opts, attempt: attempt + 1 });
     throw new HostneedError(kind, msg, url, 0, "");
   }
 
   const text = await res.text();
+  const responseHeaders = Object.fromEntries(res.headers.entries());
   console.log(`[hostneed] <- HTTP ${res.status} ${url} bodyLen=${text.length}`);
+  console.log(`[hostneed] response headers: ${JSON.stringify(responseHeaders)}`);
   console.log(`[hostneed] body: ${text.slice(0, 500)}`);
 
   let parsed: any = null;
   try { parsed = JSON.parse(text); } catch { /* not json */ }
 
   const baseDebug = {
-    at: new Date().toISOString(), action, url, request_body: formBody,
-    request_headers_safe: safeHeaders, http_status: res.status,
+    at: new Date().toISOString(), action, url, base_endpoint: HN_URL, action_path: resolvedPath, request_body: formBody,
+    request_headers_safe: safeHeaders, request_headers_exact: exactHeaders, http_status: res.status,
+    response_headers: responseHeaders,
     response_body: text.slice(0, 2000), duration_ms: Date.now() - started,
+    auth_diagnostics: authDiagnostics,
   };
 
   if (!res.ok) {

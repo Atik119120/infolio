@@ -1032,16 +1032,11 @@ Deno.serve(async (req) => {
         .order("created_at", { ascending: true }).limit(1).maybeSingle();
 
       // Live auth diagnostics — generate a token NOW so admin can see exact values
-      const stamp = gmHourStamp();
-      let tokenLen = 0;
-      let tokenPreview: string | null = null;
+      let authDiagnostics: HostNeedAuthDiagnostics | null = null;
       let tokenError: string | null = null;
       if (HN_USER && HN_SECRET) {
         try {
-          const hex = await hmacSha256Hex(HN_SECRET, `${HN_USER}:${stamp}`);
-          const tok = b64(hex);
-          tokenLen = tok.length;
-          tokenPreview = `${tok.slice(0, 6)}…${tok.slice(-4)}`;
+          authDiagnostics = await HostNeedAuthService.generateToken(HN_ACTIVE_AUTH_VARIANT ?? HostNeedAuthService.DOCS_VARIANT);
         } catch (e) { tokenError = (e as Error).message; }
       }
       const usingMock = !activeProv || activeProv.is_mock || (activeProv.provider_type === "hostneed" && !hostneedReady());
@@ -1050,20 +1045,32 @@ Deno.serve(async (req) => {
         result: {
           hostneed_credentials_present: hostneedReady(),
           hostneed_endpoint: HN_URL ?? null,
-          hostneed_username_preview: HN_USER ? `${HN_USER.slice(0, 3)}***` : null,
+          hostneed_username_preview: HN_USER ? `${HN_USER.slice(0, 3)}***${HN_USER.slice(-2)}` : null,
           auth_diagnostics: {
             api_url_detected: !!HN_URL,
             username_detected: !!HN_USER,
             secret_detected: !!HN_SECRET,
+            username_trimmed: HN_USER_RAW !== HN_USER,
+            secret_trimmed: HN_SECRET_RAW !== HN_SECRET,
             api_url_length: HN_URL?.length ?? 0,
             username_length: HN_USER?.length ?? 0,
             secret_length: HN_SECRET?.length ?? 0,
-            generated_timestamp_utc: stamp,
-            server_time_utc: new Date().toISOString(),
-            token_length: tokenLen,
-            token_preview: tokenPreview,
+            generated_timestamp_utc: authDiagnostics?.generated_timestamp_utc ?? null,
+            local_timestamp: authDiagnostics?.local_timestamp ?? null,
+            server_time_utc: authDiagnostics?.server_time_utc ?? new Date().toISOString(),
+            raw_string_used_for_signing: authDiagnostics?.raw_string_used_for_signing ?? null,
+            hmac_data_description: authDiagnostics?.hmac_data_description ?? null,
+            hmac_key_description: authDiagnostics?.hmac_key_description ?? null,
+            generated_signature: authDiagnostics?.generated_signature ?? null,
+            generated_token: authDiagnostics?.generated_token ?? null,
+            token_length: authDiagnostics?.token_length ?? 0,
+            token_preview: authDiagnostics?.token_preview ?? null,
+            token_sha256_fingerprint: authDiagnostics?.token_sha256_fingerprint ?? null,
+            endpoint_shape_valid: authDiagnostics?.endpoint_shape_valid ?? HostNeedAuthService.endpointShapeValid(),
+            endpoint_expected_suffix: HostNeedAuthService.EXPECTED_ENDPOINT_SUFFIX,
+            active_auth_variant: HN_ACTIVE_AUTH_VARIANT ?? HostNeedAuthService.DOCS_VARIANT,
             token_error: tokenError,
-            algorithm: "base64( hex( hmac_sha256( secret, `${username}:${gmdate('y-m-d H')}` ) ) )",
+            algorithm: authDiagnostics?.algorithm ?? "base64_encode(hash_hmac('sha256', HOSTNEED_API_SECRET, HOSTNEED_USERNAME . ':' . gmdate('y-m-d H')))",
           },
           current_provider_mode: usingMock ? "mock" : (activeProv?.provider_type ?? "mock"),
           active_provider: activeProv ?? null,

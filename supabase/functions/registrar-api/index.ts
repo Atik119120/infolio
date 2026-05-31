@@ -21,7 +21,7 @@ const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
 const SUPABASE_ANON_KEY = Deno.env.get("SUPABASE_ANON_KEY")!;
 const SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 
-const HN_URL = Deno.env.get("HOSTNEED_API_URL");
+const HN_URL = Deno.env.get("HOSTNEED_API_URL")?.trim().replace(/\/+$/, "");
 const HN_USER = Deno.env.get("HOSTNEED_USERNAME");
 const HN_SECRET = Deno.env.get("HOSTNEED_API_SECRET");
 
@@ -60,40 +60,126 @@ async function logActivity(admin: any, params: {
 }
 
 // ============================================================
-// HostNeed signing + transport
+// HostNeed Authentication Service
 // ============================================================
-// token = base64( hmac_sha256( HOSTNEED_API_SECRET, `${USERNAME}:${gmdate('y-m-d H')}` ) )
-// gmdate('y-m-d H') -> 2-digit year, e.g. 26-05-29 04
-function gmHourStamp(d = new Date()): string {
-  const yy = String(d.getUTCFullYear()).slice(-2);
-  const mm = String(d.getUTCMonth() + 1).padStart(2, "0");
-  const dd = String(d.getUTCDate()).padStart(2, "0");
-  const hh = String(d.getUTCHours()).padStart(2, "0");
-  return `${yy}-${mm}-${dd} ${hh}`;
+type HostNeedAuthVariantId =
+  | "docs_secret_data_userstamp_key_hex_b64"
+  | "php_conventional_userstamp_data_secret_key_hex_b64"
+  | "docs_secret_data_userstamp_key_raw_b64"
+  | "php_conventional_userstamp_data_secret_key_raw_b64"
+  | "docs_previous_utc_hour_hex_b64"
+  | "docs_next_utc_hour_hex_b64";
+
+interface HostNeedAuthDiagnostics {
+  variant_id: HostNeedAuthVariantId;
+  algorithm: string;
+  generated_timestamp_utc: string;
+  local_timestamp: string;
+  server_time_utc: string;
+  raw_string_used_for_signing: string;
+  hmac_data_description: string;
+  hmac_key_description: string;
+  generated_signature: string;
+  generated_token: string;
+  token_length: number;
+  token_preview: string;
+  token_sha256_fingerprint: string;
+  endpoint_shape_valid: boolean;
+  endpoint_expected_suffix: string;
 }
 
-async function hmacSha256Hex(key: string, msg: string): Promise<string> {
-  const enc = new TextEncoder();
-  const ck = await crypto.subtle.importKey(
-    "raw", enc.encode(key), { name: "HMAC", hash: "SHA-256" }, false, ["sign"],
-  );
-  const sig = await crypto.subtle.sign("HMAC", ck, enc.encode(msg));
-  // PHP hash_hmac returns hex string by default; we base64-encode the hex (matches the sample)
-  return Array.from(new Uint8Array(sig)).map((b) => b.toString(16).padStart(2, "0")).join("");
-}
+let HN_ACTIVE_AUTH_VARIANT: HostNeedAuthVariantId | null = null;
 
-function b64(str: string): string {
-  return btoa(str);
-}
+class HostNeedAuthService {
+  static readonly DOCS_VARIANT: HostNeedAuthVariantId = "docs_secret_data_userstamp_key_hex_b64";
+  static readonly EXPECTED_ENDPOINT_SUFFIX = "/modules/addons/DomainsReseller/api/index.php";
 
-async function buildHostneedHeaders(): Promise<Record<string, string>> {
-  if (!HN_URL || !HN_USER || !HN_SECRET) {
-    throw new Error("HostNeed credentials are not configured");
+  static utcHourStamp(d = new Date(), offsetHours = 0): string {
+    const shifted = new Date(d.getTime() + offsetHours * 60 * 60 * 1000);
+    const yy = String(shifted.getUTCFullYear()).slice(-2);
+    const mm = String(shifted.getUTCMonth() + 1).padStart(2, "0");
+    const dd = String(shifted.getUTCDate()).padStart(2, "0");
+    const hh = String(shifted.getUTCHours()).padStart(2, "0");
+    return `${yy}-${mm}-${dd} ${hh}`;
   }
-  const stamp = gmHourStamp();
-  const hex = await hmacSha256Hex(HN_SECRET, `${HN_USER}:${stamp}`);
-  const token = b64(hex);
-  return { username: HN_USER, token, "Content-Type": "application/x-www-form-urlencoded" };
+
+  static localHourStamp(d = new Date()): string {
+    const yy = String(d.getFullYear()).slice(-2);
+    const mm = String(d.getMonth() + 1).padStart(2, "0");
+    const dd = String(d.getDate()).padStart(2, "0");
+    const hh = String(d.getHours()).padStart(2, "0");
+    return `${yy}-${mm}-${dd} ${hh}`;
+  }
+
+  static endpointShapeValid(): boolean {
+    return !!HN_URL && HN_URL.endsWith(this.EXPECTED_ENDPOINT_SUFFIX);
+  }
+
+  private static bytesToHex(bytes: ArrayBuffer): string {
+    return Array.from(new Uint8Array(bytes)).map((b) => b.toString(16).padStart(2, "0")).join("");
+  }
+
+  private static bytesToB64(bytes: ArrayBuffer): string {
+    let binary = "";
+    for (const b of new Uint8Array(bytes)) binary += String.fromCharCode(b);
+    return btoa(binary);
+  }
+
+  private static async hmacSha256(key: string, data: string): Promise<ArrayBuffer> {
+    const enc = new TextEncoder();
+    const cryptoKey = await crypto.subtle.importKey(
+      "raw", enc.encode(key), { name: "HMAC", hash: "SHA-256" }, false, ["sign"],
+    );
+    return crypto.subtle.sign("HMAC", cryptoKey, enc.encode(data));
+  }
+
+  private static async sha256Hex(value: string): Promise<string> {
+    return this.bytesToHex(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(value)));
+  }
+
+  static async generateToken(variant: HostNeedAuthVariantId = HN_ACTIVE_AUTH_VARIANT ?? this.DOCS_VARIANT): Promise<HostNeedAuthDiagnostics> {
+    if (!HN_USER || !HN_SECRET) throw new Error("HOSTNEED_USERNAME or HOSTNEED_API_SECRET is not configured");
+
+    const now = new Date();
+    const offset = variant === "docs_previous_utc_hour_hex_b64" ? -1 : variant === "docs_next_utc_hour_hex_b64" ? 1 : 0;
+    const stamp = this.utcHourStamp(now, offset);
+    const userStamp = `${HN_USER}:${stamp}`;
+    const useDocsOrder = variant.startsWith("docs_");
+    const useRawOutput = variant.includes("raw_b64");
+    const data = useDocsOrder ? HN_SECRET : userStamp;
+    const key = useDocsOrder ? userStamp : HN_SECRET;
+    const signatureBytes = await this.hmacSha256(key, data);
+    const signatureHex = this.bytesToHex(signatureBytes);
+    const token = useRawOutput ? this.bytesToB64(signatureBytes) : btoa(signatureHex);
+
+    return {
+      variant_id: variant,
+      algorithm: useDocsOrder
+        ? "base64_encode(hash_hmac('sha256', HOSTNEED_API_SECRET, HOSTNEED_USERNAME . ':' . gmdate('y-m-d H')))"
+        : "base64_encode(hash_hmac('sha256', HOSTNEED_USERNAME . ':' . gmdate('y-m-d H'), HOSTNEED_API_SECRET))",
+      generated_timestamp_utc: stamp,
+      local_timestamp: this.localHourStamp(now),
+      server_time_utc: now.toISOString(),
+      raw_string_used_for_signing: userStamp,
+      hmac_data_description: useDocsOrder ? `HOSTNEED_API_SECRET(len ${HN_SECRET.length})` : userStamp,
+      hmac_key_description: useDocsOrder ? userStamp : `HOSTNEED_API_SECRET(len ${HN_SECRET.length})`,
+      generated_signature: useRawOutput ? signatureHex : signatureHex,
+      generated_token: token,
+      token_length: token.length,
+      token_preview: `${token.slice(0, 8)}…${token.slice(-6)}`,
+      token_sha256_fingerprint: await this.sha256Hex(token),
+      endpoint_shape_valid: this.endpointShapeValid(),
+      endpoint_expected_suffix: this.EXPECTED_ENDPOINT_SUFFIX,
+    };
+  }
+
+  static async headers(method: "GET" | "POST", variant?: HostNeedAuthVariantId): Promise<{ headers: Record<string, string>; auth: HostNeedAuthDiagnostics }> {
+    if (!HN_URL || !HN_USER || !HN_SECRET) throw new Error("HostNeed credentials are not configured");
+    const auth = await this.generateToken(variant);
+    const headers: Record<string, string> = { username: HN_USER, token: auth.generated_token };
+    if (method === "POST") headers["Content-Type"] = "application/x-www-form-urlencoded";
+    return { headers, auth };
+  }
 }
 
 function formEncode(params: Record<string, any>, prefix?: string): string {

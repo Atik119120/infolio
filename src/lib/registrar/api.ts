@@ -152,6 +152,7 @@ export const getProviderStatus = () =>
     active_provider: any;
     using_mock: boolean;
     providers: any[];
+    auth_diagnostics: any;
     last_request: any;
     recent_requests: any[];
   }>("providerStatus");

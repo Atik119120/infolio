@@ -320,6 +320,14 @@ export default function AdminRegistrarProviders() {
                 <pre className="font-mono text-slate-300 break-all whitespace-pre-wrap">{JSON.stringify(status.last_request.request_headers_safe, null, 2)}</pre>
               </div>
               <div>
+                <div className="text-slate-500">Exact Headers Sent</div>
+                <pre className="font-mono text-slate-300 break-all whitespace-pre-wrap">{JSON.stringify(status.last_request.request_headers_exact, null, 2)}</pre>
+              </div>
+              <div>
+                <div className="text-slate-500">Response Headers</div>
+                <pre className="font-mono text-slate-300 break-all whitespace-pre-wrap">{JSON.stringify(status.last_request.response_headers, null, 2)}</pre>
+              </div>
+              <div>
                 <div className="text-slate-500">Response Body</div>
                 <pre className="font-mono text-slate-300 break-all whitespace-pre-wrap max-h-64 overflow-auto">{status.last_request.response_body || "(empty)"}</pre>
               </div>

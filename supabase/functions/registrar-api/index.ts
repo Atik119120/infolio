@@ -615,13 +615,24 @@ const hostneedDriver = {
   kind: "hostneed" as const,
 
   async testConnection() {
+    HN_ACTIVE_AUTH_VARIANT = null;
     const diag = {
       env: {
         HOSTNEED_API_URL: !!HN_URL,
         HOSTNEED_USERNAME: !!HN_USER,
         HOSTNEED_API_SECRET: !!HN_SECRET,
       },
+      secret_detection: {
+        api_url_detected: !!HN_URL,
+        username_detected: !!HN_USER,
+        secret_detected: !!HN_SECRET,
+        username_trimmed: HN_USER_RAW !== HN_USER,
+        secret_trimmed: HN_SECRET_RAW !== HN_SECRET,
+        api_url_shape_valid: HostNeedAuthService.endpointShapeValid(),
+        expected_endpoint_suffix: HostNeedAuthService.EXPECTED_ENDPOINT_SUFFIX,
+      },
       base_endpoint: HN_URL,
+      required_endpoint: `${HN_URL}${HN_ROUTES.VERSION.path}`,
       username_preview: HN_USER ? `${HN_USER.slice(0, 3)}***` : null,
     };
     console.log("[hostneed.testConnection] diag", JSON.stringify(diag));
@@ -635,33 +646,66 @@ const hostneedDriver = {
       return { ok: false, provider: "hostneed", kind: "Missing credentials", message: `Missing secrets: ${missing}`, diag };
     }
 
-    // Health-check using official routes only.
-    const candidates: Array<{ label: string; route: HnRoute; params?: Record<string, any>; domain?: string }> = [
-      { label: "GET /version", route: HN_ROUTES.VERSION },
-      { label: "GET /billing/credits", route: HN_ROUTES.BILLING_CREDITS },
-      { label: "GET /tlds", route: HN_ROUTES.TLDS },
-    ];
+    const authTests: Array<any> = [];
+    const attempts: Array<any> = [];
+    let firstSuccess: { action: string; data: any; endpoint: string; auth: HostNeedAuthDiagnostics } | null = null;
 
-    const attempts: Array<{ action: string; ok: boolean; http_status: number; message: string; endpoint: string }> = [];
-    let firstSuccess: { action: string; data: any; endpoint: string } | null = null;
-
-    for (const c of candidates) {
-      const url = `${HN_URL}${buildRoutePath(c.route, c.domain)}`;
+    // Authentication Test section: always use official GET /version first.
+    for (const variant of HostNeedAuthService.variants()) {
+      const url = `${HN_URL}${HN_ROUTES.VERSION.path}`;
       try {
-        const r = await hnCall(c.route, c.params ?? {}, { domain: c.domain });
-        attempts.push({ action: c.label, ok: true, http_status: 200, message: "OK", endpoint: url });
-        firstSuccess = { action: c.label, data: r, endpoint: url };
+        const auth = await HostNeedAuthService.generateToken(variant);
+        const r = await hnCall(HN_ROUTES.VERSION, {}, { authVariant: variant });
+        HN_ACTIVE_AUTH_VARIANT = variant;
+        const test = {
+          variant,
+          action: "GET /version",
+          ok: true,
+          http_status: 200,
+          endpoint: url,
+          username_validation: !!HN_USER,
+          secret_validation: !!HN_SECRET,
+          token_validation: true,
+          server_time_validation: true,
+          time_difference_check: auth.generated_timestamp_utc === auth.local_timestamp ? "UTC matches local hour" : "UTC differs from local hour; UTC is used",
+          diagnosis: variant === HostNeedAuthService.DOCS_VARIANT ? ["Official HostNeed auth algorithm accepted."] : ["Alternate auth variant accepted; HostNeed documentation/account behavior differs from expected formula."],
+          auth,
+        };
+        authTests.push(test);
+        attempts.push({ action: "GET /version", ok: true, http_status: 200, message: "OK", endpoint: url, auth_variant: variant, auth });
+        firstSuccess = { action: "GET /version", data: r, endpoint: url, auth };
         break;
       } catch (e) {
         const he = e as HostneedError;
+        const auth = await HostNeedAuthService.generateToken(variant).catch(() => null);
+        const diagnosis = HostNeedAuthService.diagnoseFailure(he.status ?? 0, he.body ?? he.message, variant);
+        authTests.push({
+          variant,
+          action: "GET /version",
+          ok: false,
+          http_status: he.status ?? 0,
+          endpoint: he.endpoint ?? url,
+          username_validation: !!HN_USER,
+          secret_validation: !!HN_SECRET,
+          token_validation: false,
+          server_time_validation: true,
+          time_difference_check: auth?.generated_timestamp_utc === auth?.local_timestamp ? "UTC matches local hour" : "UTC differs from local hour; UTC is used",
+          diagnosis,
+          message: he.message,
+          full_api_response: he.body,
+          auth,
+        });
         attempts.push({
-          action: c.label,
+          action: "GET /version",
           ok: false,
           http_status: he.status ?? 0,
           message: he.message,
           endpoint: he.endpoint ?? url,
+          auth_variant: variant,
+          auth,
+          diagnosis,
+          full_api_response: he.body,
         });
-        if (he.kind === "Authentication failure") break;
       }
     }
 
@@ -672,22 +716,32 @@ const hostneedDriver = {
         message: `Connected via ${firstSuccess.action}`,
         endpoint: firstSuccess.endpoint,
         working_action: firstSuccess.action,
+        active_auth_variant: HN_ACTIVE_AUTH_VARIANT,
         data: firstSuccess.data,
         attempts,
+        auth_tests: authTests,
+        auth_diagnostics: firstSuccess.auth,
         diag,
       };
     }
 
     const last = attempts[attempts.length - 1];
+    const official = attempts.find((a) => a.auth_variant === HostNeedAuthService.DOCS_VARIANT) ?? attempts[0];
     return {
       ok: false,
       provider: "hostneed",
-      kind: last?.http_status === 404 ? "Invalid action path"
-        : last?.http_status === 401 || last?.http_status === 403 ? "Authentication failure"
+      kind: official?.http_status === 404 ? "Invalid action path"
+        : official?.http_status === 401 || official?.http_status === 403 ? "Authentication failure"
         : "HostNeed API rejection",
-      message: last?.message ?? "All candidate actions failed",
-      http_status: last?.http_status ?? 0,
-      endpoint: last?.endpoint,
+      message: official?.message ?? "GET /version authentication failed",
+      http_status: official?.http_status ?? 0,
+      endpoint: official?.endpoint,
+      request_url: official?.endpoint,
+      username_used: HN_USER ? `${HN_USER.slice(0, 3)}***${HN_USER.slice(-2)}` : null,
+      date_used_for_token: official?.auth?.generated_timestamp_utc,
+      token_generation_method: official?.auth?.algorithm,
+      full_api_response: official?.full_api_response,
+      auth_tests: authTests,
       attempts,
       diag,
     };

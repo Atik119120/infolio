@@ -335,7 +335,7 @@ async function hnCall(
     : route;
 
   let headers: Record<string, string>;
-  let authDiagnostics: HostNeedAuthDiagnostics;
+  let authDiagnostics: HostNeedAuthDiagnostics | undefined;
   try {
     const auth = await HostNeedAuthService.headers(r.method, opts.authVariant);
     headers = auth.headers;

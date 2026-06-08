@@ -49,6 +49,7 @@ export default function Dashboard() {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const { features } = useSiteFeatures();
 
   useEffect(() => {
     if (user) {

@@ -22,6 +22,7 @@ export default function BuilderEditor() {
   const { id } = useParams<{ id: string }>();
   const { user } = useAuth();
   const navigate = useNavigate();
+  const { features, loading: featuresLoading } = useSiteFeatures();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [publishing, setPublishing] = useState(false);

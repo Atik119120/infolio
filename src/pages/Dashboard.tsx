@@ -61,11 +61,9 @@ export default function Dashboard() {
     const prevBody = document.body.style.backgroundColor;
     document.documentElement.style.backgroundColor = "#000";
     document.body.style.backgroundColor = "#000";
-    document.body.classList.add("dashboard-bw");
     return () => {
       document.documentElement.style.backgroundColor = prevHtml;
       document.body.style.backgroundColor = prevBody;
-      document.body.classList.remove("dashboard-bw");
     };
   }, []);
 
@@ -95,8 +93,6 @@ export default function Dashboard() {
     { icon: Wand2, label: "Page Builder", path: "/dashboard/builder" },
     { icon: BarChart3, label: "Analytics", path: "/dashboard/analytics" },
     { icon: Globe2, label: "Domain Status", path: "/dashboard/domain-status" },
-    { icon: Globe2, label: "My Domains", path: "/dashboard/my-domains" },
-    { icon: ShoppingBag, label: "Buy Domain", path: "/dashboard/buy-domain" },
     { icon: Rocket, label: "Deploy", path: "/dashboard/deploy" },
     { icon: Settings, label: "Settings", path: "/dashboard/settings" },
   ];

@@ -73,10 +73,6 @@ export default function AdminDashboard() {
     { icon: Palette, label: "Themes", path: "/admin/themes" },
     { icon: Code2, label: "Custom Themes", path: "/admin/custom-themes" },
     { icon: Crown, label: "Pro Plans", path: "/admin/plans" },
-    { icon: Sparkles, label: "Registrar · Domains", path: "/admin/registrar/domains" },
-    { icon: Sparkles, label: "Registrar · Pricing", path: "/admin/registrar/pricing" },
-    { icon: Sparkles, label: "Registrar · Providers", path: "/admin/registrar/providers" },
-    { icon: Sparkles, label: "Registrar · Logs", path: "/admin/registrar/logs" },
     { icon: Settings, label: "Site Settings", path: "/admin/site-settings" },
     { icon: Settings, label: "Settings", path: "/admin/settings" },
   ];

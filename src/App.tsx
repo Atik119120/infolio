@@ -22,7 +22,6 @@ const PortfolioEdit = lazy(() => import("./pages/PortfolioEdit"));
 const DashboardSettings = lazy(() => import("./pages/DashboardSettings"));
 const DashboardPurchases = lazy(() => import("./pages/DashboardPurchases"));
 const DashboardDomainStatus = lazy(() => import("./pages/DashboardDomainStatus"));
-const DashboardBuyDomain = lazy(() => import("./pages/DashboardBuyDomain"));
 const DashboardDeploy = lazy(() => import("./pages/DashboardDeploy"));
 const DashboardAnalytics = lazy(() => import("./pages/DashboardAnalytics"));
 const PublicPortfolio = lazy(() => import("./pages/PublicPortfolio"));
@@ -45,15 +44,6 @@ const CustomizeTheme = lazy(() => import("./pages/CustomizeTheme"));
 const Features = lazy(() => import("./pages/Features"));
 const Pricing = lazy(() => import("./pages/Pricing"));
 const Faq = lazy(() => import("./pages/Faq"));
-const BuyDomain = lazy(() => import("./pages/BuyDomain"));
-const DashboardMyDomains = lazy(() => import("./pages/DashboardMyDomains"));
-const AdminRegistrarDomains = lazy(() => import("./pages/admin/AdminRegistrarDomains"));
-const AdminRegistrarPricing = lazy(() => import("./pages/admin/AdminRegistrarPricing"));
-const AdminRegistrarProviders = lazy(() => import("./pages/admin/AdminRegistrarProviders"));
-const AdminRegistrarLogs = lazy(() => import("./pages/admin/AdminRegistrarLogs"));
-const DashboardDomainDetail = lazy(() => import("./pages/DashboardDomainDetail"));
-const DashboardDomainCheckout = lazy(() => import("./pages/DashboardDomainCheckout"));
-
 
 const queryClient = new QueryClient();
 
@@ -82,7 +72,6 @@ const App = () => (
                 <Route path="/features" element={<Features />} />
                 <Route path="/pricing" element={<Pricing />} />
                 <Route path="/faq" element={<Faq />} />
-                <Route path="/buy-domain" element={<BuyDomain />} />
                 <Route path="/admin/login" element={<AdminAuth />} />
                 <Route path="/demo/:themeName" element={<ThemeDemo />} />
                 <Route path="/u/:username" element={<PublicPortfolio />} />
@@ -110,13 +99,8 @@ const App = () => (
                   <Route path="purchases" element={<DashboardPurchases />} />
                   <Route path="settings" element={<DashboardSettings />} />
                   <Route path="domain-status" element={<DashboardDomainStatus />} />
-                  <Route path="buy-domain" element={<DashboardBuyDomain />} />
                   <Route path="deploy" element={<DashboardDeploy />} />
                   <Route path="analytics" element={<DashboardAnalytics />} />
-                  <Route path="my-domains" element={<DashboardMyDomains />} />
-                  <Route path="domains/:id" element={<DashboardDomainDetail />} />
-                  <Route path="register-domain" element={<DashboardDomainCheckout />} />
-
                 </Route>
                 <Route path="/admin" element={
                   <AdminRoute>
@@ -130,10 +114,6 @@ const App = () => (
                   <Route path="plans" element={<AdminPlans />} />
                   <Route path="settings" element={<AdminSettings />} />
                   <Route path="site-settings" element={<AdminSiteSettings />} />
-                  <Route path="registrar/domains" element={<AdminRegistrarDomains />} />
-                  <Route path="registrar/pricing" element={<AdminRegistrarPricing />} />
-                  <Route path="registrar/providers" element={<AdminRegistrarProviders />} />
-                  <Route path="registrar/logs" element={<AdminRegistrarLogs />} />
                 </Route>
                 {/* Public portfolio at root: /:username (must be LAST) */}
                 <Route path="/:username" element={<PublicPortfolio />} />

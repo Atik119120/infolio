@@ -29,6 +29,7 @@ interface Page {
 export default function BuilderList() {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const { features } = useSiteFeatures();
   const [pages, setPages] = useState<Page[]>([]);
   const [loading, setLoading] = useState(true);
   const [creating, setCreating] = useState(false);

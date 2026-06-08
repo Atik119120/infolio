@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, Outlet, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+import { useSiteFeatures } from "@/hooks/useSiteFeatures";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";

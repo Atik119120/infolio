@@ -2,9 +2,10 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
-import { Plus, FileEdit, Trash2, ExternalLink, Globe, Loader2 } from "lucide-react";
+import { Plus, FileEdit, Trash2, ExternalLink, Globe, Loader2, Wrench } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { useSiteFeatures } from "@/hooks/useSiteFeatures";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,

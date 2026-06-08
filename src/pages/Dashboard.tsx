@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, Outlet, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+import { useSiteFeatures } from "@/hooks/useSiteFeatures";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -48,6 +49,7 @@ export default function Dashboard() {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const { features } = useSiteFeatures();
 
   useEffect(() => {
     if (user) {
@@ -86,7 +88,7 @@ export default function Dashboard() {
     navigate("/");
   };
 
-  const navItems = [
+  const allNavItems = [
     { icon: LayoutDashboard, label: "Overview", path: "/dashboard" },
     { icon: User, label: "Profile", path: "/dashboard/edit", hash: "basic" },
     { icon: FileEdit, label: "Edit Portfolio", path: "/dashboard/edit" },
@@ -96,6 +98,10 @@ export default function Dashboard() {
     { icon: Rocket, label: "Deploy", path: "/dashboard/deploy" },
     { icon: Settings, label: "Settings", path: "/dashboard/settings" },
   ];
+
+  const navItems = allNavItems.filter(
+    (item) => item.label !== "Page Builder" || features.builder_enabled
+  );
 
   return (
     <div className="min-h-screen bg-black text-white">

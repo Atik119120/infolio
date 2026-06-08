@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { useSiteFeatures } from "@/hooks/useSiteFeatures";
 import {
   ResizablePanelGroup,
   ResizablePanel,
@@ -15,12 +16,13 @@ import { RightPanel } from "@/builder/components/RightPanel";
 import { TopBar } from "@/builder/components/TopBar";
 
 import { useKeyboardShortcuts } from "@/builder/hooks/useKeyboardShortcuts";
-import { Loader2 } from "lucide-react";
+import { Loader2, Wrench } from "lucide-react";
 
 export default function BuilderEditor() {
   const { id } = useParams<{ id: string }>();
   const { user } = useAuth();
   const navigate = useNavigate();
+  const { features, loading: featuresLoading } = useSiteFeatures();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [publishing, setPublishing] = useState(false);

@@ -2,9 +2,10 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
-import { Plus, FileEdit, Trash2, ExternalLink, Globe, Loader2 } from "lucide-react";
+import { Plus, FileEdit, Trash2, ExternalLink, Globe, Loader2, Wrench } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { useSiteFeatures } from "@/hooks/useSiteFeatures";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -28,6 +29,7 @@ interface Page {
 export default function BuilderList() {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const { features } = useSiteFeatures();
   const [pages, setPages] = useState<Page[]>([]);
   const [loading, setLoading] = useState(true);
   const [creating, setCreating] = useState(false);
@@ -91,6 +93,20 @@ export default function BuilderList() {
     toast.success("Deleted");
     load();
   };
+
+  if (!features.builder_enabled) {
+    return (
+      <div className="flex flex-col items-center justify-center py-24 text-white text-center space-y-4">
+        <div className="w-14 h-14 rounded-full bg-white/5 border border-white/10 grid place-items-center">
+          <Wrench className="w-6 h-6 text-white/40" />
+        </div>
+        <h2 className="text-xl font-semibold tracking-tight">Page Builder is disabled</h2>
+        <p className="text-sm text-white/50 max-w-xs">
+          The builder is currently turned off. Contact support if you need access.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6 text-white">

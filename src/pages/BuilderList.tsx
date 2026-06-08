@@ -94,6 +94,20 @@ export default function BuilderList() {
     load();
   };
 
+  if (!features.builder_enabled) {
+    return (
+      <div className="flex flex-col items-center justify-center py-24 text-white text-center space-y-4">
+        <div className="w-14 h-14 rounded-full bg-white/5 border border-white/10 grid place-items-center">
+          <Wrench className="w-6 h-6 text-white/40" />
+        </div>
+        <h2 className="text-xl font-semibold tracking-tight">Page Builder is disabled</h2>
+        <p className="text-sm text-white/50 max-w-xs">
+          The builder is currently turned off. Contact support if you need access.
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6 text-white">
       <div className="flex items-center justify-between flex-wrap gap-3">

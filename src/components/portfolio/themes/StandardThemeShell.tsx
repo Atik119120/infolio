@@ -180,31 +180,36 @@ export function StandardThemeShell({
         )}
       </header>
 
-      {/* HERO */}
+      {/* HERO — editorial */}
       <section id="home" className="relative overflow-hidden">
         <div className="absolute inset-0 t-bg-deco pointer-events-none" />
-        <div className="container mx-auto px-6 sm:px-8 py-8 md:py-10 relative">
-          <div className="max-w-3xl mx-auto text-center">
+        <div className="container mx-auto px-6 sm:px-8 py-10 md:py-16 relative">
+          <div className="max-w-4xl mx-auto text-center">
             <motion.div {...fadeUp}>
-              <span className="inline-block px-3 py-1 text-xs font-semibold tracking-wider uppercase mb-5"
-                style={{ color: s.primary, background: `${s.primary}15`, borderRadius: s.radius }}>
-                {subheadline}
-              </span>
-              <h1 className="t-display text-4xl md:text-6xl lg:text-7xl font-bold leading-[1.05] mb-5">
-                Hi, I'm {" "}
-                <span style={{ color: s.primary }}>{name.split(" ")[0]}</span>
+              <div className="flex items-center justify-center gap-3 mb-6">
+                <span className="h-px w-10" style={{ background: s.text }} />
+                <span className="text-[11px] font-semibold tracking-[0.35em] uppercase" style={{ color: s.textMuted }}>
+                  {subheadline}
+                </span>
+                <span className="h-px w-10" style={{ background: s.text }} />
+              </div>
+              <h1 className="t-display text-5xl md:text-7xl lg:text-8xl font-medium leading-[0.95] mb-6 tracking-tight">
+                {name.split(" ")[0]}
+                {name.split(" ").length > 1 && (
+                  <> <em className="italic font-normal" style={{ color: s.primary }}>{name.split(" ").slice(1).join(" ")}</em></>
+                )}
               </h1>
-              <p className="t-display text-xl md:text-2xl mb-6" style={{ color: s.textMuted }}>
-                {headline}
+              <p className="t-display italic text-xl md:text-2xl mb-6" style={{ color: s.textMuted }}>
+                — {headline}
               </p>
-              <p className="text-base md:text-lg leading-relaxed mb-8 mx-auto" style={{ color: s.textMuted }}>
+              <p className="text-base md:text-lg leading-relaxed mb-8 mx-auto max-w-2xl" style={{ color: s.textMuted }}>
                 {bio.length > 220 ? bio.slice(0, 220) + "…" : bio}
               </p>
               <div className="flex flex-wrap gap-3 justify-center">
-                <a href={heroCtaLink} className="t-btn-primary px-6 py-3 text-sm font-semibold inline-flex items-center gap-2">
+                <a href={heroCtaLink} className="t-btn-primary px-7 py-3 text-xs font-bold tracking-[0.2em] uppercase inline-flex items-center gap-2">
                   {heroCtaText} <ArrowRight className="w-4 h-4" />
                 </a>
-                <a href="#contact" className="t-btn-outline px-6 py-3 text-sm font-semibold">
+                <a href="#contact" className="t-btn-outline px-7 py-3 text-xs font-bold tracking-[0.2em] uppercase">
                   Get in touch
                 </a>
               </div>

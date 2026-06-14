@@ -25,6 +25,7 @@ const DashboardDomainStatus = lazy(() => import("./pages/DashboardDomainStatus")
 const DashboardDeploy = lazy(() => import("./pages/DashboardDeploy"));
 const DashboardAnalytics = lazy(() => import("./pages/DashboardAnalytics"));
 const PublicPortfolio = lazy(() => import("./pages/PublicPortfolio"));
+const PublicProjectDetail = lazy(() => import("./pages/PublicProjectDetail"));
 const ThemeDemo = lazy(() => import("./pages/ThemeDemo"));
 const ThemeCollection = lazy(() => import("./pages/ThemeCollection"));
 const ResetPassword = lazy(() => import("./pages/ResetPassword"));

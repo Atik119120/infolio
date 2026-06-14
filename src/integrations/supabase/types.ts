@@ -873,44 +873,80 @@ export type Database = {
       }
       projects: {
         Row: {
+          client_name: string | null
+          cover_image: string | null
           created_at: string
+          custom_category: string | null
           description: string | null
           display_order: number | null
+          external_links: Json
           featured: boolean | null
+          gallery: Json
           github_url: string | null
           id: string
           image_url: string | null
+          is_visible: boolean
           live_url: string | null
+          project_date: string | null
+          project_type: string
+          sections: Json
+          slug: string | null
+          tags: string[] | null
           tech_stack: string[] | null
           title: string
+          tools: string[] | null
           updated_at: string
           user_id: string
         }
         Insert: {
+          client_name?: string | null
+          cover_image?: string | null
           created_at?: string
+          custom_category?: string | null
           description?: string | null
           display_order?: number | null
+          external_links?: Json
           featured?: boolean | null
+          gallery?: Json
           github_url?: string | null
           id?: string
           image_url?: string | null
+          is_visible?: boolean
           live_url?: string | null
+          project_date?: string | null
+          project_type?: string
+          sections?: Json
+          slug?: string | null
+          tags?: string[] | null
           tech_stack?: string[] | null
           title: string
+          tools?: string[] | null
           updated_at?: string
           user_id: string
         }
         Update: {
+          client_name?: string | null
+          cover_image?: string | null
           created_at?: string
+          custom_category?: string | null
           description?: string | null
           display_order?: number | null
+          external_links?: Json
           featured?: boolean | null
+          gallery?: Json
           github_url?: string | null
           id?: string
           image_url?: string | null
+          is_visible?: boolean
           live_url?: string | null
+          project_date?: string | null
+          project_type?: string
+          sections?: Json
+          slug?: string | null
+          tags?: string[] | null
           tech_stack?: string[] | null
           title?: string
+          tools?: string[] | null
           updated_at?: string
           user_id?: string
         }

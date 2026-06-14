@@ -76,8 +76,10 @@ const App = () => (
                 <Route path="/admin/login" element={<AdminAuth />} />
                 <Route path="/demo/:themeName" element={<ThemeDemo />} />
                 <Route path="/u/:username" element={<PublicPortfolio />} />
+                <Route path="/u/:username/project/:slug" element={<PublicProjectDetail />} />
                 {/* Public SEO alias: infolio.online/@username */}
                 <Route path="/@:username" element={<PublicPortfolio />} />
+                <Route path="/@:username/project/:slug" element={<PublicProjectDetail />} />
                 <Route path="/p/:slug" element={<PublicBuilderPage />} />
                 <Route path="/customize/:themeId" element={
                   <ProtectedRoute>

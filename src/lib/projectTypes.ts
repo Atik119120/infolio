@@ -60,7 +60,7 @@ export const slugify = (s: string) =>
     .replace(/^-+|-+$/g, "")
     .slice(0, 60);
 
-export const getCategoryLabel = (p: { project_type: ProjectType; custom_category?: string | null }) => {
+export const getCategoryLabel = (p: { project_type: string; custom_category?: string | null }) => {
   if (p.project_type === "custom" && p.custom_category) return p.custom_category;
   return PROJECT_TYPES.find((t) => t.value === p.project_type)?.label || "Project";
 };

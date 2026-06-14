@@ -46,17 +46,7 @@ export interface Skill {
   proficiency: number | null;
 }
 
-export interface Project {
-  id: string;
-  title: string;
-  description: string | null;
-  tech_stack: string[] | null;
-  live_url: string | null;
-  github_url: string | null;
-  image_url: string | null;
-  featured: boolean | null;
-  display_order: number | null;
-}
+export type { FullProject as Project } from "@/lib/projectTypes";
 
 export interface Experience {
   id: string;

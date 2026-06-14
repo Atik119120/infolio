@@ -46,6 +46,7 @@ export interface Skill {
   proficiency: number | null;
 }
 
+import type { FullProject as Project } from "@/lib/projectTypes";
 export type { FullProject as Project } from "@/lib/projectTypes";
 
 export interface Experience {

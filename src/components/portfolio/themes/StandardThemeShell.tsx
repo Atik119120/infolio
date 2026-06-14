@@ -99,6 +99,7 @@ export function StandardThemeShell({
   const NAV = [
     { id: "home", label: "Home" },
     { id: "about", label: "About" },
+    { id: "ventures", label: "Ventures" },
     { id: "skills", label: "Skills" },
     { id: "services", label: "Services" },
     { id: "works", label: "Works" },
@@ -274,46 +275,7 @@ export function StandardThemeShell({
                 {aboutText}
               </p>
 
-              {/* Ventures (from projects, top 2) */}
-              {projects.length > 0 && (
-                <>
-                  <div className="flex items-center gap-3 mb-4">
-                    <span className="block w-8 h-[3px]" style={{ background: s.primary }} />
-                    <h4 className="t-display text-base font-bold uppercase tracking-wider">My Professional Ventures</h4>
-                  </div>
-                  <div className="grid sm:grid-cols-2 gap-4 mb-8">
-                    {projects.slice(0, 2).map((p) => (
-                      <a
-                        key={p.id}
-                        href={p.live_url || "#"}
-                        target={p.live_url ? "_blank" : undefined}
-                        rel="noreferrer"
-                        className="t-card p-5 relative overflow-hidden group"
-                      >
-                        <div
-                          aria-hidden
-                          className="absolute -top-8 -right-8 w-28 h-28 rounded-full opacity-30 transition-transform group-hover:scale-125"
-                          style={{ background: `${s.primary}33` }}
-                        />
-                        <div className="relative flex items-start justify-between">
-                          <div>
-                            <div className="w-10 h-10 rounded-md flex items-center justify-center mb-4" style={{ background: `${s.primary}15`, color: s.primary }}>
-                              <Globe className="w-5 h-5" />
-                            </div>
-                            <h5 className="t-display text-lg font-bold leading-tight">{p.title}</h5>
-                            {p.description && (
-                              <p className="text-[11px] uppercase tracking-wider mt-1 font-medium" style={{ color: s.textMuted }}>
-                                {p.description.slice(0, 40)}
-                              </p>
-                            )}
-                          </div>
-                          <ArrowRight className="w-4 h-4 -rotate-45" style={{ color: s.textMuted }} />
-                        </div>
-                      </a>
-                    ))}
-                  </div>
-                </>
-              )}
+              {/* Ventures moved to its own section below */}
 
               {/* Personal info grid */}
               <div className="grid sm:grid-cols-2 gap-x-8 gap-y-3 text-sm mb-8">
@@ -332,6 +294,56 @@ export function StandardThemeShell({
           </div>
         </div>
       </section>
+
+      {/* VENTURES / BRANDS — own section */}
+      {projects.length > 0 && (
+        <section id="ventures" className="py-20 md:py-24" style={{ background: s.background }}>
+          <div className="container mx-auto px-6 sm:px-8">
+            <motion.div {...fadeUp} className="text-center max-w-2xl mx-auto mb-12">
+              <span className="inline-block px-3 py-1 text-xs font-semibold tracking-wider uppercase rounded-full" style={{ color: s.primary, background: `${s.primary}15` }}>Brands & Ventures</span>
+              <h2 className="t-display text-3xl md:text-5xl font-bold mt-4">My Professional <span style={{ color: s.primary }}>Ventures</span></h2>
+              <p className="text-base mt-3" style={{ color: s.textMuted }}>Brands and companies I've built or contributed to.</p>
+            </motion.div>
+
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 max-w-6xl mx-auto">
+              {projects.slice(0, 8).map((p, i) => (
+                <motion.a
+                  key={p.id}
+                  {...fadeUp}
+                  transition={{ duration: 0.5, delay: i * 0.05 }}
+                  href={p.live_url || (p as any).external_links?.live || (p as any).external_links?.website || "#"}
+                  target={p.live_url ? "_blank" : undefined}
+                  rel="noreferrer"
+                  className="t-card p-5 relative overflow-hidden group"
+                  style={{ background: s.surface, border: `1px solid ${s.border}` }}
+                >
+                  <div
+                    aria-hidden
+                    className="absolute -top-8 -right-8 w-24 h-24 rounded-full opacity-30 transition-transform group-hover:scale-125"
+                    style={{ background: `${s.primary}33` }}
+                  />
+                  <div className="relative">
+                    <div className="w-10 h-10 rounded-md flex items-center justify-center mb-4" style={{ background: `${s.primary}15`, color: s.primary }}>
+                      <Globe className="w-5 h-5" />
+                    </div>
+                    <h5 className="t-display text-lg font-bold leading-tight">{p.title}</h5>
+                    {p.description && (
+                      <p className="text-[11px] uppercase tracking-wider mt-1 font-medium line-clamp-1" style={{ color: s.textMuted }}>
+                        {p.description.slice(0, 50)}
+                      </p>
+                    )}
+                    <div className="flex items-center gap-1 mt-3 text-xs font-semibold" style={{ color: s.primary }}>
+                      Visit <ArrowRight className="w-3 h-3 -rotate-45" />
+                    </div>
+                  </div>
+                </motion.a>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+
 
       {/* SKILLS — clean centered header + animated progress bars */}
       {skills.length > 0 && (

@@ -320,3 +320,8 @@
   -webkit-text-fill-color: hsl(0 0% 100%) !important;
 }
 .dashboard-bw .shadow-glow { box-shadow: none !important; }
+
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}

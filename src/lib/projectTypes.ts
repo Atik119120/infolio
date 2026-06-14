@@ -38,7 +38,7 @@ export interface FullProject {
   cover_image: string | null;
   featured: boolean | null;
   display_order: number | null;
-  project_type: ProjectType;
+  project_type: ProjectType | string;
   custom_category: string | null;
   gallery: GalleryImage[];
   sections: SectionBlock[];

@@ -99,6 +99,7 @@ export function StandardThemeShell({
   const NAV = [
     { id: "home", label: "Home" },
     { id: "about", label: "About" },
+    { id: "ventures", label: "Ventures" },
     { id: "skills", label: "Skills" },
     { id: "services", label: "Services" },
     { id: "works", label: "Works" },

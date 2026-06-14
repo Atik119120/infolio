@@ -184,8 +184,8 @@ export function StandardThemeShell({
       <section id="home" className="relative overflow-hidden">
         <div className="absolute inset-0 t-bg-deco pointer-events-none" />
         <div className="container mx-auto px-6 sm:px-8 py-8 md:py-10 relative">
-          <div className="grid md:grid-cols-12 gap-10 items-center">
-            <motion.div {...fadeUp} className="md:col-span-7">
+          <div className={heroImage ? "grid md:grid-cols-12 gap-10 items-center" : "max-w-3xl mx-auto text-center"}>
+            <motion.div {...fadeUp} className={heroImage ? "md:col-span-7" : ""}>
               <span className="inline-block px-3 py-1 text-xs font-semibold tracking-wider uppercase mb-5"
                 style={{ color: s.primary, background: `${s.primary}15`, borderRadius: s.radius }}>
                 {subheadline}
@@ -197,10 +197,10 @@ export function StandardThemeShell({
               <p className="t-display text-xl md:text-2xl mb-6" style={{ color: s.textMuted }}>
                 {headline}
               </p>
-              <p className="text-base md:text-lg leading-relaxed mb-8 max-w-xl" style={{ color: s.textMuted }}>
+              <p className={`text-base md:text-lg leading-relaxed mb-8 ${heroImage ? "max-w-xl" : "mx-auto"}`} style={{ color: s.textMuted }}>
                 {bio.length > 220 ? bio.slice(0, 220) + "…" : bio}
               </p>
-              <div className="flex flex-wrap gap-3">
+              <div className={`flex flex-wrap gap-3 ${heroImage ? "" : "justify-center"}`}>
                 <a href={heroCtaLink} className="t-btn-primary px-6 py-3 text-sm font-semibold inline-flex items-center gap-2">
                   {heroCtaText} <ArrowRight className="w-4 h-4" />
                 </a>
@@ -210,21 +210,16 @@ export function StandardThemeShell({
               </div>
             </motion.div>
 
-            <motion.div {...fadeUp} transition={{ duration: 0.6, delay: 0.15 }} className="md:col-span-5">
-              {heroImage ? (
+            {heroImage && (
+              <motion.div {...fadeUp} transition={{ duration: 0.6, delay: 0.15 }} className="md:col-span-5">
                 <div className="relative">
                   <div className="absolute -inset-3 rounded-full opacity-60" style={{ background: `linear-gradient(135deg, ${s.primary}, ${s.accent})`, filter: "blur(40px)" }} />
                   <img src={heroImage} alt={name}
                     className="relative w-full max-w-sm mx-auto aspect-square object-cover"
                     style={{ borderRadius: s.radius, border: `4px solid ${s.surface}`, boxShadow: `0 20px 60px ${s.primary}33` }} />
                 </div>
-              ) : (
-                <div className="w-full max-w-sm mx-auto aspect-square flex items-center justify-center t-display text-7xl font-bold"
-                  style={{ background: `linear-gradient(135deg, ${s.primary}, ${s.accent})`, color: "#fff", borderRadius: s.radius }}>
-                  {name.charAt(0)}
-                </div>
-              )}
-            </motion.div>
+              </motion.div>
+            )}
           </div>
         </div>
       </section>
@@ -232,14 +227,14 @@ export function StandardThemeShell({
       {/* ABOUT — editorial split layout: photo left, typography-rich info right */}
       <section id="about" className="py-8 md:py-10" style={{ background: s.surface }}>
         <div className="container mx-auto px-6 sm:px-8">
-          <motion.h2 {...fadeUp} className="t-display text-4xl md:text-6xl font-bold tracking-tight mb-6 md:mb-8">
+          <motion.h2 {...fadeUp} className="t-display text-4xl md:text-6xl font-bold tracking-tight mb-6 md:mb-8 text-center">
             About <span style={{ color: s.primary }}>Me</span>
           </motion.h2>
 
-          <div className="grid md:grid-cols-12 gap-10 md:gap-14 items-start">
-            {/* PHOTO with offset accent frame */}
-            <motion.div {...fadeUp} className="md:col-span-5 lg:col-span-5">
-              <div className="relative w-full max-w-md mx-auto md:mx-0">
+          <div className="grid md:grid-cols-12 gap-10 md:gap-14 items-stretch">
+            {/* PHOTO with offset accent frame — height matches info column */}
+            <motion.div {...fadeUp} className="md:col-span-5 lg:col-span-5 flex">
+              <div className="relative w-full max-w-md mx-auto md:mx-0 flex">
                 <div
                   aria-hidden
                   className="absolute -bottom-4 -right-4 w-full h-full"
@@ -249,12 +244,12 @@ export function StandardThemeShell({
                   <img
                     src={aboutImage}
                     alt={name}
-                    className="relative w-full aspect-[4/5] object-cover"
+                    className="relative w-full h-full min-h-[320px] object-cover"
                     style={{ borderRadius: s.radius }}
                   />
                 ) : (
                   <div
-                    className="relative w-full aspect-[4/5] flex items-center justify-center t-display text-8xl font-bold"
+                    className="relative w-full min-h-[320px] flex items-center justify-center t-display text-8xl font-bold"
                     style={{ background: `linear-gradient(135deg, ${s.primary}, ${s.accent})`, color: "#fff", borderRadius: s.radius }}
                   >
                     {name.charAt(0)}

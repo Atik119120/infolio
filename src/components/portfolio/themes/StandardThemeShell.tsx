@@ -4,6 +4,7 @@ import { Menu, X, ArrowRight, Mail, Phone, MapPin, Globe } from "lucide-react";
 import { ServiceIcon } from "@/lib/serviceIcons";
 import { ThemeProps, ThemeService } from "./types";
 import { ContactForm } from "@/components/portfolio/ContactForm";
+import { ProjectsSection } from "@/components/portfolio/ProjectsSection";
 import { getSocialIcon } from "./utils";
 
 /**

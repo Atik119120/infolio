@@ -181,7 +181,7 @@ export function StandardThemeShell({
       {/* HERO */}
       <section id="home" className="relative overflow-hidden">
         <div className="absolute inset-0 t-bg-deco pointer-events-none" />
-        <div className="container mx-auto px-5 py-20 md:py-28 relative">
+        <div className="container mx-auto px-6 sm:px-8 py-20 md:py-28 relative">
           <div className="grid md:grid-cols-12 gap-10 items-center">
             <motion.div {...fadeUp} className="md:col-span-7">
               <span className="inline-block px-3 py-1 text-xs font-semibold tracking-wider uppercase mb-5"
@@ -229,7 +229,7 @@ export function StandardThemeShell({
 
       {/* ABOUT — editorial split layout: photo left, typography-rich info right */}
       <section id="about" className="py-20 md:py-28" style={{ background: s.surface }}>
-        <div className="container mx-auto px-5">
+        <div className="container mx-auto px-6 sm:px-8">
           <motion.h2 {...fadeUp} className="t-display text-4xl md:text-6xl font-bold tracking-tight mb-12 md:mb-16">
             About <span style={{ color: s.primary }}>Me</span>
           </motion.h2>
@@ -335,7 +335,7 @@ export function StandardThemeShell({
       {/* SKILLS — clean centered header + animated progress bars */}
       {skills.length > 0 && (
         <section id="skills" className="py-20 md:py-28" style={{ background: s.background }}>
-          <div className="container mx-auto px-5">
+          <div className="container mx-auto px-6 sm:px-8">
             <motion.div {...fadeUp} className="text-center max-w-2xl mx-auto mb-14">
               <SectionLabel s={s}>My Skills</SectionLabel>
               <h2 className="t-display text-3xl md:text-5xl font-bold mt-4 mb-3">
@@ -384,7 +384,7 @@ export function StandardThemeShell({
       {/* SERVICES — clean uniform cards */}
       {services.length > 0 && (
         <section id="services" className="py-20 md:py-28" style={{ background: s.surface }}>
-          <div className="container mx-auto px-5">
+          <div className="container mx-auto px-6 sm:px-8">
             <motion.div {...fadeUp} className="text-center max-w-2xl mx-auto mb-14">
               <SectionLabel s={s}>Services</SectionLabel>
               <h2 className="t-display text-3xl md:text-5xl font-bold mt-4 mb-3">
@@ -439,7 +439,7 @@ export function StandardThemeShell({
       {/* WORKS */}
       {projects.length > 0 && (
         <section id="works" className="py-20 md:py-24">
-          <div className="container mx-auto px-5">
+          <div className="container mx-auto px-6 sm:px-8">
             <motion.div {...fadeUp} className="flex items-end justify-between mb-12">
               <div>
                 <SectionLabel s={s}>Selected Works</SectionLabel>
@@ -481,7 +481,7 @@ export function StandardThemeShell({
       <section id="contact" className="py-20 md:py-28 relative overflow-hidden" style={{ background: s.background }}>
         <div aria-hidden className="absolute inset-0 pointer-events-none"
           style={{ background: `radial-gradient(ellipse at top, ${s.primary}10, transparent 60%)` }} />
-        <div className="container mx-auto px-5 relative">
+        <div className="container mx-auto px-6 sm:px-8 relative">
           <motion.div {...fadeUp} className="text-center max-w-2xl mx-auto mb-12">
             <SectionLabel s={s}>Get in Touch</SectionLabel>
             <h2 className="t-display text-3xl md:text-5xl font-bold mt-4 mb-3">
@@ -519,7 +519,7 @@ export function StandardThemeShell({
 
       {/* FULL FOOTER */}
       <footer style={{ background: s.text, color: s.background }} className="pt-16 pb-8">
-        <div className="container mx-auto px-5">
+        <div className="container mx-auto px-6 sm:px-8">
           <div className="grid md:grid-cols-4 gap-10 mb-12">
             <div className="md:col-span-2">
               {portfolio?.logo_url ? (

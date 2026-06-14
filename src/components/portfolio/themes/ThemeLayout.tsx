@@ -66,7 +66,7 @@ export function ThemeLayout({
         "fixed top-0 left-0 right-0 z-50 backdrop-blur-md border-b",
         navClassName || "bg-background/80 border-border"
       )}>
-        <div className="container mx-auto px-6 py-4">
+        <div className="container mx-auto px-6 sm:px-8 py-4">
           <div className="flex items-center justify-between">
             {/* Logo */}
             <motion.button
@@ -132,7 +132,7 @@ export function ThemeLayout({
               exit={{ opacity: 0, height: 0 }}
               className="md:hidden border-t bg-background/95 backdrop-blur-md"
             >
-              <div className="container mx-auto px-6 py-4 space-y-2">
+              <div className="container mx-auto px-6 sm:px-8 py-4 space-y-2">
                 {PORTFOLIO_PAGES.map((page) => (
                   <motion.button
                     key={page.id}
@@ -170,7 +170,7 @@ export function ThemeLayout({
 
       {/* Footer */}
       <footer className={cn(
-        "py-8 px-6 border-t mt-20",
+        "py-8 px-6 sm:px-8 border-t mt-20",
         footerClassName || "bg-muted/30 border-border"
       )}>
         <div className="container mx-auto">

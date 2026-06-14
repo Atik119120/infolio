@@ -40,13 +40,13 @@ export interface FullProject {
   display_order: number | null;
   project_type: ProjectType | string;
   custom_category: string | null;
-  gallery: GalleryImage[];
-  sections: SectionBlock[];
+  gallery: any;
+  sections: any;
   tools: string[] | null;
   tags: string[] | null;
   client_name: string | null;
   project_date: string | null;
-  external_links: ExternalLinks;
+  external_links: any;
   is_visible: boolean;
   slug: string | null;
   created_at?: string;

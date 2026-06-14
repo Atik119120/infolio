@@ -184,8 +184,8 @@ export function StandardThemeShell({
       <section id="home" className="relative overflow-hidden">
         <div className="absolute inset-0 t-bg-deco pointer-events-none" />
         <div className="container mx-auto px-6 sm:px-8 py-8 md:py-10 relative">
-          <div className={heroImage ? "grid md:grid-cols-12 gap-10 items-center" : "max-w-3xl mx-auto text-center"}>
-            <motion.div {...fadeUp} className={heroImage ? "md:col-span-7" : ""}>
+          <div className="max-w-3xl mx-auto text-center">
+            <motion.div {...fadeUp}>
               <span className="inline-block px-3 py-1 text-xs font-semibold tracking-wider uppercase mb-5"
                 style={{ color: s.primary, background: `${s.primary}15`, borderRadius: s.radius }}>
                 {subheadline}
@@ -197,10 +197,10 @@ export function StandardThemeShell({
               <p className="t-display text-xl md:text-2xl mb-6" style={{ color: s.textMuted }}>
                 {headline}
               </p>
-              <p className={`text-base md:text-lg leading-relaxed mb-8 ${heroImage ? "max-w-xl" : "mx-auto"}`} style={{ color: s.textMuted }}>
+              <p className="text-base md:text-lg leading-relaxed mb-8 mx-auto" style={{ color: s.textMuted }}>
                 {bio.length > 220 ? bio.slice(0, 220) + "…" : bio}
               </p>
-              <div className={`flex flex-wrap gap-3 ${heroImage ? "" : "justify-center"}`}>
+              <div className="flex flex-wrap gap-3 justify-center">
                 <a href={heroCtaLink} className="t-btn-primary px-6 py-3 text-sm font-semibold inline-flex items-center gap-2">
                   {heroCtaText} <ArrowRight className="w-4 h-4" />
                 </a>
@@ -209,17 +209,6 @@ export function StandardThemeShell({
                 </a>
               </div>
             </motion.div>
-
-            {heroImage && (
-              <motion.div {...fadeUp} transition={{ duration: 0.6, delay: 0.15 }} className="md:col-span-5">
-                <div className="relative">
-                  <div className="absolute -inset-3 rounded-full opacity-60" style={{ background: `linear-gradient(135deg, ${s.primary}, ${s.accent})`, filter: "blur(40px)" }} />
-                  <img src={heroImage} alt={name}
-                    className="relative w-full max-w-sm mx-auto aspect-square object-cover"
-                    style={{ borderRadius: s.radius, border: `4px solid ${s.surface}`, boxShadow: `0 20px 60px ${s.primary}33` }} />
-                </div>
-              </motion.div>
-            )}
           </div>
         </div>
       </section>

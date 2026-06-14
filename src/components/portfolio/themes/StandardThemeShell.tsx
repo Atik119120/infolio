@@ -492,48 +492,112 @@ export function StandardThemeShell({
         </div>
       </section>
 
-      {/* FULL FOOTER */}
-      <footer style={{ background: s.text, color: s.background }} className="pt-16 pb-8">
-        <div className="container mx-auto px-6 sm:px-8">
-          <div className="grid md:grid-cols-4 gap-10 mb-12">
-            <div className="md:col-span-2">
-              {portfolio?.logo_url ? (
-                <img src={portfolio.logo_url} alt={name} className="h-9 w-auto object-contain mb-3" style={{ background: "transparent" }} />
-              ) : (
-                <div className="t-display text-2xl font-bold mb-3">{name}</div>
-              )}
-              <p className="text-sm opacity-70 mb-5 max-w-md">{headline}</p>
-              <div className="flex gap-2">
+      {/* UNIQUE FOOTER — ticker + giant signature + asymmetric grid */}
+      <footer style={{ background: s.text, color: s.background }} className="relative overflow-hidden">
+        {/* Top scrolling ticker */}
+        <div className="border-y overflow-hidden whitespace-nowrap py-3" style={{ borderColor: `${s.background}22`, background: s.primary, color: "#fff" }}>
+          <div className="flex gap-10 animate-[marquee_28s_linear_infinite] text-xs font-bold uppercase tracking-[0.3em]">
+            {Array.from({ length: 8 }).map((_, i) => (
+              <span key={i} className="flex items-center gap-10">
+                <span>Let's Build Something</span>
+                <span>✦</span>
+                <span>Available For Work</span>
+                <span>✦</span>
+                <span>{name}</span>
+                <span>✦</span>
+              </span>
+            ))}
+          </div>
+        </div>
+
+        <div className="container mx-auto px-6 sm:px-8 pt-14 pb-6 relative">
+          {/* Asymmetric grid */}
+          <div className="grid grid-cols-12 gap-y-10 gap-x-6">
+            {/* Left: CTA block */}
+            <div className="col-span-12 md:col-span-7">
+              <div className="text-xs uppercase tracking-[0.3em] opacity-50 mb-4">— Get in touch</div>
+              <a href={email ? `mailto:${email}` : "#contact"} className="t-display block text-3xl sm:text-5xl md:text-6xl font-bold leading-[1.05] hover:opacity-80 transition break-words">
+                {email || "say@hello.com"}
+                <span style={{ color: s.primary }}>.</span>
+              </a>
+              <div className="mt-6 flex flex-wrap gap-2">
                 {socialLinks.map((sl) => {
                   const Icon = getSocialIcon(sl.platform);
                   return (
                     <a key={sl.id} href={sl.url} target="_blank" rel="noreferrer"
-                      className="w-9 h-9 rounded-full flex items-center justify-center transition"
-                      style={{ background: `${s.primary}33`, color: "#fff" }}>
-                      <Icon className="w-4 h-4" />
+                      className="group inline-flex items-center gap-2 px-4 py-2 rounded-full border text-xs uppercase tracking-wider transition hover:bg-white hover:text-black"
+                      style={{ borderColor: `${s.background}33` }}>
+                      <Icon className="w-3.5 h-3.5" />
+                      <span>{sl.platform}</span>
                     </a>
                   );
                 })}
               </div>
             </div>
-            <div>
-              <h4 className="text-sm font-semibold mb-3 uppercase tracking-wider opacity-90">Navigate</h4>
-              <ul className="space-y-2 text-sm opacity-70">
-                {NAV.map((n) => <li key={n.id}><a href={`#${n.id}`} className="hover:opacity-100">{n.label}</a></li>)}
-              </ul>
-            </div>
-            <div>
-              <h4 className="text-sm font-semibold mb-3 uppercase tracking-wider opacity-90">Contact</h4>
-              <ul className="space-y-2 text-sm opacity-70">
-                {email && <li><a href={`mailto:${email}`} className="hover:opacity-100">{email}</a></li>}
-                {phone && <li>{phone}</li>}
-                {location && <li>{location}</li>}
-              </ul>
+
+            {/* Right: meta column */}
+            <div className="col-span-12 md:col-span-5 md:pl-8 md:border-l" style={{ borderColor: `${s.background}1a` }}>
+              <div className="grid grid-cols-2 gap-6">
+                <div>
+                  <div className="text-[10px] uppercase tracking-[0.25em] opacity-50 mb-2">Based In</div>
+                  <div className="text-sm font-semibold">{location || "Remote · Worldwide"}</div>
+                </div>
+                <div>
+                  <div className="text-[10px] uppercase tracking-[0.25em] opacity-50 mb-2">Status</div>
+                  <div className="text-sm font-semibold flex items-center gap-2">
+                    <span className="relative flex h-2 w-2">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style={{ background: s.primary }} />
+                      <span className="relative inline-flex rounded-full h-2 w-2" style={{ background: s.primary }} />
+                    </span>
+                    Available
+                  </div>
+                </div>
+                {phone && (
+                  <div className="col-span-2">
+                    <div className="text-[10px] uppercase tracking-[0.25em] opacity-50 mb-2">Phone</div>
+                    <a href={`tel:${phone}`} className="text-sm font-semibold hover:opacity-80">{phone}</a>
+                  </div>
+                )}
+                <div className="col-span-2">
+                  <div className="text-[10px] uppercase tracking-[0.25em] opacity-50 mb-2">Sitemap</div>
+                  <div className="flex flex-wrap gap-x-3 gap-y-1">
+                    {NAV.map((n, i) => (
+                      <a key={n.id} href={`#${n.id}`} className="text-xs opacity-70 hover:opacity-100">
+                        {String(i + 1).padStart(2, "0")}/ {n.label}
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-          <div className="border-t pt-6 flex flex-col md:flex-row justify-between items-center gap-3 text-xs opacity-60" style={{ borderColor: `${s.background}22` }}>
-            <div>{footerText || `© ${new Date().getFullYear()} ${name}. All rights reserved.`}</div>
-            <div>Built with Infolio</div>
+
+          {/* Giant signature name */}
+          <div className="mt-10 -mb-4 overflow-hidden pointer-events-none select-none">
+            <div className="t-display font-black tracking-tighter leading-none whitespace-nowrap"
+              style={{
+                fontSize: "clamp(4rem, 18vw, 18rem)",
+                background: `linear-gradient(180deg, ${s.background}22 0%, ${s.background}03 100%)`,
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                backgroundClip: "text",
+              }}>
+              {name}
+            </div>
+          </div>
+
+          {/* Bottom bar */}
+          <div className="border-t pt-5 mt-2 flex flex-col md:flex-row justify-between items-start md:items-center gap-3 text-[11px] uppercase tracking-[0.2em] opacity-60" style={{ borderColor: `${s.background}1a` }}>
+            <div className="flex items-center gap-3">
+              <span className="inline-block w-1.5 h-1.5 rounded-full" style={{ background: s.primary }} />
+              <span>{footerText || `© ${new Date().getFullYear()} ${name} — All rights reserved`}</span>
+            </div>
+            <div className="flex items-center gap-3">
+              <span>Crafted with Infolio</span>
+              <a href="#home" className="ml-2 inline-flex items-center gap-1 px-3 py-1.5 rounded-full border hover:bg-white hover:text-black transition" style={{ borderColor: `${s.background}33` }}>
+                ↑ Back to top
+              </a>
+            </div>
           </div>
         </div>
       </footer>

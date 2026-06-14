@@ -568,10 +568,10 @@ export function StandardThemeShell({
           </div>
 
           {/* Giant signature name */}
-          <div className="mt-6 -mb-8 overflow-hidden pointer-events-none select-none">
+          <div className="mt-3 -mb-4 overflow-hidden pointer-events-none select-none">
             <div className="t-display font-black tracking-tighter leading-none whitespace-nowrap"
               style={{
-                fontSize: "clamp(4rem, 18vw, 18rem)",
+                fontSize: "clamp(3rem, 14vw, 12rem)",
                 background: `linear-gradient(180deg, ${s.background}22 0%, ${s.background}03 100%)`,
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",

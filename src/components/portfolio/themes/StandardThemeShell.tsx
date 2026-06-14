@@ -297,9 +297,9 @@ export function StandardThemeShell({
 
       {/* VENTURES / BRANDS — own section */}
       {projects.length > 0 && (
-        <section id="ventures" className="py-12 md:py-16" style={{ background: s.background }}>
+        <section id="ventures" className="py-8 md:py-10" style={{ background: s.background }}>
           <div className="container mx-auto px-6 sm:px-8">
-            <motion.div {...fadeUp} className="text-center max-w-2xl mx-auto mb-12">
+            <motion.div {...fadeUp} className="text-center max-w-2xl mx-auto mb-6">
               <span className="inline-block px-3 py-1 text-xs font-semibold tracking-wider uppercase rounded-full" style={{ color: s.primary, background: `${s.primary}15` }}>Brands & Ventures</span>
               <h2 className="t-display text-3xl md:text-5xl font-bold mt-4">My Professional <span style={{ color: s.primary }}>Ventures</span></h2>
               <p className="text-base mt-3" style={{ color: s.textMuted }}>Brands and companies I've built or contributed to.</p>
@@ -347,9 +347,9 @@ export function StandardThemeShell({
 
       {/* SKILLS — clean centered header + animated progress bars */}
       {skills.length > 0 && (
-        <section id="skills" className="py-12 md:py-16" style={{ background: s.background }}>
+        <section id="skills" className="py-8 md:py-10" style={{ background: s.background }}>
           <div className="container mx-auto px-6 sm:px-8">
-            <motion.div {...fadeUp} className="text-center max-w-2xl mx-auto mb-14">
+            <motion.div {...fadeUp} className="text-center max-w-2xl mx-auto mb-8">
               <SectionLabel s={s}>My Skills</SectionLabel>
               <h2 className="t-display text-3xl md:text-5xl font-bold mt-4 mb-3">
                 Tools I work with <span style={{ color: s.primary }}>every day</span>
@@ -396,9 +396,9 @@ export function StandardThemeShell({
 
       {/* SERVICES — clean uniform cards */}
       {services.length > 0 && (
-        <section id="services" className="py-12 md:py-16" style={{ background: s.surface }}>
+        <section id="services" className="py-8 md:py-10" style={{ background: s.surface }}>
           <div className="container mx-auto px-6 sm:px-8">
-            <motion.div {...fadeUp} className="text-center max-w-2xl mx-auto mb-14">
+            <motion.div {...fadeUp} className="text-center max-w-2xl mx-auto mb-8">
               <SectionLabel s={s}>Services</SectionLabel>
               <h2 className="t-display text-3xl md:text-5xl font-bold mt-4 mb-3">
                 What I can <span style={{ color: s.primary }}>do for you</span>
@@ -453,11 +453,11 @@ export function StandardThemeShell({
       <ProjectsSection projects={projects as any} username={profile?.username} s={{ primary: s.primary, surface: s.surface, text: s.text, textMuted: s.textMuted, border: s.border, background: s.background }} />
 
       {/* CONTACT — centered modern with info pills + form card */}
-      <section id="contact" className="py-12 md:py-16 relative overflow-hidden" style={{ background: s.background }}>
+      <section id="contact" className="py-8 md:py-10 relative overflow-hidden" style={{ background: s.background }}>
         <div aria-hidden className="absolute inset-0 pointer-events-none"
           style={{ background: `radial-gradient(ellipse at top, ${s.primary}10, transparent 60%)` }} />
         <div className="container mx-auto px-6 sm:px-8 relative">
-          <motion.div {...fadeUp} className="text-center max-w-2xl mx-auto mb-12">
+          <motion.div {...fadeUp} className="text-center max-w-2xl mx-auto mb-6">
             <SectionLabel s={s}>Get in Touch</SectionLabel>
             <h2 className="t-display text-3xl md:text-5xl font-bold mt-4 mb-3">
               Let's <span style={{ color: s.primary }}>work together</span>

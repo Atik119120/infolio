@@ -436,46 +436,8 @@ export function StandardThemeShell({
         </section>
       )}
 
-      {/* WORKS */}
-      {projects.length > 0 && (
-        <section id="works" className="py-20 md:py-24">
-          <div className="container mx-auto px-6 sm:px-8">
-            <motion.div {...fadeUp} className="flex items-end justify-between mb-12">
-              <div>
-                <SectionLabel s={s}>Selected Works</SectionLabel>
-                <h2 className="t-display text-3xl md:text-5xl font-bold mt-3">Recent projects</h2>
-              </div>
-            </motion.div>
-            <div className="grid md:grid-cols-2 gap-6">
-              {projects.map((p, i) => (
-                <motion.a key={p.id} href={p.live_url || "#"} target={p.live_url ? "_blank" : undefined} rel="noreferrer"
-                  {...fadeUp} transition={{ duration: 0.5, delay: i * 0.05 }}
-                  className="t-card overflow-hidden group block">
-                  {p.image_url && (
-                    <div className="aspect-[16/10] overflow-hidden flex items-center justify-center" style={{ background: s.surface }}>
-                      <img src={p.image_url} alt={p.title} className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-700" />
-                    </div>
-                  )}
-                  <div className="p-6">
-                    <div className="flex items-center justify-between gap-3 mb-2">
-                      <h3 className="t-display text-xl font-semibold">{p.title}</h3>
-                      <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" style={{ color: s.primary }} />
-                    </div>
-                    {p.description && <p className="text-sm mb-4" style={{ color: s.textMuted }}>{p.description}</p>}
-                    {p.tech_stack && p.tech_stack.length > 0 && (
-                      <div className="flex flex-wrap gap-1.5">
-                        {p.tech_stack.map((t) => (
-                          <span key={t} className="text-[11px] px-2 py-0.5 rounded-full" style={{ background: `${s.primary}10`, color: s.primary }}>{t}</span>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                </motion.a>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
+      {/* WORKS — type-aware ProjectsSection */}
+      <ProjectsSection projects={projects as any} username={profile?.username} s={{ primary: s.primary, surface: s.surface, text: s.text, textMuted: s.textMuted, border: s.border, background: s.background }} />
 
       {/* CONTACT — centered modern with info pills + form card */}
       <section id="contact" className="py-20 md:py-28 relative overflow-hidden" style={{ background: s.background }}>

@@ -4,6 +4,7 @@ export interface ThemeProfile {
   display_name: string | null;
   avatar_url: string | null;
   email?: string | null;
+  username?: string | null;
 }
 
 export interface ThemePortfolio {

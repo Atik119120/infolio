@@ -106,7 +106,7 @@ export default function ThemeCollection() {
             Choose Your Perfect <span className="gradient-text">Theme</span>
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Beautifully crafted themes for every profession.
+            Beautifully crafted portfolio themes.
           </p>
         </div>
       </section>

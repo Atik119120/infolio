@@ -510,7 +510,7 @@ export function StandardThemeShell({
           </div>
         </div>
 
-        <div className="container mx-auto px-6 sm:px-8 pt-14 pb-6 relative">
+        <div className="container mx-auto px-6 sm:px-8 pt-10 pb-3 relative">
           {/* Asymmetric grid */}
           <div className="grid grid-cols-12 gap-y-10 gap-x-6">
             {/* Left: CTA block */}
@@ -573,7 +573,7 @@ export function StandardThemeShell({
           </div>
 
           {/* Giant signature name */}
-          <div className="mt-10 -mb-4 overflow-hidden pointer-events-none select-none">
+          <div className="mt-6 -mb-8 overflow-hidden pointer-events-none select-none">
             <div className="t-display font-black tracking-tighter leading-none whitespace-nowrap"
               style={{
                 fontSize: "clamp(4rem, 18vw, 18rem)",
@@ -587,7 +587,7 @@ export function StandardThemeShell({
           </div>
 
           {/* Bottom bar */}
-          <div className="border-t pt-5 mt-2 flex flex-col md:flex-row justify-between items-start md:items-center gap-3 text-[11px] uppercase tracking-[0.2em] opacity-60" style={{ borderColor: `${s.background}1a` }}>
+          <div className="border-t pt-3 mt-1 flex flex-col md:flex-row justify-between items-start md:items-center gap-3 text-[11px] uppercase tracking-[0.2em] opacity-60" style={{ borderColor: `${s.background}1a` }}>
             <div className="flex items-center gap-3">
               <span className="inline-block w-1.5 h-1.5 rounded-full" style={{ background: s.primary }} />
               <span>{footerText || `© ${new Date().getFullYear()} ${name} — All rights reserved`}</span>

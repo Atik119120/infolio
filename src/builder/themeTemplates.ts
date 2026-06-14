@@ -597,12 +597,7 @@ const PROFILES: Record<string, Profile> = {
 };
 
 export const THEME_TEMPLATES: Record<string, TemplateFn> = {
-  freelancer: () => ({ name: "Freelancer Site", theme: PROFILES.freelancer.theme, blocks: buildPage(PROFILES.freelancer) }),
-  "small-business": () => ({ name: "Small Business Site", theme: PROFILES["small-business"].theme, blocks: buildPage(PROFILES["small-business"]) }),
-  "prd-graphic-designer": () => ({ name: "Graphic Designer Site", theme: PROFILES["prd-graphic-designer"].theme, blocks: buildPage(PROFILES["prd-graphic-designer"]) }),
-  "prd-photographer": () => ({ name: "Photographer Site", theme: PROFILES["prd-photographer"].theme, blocks: buildPage(PROFILES["prd-photographer"]) }),
-  "prd-digital-marketer": () => ({ name: "Marketer Site", theme: PROFILES["prd-digital-marketer"].theme, blocks: buildPage(PROFILES["prd-digital-marketer"]) }),
-  biography: () => ({ name: "Personal Bio", theme: PROFILES.biography.theme, blocks: buildPage(PROFILES.biography) }),
+  freelancer: () => ({ name: "Theme 1 Site", theme: PROFILES.freelancer.theme, blocks: buildPage(PROFILES.freelancer) }),
   "custom-code": () => ({
     name: "Custom HTML Page",
     theme: { primaryColor: "#dc2626", fontFamily: "Inter, sans-serif", background: "#ffffff" },

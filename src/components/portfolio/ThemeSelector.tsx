@@ -236,7 +236,7 @@ export function ThemeSelector({ currentTheme, userId, onUpdate }: ThemeSelectorP
             Choose Your Theme
           </CardTitle>
           <CardDescription className="text-white/50">
-            Select a theme that matches your profession. Themes are grouped by category.
+            Select your preferred theme.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-8">

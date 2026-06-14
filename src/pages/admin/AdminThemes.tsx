@@ -26,50 +26,10 @@ import { format } from "date-fns";
 const themes = [
   { 
     id: "freelancer", 
-    name: "Freelancer", 
+    name: "Theme 1", 
     icon: Briefcase, 
     color: "from-blue-500 to-indigo-600",
-    description: "Bold corporate-clean conversion-focused theme",
-    isPremium: false
-  },
-  { 
-    id: "small-business", 
-    name: "Small Business", 
-    icon: Store, 
-    color: "from-amber-500 to-orange-600",
-    description: "Warm friendly local business theme",
-    isPremium: false
-  },
-  { 
-    id: "prd-graphic-designer", 
-    name: "Graphic Designer", 
-    icon: Palette, 
-    color: "from-pink-500 to-rose-600",
-    description: "Bold designer portfolio with Pinterest-style gallery",
-    isPremium: false
-  },
-  { 
-    id: "prd-photographer", 
-    name: "Photographer", 
-    icon: Camera, 
-    color: "from-amber-600 to-yellow-700",
-    description: "Luxury studio cinematic photographer theme",
-    isPremium: false
-  },
-  { 
-    id: "prd-digital-marketer", 
-    name: "Growth Lab", 
-    icon: TrendingUp, 
-    color: "from-cyan-500 to-blue-600",
-    description: "SaaS dashboard data-driven marketer theme",
-    isPremium: false
-  },
-  { 
-    id: "biography", 
-    name: "Biography", 
-    icon: BookOpen, 
-    color: "from-violet-500 to-purple-700",
-    description: "Facebook-style profile page for writers and personalities",
+    description: "Clean modern portfolio theme",
     isPremium: false
   },
 ];

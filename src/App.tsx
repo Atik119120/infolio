@@ -25,6 +25,7 @@ const DashboardDomainStatus = lazy(() => import("./pages/DashboardDomainStatus")
 const DashboardDeploy = lazy(() => import("./pages/DashboardDeploy"));
 const DashboardAnalytics = lazy(() => import("./pages/DashboardAnalytics"));
 const PublicPortfolio = lazy(() => import("./pages/PublicPortfolio"));
+const PublicProjectDetail = lazy(() => import("./pages/PublicProjectDetail"));
 const ThemeDemo = lazy(() => import("./pages/ThemeDemo"));
 const ThemeCollection = lazy(() => import("./pages/ThemeCollection"));
 const ResetPassword = lazy(() => import("./pages/ResetPassword"));
@@ -75,8 +76,10 @@ const App = () => (
                 <Route path="/admin/login" element={<AdminAuth />} />
                 <Route path="/demo/:themeName" element={<ThemeDemo />} />
                 <Route path="/u/:username" element={<PublicPortfolio />} />
+                <Route path="/u/:username/project/:slug" element={<PublicProjectDetail />} />
                 {/* Public SEO alias: infolio.online/@username */}
                 <Route path="/@:username" element={<PublicPortfolio />} />
+                <Route path="/@:username/project/:slug" element={<PublicProjectDetail />} />
                 <Route path="/p/:slug" element={<PublicBuilderPage />} />
                 <Route path="/customize/:themeId" element={
                   <ProtectedRoute>

@@ -397,42 +397,68 @@ export function StandardThemeShell({
               </p>
             </motion.div>
 
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {services.map((sv, i) => (
-                <motion.div
-                  key={sv.id}
-                  {...fadeUp}
-                  transition={{ duration: 0.5, delay: i * 0.06 }}
-                  className="relative p-7 group transition-all duration-300 hover:-translate-y-1"
-                  style={{
-                    background: s.background,
-                    borderRadius: s.radius,
-                    border: `1px solid ${s.border}`,
-                    boxShadow: `0 4px 20px -8px ${s.primary}1a`,
-                  }}
-                >
-                  <div
-                    className="w-14 h-14 rounded-2xl flex items-center justify-center mb-5 transition-transform group-hover:scale-110"
-                    style={{ background: `${s.primary}15`, color: s.primary }}
+            <div className="grid md:grid-cols-6 auto-rows-[minmax(180px,auto)] gap-4 md:gap-5">
+              {services.map((sv, i) => {
+                // Bento span pattern — first card large, others alternate
+                const patterns = [
+                  "md:col-span-4 md:row-span-2",
+                  "md:col-span-2",
+                  "md:col-span-2",
+                  "md:col-span-3",
+                  "md:col-span-3",
+                  "md:col-span-2",
+                  "md:col-span-2",
+                  "md:col-span-2",
+                ];
+                const span = patterns[i % patterns.length];
+                const isFeature = i === 0;
+                return (
+                  <motion.div
+                    key={sv.id}
+                    {...fadeUp}
+                    transition={{ duration: 0.5, delay: i * 0.05 }}
+                    className={`relative p-6 md:p-7 group transition-all duration-300 hover:-translate-y-1 flex flex-col ${span}`}
+                    style={{
+                      background: isFeature ? s.text : s.background,
+                      color: isFeature ? s.background : s.text,
+                      borderRadius: s.radius,
+                      border: `1px solid ${s.border}`,
+                    }}
                   >
-                    <ServiceIcon icon={sv.icon} className="w-6 h-6" />
-                  </div>
-                  <h3 className="t-display text-xl font-bold mb-3" style={{ color: s.text }}>{sv.title}</h3>
-                  {sv.description && (
-                    <p className="text-sm leading-relaxed mb-5" style={{ color: s.textMuted }}>{sv.description}</p>
-                  )}
-                  <div className="flex items-center justify-between pt-4 border-t" style={{ borderColor: s.border }}>
-                    {sv.price ? (
-                      <span className="t-display font-bold text-base" style={{ color: s.primary }}>{sv.price}</span>
-                    ) : (
-                      <span className="text-xs uppercase tracking-wider" style={{ color: s.textMuted }}>On request</span>
+                    <div
+                      className="w-12 h-12 rounded-full flex items-center justify-center mb-5 transition-transform group-hover:scale-110"
+                      style={{
+                        background: isFeature ? `${s.background}1f` : `${s.primary}10`,
+                        color: isFeature ? s.background : s.primary,
+                      }}
+                    >
+                      <ServiceIcon icon={sv.icon} className="w-5 h-5" />
+                    </div>
+                    <h3 className={`t-display font-semibold mb-3 ${isFeature ? "text-3xl md:text-4xl leading-[1.05]" : "text-xl"}`}>
+                      {sv.title}
+                    </h3>
+                    {sv.description && (
+                      <p className={`text-sm leading-relaxed mb-5 ${isFeature ? "max-w-md" : "line-clamp-3"}`}
+                        style={{ color: isFeature ? `${s.background}cc` : s.textMuted }}>
+                        {sv.description}
+                      </p>
                     )}
-                    <a href="#contact" className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider transition-all group-hover:gap-2.5" style={{ color: s.primary }}>
-                      Inquire <ArrowRight className="w-3.5 h-3.5" />
-                    </a>
-                  </div>
-                </motion.div>
-              ))}
+                    <div className="mt-auto flex items-center justify-between pt-4 border-t"
+                      style={{ borderColor: isFeature ? `${s.background}22` : s.border }}>
+                      {sv.price ? (
+                        <span className="t-display italic font-semibold text-base"
+                          style={{ color: isFeature ? s.background : s.primary }}>{sv.price}</span>
+                      ) : (
+                        <span className="text-[10px] uppercase tracking-[0.2em] opacity-70">On request</span>
+                      )}
+                      <a href="#contact" className="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-[0.2em] transition-all group-hover:gap-2.5"
+                        style={{ color: isFeature ? s.background : s.primary }}>
+                        Inquire <ArrowRight className="w-3.5 h-3.5" />
+                      </a>
+                    </div>
+                  </motion.div>
+                );
+              })}
             </div>
           </div>
         </section>

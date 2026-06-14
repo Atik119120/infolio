@@ -65,7 +65,7 @@ export const getCategoryLabel = (p: { project_type: string; custom_category?: st
   return PROJECT_TYPES.find((t) => t.value === p.project_type)?.label || "Project";
 };
 
-export const layoutOf = (t: ProjectType): "photographer" | "case_study" | "campaign" | "default" => {
+export const layoutOf = (t: string): "photographer" | "case_study" | "campaign" | "default" => {
   if (t === "photographer") return "photographer";
   if (t === "graphic_designer" || t === "uiux" || t === "web_designer") return "case_study";
   if (t === "digital_marketer" || t === "content_creator") return "campaign";

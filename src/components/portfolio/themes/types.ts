@@ -104,7 +104,7 @@ export interface ThemeOption {
 }
 
 export const THEME_OPTIONS: ThemeOption[] = [
-  { value: 'freelancer', label: 'Freelancer', description: 'Bold corporate-clean conversion-focused theme', isPremium: false, price: 0, category: 'free', tier: 'free' },
+  { value: 'freelancer', label: 'Theme 1', description: 'Clean modern portfolio theme', isPremium: false, price: 0, category: 'free', tier: 'free' },
 ];
 
 export const getThemesByCategory = (_category: ThemeCategory): ThemeOption[] => {

@@ -47,7 +47,7 @@ export default function PublicPortfolio() {
   const fetchPortfolio = async () => {
     const { data: profileData, error: profileError } = await supabase
       .from("profiles")
-      .select("user_id, display_name, avatar_url")
+      .select("user_id, username, display_name, avatar_url")
       .eq("username", username)
       .maybeSingle();
 

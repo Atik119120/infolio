@@ -126,7 +126,7 @@ export function StandardThemeShell({
       <style>{`
         @import url('${s.fontsHref}');
         .t-display { font-family: '${s.displayFont}', system-ui, sans-serif; }
-        .t-card { background: var(--t-surface); border: 1px solid var(--t-border); border-radius: var(--t-radius); }
+        .t-card { background: var(--t-surface); border: 1px solid var(--t-border); border-radius: var(--t-radius); backdrop-filter: blur(20px) saturate(160%); -webkit-backdrop-filter: blur(20px) saturate(160%); box-shadow: 0 8px 32px -12px ${s.primary}33, inset 0 1px 0 rgba(255,255,255,0.5); }
         .t-btn-primary { background: var(--t-primary); color: #fff; border-radius: var(--t-radius); transition: transform .2s, opacity .2s; }
         .t-btn-primary:hover { transform: translateY(-2px); opacity: .92; }
         .t-btn-outline { border: 1.5px solid var(--t-border); color: var(--t-text); border-radius: var(--t-radius); transition: all .2s; }

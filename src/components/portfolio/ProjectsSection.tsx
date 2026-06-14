@@ -58,9 +58,9 @@ export function ProjectsSection({ projects, username, s, basePath }: Props) {
   if (sorted.length === 0) return null;
 
   return (
-    <section id="works" className="py-20 md:py-24">
+    <section id="works" className="py-8 md:py-10">
       <div className="container mx-auto px-6 sm:px-8">
-        <motion.div {...fadeUp} className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-10">
+        <motion.div {...fadeUp} className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-6">
           <div>
             <span className="inline-block px-3 py-1 text-xs font-semibold tracking-wider uppercase rounded-full" style={{ color: s.primary, background: `${s.primary}15` }}>Selected Works</span>
             <h2 className="t-display text-3xl md:text-5xl font-bold mt-3">Recent projects</h2>
@@ -81,7 +81,7 @@ export function ProjectsSection({ projects, username, s, basePath }: Props) {
         </motion.div>
 
         {types.length > 1 && (
-          <div className="flex flex-wrap gap-2 mb-8">
+          <div className="flex flex-wrap gap-2 mb-5">
             <FilterChip active={filter === "all"} onClick={() => setFilter("all")} s={s}>All</FilterChip>
             {types.map((t) => (
               <FilterChip key={t} active={filter === t} onClick={() => setFilter(t)} s={s}>
@@ -99,7 +99,7 @@ export function ProjectsSection({ projects, username, s, basePath }: Props) {
         </div>
 
         {visibleCount < filtered.length && (
-          <div className="flex justify-center mt-10">
+          <div className="flex justify-center mt-6">
             <button
               onClick={() => setVisibleCount((c) => c + 6)}
               className="px-6 py-2.5 text-sm font-semibold rounded-full transition hover:scale-[1.02]"

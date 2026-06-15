@@ -389,7 +389,7 @@ export function ThemeSelector({ currentTheme, userId, onUpdate }: ThemeSelectorP
                                   <div className="flex gap-3">
                                     {isUnlocked ? (
                                       <Button 
-                                        className="flex-1"
+                                        className={`flex-1 ${isSelected ? 'bg-white text-black hover:bg-white/90 border-0' : ''}`}
                                         onClick={() => {
                                           handleThemeChange(theme.value);
                                         }}

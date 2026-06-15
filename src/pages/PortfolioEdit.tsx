@@ -58,7 +58,7 @@ export interface SocialLink { id: string; platform: string; url: string; display
 type SectionKey =
   | "hero" | "about" | "skills" | "services" | "projects"
   | "experience" | "education" | "branding" | "header" | "footer"
-  | "social" | "seo" | "customize";
+  | "contact" | "social" | "seo" | "customize";
 
 type Stage = "theme" | "editor";
 type Device = "desktop" | "tablet" | "mobile";

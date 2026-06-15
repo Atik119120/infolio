@@ -75,7 +75,7 @@ export default function PortfolioEdit() {
   const [loading, setLoading] = useState(true);
   const [previewDevice, setPreviewDevice] = useState<Device>("desktop");
   const [previewKey, setPreviewKey] = useState(0);
-  const [panelOpen, setPanelOpen] = useState(true);
+  const [drawerOpen, setDrawerOpen] = useState(false);
   const [publishing, setPublishing] = useState(false);
   const iframeRef = useRef<HTMLIFrameElement | null>(null);
 

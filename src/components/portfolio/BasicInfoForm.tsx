@@ -29,7 +29,7 @@ export function BasicInfoForm({ profile, portfolio, userId, onUpdate, onSuccess,
   const [formData, setFormData] = useState({
     display_name: profile?.display_name || "",
     headline: portfolio?.headline || "",
-    bio: portfolio?.bio || "",
+    bio: (portfolio as any)?.about_text || portfolio?.bio || "",
     location: portfolio?.location || "",
     phone: portfolio?.phone || "",
     website: portfolio?.website || "",

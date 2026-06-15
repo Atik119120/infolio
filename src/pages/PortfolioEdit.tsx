@@ -17,6 +17,7 @@ import { ProjectsForm } from "@/components/portfolio/ProjectsForm";
 import { ExperienceForm } from "@/components/portfolio/ExperienceForm";
 import { EducationForm } from "@/components/portfolio/EducationForm";
 import { SocialLinksForm } from "@/components/portfolio/SocialLinksForm";
+import { ContactInfoForm, type ContactItem } from "@/components/portfolio/ContactInfoForm";
 import { ServicesForm, Service } from "@/components/portfolio/ServicesForm";
 import { ThemeSelector } from "@/components/portfolio/ThemeSelector";
 import { LogoUploadForm } from "@/components/portfolio/LogoUploadForm";

@@ -163,8 +163,8 @@ export default function Index() {
       {/* FEATURES */}
       <section className="py-24 md:py-32 px-6 border-t border-border/60">
         <div className="container mx-auto max-w-5xl">
-          <SectionHeader eyebrow="Features" title="Built for creators" subtitle="Everything you need to build and publish a stunning portfolio — no code required." />
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-px bg-border/60 mt-12 rounded-3xl overflow-hidden border border-border/60">
+          <SectionHeader eyebrow="Features" title="Built for creators" subtitle="Everything you need to publish a stunning portfolio — no code required." />
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-12">
             <FeatureCard icon={<Palette className="w-5 h-5" />} title="Premium Themes" description="Beautiful themes for every profession." />
             <FeatureCard icon={<Zap className="w-5 h-5" />} title="No-Code Builder" description="Drag, drop, publish — live preview." />
             <FeatureCard icon={<Rocket className="w-5 h-5" />} title="Instant Publish" description="Go live in seconds, worldwide." />
@@ -195,31 +195,6 @@ export default function Index() {
             ))}
           </div>
           <p className="mt-8 text-center text-xs text-muted-foreground">All prices in BDT (৳). Pay via bKash, Nagad or Rocket. Cancel anytime.</p>
-        </div>
-      </section>
-
-      {/* TERMS */}
-      <section className="py-20 px-6 border-t border-border/60">
-        <div className="container mx-auto max-w-6xl">
-          <SectionHeader eyebrow="Terms" title="Fair use, plain English" subtitle="The rules of the road for using Infolio." />
-          <div className="mt-12 grid md:grid-cols-2 gap-5">
-            {TERMS.map((t) => (
-              <motion.div key={t.title} initial={{ opacity: 0, y: 14 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-50px" }} transition={{ duration: 0.4 }}
-                className="rounded-3xl border border-border/70 bg-card/60 backdrop-blur p-6 hover:border-primary/40 transition">
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="w-10 h-10 rounded-xl gradient-primary text-white grid place-items-center shadow-md shadow-primary/30">
-                    <t.icon className="w-5 h-5" />
-                  </div>
-                  <h3 className="font-semibold tracking-tight">{t.title}</h3>
-                </div>
-                <ul className="space-y-2 text-sm text-muted-foreground">
-                  {t.items.map((it) => (
-                    <li key={it} className="flex gap-2"><Check className="w-3.5 h-3.5 mt-1 shrink-0 text-primary" /><span>{it}</span></li>
-                  ))}
-                </ul>
-              </motion.div>
-            ))}
-          </div>
         </div>
       </section>
 

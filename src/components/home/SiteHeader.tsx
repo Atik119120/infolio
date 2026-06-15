@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { openWhatsApp } from "@/lib/whatsapp";
 import {
-  MessageCircle, Sparkles, LayoutGrid, Tag, HelpCircle, Menu, X, LogIn,
+  MessageCircle, LayoutGrid, Menu, X, LogIn,
 } from "lucide-react";
 import alphaLogo from "@/assets/alpha-portfolio-logo.png";
 
@@ -15,10 +15,7 @@ interface NavItem {
 }
 
 const NAV_ITEMS: NavItem[] = [
-  { label: "Features", icon: Sparkles, to: "/features" },
-  
-  { label: "Pricing", icon: Tag, to: "/pricing" },
-  { label: "FAQ", icon: HelpCircle, to: "/faq" },
+  { label: "Themes", icon: LayoutGrid, to: "/themes" },
 ];
 
 export default function SiteHeader() {

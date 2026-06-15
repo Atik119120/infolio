@@ -256,24 +256,10 @@ export function CustomizationForm({ portfolio, userId, enabledFields, scope = "a
       {showFooter && (
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2"><Type className="w-5 h-5" /> Footer & Browser Tab</CardTitle>
-            <CardDescription>Footer text, copyright, browser tab title customize করো।</CardDescription>
+            <CardTitle className="flex items-center gap-2"><Type className="w-5 h-5" /> Footer</CardTitle>
+            <CardDescription>Footer text এবং copyright customize করো।</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            {has("browser_title") && (
-              <div className="space-y-1.5">
-                <Label className="flex items-center gap-2"><Globe className="w-4 h-4 text-muted-foreground" /> Browser Tab Title</Label>
-                <Input
-                  value={data.browser_title || ""}
-                  onChange={(e) => update("browser_title", e.target.value)}
-                  placeholder="e.g., John Doe — Web Designer"
-                  maxLength={70}
-                />
-                <p className="text-xs text-muted-foreground">
-                  খালি রাখলে: SEO Meta Title → Brand Name → Display Name থেকে fallback হবে।
-                </p>
-              </div>
-            )}
             {has("footer_text") && (
               <div className="space-y-1.5">
                 <Label>Footer Text / Copyright</Label>

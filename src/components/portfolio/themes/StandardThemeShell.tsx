@@ -73,7 +73,7 @@ export function StandardThemeShell({
   const heroImage = portfolio?.hero_image_url || profile?.avatar_url;
   const aboutImage = portfolio?.about_image_url || profile?.avatar_url;
   const aboutText = portfolio?.about_text || portfolio?.bio || "Tell your story here.";
-  const bio = portfolio?.bio || aboutText;
+  const bio = portfolio?.hero_subheadline || "";
   const footerText = portfolio?.footer_text;
   const email = profile?.email;
   const phone = portfolio?.phone;

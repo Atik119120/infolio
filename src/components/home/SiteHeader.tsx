@@ -18,21 +18,6 @@ export default function SiteHeader() {
         <button onClick={() => navigate("/")} className="flex items-center gap-2.5">
           <img src={alphaLogo} alt="Infolio" className="h-8 w-auto object-contain" />
         </button>
-        <div className="hidden md:flex items-center gap-6">
-          {NAV_ITEMS.map((item) => {
-            const Icon = item.icon;
-            return (
-              <button
-                key={item.label}
-                onClick={() => handleNav(item)}
-                className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
-              >
-                <Icon className="w-4 h-4" />
-                {item.label}
-              </button>
-            );
-          })}
-        </div>
         <div className="flex items-center gap-2">
           <button
             onClick={() => openWhatsApp("Hi! I have a question about Infolio.")}

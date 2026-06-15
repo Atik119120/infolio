@@ -127,6 +127,7 @@ export default function SmallBusinessTheme({
       </header>
 
       {/* HERO — editorial founder intro */}
+      {vHero && (
       <section id="home" className="relative overflow-hidden">
         <div aria-hidden className="absolute inset-0 pointer-events-none"
           style={{ background: `radial-gradient(circle at 85% 20%, ${C.primary}15, transparent 50%), radial-gradient(circle at 10% 90%, ${C.accent}10, transparent 50%)` }} />
@@ -202,8 +203,10 @@ export default function SmallBusinessTheme({
           </div>
         </div>
       </section>
+      )}
 
       {/* ABOUT ME */}
+      {vAbout && (
       <section id="about" className="py-20 md:py-28" style={{ background: C.surface }}>
         <div className="container mx-auto px-5">
           <div className="grid md:grid-cols-12 gap-12 items-center">

@@ -281,180 +281,165 @@ export default function PortfolioEdit() {
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-[#0a0a0a] flex flex-col text-white overflow-hidden">
+    <div className="fixed inset-0 z-50 bg-[#0A0A0A] flex flex-col text-white overflow-hidden font-sans antialiased">
       {/* TOP HEADER */}
-      <header className="h-16 shrink-0 flex items-center justify-between px-5 border-b border-white/[0.06] bg-black/70 backdrop-blur-xl">
-        {/* Left: Back + Title */}
+      <header className="h-14 shrink-0 flex items-center justify-between px-5 border-b border-[#1f1f1f] bg-[#0A0A0A]">
         <div className="flex items-center gap-4 min-w-0">
           <button
             onClick={() => navigate("/dashboard")}
-            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs text-white/60 hover:text-white hover:bg-white/[0.06] transition-all"
+            className="flex items-center gap-1.5 text-[13px] text-[#A1A1AA] hover:text-white transition-colors duration-150"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline font-medium">Dashboard</span>
+            <span className="hidden sm:inline">Dashboard</span>
           </button>
-          <div className="h-6 w-px bg-white/10" />
-          <div className="min-w-0">
-            <h1 className="text-sm font-semibold tracking-tight leading-tight">Portfolio Builder</h1>
-            <button
-              onClick={() => setStage("theme")}
-              className="flex items-center gap-1 text-[11px] text-white/45 hover:text-white/80 transition-colors mt-0.5 group"
-            >
-              <Palette className="w-3 h-3" />
-              <span>Theme: <span className="capitalize text-white/70 group-hover:text-white">{activeTheme.replace(/-/g, " ")}</span></span>
-              <ChevronRight className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
-            </button>
-          </div>
-        </div>
-
-        {/* Center: device toggles */}
-        <div className="hidden md:flex items-center gap-0.5 p-1 rounded-xl bg-white/[0.04] border border-white/[0.06]">
-          {([
-            { d: "desktop", Icon: Monitor, label: "Desktop" },
-            { d: "tablet", Icon: Tablet, label: "Tablet" },
-            { d: "mobile", Icon: Smartphone, label: "Mobile" },
-          ] as const).map(({ d, Icon, label }) => (
-            <button
-              key={d}
-              onClick={() => setPreviewDevice(d)}
-              title={label}
-              className={cn(
-                "px-2.5 py-1.5 rounded-lg transition-all",
-                previewDevice === d
-                  ? "bg-white text-black shadow-sm"
-                  : "text-white/50 hover:text-white hover:bg-white/[0.04]"
-              )}
-            >
-              <Icon className="w-3.5 h-3.5" />
-            </button>
-          ))}
-        </div>
-
-        {/* Right: actions */}
-        <div className="flex items-center gap-2">
+          <div className="h-4 w-px bg-[#262626]" />
+          <span className="text-[13px] font-medium tracking-tight">Portfolio Builder</span>
           <button
-            onClick={refreshPreview}
-            className="hidden sm:flex items-center justify-center w-9 h-9 rounded-lg text-white/55 hover:text-white hover:bg-white/[0.06] transition-all"
-            title="Refresh preview"
+            onClick={() => setStage("theme")}
+            className="hidden md:inline-flex items-center text-[12px] text-[#71717A] hover:text-white transition-colors duration-150"
           >
-            <RefreshCw className="w-3.5 h-3.5" />
+            <span className="text-[#52525B] mr-1">·</span>
+            Theme: <span className="capitalize ml-1 text-[#A1A1AA]">{activeTheme.replace(/-/g, " ")}</span>
           </button>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <span className="hidden sm:inline-flex items-center gap-1 text-[12px] text-[#71717A] mr-2">
+            <Check className="w-3 h-3" /> Saved
+          </span>
           {previewUrl && (
             <a
               href={previewUrl}
               target="_blank"
               rel="noreferrer"
-              className="hidden sm:inline-flex items-center gap-1.5 text-xs px-3 h-9 rounded-lg border border-white/10 text-white/75 hover:text-white hover:bg-white/[0.05] hover:border-white/15 transition-all font-medium"
+              className="inline-flex items-center gap-1.5 text-[12px] px-3 h-8 rounded-md border border-[#262626] text-[#A1A1AA] hover:text-white hover:border-[#3f3f3f] transition-all duration-150"
             >
-              <Eye className="w-3.5 h-3.5" /> Preview
+              Preview
             </a>
           )}
-          <Button
-            size="sm"
+          <button
             onClick={handlePublishToggle}
             disabled={publishing}
-            className={cn(
-              "h-9 px-4 text-xs font-semibold gap-1.5 rounded-lg shadow-lg",
-              portfolio?.is_published
-                ? "bg-emerald-500/15 text-emerald-300 hover:bg-emerald-500/20 border border-emerald-500/20 shadow-emerald-500/10"
-                : "bg-white text-black hover:bg-white/90 shadow-white/10"
-            )}
+            className="inline-flex items-center gap-1.5 text-[12px] px-3.5 h-8 rounded-md bg-white text-black hover:bg-[#f4f4f5] font-medium transition-all duration-150 disabled:opacity-50"
           >
             {publishing ? (
-              <Loader2 className="w-3.5 h-3.5 animate-spin" />
+              <Loader2 className="w-3 h-3 animate-spin" />
             ) : portfolio?.is_published ? (
-              <><Check className="w-3.5 h-3.5" /> Published</>
+              "Published"
             ) : (
-              <><Rocket className="w-3.5 h-3.5" /> Publish</>
+              "Publish"
             )}
-          </Button>
+          </button>
         </div>
       </header>
 
-      {/* BODY: sidebar + preview */}
       <div className="flex-1 flex overflow-hidden">
-        {/* LEFT SIDEBAR — section cards */}
-        <aside className="hidden lg:flex w-[280px] shrink-0 flex-col border-r border-white/[0.06] bg-[#0c0c0e]">
-          <div className="px-5 pt-5 pb-3">
-            <p className="text-[10px] uppercase tracking-[0.2em] text-white/35 font-semibold">Sections</p>
-            <p className="text-xs text-white/45 mt-1">Click a section to edit</p>
-          </div>
-          <div className="flex-1 overflow-y-auto px-3 pb-4 space-y-1.5 scrollbar-thin">
+        {/* LEFT SIDEBAR */}
+        <aside className="hidden lg:flex w-[220px] shrink-0 flex-col border-r border-[#1f1f1f] bg-[#111111]">
+          <nav className="flex-1 overflow-y-auto py-4 px-3 space-y-0.5">
             {sections.map((s) => {
-              const Icon = s.icon;
-              const active = activeSection === s.value && drawerOpen;
+              const active = activeSection === s.value;
               return (
                 <button
                   key={s.value}
-                  onClick={() => {
-                    setActiveSection(s.value);
-                    setDrawerOpen(true);
-                  }}
+                  onClick={() => setActiveSection(s.value)}
                   className={cn(
-                    "w-full group relative flex items-center gap-3 px-3 py-3 rounded-xl border text-left transition-all duration-200",
+                    "w-full flex items-center px-3 py-2 rounded-md text-[13px] text-left transition-colors duration-150",
                     active
-                      ? "bg-white/[0.06] border-white/15 shadow-lg shadow-black/30"
-                      : "bg-white/[0.015] border-white/[0.05] hover:bg-white/[0.04] hover:border-white/10 hover:-translate-y-0.5"
+                      ? "bg-[#181818] text-white"
+                      : "text-[#A1A1AA] hover:text-white hover:bg-[#181818]/60"
                   )}
                 >
-                  {active && (
-                    <span className="absolute left-0 top-1/2 -translate-y-1/2 h-6 w-0.5 bg-white rounded-r-full" />
-                  )}
                   <span
                     className={cn(
-                      "shrink-0 w-9 h-9 rounded-lg flex items-center justify-center transition-colors",
-                      active
-                        ? "bg-white text-black"
-                        : "bg-white/[0.05] text-white/70 group-hover:bg-white/10 group-hover:text-white"
+                      "w-1.5 h-1.5 rounded-full mr-3 transition-colors duration-150",
+                      active ? "bg-white" : "bg-transparent"
                     )}
-                  >
-                    <Icon className="w-4 h-4" />
-                  </span>
-                  <span className="flex-1 min-w-0">
-                    <span className="block text-[13px] font-semibold text-white/90 leading-tight truncate">
-                      {s.label}
-                    </span>
-                    <span className="block text-[11px] text-white/45 mt-0.5 truncate">
-                      {s.hint}
-                    </span>
-                  </span>
-                  <ChevronRight className={cn(
-                    "w-3.5 h-3.5 text-white/30 transition-all shrink-0",
-                    "group-hover:text-white/70 group-hover:translate-x-0.5"
-                  )} />
+                  />
+                  {s.label}
                 </button>
               );
             })}
-          </div>
-          <div className="px-5 py-3 border-t border-white/[0.06] text-[10px] text-white/35">
-            Changes auto-save
-          </div>
+          </nav>
         </aside>
 
-        {/* Mobile: horizontal scroll section pills */}
-        <div className="lg:hidden absolute top-16 left-0 right-0 z-10 px-3 py-2 border-b border-white/[0.06] bg-black/70 backdrop-blur-xl flex items-center gap-2 overflow-x-auto scrollbar-none">
+        {/* EDITOR PANEL (~25%) */}
+        <section className="hidden lg:flex w-[340px] shrink-0 flex-col border-r border-[#1f1f1f] bg-[#0A0A0A]">
+          <div className="px-6 pt-6 pb-4">
+            <h2 className="text-[15px] font-semibold tracking-tight text-white">
+              {activeMeta?.label}
+            </h2>
+          </div>
+          <div className="flex-1 overflow-y-auto px-6 pb-6 portfolio-minimal-form">
+            {renderForm()}
+          </div>
+        </section>
+
+        {/* Mobile section pills */}
+        <div className="lg:hidden absolute top-14 left-0 right-0 z-10 px-3 py-2 border-b border-[#1f1f1f] bg-[#0A0A0A] flex items-center gap-1.5 overflow-x-auto scrollbar-none">
           {sections.map((s) => {
-            const Icon = s.icon;
+            const active = activeSection === s.value;
             return (
               <button
                 key={s.value}
-                onClick={() => { setActiveSection(s.value); setDrawerOpen(true); }}
-                className="shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/[0.04] border border-white/[0.06] text-xs text-white/70 hover:bg-white/10 hover:text-white transition-all"
+                onClick={() => setActiveSection(s.value)}
+                className={cn(
+                  "shrink-0 px-3 py-1.5 rounded-md text-[12px] transition-colors duration-150",
+                  active ? "bg-[#181818] text-white" : "text-[#A1A1AA] hover:text-white"
+                )}
               >
-                <Icon className="w-3 h-3" />
                 {s.label}
               </button>
             );
           })}
         </div>
 
-        {/* PREVIEW CANVAS — 75–80% of screen */}
-        <div className="flex-1 relative overflow-hidden bg-[#111] bg-[radial-gradient(ellipse_at_top,rgba(255,255,255,0.05),transparent_60%)]">
-          <div className="absolute inset-0 flex items-stretch justify-center p-4 md:p-6 lg:p-8 pt-16 lg:pt-8 overflow-auto">
+        {/* Mobile editor panel */}
+        <section className="lg:hidden w-full flex-1 flex flex-col bg-[#0A0A0A] pt-12 overflow-hidden">
+          <div className="px-5 pt-4 pb-3">
+            <h2 className="text-[14px] font-semibold tracking-tight">{activeMeta?.label}</h2>
+          </div>
+          <div className="flex-1 overflow-y-auto px-5 pb-6 portfolio-minimal-form">
+            {renderForm()}
+          </div>
+        </section>
+
+        {/* PREVIEW (~75%) */}
+        <div className="hidden lg:flex flex-1 relative overflow-hidden bg-[#0A0A0A]">
+          <div className="absolute top-4 left-1/2 -translate-x-1/2 z-10 flex items-center gap-0.5 p-0.5 rounded-md bg-[#111111] border border-[#262626]">
+            {([
+              { d: "desktop", Icon: Monitor },
+              { d: "tablet", Icon: Tablet },
+              { d: "mobile", Icon: Smartphone },
+            ] as const).map(({ d, Icon }) => (
+              <button
+                key={d}
+                onClick={() => setPreviewDevice(d)}
+                className={cn(
+                  "px-2 py-1 rounded transition-colors duration-150",
+                  previewDevice === d
+                    ? "bg-[#181818] text-white"
+                    : "text-[#71717A] hover:text-white"
+                )}
+              >
+                <Icon className="w-3.5 h-3.5" />
+              </button>
+            ))}
+            <div className="w-px h-4 bg-[#262626] mx-0.5" />
+            <button
+              onClick={refreshPreview}
+              className="px-2 py-1 rounded text-[#71717A] hover:text-white transition-colors duration-150"
+              title="Refresh"
+            >
+              <RefreshCw className="w-3.5 h-3.5" />
+            </button>
+          </div>
+
+          <div className="absolute inset-0 flex items-stretch justify-center p-6 pt-16 overflow-auto">
             {previewUrl ? (
               <div
                 className={cn(
-                  "bg-white rounded-2xl shadow-2xl shadow-black/60 overflow-hidden ring-1 ring-white/10 transition-all duration-300",
+                  "bg-white rounded-lg overflow-hidden border border-[#262626] transition-all duration-200",
                   previewDevice === "desktop" ? "w-full h-full" : "h-full"
                 )}
                 style={{
@@ -471,70 +456,13 @@ export default function PortfolioEdit() {
                 />
               </div>
             ) : (
-              <div className="text-white/50 text-sm flex items-center justify-center w-full">
+              <div className="text-[#71717A] text-sm flex items-center justify-center w-full">
                 Set up your username to see a live preview.
               </div>
             )}
           </div>
         </div>
       </div>
-
-      {/* EDITING DRAWER — opens when section clicked */}
-      <Sheet open={drawerOpen} onOpenChange={setDrawerOpen}>
-        <SheetContent
-          side="left"
-          className="w-full sm:max-w-md p-0 bg-[#0d0d0f] border-r border-white/[0.08] text-white flex flex-col gap-0"
-        >
-          <SheetHeader className="px-6 pt-6 pb-4 border-b border-white/[0.06] text-left space-y-1">
-            <div className="flex items-center gap-3">
-              {activeMeta && (
-                <span className="w-10 h-10 rounded-xl bg-white text-black flex items-center justify-center shrink-0">
-                  <activeMeta.icon className="w-4 h-4" />
-                </span>
-              )}
-              <div className="min-w-0 flex-1">
-                <SheetTitle className="text-white text-base font-semibold tracking-tight">
-                  {activeMeta?.label}
-                </SheetTitle>
-                <SheetDescription className="text-white/45 text-xs mt-0.5">
-                  {activeMeta?.hint}
-                </SheetDescription>
-              </div>
-            </div>
-          </SheetHeader>
-
-          <div className="flex-1 overflow-y-auto px-6 py-5 scrollbar-thin">
-            {renderForm()}
-          </div>
-
-          {/* Footer nav */}
-          <div className="flex items-center justify-between gap-2 px-4 py-3 border-t border-white/[0.06] bg-black/40">
-            <button
-              onClick={() => {
-                const i = sections.findIndex((s) => s.value === activeSection);
-                if (i > 0) setActiveSection(sections[i - 1].value);
-              }}
-              disabled={sections[0]?.value === activeSection}
-              className="text-xs text-white/65 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed px-3 py-1.5 rounded-md hover:bg-white/5 transition-colors font-medium"
-            >
-              ← Prev
-            </button>
-            <span className="text-[10px] text-white/35 tabular-nums">
-              {sections.findIndex((s) => s.value === activeSection) + 1} / {sections.length}
-            </span>
-            <button
-              onClick={() => {
-                const i = sections.findIndex((s) => s.value === activeSection);
-                if (i < sections.length - 1) setActiveSection(sections[i + 1].value);
-              }}
-              disabled={sections[sections.length - 1]?.value === activeSection}
-              className="text-xs text-white/65 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed px-3 py-1.5 rounded-md hover:bg-white/5 transition-colors font-medium"
-            >
-              Next →
-            </button>
-          </div>
-        </SheetContent>
-      </Sheet>
     </div>
   );
 }

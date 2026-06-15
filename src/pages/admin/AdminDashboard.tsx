@@ -73,6 +73,7 @@ export default function AdminDashboard() {
     { icon: Palette, label: "Themes", path: "/admin/themes" },
     { icon: Code2, label: "Custom Themes", path: "/admin/custom-themes" },
     { icon: Crown, label: "Pro Plans", path: "/admin/plans" },
+    { icon: Crown, label: "Plan Tiers", path: "/admin/plan-tiers" },
     { icon: Settings, label: "Site Settings", path: "/admin/site-settings" },
     { icon: Settings, label: "Settings", path: "/admin/settings" },
   ];

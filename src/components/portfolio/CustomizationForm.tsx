@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { usePlan } from "@/hooks/usePlan";
 import { compressImage } from "@/lib/imageCompression";
@@ -55,24 +55,46 @@ export function CustomizationForm({ portfolio, userId, enabledFields, onUpdate, 
   const update = (k: keyof CustomizationData, v: string) =>
     setData((d) => ({ ...d, [k]: v }));
 
-  const handleSave = async () => {
+  const buildPayload = () => ({
+    hero_image_url: data.hero_image_url || null,
+    hero_headline: data.hero_headline || null,
+    hero_subheadline: data.hero_subheadline || null,
+    hero_cta_text: data.hero_cta_text || null,
+    hero_cta_link: data.hero_cta_link || null,
+    about_image_url: data.about_image_url || null,
+    about_text: data.about_text || null,
+    footer_text: data.footer_text || null,
+    browser_title: data.browser_title || null,
+  });
+
+  const doSave = async (payload: any, silent = false) => {
     setSaving(true);
-    const payload: any = {
-      hero_image_url: data.hero_image_url || null,
-      hero_headline: data.hero_headline || null,
-      hero_subheadline: data.hero_subheadline || null,
-      hero_cta_text: data.hero_cta_text || null,
-      hero_cta_link: data.hero_cta_link || null,
-      about_image_url: data.about_image_url || null,
-      about_text: data.about_text || null,
-      footer_text: data.footer_text || null,
-      browser_title: data.browser_title || null,
-    };
     const { error } = await supabase.from("portfolios").update(payload).eq("user_id", userId);
     setSaving(false);
-    if (error) onError("Failed to save customization");
-    else { onSuccess("Customization saved"); onUpdate(); }
+    if (error) {
+      onError("Failed to save customization");
+      return false;
+    }
+    if (!silent) onSuccess("Customization saved");
+    onUpdate();
+    return true;
   };
+
+  const handleSave = async () => {
+    await doSave(buildPayload(), false);
+  };
+
+  // Auto-save after user stops typing
+  const initialData = useRef(data);
+  useEffect(() => {
+    const changed = JSON.stringify(data) !== JSON.stringify(initialData.current);
+    if (!changed) return;
+    const timer = setTimeout(() => {
+      doSave(buildPayload(), true);
+      initialData.current = data;
+    }, 800);
+    return () => clearTimeout(timer);
+  }, [data]);
 
   const uploadImage = async (file: File, key: "hero_image_url" | "about_image_url", setBusy: (b: boolean) => void) => {
     if (!file.type.startsWith("image/")) { onError("Please upload an image file"); return; }
@@ -268,12 +290,6 @@ export function CustomizationForm({ portfolio, userId, enabledFields, onUpdate, 
         </Card>
       )}
 
-      <div className="sticky bottom-0 bg-background/80 backdrop-blur border-t pt-4 -mx-4 px-4 flex justify-end">
-        <Button onClick={handleSave} disabled={saving} size="lg">
-          {saving ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : null}
-          Save Customization
-        </Button>
-      </div>
     </div>
   );
 }

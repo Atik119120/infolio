@@ -43,8 +43,8 @@ export default function PRDPhotographerTheme({
 
   const name = portfolio?.brand_name || profile?.display_name || "Your Name";
   const headline = portfolio?.hero_headline || portfolio?.headline || "Visual Storyteller";
-  const bio = portfolio?.bio || "I capture moments that words can't tell.";
-  const aboutText = portfolio?.about_text || bio;
+  const bio = portfolio?.hero_subheadline || "I capture moments that words can't tell.";
+  const aboutText = portfolio?.about_text || portfolio?.bio || bio;
   const heroImage = portfolio?.hero_image_url || profile?.avatar_url;
   const aboutImage = portfolio?.about_image_url || profile?.avatar_url;
   const heroCtaText = portfolio?.hero_cta_text;

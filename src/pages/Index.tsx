@@ -93,7 +93,7 @@ export default function Index() {
       </section>
 
       {/* THREE STEPS */}
-      <section className="py-24 md:py-32 px-6 relative overflow-hidden">
+      <section className="py-16 md:py-20 px-6 relative overflow-hidden">
         <div aria-hidden className="absolute inset-0 -z-10 pointer-events-none">
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] rounded-full bg-primary/10 blur-[120px]" />
         </div>
@@ -161,7 +161,7 @@ export default function Index() {
       </section>
 
       {/* FEATURES */}
-      <section className="py-24 md:py-32 px-6 border-t border-border/60">
+      <section className="py-16 md:py-20 px-6 border-t border-border/60">
         <div className="container mx-auto max-w-5xl">
           <SectionHeader eyebrow="Features" title="Built for creators" subtitle="Everything you need to publish a stunning portfolio — no code required." />
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-12">
@@ -178,7 +178,7 @@ export default function Index() {
       </section>
 
       {/* PRICING */}
-      <section className="py-24 md:py-32 px-6 border-t border-border/60">
+      <section className="py-16 md:py-20 px-6 border-t border-border/60">
         <div className="container mx-auto max-w-7xl">
           <SectionHeader eyebrow="Pricing" title="Plans for every stage" subtitle="Start free with a subdomain. Upgrade as your work grows." />
           <div className="mt-8 flex justify-center">
@@ -199,7 +199,7 @@ export default function Index() {
       </section>
 
       {/* FINAL CTA */}
-      <section className="py-24 px-6 border-t border-border/60 relative overflow-hidden">
+      <section className="py-16 md:py-20 px-6 border-t border-border/60 relative overflow-hidden">
         <div aria-hidden className="absolute inset-0 -z-10 pointer-events-none">
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[400px] rounded-full bg-primary/10 blur-[140px]" />
         </div>

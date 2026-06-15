@@ -524,6 +524,9 @@ export function StandardThemeShell({
           </div>
         </div>
       </section>
+      )}
+
+
 
       {/* UNIQUE FOOTER — ticker + giant signature + asymmetric grid */}
       <footer style={{ background: s.text, color: s.background }} className="relative overflow-hidden">

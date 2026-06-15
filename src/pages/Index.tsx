@@ -8,6 +8,7 @@ import {
   Zap, Globe, Rocket, Server, Search, Cloud, Image,
 } from "lucide-react";
 import Footer from "@/components/home/Footer";
+import SiteHeader from "@/components/home/SiteHeader";
 import { GradientBars } from "@/components/ui/gradient-bars-background";
 import { SectionHeader, FeatureCard, PLANS, TERMS, PlanCard } from "@/pages/home/shared";
 import stepsImage from "@/assets/steps-section.jpg";
@@ -23,6 +24,7 @@ export default function Index() {
 
   return (
     <div className="min-h-screen bg-background overflow-x-hidden text-foreground">
+      <SiteHeader />
       <Helmet>
         <title>Infolio — Build Your Professional Portfolio in Minutes</title>
         <meta name="description" content="Pick a theme, add your work, and publish a stunning personal portfolio in minutes — on your own subdomain or custom domain." />

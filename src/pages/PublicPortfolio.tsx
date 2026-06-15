@@ -37,6 +37,7 @@ export default function PublicPortfolio() {
   const [education, setEducation] = useState<ThemeEducation[]>([]);
   const [socialLinks, setSocialLinks] = useState<ThemeSocialLink[]>([]);
   const [services, setServices] = useState<any[]>([]);
+  const [contactItems, setContactItems] = useState<any[]>([]);
 
   usePortfolioHead({ portfolio, displayName: profile?.display_name });
 

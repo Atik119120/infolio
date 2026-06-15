@@ -155,16 +155,16 @@ export default function PortfolioEdit() {
   const previewUrl = username ? `/u/${username}?preview=1` : null;
 
   const allSections: { value: SectionKey; label: string; icon: any; hint: string }[] = [
-    { value: "basic", label: "Basic Info", icon: User, hint: "Name, bio, contact" },
-    { value: "customize", label: "Hero & Content", icon: Wand2, hint: "Hero, about, footer" },
-    { value: "branding", label: "Branding", icon: ImageIcon, hint: "Logo and favicon" },
-    { value: "skills", label: "Skills", icon: Sparkles, hint: "Your skills" },
-    { value: "services", label: "Services", icon: Wrench, hint: "Offerings" },
-    { value: "projects", label: "Projects", icon: FolderOpen, hint: "Showcase work" },
+    { value: "customize", label: "Hero Section", icon: Home, hint: "Main landing area" },
+    { value: "basic", label: "About Me", icon: User, hint: "Personal introduction" },
+    { value: "skills", label: "Skills", icon: Sparkles, hint: "Tools and expertise" },
+    { value: "services", label: "Services", icon: Wrench, hint: "What you offer" },
+    { value: "projects", label: "Projects", icon: FolderOpen, hint: "Showcase your work" },
     { value: "experience", label: "Experience", icon: Briefcase, hint: "Work history" },
-    { value: "education", label: "Education", icon: GraduationCap, hint: "Education" },
-    { value: "social", label: "Social Links", icon: Link2, hint: "Social profiles" },
-    { value: "seo", label: "SEO", icon: Search, hint: "Search settings" },
+    { value: "education", label: "Education", icon: GraduationCap, hint: "Your education" },
+    { value: "branding", label: "Branding", icon: ImageIcon, hint: "Logo and favicon" },
+    { value: "social", label: "Social Links", icon: Link2, hint: "Your social profiles" },
+    { value: "seo", label: "SEO", icon: Rocket, hint: "Search visibility" },
   ];
   const sections = allSections.filter((s) => themeConfig.tabs.includes(s.value));
   const activeMeta = sections.find((s) => s.value === activeSection) ?? sections[0];

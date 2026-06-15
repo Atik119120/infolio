@@ -108,6 +108,11 @@ function Inner({ portfolio, userId, onUpdate, onSuccess, onError }: SeoSettingsF
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
+            <Label htmlFor="browser_title">Browser Tab Title</Label>
+            <Input id="browser_title" name="browser_title" value={form.browser_title} onChange={onChange} maxLength={70} placeholder="e.g., John Doe — Web Designer" />
+            <p className="text-xs text-muted-foreground">খালি রাখলে Meta Title → Brand → Display Name fallback হবে।</p>
+          </div>
+          <div className="space-y-2">
             <Label htmlFor="meta_title">Meta Title</Label>
             <Input id="meta_title" name="meta_title" value={form.meta_title} onChange={onChange} maxLength={70} placeholder="John Doe — Photographer in Dhaka" />
             <p className="text-xs text-muted-foreground">{form.meta_title.length}/70 characters</p>

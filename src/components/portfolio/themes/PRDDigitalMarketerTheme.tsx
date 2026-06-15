@@ -164,6 +164,7 @@ export default function PRDDigitalMarketerTheme({
       </header>
 
       {/* HERO — split: text + dashboard preview */}
+      {vHero && (
       <section id="home" className="relative overflow-hidden">
         <div aria-hidden className="absolute inset-0 gl-grid-bg" />
         <div aria-hidden className="absolute -top-40 -right-40 w-[500px] h-[500px] rounded-full opacity-30"
@@ -273,8 +274,10 @@ export default function PRDDigitalMarketerTheme({
           </div>
         </div>
       </section>
+      )}
 
       {/* ABOUT */}
+      {vAbout && (
       <section id="about" className="py-20 md:py-28" style={{ background: C.bg2 }}>
         <div className="container mx-auto px-5">
           <div className="grid md:grid-cols-12 gap-12 items-center">
@@ -328,6 +331,7 @@ export default function PRDDigitalMarketerTheme({
           </div>
         </div>
       </section>
+      )}
 
       {/* SERVICES */}
       {services.length > 0 && (
@@ -382,6 +386,7 @@ export default function PRDDigitalMarketerTheme({
       )}
 
       {/* PROJECTS & CLIENTS */}
+      {vProjects && (
       <section id="work" className="py-20 md:py-28" style={{ background: C.bg2 }}>
         <div className="container mx-auto px-5">
           <motion.div {...fadeUp} className="text-center max-w-2xl mx-auto mb-14">
@@ -466,8 +471,10 @@ export default function PRDDigitalMarketerTheme({
           )}
         </div>
       </section>
+      )}
 
       {/* CONTACT */}
+      {vContact && (
       <section id="contact" className="py-20 md:py-28 relative overflow-hidden">
         <div aria-hidden className="absolute inset-0 gl-grid-bg pointer-events-none" />
         <div className="container mx-auto px-5 relative">
@@ -504,6 +511,7 @@ export default function PRDDigitalMarketerTheme({
           </div>
         </div>
       </section>
+      )}
 
       {/* FOOTER */}
       <footer style={{ background: "#070b1a", color: C.ink }} className="pt-16 pb-8 border-t" >

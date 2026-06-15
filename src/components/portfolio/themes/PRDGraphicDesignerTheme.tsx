@@ -171,6 +171,7 @@ export default function PRDGraphicDesignerTheme({
       </header>
 
       {/* HERO */}
+      {vHero && (
       <section id="home" className="relative pt-12 md:pt-16 pb-16">
         <div className="container mx-auto px-5">
           <div className="grid lg:grid-cols-12 gap-10 items-center">
@@ -229,8 +230,10 @@ export default function PRDGraphicDesignerTheme({
           </div>
         </div>
       </section>
+      )}
 
       {/* ABOUT */}
+      {vAbout && (
       <section id="about" className="py-20 md:py-28 relative">
         <div className="container mx-auto px-5">
           <div className="grid md:grid-cols-12 gap-12 items-center">
@@ -276,8 +279,10 @@ export default function PRDGraphicDesignerTheme({
           </div>
         </div>
       </section>
+      )}
 
       {/* EXPERTISE */}
+      {(vSkills||vServices) && (
       <section id="expertise" className="py-20 md:py-28">
         <div className="container mx-auto px-5">
           <motion.div {...fadeUp} className="text-center max-w-2xl mx-auto mb-14">
@@ -370,6 +375,7 @@ export default function PRDGraphicDesignerTheme({
           </motion.div>
         </div>
       </section>
+      )}
 
       {/* PROJECTS — Pinterest masonry */}
       {projects.length > 0 && (
@@ -459,6 +465,7 @@ export default function PRDGraphicDesignerTheme({
       )}
 
       {/* CONTACT */}
+      {vContact && (
       <section id="contact" className="py-20 md:py-28">
         <div className="container mx-auto px-5">
           <motion.div {...fadeUp} className="text-center max-w-2xl mx-auto mb-12">
@@ -497,6 +504,7 @@ export default function PRDGraphicDesignerTheme({
           </div>
         </div>
       </section>
+      )}
 
       {/* FOOTER */}
       <footer className="pt-16 pb-8 border-t" style={{ borderColor: C.border, background: "rgba(0,0,0,0.4)" }}>

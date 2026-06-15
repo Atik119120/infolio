@@ -165,6 +165,7 @@ export default function PRDPhotographerTheme({
       </header>
 
       {/* HERO */}
+      {vHero && (
       <section id="home" className="relative pt-12 md:pt-16 pb-20 overflow-hidden">
         <div className="gx-mesh gx-blob" />
         <div className="container mx-auto px-5 mb-10 md:mb-14 relative">
@@ -282,8 +283,10 @@ export default function PRDPhotographerTheme({
           </div>
         </div>
       </section>
+      )}
 
       {/* ABOUT (includes Awards) */}
+      {vAbout && (
       <section id="about" className="py-20 md:py-28" style={{ background: C.surface }}>
         <div className="container mx-auto px-5">
           <div className="grid md:grid-cols-12 gap-12 items-start">
@@ -350,6 +353,7 @@ export default function PRDPhotographerTheme({
           </div>
         </div>
       </section>
+      )}
 
       {/* SERVICES */}
       {services.length > 0 && (
@@ -455,6 +459,7 @@ export default function PRDPhotographerTheme({
       )}
 
       {/* CONTACT */}
+      {vContact && (
       <section id="contact" className="py-20 md:py-28">
         <div className="container mx-auto px-5">
           <motion.div {...fadeUp} className="text-center max-w-2xl mx-auto mb-12">
@@ -492,6 +497,7 @@ export default function PRDPhotographerTheme({
           </div>
         </div>
       </section>
+      )}
 
       {/* FOOTER */}
       <footer style={{ background: "#000", color: C.ink }} className="pt-16 pb-8 border-t" >

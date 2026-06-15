@@ -55,8 +55,9 @@ export interface Education { id: string; institution: string; degree: string; fi
 export interface SocialLink { id: string; platform: string; url: string; display_order: number | null; }
 
 type SectionKey =
-  | "basic" | "customize" | "branding" | "skills" | "services"
-  | "projects" | "experience" | "education" | "social" | "seo";
+  | "hero" | "about" | "skills" | "services" | "projects"
+  | "experience" | "education" | "branding" | "header" | "footer"
+  | "social" | "seo" | "customize";
 
 type Stage = "theme" | "editor";
 type Device = "desktop" | "tablet" | "mobile";

@@ -40,42 +40,6 @@ export default function Pricing() {
         </div>
       </section>
 
-      <section className="py-20 px-6 border-t border-border/60">
-        <div className="container mx-auto max-w-7xl">
-          <SectionHeader eyebrow="Compare" title="Find the right plan" subtitle="Side-by-side breakdown of every feature." />
-          <div className="mt-12 overflow-x-auto rounded-3xl border border-border bg-card/60 backdrop-blur">
-            <table className="w-full text-sm min-w-[820px]">
-              <thead>
-                <tr className="border-b border-border/70 bg-muted/30">
-                  <th className="text-left p-4 font-semibold tracking-tight">Feature</th>
-                  {PLANS.map((p) => (
-                    <th key={p.name} className="text-center p-4 font-semibold tracking-tight">
-                      <div className="flex flex-col items-center gap-1">
-                        <span>{p.short}</span>
-                        {p.badge && <span className="text-[10px] px-2 py-0.5 rounded-full gradient-primary text-white">{p.badge}</span>}
-                      </div>
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {COMPARE_ROWS.map((row, i) => (
-                  <tr key={row.label} className={i % 2 ? "bg-background/30" : ""}>
-                    <td className="p-4 text-foreground/85">{row.label}</td>
-                    {row.values.map((v, j) => (
-                      <td key={j} className="p-4 text-center text-muted-foreground">
-                        {v === true ? <Check className="w-4 h-4 text-primary mx-auto" strokeWidth={3} /> :
-                         v === false ? <X className="w-4 h-4 text-muted-foreground/40 mx-auto" /> :
-                         <span className="font-medium text-foreground/85">{v}</span>}
-                      </td>
-                    ))}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </section>
 
       <section className="py-20 px-6 border-t border-border/60">
         <div className="container mx-auto max-w-6xl">

@@ -73,7 +73,7 @@ export function StandardThemeShell({
   const heroImage = portfolio?.hero_image_url || profile?.avatar_url;
   const aboutImage = portfolio?.about_image_url || profile?.avatar_url;
   const aboutText = portfolio?.about_text || portfolio?.bio || "Tell your story here.";
-  const bio = portfolio?.bio || aboutText;
+  const bio = portfolio?.hero_subheadline || "";
   const footerText = portfolio?.footer_text;
   const email = profile?.email;
   const phone = portfolio?.phone;
@@ -202,9 +202,11 @@ export function StandardThemeShell({
               <p className="t-display italic text-xl md:text-2xl mb-6" style={{ color: s.textMuted }}>
                 — {headline}
               </p>
-              <p className="text-base md:text-lg leading-relaxed mb-8 mx-auto max-w-2xl" style={{ color: s.textMuted }}>
-                {bio.length > 220 ? bio.slice(0, 220) + "…" : bio}
-              </p>
+              {bio && (
+                <p className="text-base md:text-lg leading-relaxed mb-8 mx-auto max-w-2xl" style={{ color: s.textMuted }}>
+                  {bio.length > 220 ? bio.slice(0, 220) + "…" : bio}
+                </p>
+              )}
               <div className="flex flex-wrap gap-3 justify-center">
                 <a href={heroCtaLink} className="t-btn-primary px-7 py-3 text-xs font-bold tracking-[0.2em] uppercase inline-flex items-center gap-2">
                   {heroCtaText} <ArrowRight className="w-4 h-4" />

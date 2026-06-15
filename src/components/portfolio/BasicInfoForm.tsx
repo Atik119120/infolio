@@ -29,7 +29,7 @@ export function BasicInfoForm({ profile, portfolio, userId, onUpdate, onSuccess,
   const [formData, setFormData] = useState({
     display_name: profile?.display_name || "",
     headline: portfolio?.headline || "",
-    bio: portfolio?.bio || "",
+    bio: (portfolio as any)?.about_text || portfolio?.bio || "",
     location: portfolio?.location || "",
     phone: portfolio?.phone || "",
     website: portfolio?.website || "",
@@ -50,7 +50,7 @@ export function BasicInfoForm({ profile, portfolio, userId, onUpdate, onSuccess,
         .from("portfolios")
         .update({
           headline: formData.headline,
-          bio: formData.bio,
+          about_text: formData.bio,
           location: formData.location,
           phone: formData.phone,
           website: formData.website,
@@ -210,14 +210,14 @@ export function BasicInfoForm({ profile, portfolio, userId, onUpdate, onSuccess,
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="bio">Bio</Label>
+          <Label htmlFor="bio">About / Full Biography</Label>
           <Textarea
             id="bio"
             name="bio"
             value={formData.bio}
             onChange={handleChange}
-            placeholder="Tell visitors about yourself..."
-            rows={4}
+            placeholder="Share your full story, journey, experience, and background..."
+            rows={8}
           />
         </div>
 

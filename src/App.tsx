@@ -24,6 +24,7 @@ const DashboardPurchases = lazy(() => import("./pages/DashboardPurchases"));
 const DashboardDomainStatus = lazy(() => import("./pages/DashboardDomainStatus"));
 const DashboardDeploy = lazy(() => import("./pages/DashboardDeploy"));
 const DashboardAnalytics = lazy(() => import("./pages/DashboardAnalytics"));
+const DashboardThemes = lazy(() => import("./pages/DashboardThemes"));
 const PublicPortfolio = lazy(() => import("./pages/PublicPortfolio"));
 const PublicProjectDetail = lazy(() => import("./pages/PublicProjectDetail"));
 const ThemeDemo = lazy(() => import("./pages/ThemeDemo"));
@@ -105,6 +106,7 @@ const App = () => (
                   <Route path="domain-status" element={<DashboardDomainStatus />} />
                   <Route path="deploy" element={<DashboardDeploy />} />
                   <Route path="analytics" element={<DashboardAnalytics />} />
+                  <Route path="themes" element={<DashboardThemes />} />
                 </Route>
                 <Route path="/admin" element={
                   <AdminRoute>

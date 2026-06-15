@@ -6,6 +6,7 @@ import { ThemeProps, ThemeService } from "./types";
 import { ContactForm } from "@/components/portfolio/ContactForm";
 import { ProjectsSection } from "@/components/portfolio/ProjectsSection";
 import { getSocialIcon } from "./utils";
+import { isVisible } from "@/lib/sectionVisibility";
 
 /**
  * Per-theme style tokens. Each theme passes a unique aesthetic.
@@ -96,15 +97,23 @@ export function StandardThemeShell({
     transition: { duration: 0.6 },
   };
 
+  const showHero = isVisible(portfolio, "hero");
+  const showAbout = isVisible(portfolio, "about");
+  const showSkills = isVisible(portfolio, "skills") && skills.length > 0;
+  const showServices = isVisible(portfolio, "services") && services.length > 0;
+  const showProjects = isVisible(portfolio, "projects") && projects.length > 0;
+  const showContact = isVisible(portfolio, "contact");
+  const showSocial = isVisible(portfolio, "social");
+
   const NAV = [
-    { id: "home", label: "Home" },
-    { id: "about", label: "About" },
-    { id: "ventures", label: "Ventures" },
-    { id: "skills", label: "Skills" },
-    { id: "services", label: "Services" },
-    { id: "works", label: "Works" },
-    { id: "contact", label: "Contact" },
-  ];
+    showHero && { id: "home", label: "Home" },
+    showAbout && { id: "about", label: "About" },
+    showProjects && { id: "ventures", label: "Ventures" },
+    showSkills && { id: "skills", label: "Skills" },
+    showServices && { id: "services", label: "Services" },
+    showProjects && { id: "works", label: "Works" },
+    showContact && { id: "contact", label: "Contact" },
+  ].filter(Boolean) as { id: string; label: string }[];
 
   // Inline color vars for full theme isolation
   const cssVars = {

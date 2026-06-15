@@ -16,7 +16,7 @@ interface NavItem {
 
 const NAV_ITEMS: NavItem[] = [
   { label: "Features", icon: Sparkles, to: "/features" },
-  { label: "Themes", icon: LayoutGrid, to: "/themes" },
+  
   { label: "Pricing", icon: Tag, to: "/pricing" },
   { label: "FAQ", icon: HelpCircle, to: "/faq" },
 ];

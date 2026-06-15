@@ -163,9 +163,9 @@ export function CustomizationForm({ portfolio, userId, enabledFields, scope = "a
     </div>
   );
 
-  const showHero = has("hero_image") || has("hero_headline") || has("hero_subheadline") || has("hero_cta");
-  const showAbout = has("about_image") || has("about_text");
-  const showFooter = has("footer_text") || has("browser_title");
+  const showHero = (scope === "all" || scope === "hero") && (has("hero_image") || has("hero_headline") || has("hero_subheadline") || has("hero_cta"));
+  const showAbout = (scope === "all" || scope === "about") && (has("about_image") || has("about_text"));
+  const showFooter = (scope === "all" || scope === "footer") && has("footer_text");
 
   return (
     <div className="space-y-4">

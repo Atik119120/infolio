@@ -473,7 +473,7 @@ export default function PortfolioEdit() {
             ))}
             <div className="w-px h-4 bg-[#262626] mx-0.5" />
             <button
-              onClick={refreshPreview}
+              onClick={() => { iframeRef.current && (iframeRef.current.src = iframeRef.current.src); }}
               className="px-2 py-1 rounded text-[#71717A] hover:text-white transition-colors duration-150"
               title="Refresh"
             >

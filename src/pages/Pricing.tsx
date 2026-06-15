@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { Check } from "lucide-react";
 import SiteHeader from "@/components/home/SiteHeader";
 import Footer from "@/components/home/Footer";
-import { SectionHeader, PLANS, COMPARE_ROWS, TERMS, PlanCard } from "@/pages/home/shared";
+import { SectionHeader, PLANS, TERMS, PlanCard } from "@/pages/home/shared";
 
 export default function Pricing() {
   const navigate = useNavigate();

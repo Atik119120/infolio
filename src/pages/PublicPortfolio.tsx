@@ -44,6 +44,32 @@ export default function PublicPortfolio() {
     if (username) fetchPortfolio();
   }, [username]);
 
+  // Live preview channel: listen for postMessage from the editor (PortfolioEdit)
+  // when this page is rendered inside an iframe with ?preview=1. Merge updates
+  // into state without remounting → keeps scroll, theme, and SPA state intact.
+  useEffect(() => {
+    const isPreview = new URLSearchParams(window.location.search).get("preview") === "1";
+    if (!isPreview) return;
+    const handler = (event: MessageEvent) => {
+      const msg = event.data;
+      if (!msg || typeof msg !== "object" || msg.type !== "lovable-preview-update") return;
+      const d = msg.payload || {};
+      if (d.profile) setProfile((p) => ({ ...(p || {} as any), ...d.profile }));
+      if (d.portfolio) setPortfolio((p) => ({ ...(p || {} as any), ...d.portfolio }));
+      if (Array.isArray(d.skills)) setSkills(d.skills);
+      if (Array.isArray(d.projects)) setProjects(d.projects);
+      if (Array.isArray(d.experiences)) setExperiences(d.experiences);
+      if (Array.isArray(d.education)) setEducation(d.education);
+      if (Array.isArray(d.socialLinks)) setSocialLinks(d.socialLinks);
+      if (Array.isArray(d.services)) setServices(d.services);
+    };
+    window.addEventListener("message", handler);
+    // Tell parent we're ready to receive the initial snapshot
+    try { window.parent?.postMessage({ type: "lovable-preview-ready" }, "*"); } catch {}
+    return () => window.removeEventListener("message", handler);
+  }, []);
+
+
   const fetchPortfolio = async () => {
     const { data: profileData, error: profileError } = await supabase
       .from("profiles")

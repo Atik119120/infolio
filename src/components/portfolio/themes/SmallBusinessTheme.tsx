@@ -482,6 +482,7 @@ export default function SmallBusinessTheme({
           </div>
         </div>
       </section>
+      )}
 
       {/* FOOTER */}
       <footer style={{ background: C.ink, color: "#fff" }} className="pt-16 pb-8">

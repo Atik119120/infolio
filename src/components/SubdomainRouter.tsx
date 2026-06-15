@@ -149,7 +149,8 @@ function SubdomainPortfolio({ username }: { username: string }) {
       .eq("user_id", userId)
       .maybeSingle();
 
-    if (!portfolioData?.is_published) {
+    const isPreview = new URLSearchParams(window.location.search).get("preview") === "1";
+    if (!portfolioData?.is_published && !isPreview) {
       setNotFound(true);
       setLoading(false);
       return;

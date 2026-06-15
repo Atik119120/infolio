@@ -118,7 +118,13 @@ export default function PublicPortfolio() {
       .eq("user_id", fetchedUserId)
       .maybeSingle();
 
-    if (!portfolioData?.is_published) {
+    const isPreview = new URLSearchParams(window.location.search).get("preview") === "1";
+    if (!portfolioData) {
+      setNotFound(true);
+      setLoading(false);
+      return;
+    }
+    if (!portfolioData.is_published && !isPreview) {
       setNotFound(true);
       setLoading(false);
       return;

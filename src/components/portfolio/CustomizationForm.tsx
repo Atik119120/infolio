@@ -290,12 +290,6 @@ export function CustomizationForm({ portfolio, userId, enabledFields, onUpdate, 
         </Card>
       )}
 
-      <div className="sticky bottom-0 bg-background/80 backdrop-blur border-t pt-4 -mx-4 px-4 flex justify-end">
-        <Button onClick={handleSave} disabled={saving} size="lg">
-          {saving ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : null}
-          Save Customization
-        </Button>
-      </div>
     </div>
   );
 }

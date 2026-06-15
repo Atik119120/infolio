@@ -494,7 +494,6 @@ export default function PortfolioEdit() {
                 }}
               >
                 <iframe
-                  key={previewKey}
                   ref={iframeRef}
                   src={previewUrl}
                   title="Portfolio preview"

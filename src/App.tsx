@@ -72,8 +72,8 @@ const App = () => (
                 <Route path="/auth" element={<Auth />} />
                 <Route path="/reset-password" element={<ResetPassword />} />
                 <Route path="/themes" element={<ThemeCollection />} />
-                <Route path="/features" element={<Features />} />
-                <Route path="/pricing" element={<Pricing />} />
+                <Route path="/features" element={<Navigate to="/" replace />} />
+                <Route path="/pricing" element={<Navigate to="/" replace />} />
                 <Route path="/faq" element={<Faq />} />
                 <Route path="/admin/login" element={<AdminAuth />} />
                 <Route path="/demo/:themeName" element={<ThemeDemo />} />

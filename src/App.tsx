@@ -44,8 +44,6 @@ const BuilderList = lazy(() => import("./pages/BuilderList"));
 const BuilderEditor = lazy(() => import("./pages/BuilderEditor"));
 const PublicBuilderPage = lazy(() => import("./pages/PublicBuilderPage"));
 const CustomizeTheme = lazy(() => import("./pages/CustomizeTheme"));
-const Features = lazy(() => import("./pages/Features"));
-const Pricing = lazy(() => import("./pages/Pricing"));
 const Faq = lazy(() => import("./pages/Faq"));
 
 const queryClient = new QueryClient();

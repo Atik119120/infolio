@@ -35,7 +35,7 @@ export default function Index() {
       </Helmet>
 
       {/* HERO */}
-      <section className="relative isolate min-h-screen flex items-center pt-24 md:pt-28 pb-12 px-6 overflow-hidden">
+      <section className="relative isolate flex items-center pt-20 md:pt-24 pb-8 px-6 overflow-hidden">
         <div aria-hidden className="absolute inset-0 -z-20 bg-background" />
         <div aria-hidden className="absolute inset-0 -z-10 pointer-events-none"
           style={{ background: "radial-gradient(ellipse 90% 70% at 50% 100%, hsl(187 90% 35% / 0.55), transparent 70%)" }} />
@@ -93,22 +93,22 @@ export default function Index() {
       </section>
 
       {/* THREE STEPS */}
-      <section className="py-10 md:py-12 px-6 relative overflow-hidden">
+      <section className="py-8 md:py-10 px-6 relative overflow-hidden">
         <div aria-hidden className="absolute inset-0 -z-10 pointer-events-none">
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] rounded-full bg-primary/10 blur-[120px]" />
         </div>
         <div className="container mx-auto max-w-6xl">
-          <div className="grid lg:grid-cols-2 gap-8 lg:gap-10 items-center">
+          <div className="grid lg:grid-cols-2 gap-6 lg:gap-8 items-center">
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true, margin: "-50px" }}
               transition={{ duration: 0.5 }}
             >
-              <h2 className="text-3xl md:text-4xl lg:text-5xl font-semibold tracking-[-0.03em] text-foreground mb-6 leading-tight">
+              <h2 className="text-3xl md:text-4xl lg:text-5xl font-semibold tracking-[-0.03em] text-foreground mb-4 leading-tight">
                 Three steps to<br />your digital hub.
               </h2>
-              <div className="space-y-5">
+              <div className="space-y-4">
                 {[
                   { num: "1", title: "Claim your identity", desc: "Sign up for free and secure your unique username." },
                   { num: "2", title: "Add your content", desc: "Paste your links, socials, portfolio pieces, or stores." },
@@ -161,7 +161,7 @@ export default function Index() {
       </section>
 
       {/* FEATURES */}
-      <section className="py-10 md:py-12 px-6 border-t border-border/60">
+      <section className="py-8 md:py-10 px-6 border-t border-border/60">
         <div className="container mx-auto max-w-5xl">
           <SectionHeader eyebrow="Features" title="Built for creators" subtitle="Everything you need to publish a stunning portfolio — no code required." />
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8">
@@ -178,7 +178,7 @@ export default function Index() {
       </section>
 
       {/* PRICING */}
-      <section className="py-10 md:py-12 px-6 border-t border-border/60">
+      <section className="py-8 md:py-10 px-6 border-t border-border/60">
         <div className="container mx-auto max-w-7xl">
           <SectionHeader eyebrow="Pricing" title="Plans for every stage" subtitle="Start free with a subdomain. Upgrade as your work grows." />
           <div className="mt-8 flex justify-center">
@@ -199,7 +199,7 @@ export default function Index() {
       </section>
 
       {/* FINAL CTA */}
-      <section className="py-10 md:py-12 px-6 border-t border-border/60 relative overflow-hidden">
+      <section className="py-8 md:py-10 px-6 border-t border-border/60 relative overflow-hidden">
         <div aria-hidden className="absolute inset-0 -z-10 pointer-events-none">
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[400px] rounded-full bg-primary/10 blur-[140px]" />
         </div>

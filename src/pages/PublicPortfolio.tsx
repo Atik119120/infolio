@@ -63,6 +63,7 @@ export default function PublicPortfolio() {
       if (Array.isArray(d.education)) setEducation(d.education);
       if (Array.isArray(d.socialLinks)) setSocialLinks(d.socialLinks);
       if (Array.isArray(d.services)) setServices(d.services);
+      if (Array.isArray(d.contactItems)) setContactItems(d.contactItems);
     };
     window.addEventListener("message", handler);
     // Tell parent we're ready to receive the initial snapshot

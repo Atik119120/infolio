@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { motion } from "framer-motion";
-import { Check, X } from "lucide-react";
+import { Check } from "lucide-react";
 import SiteHeader from "@/components/home/SiteHeader";
 import Footer from "@/components/home/Footer";
 import { SectionHeader, PLANS, COMPARE_ROWS, TERMS, PlanCard } from "@/pages/home/shared";

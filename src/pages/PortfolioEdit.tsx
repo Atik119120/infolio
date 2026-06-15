@@ -75,10 +75,11 @@ export default function PortfolioEdit() {
   const [services, setServices] = useState<Service[]>([]);
   const [loading, setLoading] = useState(true);
   const [previewDevice, setPreviewDevice] = useState<Device>("desktop");
-  const [previewKey, setPreviewKey] = useState(0);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [publishing, setPublishing] = useState(false);
+  const [saveStatus, setSaveStatus] = useState<"saved" | "saving" | "unsaved">("saved");
   const iframeRef = useRef<HTMLIFrameElement | null>(null);
+  const previewReadyRef = useRef(false);
 
   const { user } = useAuth();
   const { toast } = useToast();
@@ -98,6 +99,34 @@ export default function PortfolioEdit() {
     return () => { document.body.style.overflow = prev; };
   }, []);
 
+  // Push the latest snapshot into the preview iframe (no reload).
+  const pushPreviewSnapshot = (snapshot?: {
+    profile?: any; portfolio?: any; skills?: any[]; projects?: any[];
+    experiences?: any[]; education?: any[]; socialLinks?: any[]; services?: any[];
+  }) => {
+    const payload = snapshot ?? {
+      profile, portfolio, skills, projects, experiences, education, socialLinks, services,
+    };
+    try {
+      iframeRef.current?.contentWindow?.postMessage(
+        { type: "lovable-preview-update", payload },
+        "*"
+      );
+    } catch {}
+  };
+
+  // Listen for the iframe announcing it is ready to receive a snapshot.
+  useEffect(() => {
+    const onMsg = (e: MessageEvent) => {
+      if (e?.data?.type === "lovable-preview-ready") {
+        previewReadyRef.current = true;
+        pushPreviewSnapshot();
+      }
+    };
+    window.addEventListener("message", onMsg);
+    return () => window.removeEventListener("message", onMsg);
+  });
+
   const fetchAllData = async () => {
     if (!user) return;
     const [profileRes, portfolioRes, skillsRes, projectsRes, experiencesRes, educationRes, socialRes, servicesRes] =
@@ -111,28 +140,40 @@ export default function PortfolioEdit() {
         supabase.from("social_links").select("*").eq("user_id", user.id).order("display_order"),
         (supabase as any).from("services").select("*").eq("user_id", user.id).order("display_order"),
       ]);
-    if (profileRes.data) setProfile(profileRes.data);
-    if (portfolioRes.data) {
-      setPortfolio(portfolioRes.data);
-      // If a theme is already chosen, skip directly to editor on first load
-      if (portfolioRes.data.theme && stage === "theme" && loading) {
+    const next = {
+      profile: profileRes.data,
+      portfolio: portfolioRes.data,
+      skills: skillsRes.data || [],
+      projects: projectsRes.data || [],
+      experiences: experiencesRes.data || [],
+      education: educationRes.data || [],
+      socialLinks: socialRes.data || [],
+      services: servicesRes.data || [],
+    };
+    if (next.profile) setProfile(next.profile);
+    if (next.portfolio) {
+      setPortfolio(next.portfolio);
+      if (next.portfolio.theme && stage === "theme" && loading) {
         setStage("editor");
       }
     }
-    if (skillsRes.data) setSkills(skillsRes.data);
-    if (projectsRes.data) setProjects(projectsRes.data);
-    if (experiencesRes.data) setExperiences(experiencesRes.data);
-    if (educationRes.data) setEducation(educationRes.data);
-    if (socialRes.data) setSocialLinks(socialRes.data);
-    if (servicesRes.data) setServices(servicesRes.data);
+    setSkills(next.skills);
+    setProjects(next.projects);
+    setExperiences(next.experiences);
+    setEducation(next.education);
+    setSocialLinks(next.socialLinks);
+    setServices(next.services);
     setLoading(false);
+    // Live-update the iframe with fresh data — no reload.
+    pushPreviewSnapshot(next);
+    setSaveStatus("saved");
   };
 
-  const refreshPreview = () => setPreviewKey((k) => k + 1);
   const handleUpdate = () => {
+    setSaveStatus("saving");
     fetchAllData();
-    setTimeout(refreshPreview, 400);
   };
+
   const showSuccess = (message: string) => toast({ title: "Success", description: message });
   const showError = (message: string) => toast({ variant: "destructive", title: "Error", description: message });
 

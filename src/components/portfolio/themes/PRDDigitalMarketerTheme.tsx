@@ -39,8 +39,8 @@ export default function PRDDigitalMarketerTheme({
 
   const name = portfolio?.brand_name || profile?.display_name || "Your Name";
   const headline = portfolio?.hero_headline || portfolio?.headline || "Digital Marketer & SEO Expert";
-  const bio = portfolio?.bio || "I help brands grow with data-driven marketing.";
-  const aboutText = portfolio?.about_text || bio;
+  const bio = portfolio?.hero_subheadline || "I help brands grow with data-driven marketing.";
+  const aboutText = portfolio?.about_text || portfolio?.bio || bio;
   const heroImage = portfolio?.hero_image_url || profile?.avatar_url;
   const aboutImage = portfolio?.about_image_url || profile?.avatar_url;
   const heroCtaText = portfolio?.hero_cta_text;

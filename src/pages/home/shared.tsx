@@ -20,7 +20,7 @@ export function SectionHeader({ eyebrow, title, subtitle }: { eyebrow: string; t
       className="text-center max-w-2xl mx-auto"
     >
       <Eyebrow text={eyebrow} />
-      <h2 className="text-3xl md:text-5xl font-semibold tracking-[-0.025em] mt-4 mb-3">{title}</h2>
+      <h2 className="text-3xl md:text-5xl font-semibold tracking-[-0.025em] mt-3 mb-2">{title}</h2>
       <p className="text-base text-muted-foreground leading-relaxed">{subtitle}</p>
     </motion.div>
   );

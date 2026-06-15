@@ -25,12 +25,13 @@ interface Props {
   portfolio: CustomizationData | null;
   userId: string;
   enabledFields?: import("@/config/themeFeatures").CustomizeField[];
+  scope?: "hero" | "about" | "footer" | "all";
   onUpdate: () => void;
   onSuccess: (m: string) => void;
   onError: (m: string) => void;
 }
 
-export function CustomizationForm({ portfolio, userId, enabledFields, onUpdate, onSuccess, onError }: Props) {
+export function CustomizationForm({ portfolio, userId, enabledFields, scope = "all", onUpdate, onSuccess, onError }: Props) {
   const ALL_ON = !enabledFields;
   const has = (f: import("@/config/themeFeatures").CustomizeField) =>
     ALL_ON || (enabledFields && enabledFields.includes(f));

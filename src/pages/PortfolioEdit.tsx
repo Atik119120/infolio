@@ -64,7 +64,7 @@ type Device = "desktop" | "tablet" | "mobile";
 
 export default function PortfolioEdit() {
   const [stage, setStage] = useState<Stage>("theme");
-  const [activeSection, setActiveSection] = useState<SectionKey>("basic");
+  const [activeSection, setActiveSection] = useState<SectionKey>("hero");
   const [profile, setProfile] = useState<Profile | null>(null);
   const [portfolio, setPortfolio] = useState<Portfolio | null>(null);
   const [skills, setSkills] = useState<Skill[]>([]);

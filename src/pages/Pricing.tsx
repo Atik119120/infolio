@@ -31,7 +31,7 @@ export default function Pricing() {
               </button>
             </div>
           </div>
-          <div className="mt-10 grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-5">
+          <div className="mt-10 grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
             {PLANS.map((plan) => (
               <PlanCard key={plan.name} plan={plan} billing={billing} onClick={() => navigate("/auth")} />
             ))}

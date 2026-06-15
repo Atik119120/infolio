@@ -48,12 +48,10 @@ export function FeatureCard({ icon, title, description }: { icon: React.ReactNod
 }
 
 export const FAQS = [
-  { q: "Can I connect my own domain?", a: "Yes — on Creator Premium and above, connect any domain with auto-issued SSL straight from your dashboard." },
-  { q: "Can I deploy React or Next.js apps?", a: "Yes. Developer Pro and Studio plans support React, Next.js and Vite — connect GitHub or pick a template." },
+  { q: "Can I connect my own domain?", a: "Yes — on Creator Premium, connect any domain with auto-issued SSL straight from your dashboard." },
   { q: "Is SSL included?", a: "Always. Every site (subdomain or custom) gets free auto-renewing SSL." },
   { q: "Can I switch themes later?", a: "Anytime. Your content carries over when you switch themes from the dashboard." },
-  { q: "Do you support GitHub deployment?", a: "Yes. Authorize once, then deploy any public or private repo with one click." },
-  { q: "Will e-commerce features come later?", a: "Commerce Pro is on the roadmap — products, orders, checkout and store analytics, all included." },
+  { q: "Can I buy a single premium theme without upgrading?", a: "Yes. On Portfolio Starter you can unlock additional premium themes for ৳50 each." },
   { q: "How do payments work?", a: "Pay monthly or yearly via bKash, Nagad or Rocket. Yearly saves around 15%." },
   { q: "Is Infolio really free to start?", a: "Yes. Build, publish and host on a free subdomain — no credit card required." },
 ];
@@ -70,41 +68,35 @@ export type Plan = {
 };
 
 export const PLANS: Plan[] = [
-  { name: "Basic", short: "Basic", tagline: "Beginners & personal portfolios", monthly: 59, yearly: 599,
-    features: ["1 Website", "Free Subdomain", "Basic Themes", "Portfolio Upload", "SSL Included", "500MB Storage", "10GB Bandwidth"] },
-  { name: "Creator Premium", short: "Creator", tagline: "Creators & freelancers", monthly: 149, yearly: 1499,
-    features: ["Everything in Basic", "Premium Themes", "Custom Domain", "SEO Control", "Remove Branding", "Custom HTML", "1GB Storage", "50GB Bandwidth"] },
-  { name: "Developer Pro", short: "Developer", tagline: "Developers & advanced users", monthly: 249, yearly: 2499, badge: "Most Popular", highlight: true,
-    features: ["Everything in Creator", "GitHub Connect", "React / Next.js / Vite", "Custom HTML/CSS", "Advanced SEO", "Full Theme Access", "5GB Storage", "200GB Bandwidth"] },
-  { name: "Studio", short: "Studio", tagline: "Agencies & multi-project", monthly: 399, yearly: 3999,
-    features: ["Everything in Pro", "Up to 10 Projects", "Multiple Domains", "CDN Support", "Team Workspace", "Priority Hosting", "5GB Storage", "500GB Bandwidth"] },
-  { name: "Commerce Pro", short: "Commerce", tagline: "E-commerce businesses", monthly: 199, yearly: 1999, badge: "Upcoming",
-    features: ["Everything in Studio", "E-commerce Themes", "Product Management", "Payment Integration", "Order System", "Store Analytics", "3GB Storage", "300GB Bandwidth"] },
+  { name: "Free", short: "Free", tagline: "For beginners getting started", monthly: 0, yearly: 0,
+    features: ["1 Website", "Up to 4 Projects", "2–3 Free Themes", "Free Subdomain", "SSL Included", "Favicon & Browser Title", "Powered by Infolio badge"] },
+  { name: "Portfolio Starter", short: "Starter", tagline: "Freelancers & personal portfolios", monthly: 149, yearly: 1499, badge: "Most Popular", highlight: true,
+    features: ["1 Website", "Up to 10 Projects", "All Free Themes", "1 Premium Theme included", "Extra premium themes ৳50 each", "Full SEO (Meta, OG, Favicon)", "Free Subdomain + SSL", "Branding Toggle (On/Off)"] },
+  { name: "Creator Premium", short: "Creator", tagline: "Professional creators & designers", monthly: 299, yearly: 2999,
+    features: ["Unlimited Projects", "All Free + All Premium Themes", "Full SEO Access", "Free Subdomain + SSL", "Custom Domain Support", "Branding Toggle (On/Off)"] },
 ];
 
 export const COMPARE_ROWS: { label: string; values: (string | boolean)[] }[] = [
-  { label: "Websites / Projects", values: ["1", "1", "3", "10", "Unlimited"] },
-  { label: "Themes", values: ["Basic", "Premium", "Full", "Full", "Commerce"] },
-  { label: "Custom Domain", values: [false, true, true, true, true] },
-  { label: "SEO Management", values: [false, true, true, true, true] },
-  { label: "GitHub Deploy", values: [false, false, true, true, true] },
-  { label: "React / Next / Vite", values: [false, false, true, true, true] },
-  { label: "Custom HTML/CSS", values: [false, true, true, true, true] },
-  { label: "CDN", values: [true, true, true, true, true] },
-  { label: "Team Workspace", values: [false, false, false, true, true] },
-  { label: "E-commerce", values: [false, false, false, false, true] },
-  { label: "Storage", values: ["500MB", "1GB", "5GB", "5GB", "3GB"] },
-  { label: "Bandwidth / mo", values: ["10GB", "50GB", "200GB", "500GB", "300GB"] },
+  { label: "Websites", values: ["1", "1", "1"] },
+  { label: "Projects", values: ["4", "10", "Unlimited"] },
+  { label: "Free Themes", values: ["2–3", "All", "All"] },
+  { label: "Premium Themes", values: [false, "1 included (+৳50 each)", "All included"] },
+  { label: "Free Subdomain + SSL", values: [true, true, true] },
+  { label: "Favicon & Browser Title", values: [true, true, true] },
+  { label: "SEO Controls", values: [false, true, true] },
+  { label: "Custom Domain", values: [false, false, true] },
+  { label: "Remove Infolio Branding", values: [false, true, true] },
 ];
 
 export const TERMS = [
-  { icon: ShieldCheck, title: "Global Terms", items: ["You're responsible for your content, code & deployments", "No illegal, phishing, or abusive content", "Hosting abuse may result in suspension", "Maintain your own backups", "Platform limits may evolve over time"] },
-  { icon: Cloud, title: "Third-Party Services", items: ["Infrastructure powered by Supabase, Cloudflare, Vercel & GitHub", "Performance varies with region & network", "Infolio not liable for third-party outages", "CDN & external API delays out of our control"] },
-  { icon: Sparkles, title: "Beta / Evolving Platform", items: ["Some features are experimental or in beta", "UI/UX may evolve over time", "Occasional bugs may occur", "Active development on new systems"] },
-  { icon: BadgeCheck, title: "Refund Policy", items: ["Monthly plans: refund within 7 days", "Yearly plans: refund within 15 days", "Heavy usage may void refund", "Domain & third-party costs non-refundable", "Abuse voids refund eligibility"] },
-  { icon: Lock, title: "Liability Notice", items: ["Not responsible for business or revenue loss", "Not responsible for SEO ranking loss", "Not responsible for deployment / build errors caused by user code", "Not responsible for domain propagation delays"] },
-  { icon: Server, title: "Plan-Specific Limits", items: ["Basic: subdomain-only, 500MB / 10GB", "Creator: bring your own domain, 1GB / 50GB", "Developer Pro: you own your code, 5GB / 200GB", "Studio: max 10 projects, no account sharing", "Commerce Pro: you're responsible for products & orders"] },
+  { icon: ShieldCheck, title: "Global Terms", items: ["You're responsible for your content and uploads", "No illegal, phishing, or abusive content", "Hosting abuse may result in suspension", "Maintain your own backups", "Platform limits may evolve over time"] },
+  { icon: Cloud, title: "Hosting & Infrastructure", items: ["Infrastructure powered by trusted cloud providers", "Performance varies with region & network", "Infolio not liable for third-party outages", "CDN & external API delays out of our control"] },
+  { icon: Sparkles, title: "Evolving Platform", items: ["Some features are experimental or in beta", "UI/UX may evolve over time", "Occasional bugs may occur", "Active development on new themes"] },
+  { icon: BadgeCheck, title: "Refund Policy", items: ["Monthly plans: refund within 7 days", "Yearly plans: refund within 15 days", "Single theme purchases are non-refundable", "Domain & third-party costs non-refundable", "Abuse voids refund eligibility"] },
+  { icon: Lock, title: "Liability Notice", items: ["Not responsible for business or revenue loss", "Not responsible for SEO ranking loss", "Not responsible for domain propagation delays", "Not responsible for content uploaded by users"] },
+  { icon: Server, title: "Plan-Specific Limits", items: ["Free: subdomain only, up to 4 projects, branding visible", "Portfolio Starter: 1 premium theme, branding toggle, no custom domain", "Creator Premium: unlimited projects, all themes, custom domain"] },
 ];
+
 
 export function PlanCard({ plan, billing, onClick }: { plan: Plan; billing: "monthly" | "yearly"; onClick: () => void }) {
   const price = billing === "monthly" ? plan.monthly : plan.yearly;

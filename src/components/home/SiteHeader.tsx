@@ -44,19 +44,6 @@ export default function SiteHeader() {
       {open && (
         <div className="md:hidden px-3 pb-3 pt-1 border-t border-border/60">
           <div className="flex flex-col gap-1">
-            {NAV_ITEMS.map((item) => {
-              const Icon = item.icon;
-              return (
-                <button
-                  key={item.label}
-                  onClick={() => handleNav(item)}
-                  className="text-left flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
-                >
-                  <Icon className="w-4 h-4" /> {item.label}
-                </button>
-              );
-            })}
-            <div className="h-px bg-border/60 my-2" />
             <button
               onClick={() => { close(); openWhatsApp("Hi! I have a question about Infolio."); }}
               className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-[#25D366] hover:bg-muted transition-colors"

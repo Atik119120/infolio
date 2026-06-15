@@ -199,13 +199,13 @@ export default function BiographyTheme({
               Background
             </div>
             <div className="flex flex-wrap justify-center gap-2">
-              {experiences?.slice(0, 3).map(ex => (
+              {vExperience && experiences?.slice(0, 3).map(ex => (
                 <span key={ex.id} className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12px]"
                   style={{ background: C.surface, border: `1px solid ${C.border}`, color: "#d4d4d8" }}>
                   <Briefcase className="w-3 h-3" /> {ex.position} · {ex.company}
                 </span>
               ))}
-              {education?.slice(0, 2).map(ed => (
+              {vEducation && education?.slice(0, 2).map(ed => (
                 <span key={ed.id} className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12px]"
                   style={{ background: C.surface, border: `1px solid ${C.border}`, color: "#d4d4d8" }}>
                   <GraduationCap className="w-3 h-3" /> {ed.degree} · {ed.institution}

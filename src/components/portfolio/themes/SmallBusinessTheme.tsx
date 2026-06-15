@@ -5,6 +5,7 @@ import { ServiceIcon } from "@/lib/serviceIcons";
 import { ThemeProps } from "./types";
 import { ContactForm } from "@/components/portfolio/ContactForm";
 import { getSocialIcon } from "./utils";
+import { isVisible } from "@/lib/sectionVisibility";
 
 /**
  * Entrepreneur Theme — for founders & business owners.
@@ -58,13 +59,19 @@ export default function SmallBusinessTheme({
     transition: { duration: 0.6 },
   };
 
+  const vHero = isVisible(portfolio, "hero");
+  const vAbout = isVisible(portfolio, "about");
+  const vProjects = isVisible(portfolio, "projects");
+  const vServices = isVisible(portfolio, "services");
+  const vContact = isVisible(portfolio, "contact");
+
   const NAV = [
-    { id: "home", label: "Home" },
-    { id: "about", label: "About" },
-    { id: "ventures", label: "Ventures" },
-    { id: "services", label: "Services" },
-    { id: "contact", label: "Contact" },
-  ];
+    vHero && { id: "home", label: "Home" },
+    vAbout && { id: "about", label: "About" },
+    vProjects && { id: "ventures", label: "Ventures" },
+    vServices && { id: "services", label: "Services" },
+    vContact && { id: "contact", label: "Contact" },
+  ].filter(Boolean) as { id: string; label: string }[];
 
   const yearsActive = experiences.length > 0 ? `${experiences.length}+` : "5+";
 

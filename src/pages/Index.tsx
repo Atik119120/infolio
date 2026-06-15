@@ -4,7 +4,7 @@ import { Helmet } from "react-helmet-async";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import {
-  ArrowRight, Palette, Check, Sparkles, Tag, HelpCircle, LayoutGrid,
+  ArrowRight, Palette, Check, Sparkles, Tag, HelpCircle, LayoutGrid, Quote,
 } from "lucide-react";
 import Footer from "@/components/home/Footer";
 import SiteHeader from "@/components/home/SiteHeader";

@@ -190,6 +190,7 @@ export function StandardThemeShell({
       </header>
 
       {/* HERO — editorial */}
+      {showHero && (
       <section id="home" className="relative overflow-hidden">
         <div className="absolute inset-0 t-bg-deco pointer-events-none" />
         <div className="container mx-auto px-6 sm:px-8 py-10 md:py-16 relative">
@@ -228,8 +229,10 @@ export function StandardThemeShell({
           </div>
         </div>
       </section>
+      )}
 
       {/* ABOUT — editorial split layout: photo left, typography-rich info right */}
+      {showAbout && (
       <section id="about" className="py-8 md:py-10" style={{ background: s.surface }}>
         <div className="container mx-auto px-6 sm:px-8">
           <motion.h2 {...fadeUp} className="t-display text-4xl md:text-6xl font-bold tracking-tight mb-6 md:mb-8 text-center">

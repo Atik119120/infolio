@@ -296,7 +296,7 @@ export default function PRDGraphicDesignerTheme({
           </motion.div>
 
           {/* Skills */}
-          {skills.length > 0 && (
+          {vSkills && skills.length > 0 && (
             <motion.div {...fadeUp} className="mb-16 max-w-5xl mx-auto">
               <h3 className="gd-display text-2xl font-bold mb-6 flex items-center gap-3">
                 <span className="text-[11px] font-bold tracking-[0.3em] uppercase" style={{ color: C.primary }}>01</span>
@@ -326,7 +326,7 @@ export default function PRDGraphicDesignerTheme({
           )}
 
           {/* Services */}
-          {services.length > 0 && (
+          {vServices && services.length > 0 && (
             <motion.div {...fadeUp} className="mb-16">
               <h3 className="gd-display text-2xl font-bold mb-6 flex items-center gap-3">
                 <span className="text-[11px] font-bold tracking-[0.3em] uppercase" style={{ color: C.primary }}>02</span>
@@ -378,7 +378,7 @@ export default function PRDGraphicDesignerTheme({
       )}
 
       {/* PROJECTS — Pinterest masonry */}
-      {projects.length > 0 && (
+      {vProjects && projects.length > 0 && (
         <section id="projects" className="py-20 md:py-28">
           <div className="container mx-auto px-5">
             <motion.div {...fadeUp} className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-12">

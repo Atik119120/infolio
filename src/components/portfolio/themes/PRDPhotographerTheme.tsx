@@ -356,7 +356,7 @@ export default function PRDPhotographerTheme({
       )}
 
       {/* SERVICES */}
-      {services.length > 0 && (
+      {vServices && services.length > 0 && (
         <section id="services" className="py-20 md:py-28">
           <div className="container mx-auto px-5">
             <motion.div {...fadeUp} className="text-center max-w-2xl mx-auto mb-14">
@@ -405,7 +405,7 @@ export default function PRDPhotographerTheme({
       )}
 
       {/* PHOTOGRAPHY GALLERY */}
-      {projects.length > 0 && (
+      {vProjects && projects.length > 0 && (
         <section id="gallery" className="py-20 md:py-28" style={{ background: C.surface }}>
           <div className="container mx-auto px-5">
             <motion.div {...fadeUp} className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-12">

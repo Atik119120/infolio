@@ -351,7 +351,13 @@ export default function PortfolioEdit() {
 
         <div className="flex items-center gap-2">
           <span className="hidden sm:inline-flex items-center gap-1 text-[12px] text-[#71717A] mr-2">
-            <Check className="w-3 h-3" /> Saved
+            {saveStatus === "saving" ? (
+              <><Loader2 className="w-3 h-3 animate-spin" /> Saving…</>
+            ) : saveStatus === "unsaved" ? (
+              <>Unsaved changes</>
+            ) : (
+              <><Check className="w-3 h-3" /> Saved</>
+            )}
           </span>
           {previewUrl && (
             <a

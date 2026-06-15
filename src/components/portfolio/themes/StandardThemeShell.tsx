@@ -297,9 +297,10 @@ export function StandardThemeShell({
           </div>
         </div>
       </section>
+      )}
 
       {/* VENTURES / BRANDS — own section */}
-      {projects.length > 0 && (
+      {showProjects && (
         <section id="ventures" className="py-8 md:py-10" style={{ background: s.background }}>
           <div className="container mx-auto px-6 sm:px-8">
             <motion.div {...fadeUp} className="text-center max-w-2xl mx-auto mb-6">

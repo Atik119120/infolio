@@ -67,6 +67,7 @@ function Inner({ portfolio, userId, onUpdate, onSuccess, onError }: SeoSettingsF
   const doSave = async (silent = true) => {
     setSaving(true);
     const payload = {
+      browser_title: form.browser_title.trim() || null,
       meta_title: form.meta_title.trim() || null,
       meta_description: form.meta_description.trim() || null,
       meta_keywords: form.meta_keywords.trim() || null,

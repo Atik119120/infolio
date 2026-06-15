@@ -4,8 +4,7 @@ import { Helmet } from "react-helmet-async";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import {
-  ArrowRight, Palette, Check, Sparkles, Github, Code2, Rocket, Server,
-  Layers, FileCode, Gauge, Lock, Cloud, Globe, Tag, HelpCircle, LayoutGrid,
+  ArrowRight, Palette, Check, Sparkles, Tag, HelpCircle, LayoutGrid,
 } from "lucide-react";
 import Footer from "@/components/home/Footer";
 import SiteHeader from "@/components/home/SiteHeader";
@@ -91,80 +90,6 @@ export default function Index() {
         </div>
       </section>
 
-      {/* DEPLOYMENT SHOWCASE — kept compact */}
-      <section id="deploy" className="py-24 px-6 border-t border-border/60 relative overflow-hidden">
-        <div aria-hidden className="absolute inset-0 -z-10 pointer-events-none">
-          <div className="absolute top-1/3 left-1/4 w-[500px] h-[500px] rounded-full bg-primary/10 blur-[140px]" />
-          <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] rounded-full bg-secondary/10 blur-[120px]" />
-        </div>
-        <div className="container mx-auto max-w-6xl">
-          <SectionHeader eyebrow="Deployments" title="Ship from GitHub in one click" subtitle="React, Next.js, Vite — connect a repo or pick a template. We build, deploy and serve it globally." />
-
-          <div className="mt-14 grid lg:grid-cols-2 gap-6">
-            <div className="rounded-3xl border border-primary/30 bg-gradient-to-br from-primary/10 via-card to-card p-8 backdrop-blur-sm">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-12 h-12 rounded-2xl gradient-primary text-white grid place-items-center shadow-lg shadow-primary/40">
-                  <Github className="w-6 h-6" />
-                </div>
-                <div>
-                  <h3 className="text-lg font-semibold tracking-tight">Connect GitHub</h3>
-                  <p className="text-xs text-muted-foreground">OAuth in seconds</p>
-                </div>
-              </div>
-              <ol className="space-y-3 text-sm text-foreground/85">
-                {["Authorize Infolio with your GitHub", "Pick any public or private repo", "Choose framework — auto detected", "Hit Publish — live in 60s"].map((s, i) => (
-                  <li key={i} className="flex gap-3">
-                    <span className="shrink-0 w-6 h-6 rounded-full bg-primary/15 text-primary text-xs font-semibold grid place-items-center">{i + 1}</span>
-                    <span>{s}</span>
-                  </li>
-                ))}
-              </ol>
-            </div>
-
-            <div className="rounded-3xl border border-border bg-card p-8">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-12 h-12 rounded-2xl bg-secondary/15 text-secondary grid place-items-center">
-                  <Sparkles className="w-6 h-6" />
-                </div>
-                <div>
-                  <h3 className="text-lg font-semibold tracking-tight">Or use a template</h3>
-                  <p className="text-xs text-muted-foreground">Zero setup</p>
-                </div>
-              </div>
-              <div className="grid grid-cols-2 gap-3 text-xs">
-                {[
-                  { name: "React Starter", icon: <Code2 className="w-4 h-4" /> },
-                  { name: "Next.js Blog", icon: <Layers className="w-4 h-4" /> },
-                  { name: "Vite Portfolio", icon: <FileCode className="w-4 h-4" /> },
-                  { name: "Landing Page", icon: <Rocket className="w-4 h-4" /> },
-                ].map((t) => (
-                  <div key={t.name} className="rounded-xl border border-border bg-background/50 p-3 flex items-center gap-2 hover:border-primary/40 transition">
-                    <span className="text-primary">{t.icon}</span>
-                    <span className="font-medium">{t.name}</span>
-                  </div>
-                ))}
-              </div>
-              <div className="mt-5 flex items-center gap-2 text-xs text-muted-foreground">
-                <Gauge className="w-4 h-4 text-primary" /> Average deploy time: <strong className="text-foreground">42 seconds</strong>
-              </div>
-            </div>
-          </div>
-
-          <div className="mt-6 grid grid-cols-2 md:grid-cols-4 gap-3">
-            {[
-              { k: "Free SSL", v: <Lock className="w-4 h-4" /> },
-              { k: "Global CDN", v: <Cloud className="w-4 h-4" /> },
-              { k: "Auto Builds", v: <Rocket className="w-4 h-4" /> },
-              { k: "Custom Domains", v: <Globe className="w-4 h-4" /> },
-            ].map((b) => (
-              <div key={b.k} className="rounded-2xl border border-border bg-card/60 backdrop-blur p-4 flex items-center gap-2 text-sm">
-                <span className="text-primary">{b.v}</span>
-                <span className="font-medium">{b.k}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* EXPLORE MORE — teaser cards linking to dedicated pages */}
       <section className="py-24 px-6 border-t border-border/60">

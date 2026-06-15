@@ -91,6 +91,17 @@ export default function PortfolioEdit() {
   const activeTheme = portfolio?.theme || "freelancer";
   const themeConfig = getThemeConfig(activeTheme);
 
+  // Safety: never render the editor inside a preview iframe (prevents recursive nesting).
+  useEffect(() => {
+    if (typeof window !== "undefined" && window.top && window.self !== window.top) {
+      const url = new URL(window.location.href);
+      if (url.searchParams.get("preview") === "1") {
+        // We were loaded inside the editor's own preview iframe — bail out.
+        window.location.replace("/");
+      }
+    }
+  }, []);
+
   useEffect(() => {
     if (user) fetchAllData();
   }, [user]);

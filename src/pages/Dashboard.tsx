@@ -90,7 +90,7 @@ export default function Dashboard() {
     navigate("/");
   };
 
-  const allNavItems = [
+  const allNavItems: { icon: typeof LayoutDashboard; label: string; path: string; hash?: string }[] = [
     { icon: LayoutDashboard, label: "Overview", path: "/dashboard" },
     { icon: Palette, label: "Themes", path: "/dashboard/themes" },
     { icon: FileEdit, label: "Edit Portfolio", path: "/dashboard/edit" },

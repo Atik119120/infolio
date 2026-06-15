@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate, Outlet, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useSiteFeatures } from "@/hooks/useSiteFeatures";
+import { usePermissions } from "@/lib/permissions";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -99,9 +100,12 @@ export default function Dashboard() {
     { icon: Settings, label: "Settings", path: "/dashboard/settings" },
   ];
 
-  const navItems = allNavItems.filter(
-    (item) => item.label !== "Page Builder" || features.builder_enabled
-  );
+  const { can } = usePermissions();
+  const navItems = allNavItems.filter((item) => {
+    if (item.label === "Page Builder" && !features.builder_enabled) return false;
+    if (item.label === "Deploy" && !can("dev_features")) return false;
+    return true;
+  });
 
   return (
     <div className="min-h-screen bg-black text-white">

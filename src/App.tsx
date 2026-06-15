@@ -36,6 +36,7 @@ const AdminUsers = lazy(() => import("./pages/admin/AdminUsers"));
 const AdminThemes = lazy(() => import("./pages/admin/AdminThemes"));
 const AdminCustomThemes = lazy(() => import("./pages/admin/AdminCustomThemes"));
 const AdminPlans = lazy(() => import("./pages/admin/AdminPlans"));
+const AdminPlanTiers = lazy(() => import("./pages/admin/AdminPlanTiers"));
 const AdminSettings = lazy(() => import("./pages/admin/AdminSettings"));
 const AdminSiteSettings = lazy(() => import("./pages/admin/AdminSiteSettings"));
 const BuilderList = lazy(() => import("./pages/BuilderList"));
@@ -115,6 +116,7 @@ const App = () => (
                   <Route path="themes" element={<AdminThemes />} />
                   <Route path="custom-themes" element={<AdminCustomThemes />} />
                   <Route path="plans" element={<AdminPlans />} />
+                  <Route path="plan-tiers" element={<AdminPlanTiers />} />
                   <Route path="settings" element={<AdminSettings />} />
                   <Route path="site-settings" element={<AdminSiteSettings />} />
                 </Route>

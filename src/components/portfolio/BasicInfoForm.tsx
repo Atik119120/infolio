@@ -39,9 +39,8 @@ export function BasicInfoForm({ profile, portfolio, userId, onUpdate, onSuccess,
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSave = async () => {
+  const doSave = async (silent = true) => {
     setSaving(true);
-
     const [profileRes, portfolioRes] = await Promise.all([
       supabase
         .from("profiles")
@@ -58,16 +57,24 @@ export function BasicInfoForm({ profile, portfolio, userId, onUpdate, onSuccess,
         })
         .eq("user_id", userId),
     ]);
-
     setSaving(false);
-
     if (profileRes.error || portfolioRes.error) {
       onError("Failed to save changes");
     } else {
-      onSuccess("Profile updated successfully");
+      if (!silent) onSuccess("Profile updated successfully");
       onUpdate();
     }
   };
+
+  const initialData = useRef(formData);
+  useEffect(() => {
+    if (JSON.stringify(formData) === JSON.stringify(initialData.current)) return;
+    const t = setTimeout(() => {
+      doSave(true);
+      initialData.current = formData;
+    }, 800);
+    return () => clearTimeout(t);
+  }, [formData]);
 
   const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];

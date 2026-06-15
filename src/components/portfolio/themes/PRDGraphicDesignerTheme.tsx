@@ -5,6 +5,7 @@ import { ServiceIcon } from "@/lib/serviceIcons";
 import { ThemeProps } from "./types";
 import { ContactForm } from "@/components/portfolio/ContactForm";
 import { getSocialIcon } from "./utils";
+import { isVisible } from "@/lib/sectionVisibility";
 
 /**
  * Graphic Designer theme — premium glassmorphism on a soft creative gradient.
@@ -70,14 +71,22 @@ export default function PRDGraphicDesignerTheme({
     transition: { duration: 0.6 },
   };
 
+  const vHero = isVisible(portfolio, "hero");
+  const vAbout = isVisible(portfolio, "about");
+  const vSkills = isVisible(portfolio, "skills");
+  const vServices = isVisible(portfolio, "services");
+  const vProjects = isVisible(portfolio, "projects");
+  const vContact = isVisible(portfolio, "contact");
+  const vExperience = isVisible(portfolio, "experience");
+
   const NAV = [
-    { id: "home", label: "Home" },
-    { id: "about", label: "About" },
-    { id: "expertise", label: "Expertise" },
-    { id: "projects", label: "Projects" },
-    { id: "clients", label: "Clients" },
-    { id: "contact", label: "Contact" },
-  ];
+    vHero && { id: "home", label: "Home" },
+    vAbout && { id: "about", label: "About" },
+    (vSkills || vServices) && { id: "expertise", label: "Expertise" },
+    vProjects && { id: "projects", label: "Projects" },
+    vExperience && { id: "clients", label: "Clients" },
+    vContact && { id: "contact", label: "Contact" },
+  ].filter(Boolean) as { id: string; label: string }[];
 
   const columns = useMemo(() => {
     const cols: typeof projects[] = [[], [], []];

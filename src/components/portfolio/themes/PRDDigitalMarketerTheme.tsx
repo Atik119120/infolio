@@ -5,6 +5,7 @@ import { ServiceIcon } from "@/lib/serviceIcons";
 import { ThemeProps } from "./types";
 import { ContactForm } from "@/components/portfolio/ContactForm";
 import { getSocialIcon } from "./utils";
+import { isVisible } from "@/lib/sectionVisibility";
 
 /**
  * Growth Lab — Digital Marketer & SEO Expert theme.
@@ -58,13 +59,19 @@ export default function PRDDigitalMarketerTheme({
     transition: { duration: 0.6 },
   };
 
+  const vHero = isVisible(portfolio, "hero");
+  const vAbout = isVisible(portfolio, "about");
+  const vServices = isVisible(portfolio, "services");
+  const vProjects = isVisible(portfolio, "projects");
+  const vContact = isVisible(portfolio, "contact");
+
   const NAV = [
-    { id: "home", label: "Home" },
-    { id: "about", label: "About" },
-    { id: "services", label: "Services" },
-    { id: "work", label: "Work" },
-    { id: "contact", label: "Contact" },
-  ];
+    vHero && { id: "home", label: "Home" },
+    vAbout && { id: "about", label: "About" },
+    vServices && { id: "services", label: "Services" },
+    vProjects && { id: "work", label: "Work" },
+    vContact && { id: "contact", label: "Contact" },
+  ].filter(Boolean) as { id: string; label: string }[];
 
   // Clients = unique companies from experiences
   const clients = useMemo(() => {

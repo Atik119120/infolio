@@ -105,7 +105,7 @@ export default function Index() {
               viewport={{ once: true, margin: "-50px" }}
               transition={{ duration: 0.5 }}
             >
-              <h2 className="text-3xl md:text-4xl lg:text-5xl font-semibold tracking-[-0.03em] text-white mb-10 leading-tight">
+              <h2 className="text-3xl md:text-4xl lg:text-5xl font-semibold tracking-[-0.03em] text-foreground mb-10 leading-tight">
                 Three steps to<br />your digital hub.
               </h2>
               <div className="space-y-8">
@@ -131,8 +131,8 @@ export default function Index() {
                       {step.num}
                     </div>
                     <div>
-                      <h3 className="text-white font-semibold text-base mb-1">{step.title}</h3>
-                      <p className="text-slate-400 text-sm leading-relaxed">{step.desc}</p>
+                      <h3 className="text-foreground font-semibold text-base mb-1">{step.title}</h3>
+                      <p className="text-muted-foreground text-sm leading-relaxed">{step.desc}</p>
                     </div>
                   </div>
                 ))}
@@ -147,7 +147,7 @@ export default function Index() {
               transition={{ duration: 0.5, delay: 0.15 }}
               className="relative"
             >
-              <div className="rounded-3xl overflow-hidden border border-white/10 shadow-2xl">
+              <div className="rounded-3xl overflow-hidden border border-border shadow-2xl">
                 <img
                   src={stepsImage}
                   alt="Team collaborating"
@@ -159,9 +159,9 @@ export default function Index() {
               </div>
               {/* Testimonial card */}
               <div className="absolute -bottom-6 -left-6 md:bottom-6 md:left-[-2rem] lg:left-[-2.5rem] max-w-xs">
-                <div className="gx-glass rounded-2xl p-5 border border-white/10 shadow-xl">
+                <div className="bg-card/80 backdrop-blur rounded-2xl p-5 border border-border shadow-xl">
                   <Quote className="w-5 h-5 text-primary mb-2" />
-                  <p className="text-white text-sm leading-relaxed mb-3">
+                  <p className="text-foreground text-sm leading-relaxed mb-3">
                     "It only took me 2 minutes to set up, and now all my clients know exactly where to find our work."
                   </p>
                   <p className="text-primary text-xs font-medium">

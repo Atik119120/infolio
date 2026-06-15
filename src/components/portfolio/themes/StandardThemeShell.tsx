@@ -350,7 +350,7 @@ export function StandardThemeShell({
 
 
       {/* SKILLS — clean centered header + animated progress bars */}
-      {skills.length > 0 && (
+      {showSkills && (
         <section id="skills" className="py-8 md:py-10" style={{ background: s.background }}>
           <div className="container mx-auto px-6 sm:px-8">
             <motion.div {...fadeUp} className="text-center max-w-2xl mx-auto mb-8">
@@ -399,7 +399,7 @@ export function StandardThemeShell({
       )}
 
       {/* SERVICES — clean uniform cards */}
-      {services.length > 0 && (
+      {showServices && (
         <section id="services" className="py-8 md:py-10" style={{ background: s.surface }}>
           <div className="container mx-auto px-6 sm:px-8">
             <motion.div {...fadeUp} className="text-center max-w-2xl mx-auto mb-8">

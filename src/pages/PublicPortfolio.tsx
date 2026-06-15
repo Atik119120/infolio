@@ -155,8 +155,9 @@ export default function PublicPortfolio() {
     education,
     socialLinks,
     services,
+    contactItems,
     userId: userId || undefined,
-  };
+  } as any;
 
   const selectedTheme = portfolio?.theme || 'freelancer';
 

@@ -480,9 +480,12 @@ export function StandardThemeShell({
       )}
 
       {/* WORKS — type-aware ProjectsSection */}
-      <ProjectsSection projects={projects as any} username={profile?.username} s={{ primary: s.primary, surface: s.surface, text: s.text, textMuted: s.textMuted, border: s.border, background: s.background }} />
+      {showProjects && (
+        <ProjectsSection projects={projects as any} username={profile?.username} s={{ primary: s.primary, surface: s.surface, text: s.text, textMuted: s.textMuted, border: s.border, background: s.background }} />
+      )}
 
       {/* CONTACT — centered modern with info pills + form card */}
+      {showContact && (
       <section id="contact" className="py-8 md:py-10 relative overflow-hidden" style={{ background: s.background }}>
         <div aria-hidden className="absolute inset-0 pointer-events-none"
           style={{ background: `radial-gradient(ellipse at top, ${s.primary}10, transparent 60%)` }} />

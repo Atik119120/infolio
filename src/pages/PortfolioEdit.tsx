@@ -1,10 +1,12 @@
 import { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import {
   User, Sparkles, Briefcase, GraduationCap, Link2, FolderOpen, Palette,
-  Image as ImageIcon, Wrench, Search, Wand2, Monitor, Smartphone, RefreshCw, ExternalLink,
+  Image as ImageIcon, Wrench, Search, Wand2, Monitor, Smartphone, Tablet,
+  RefreshCw, ExternalLink, ArrowLeft, ChevronRight, Check, X, Eye, Loader2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { BasicInfoForm } from "@/components/portfolio/BasicInfoForm";
@@ -51,11 +53,15 @@ export interface Education { id: string; institution: string; degree: string; fi
 export interface SocialLink { id: string; platform: string; url: string; display_order: number | null; }
 
 type SectionKey =
-  | "theme" | "basic" | "customize" | "branding" | "skills" | "services"
+  | "basic" | "customize" | "branding" | "skills" | "services"
   | "projects" | "experience" | "education" | "social" | "seo";
 
+type Stage = "theme" | "editor";
+type Device = "desktop" | "tablet" | "mobile";
+
 export default function PortfolioEdit() {
-  const [activeSection, setActiveSection] = useState<SectionKey>("theme");
+  const [stage, setStage] = useState<Stage>("theme");
+  const [activeSection, setActiveSection] = useState<SectionKey>("basic");
   const [profile, setProfile] = useState<Profile | null>(null);
   const [portfolio, setPortfolio] = useState<Portfolio | null>(null);
   const [skills, setSkills] = useState<Skill[]>([]);
@@ -65,23 +71,29 @@ export default function PortfolioEdit() {
   const [socialLinks, setSocialLinks] = useState<SocialLink[]>([]);
   const [services, setServices] = useState<Service[]>([]);
   const [loading, setLoading] = useState(true);
-  const [previewDevice, setPreviewDevice] = useState<"desktop" | "mobile">("desktop");
+  const [previewDevice, setPreviewDevice] = useState<Device>("desktop");
   const [previewKey, setPreviewKey] = useState(0);
-  const [mobileView, setMobileView] = useState<"edit" | "preview">("edit");
+  const [panelOpen, setPanelOpen] = useState(true);
+  const [publishing, setPublishing] = useState(false);
   const iframeRef = useRef<HTMLIFrameElement | null>(null);
 
   const { user } = useAuth();
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const activeTheme = portfolio?.theme || "freelancer";
   const themeConfig = getThemeConfig(activeTheme);
 
   useEffect(() => {
     if (user) fetchAllData();
-    const handleTabSwitch = (e: CustomEvent) => setActiveSection(e.detail as SectionKey);
-    window.addEventListener("switchTab", handleTabSwitch as EventListener);
-    return () => window.removeEventListener("switchTab", handleTabSwitch as EventListener);
   }, [user]);
+
+  // Lock body scroll while editor is open
+  useEffect(() => {
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => { document.body.style.overflow = prev; };
+  }, []);
 
   const fetchAllData = async () => {
     if (!user) return;
@@ -97,7 +109,13 @@ export default function PortfolioEdit() {
         (supabase as any).from("services").select("*").eq("user_id", user.id).order("display_order"),
       ]);
     if (profileRes.data) setProfile(profileRes.data);
-    if (portfolioRes.data) setPortfolio(portfolioRes.data);
+    if (portfolioRes.data) {
+      setPortfolio(portfolioRes.data);
+      // If a theme is already chosen, skip directly to editor on first load
+      if (portfolioRes.data.theme && stage === "theme" && loading) {
+        setStage("editor");
+      }
+    }
     if (skillsRes.data) setSkills(skillsRes.data);
     if (projectsRes.data) setProjects(projectsRes.data);
     if (experiencesRes.data) setExperiences(experiencesRes.data);
@@ -108,55 +126,56 @@ export default function PortfolioEdit() {
   };
 
   const refreshPreview = () => setPreviewKey((k) => k + 1);
-
   const handleUpdate = () => {
     fetchAllData();
-    // small delay so DB write reflects before iframe reloads
     setTimeout(refreshPreview, 400);
   };
-
   const showSuccess = (message: string) => toast({ title: "Success", description: message });
   const showError = (message: string) => toast({ variant: "destructive", title: "Error", description: message });
 
-  useEffect(() => {
-    if (!loading && !themeConfig.tabs.includes(activeSection)) {
-      setActiveSection("theme");
+  const handlePublishToggle = async () => {
+    if (!user || !portfolio) return;
+    setPublishing(true);
+    const newState = !portfolio.is_published;
+    const { error } = await supabase
+      .from("portfolios")
+      .update({ is_published: newState })
+      .eq("user_id", user.id);
+    setPublishing(false);
+    if (error) showError(error.message);
+    else {
+      showSuccess(newState ? "Portfolio published" : "Portfolio unpublished");
+      handleUpdate();
     }
-  }, [loading, activeTheme, activeSection, themeConfig.tabs]);
-
-  if (loading) {
-    return (
-      <div className="space-y-4 animate-pulse">
-        <div className="h-10 bg-white/5 rounded-lg w-full max-w-md" />
-        <div className="h-80 bg-white/5 rounded-lg" />
-      </div>
-    );
-  }
-
-  const allSections: { value: SectionKey; label: string; icon: any; hint?: string }[] = [
-    { value: "theme", label: "Theme", icon: Palette, hint: "Choose your portfolio theme" },
-    { value: "basic", label: "Basic Info", icon: User, hint: "Name, bio, contact details" },
-    { value: "customize", label: "Customize", icon: Wand2, hint: "Hero, about, footer content" },
-    { value: "branding", label: "Branding", icon: ImageIcon, hint: "Logo and favicon" },
-    { value: "skills", label: "Skills", icon: Sparkles, hint: "List your skills" },
-    { value: "services", label: "Services", icon: Wrench, hint: "Offerings you provide" },
-    { value: "projects", label: "Projects", icon: FolderOpen, hint: "Showcase your work" },
-    { value: "experience", label: "Experience", icon: Briefcase, hint: "Work history" },
-    { value: "education", label: "Education", icon: GraduationCap, hint: "Academic background" },
-    { value: "social", label: "Social Links", icon: Link2, hint: "Social profiles" },
-    { value: "seo", label: "SEO", icon: Search, hint: "Search engine settings" },
-  ];
-  const sections = allSections.filter((s) => themeConfig.tabs.includes(s.value));
-  const activeMeta = sections.find((s) => s.value === activeSection) ?? sections[0];
-  const ActiveIcon = activeMeta?.icon ?? Palette;
+  };
 
   const username = profile?.username;
   const previewUrl = username ? `/u/${username}?preview=1` : null;
 
+  const allSections: { value: SectionKey; label: string; icon: any; hint: string }[] = [
+    { value: "basic", label: "Basic Info", icon: User, hint: "Name, bio, contact" },
+    { value: "customize", label: "Hero & Content", icon: Wand2, hint: "Hero, about, footer" },
+    { value: "branding", label: "Branding", icon: ImageIcon, hint: "Logo and favicon" },
+    { value: "skills", label: "Skills", icon: Sparkles, hint: "Your skills" },
+    { value: "services", label: "Services", icon: Wrench, hint: "Offerings" },
+    { value: "projects", label: "Projects", icon: FolderOpen, hint: "Showcase work" },
+    { value: "experience", label: "Experience", icon: Briefcase, hint: "Work history" },
+    { value: "education", label: "Education", icon: GraduationCap, hint: "Education" },
+    { value: "social", label: "Social Links", icon: Link2, hint: "Social profiles" },
+    { value: "seo", label: "SEO", icon: Search, hint: "Search settings" },
+  ];
+  const sections = allSections.filter((s) => themeConfig.tabs.includes(s.value));
+  const activeMeta = sections.find((s) => s.value === activeSection) ?? sections[0];
+
+  // Ensure active section is valid for current theme
+  useEffect(() => {
+    if (!loading && !sections.some((s) => s.value === activeSection) && sections[0]) {
+      setActiveSection(sections[0].value);
+    }
+  }, [loading, activeTheme]);
+
   const renderForm = () => {
     switch (activeSection) {
-      case "theme":
-        return <ThemeSelector currentTheme={portfolio?.theme || null} userId={user?.id || ""} onUpdate={handleUpdate} />;
       case "basic":
         return <BasicInfoForm profile={profile} portfolio={portfolio} userId={user?.id || ""} onUpdate={handleUpdate} onSuccess={showSuccess} onError={showError} />;
       case "customize":
@@ -187,52 +206,202 @@ export default function PortfolioEdit() {
     }
   };
 
+  if (loading) {
+    return (
+      <div className="fixed inset-0 z-50 bg-[#0a0a0a] flex items-center justify-center">
+        <Loader2 className="w-6 h-6 animate-spin text-white/60" />
+      </div>
+    );
+  }
+
+  // ===== STAGE 1: THEME SELECTION =====
+  if (stage === "theme") {
+    return (
+      <div className="fixed inset-0 z-50 bg-[#0a0a0a] flex flex-col text-white overflow-hidden">
+        {/* Top header */}
+        <header className="h-14 shrink-0 flex items-center justify-between px-5 border-b border-white/[0.06] bg-black/60 backdrop-blur-xl">
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => navigate("/dashboard")}
+              className="flex items-center gap-1.5 text-xs text-white/60 hover:text-white transition-colors"
+            >
+              <ArrowLeft className="w-4 h-4" /> Dashboard
+            </button>
+            <div className="h-4 w-px bg-white/10" />
+            <span className="text-sm font-medium">Choose a Theme</span>
+          </div>
+          {portfolio?.theme && (
+            <Button
+              size="sm"
+              onClick={() => setStage("editor")}
+              className="h-8 px-4 bg-white text-black hover:bg-white/90 text-xs font-medium gap-1.5"
+            >
+              Edit Portfolio <ChevronRight className="w-3.5 h-3.5" />
+            </Button>
+          )}
+        </header>
+
+        {/* Theme picker body */}
+        <div className="flex-1 overflow-y-auto">
+          <div className="max-w-6xl mx-auto px-6 py-10">
+            <div className="mb-8 text-center">
+              <p className="text-[10px] uppercase tracking-[0.2em] text-white/40 font-medium mb-3">Step 1 of 2</p>
+              <h1 className="text-3xl sm:text-4xl font-semibold tracking-tight">Pick a theme to begin</h1>
+              <p className="text-sm text-white/50 mt-2">Select the look, then we'll open the editor.</p>
+            </div>
+            <ThemeSelector
+              currentTheme={portfolio?.theme || null}
+              userId={user?.id || ""}
+              onUpdate={handleUpdate}
+            />
+            {portfolio?.theme && (
+              <div className="sticky bottom-4 mt-10 flex justify-center">
+                <Button
+                  size="lg"
+                  onClick={() => setStage("editor")}
+                  className="bg-white text-black hover:bg-white/90 font-medium gap-2 shadow-2xl shadow-white/10"
+                >
+                  Continue to Editor <ChevronRight className="w-4 h-4" />
+                </Button>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // ===== STAGE 2: EDITOR =====
+  const deviceWidth: Record<Device, string> = {
+    desktop: "100%",
+    tablet: "820px",
+    mobile: "390px",
+  };
 
   return (
-    <div className="animate-fade-in text-white -mx-4 sm:-mx-6 -my-4 sm:-my-6">
-      {/* Topbar */}
-      <div className="flex items-center justify-between gap-3 px-5 py-3 border-b border-white/10 bg-black/40 backdrop-blur sticky top-0 z-20">
-        <div className="min-w-0">
-          <h1 className="text-base sm:text-lg font-semibold tracking-tight truncate">Edit Portfolio</h1>
-          <p className="text-xs text-white/40 truncate">Theme · {activeTheme}</p>
+    <div className="fixed inset-0 z-50 bg-[#0a0a0a] flex flex-col text-white overflow-hidden">
+      {/* TOP HEADER */}
+      <header className="h-14 shrink-0 flex items-center justify-between px-4 border-b border-white/[0.06] bg-black/70 backdrop-blur-xl">
+        <div className="flex items-center gap-3 min-w-0">
+          <button
+            onClick={() => navigate("/dashboard")}
+            className="flex items-center justify-center w-8 h-8 rounded-md text-white/60 hover:text-white hover:bg-white/5 transition-colors"
+            title="Back to dashboard"
+          >
+            <ArrowLeft className="w-4 h-4" />
+          </button>
+          <div className="h-5 w-px bg-white/10" />
+          <button
+            onClick={() => setStage("theme")}
+            className="flex items-center gap-2 px-2.5 py-1.5 rounded-md hover:bg-white/5 transition-colors group"
+          >
+            <Palette className="w-3.5 h-3.5 text-white/50 group-hover:text-white/80" />
+            <span className="text-sm font-medium capitalize">{activeTheme.replace(/-/g, " ")}</span>
+            <span className="text-[10px] text-white/40 group-hover:text-white/60">Change</span>
+          </button>
         </div>
+
+        {/* Center: device toggles */}
+        <div className="hidden md:flex items-center gap-1 p-1 rounded-lg bg-white/[0.04] border border-white/[0.06]">
+          {([
+            { d: "desktop", Icon: Monitor },
+            { d: "tablet", Icon: Tablet },
+            { d: "mobile", Icon: Smartphone },
+          ] as const).map(({ d, Icon }) => (
+            <button
+              key={d}
+              onClick={() => setPreviewDevice(d)}
+              className={cn(
+                "px-2.5 py-1 rounded-md transition-all",
+                previewDevice === d ? "bg-white text-black" : "text-white/50 hover:text-white"
+              )}
+              title={d}
+            >
+              <Icon className="w-3.5 h-3.5" />
+            </button>
+          ))}
+        </div>
+
+        {/* Right: actions */}
         <div className="flex items-center gap-2">
-          <div className="lg:hidden flex rounded-md border border-white/10 overflow-hidden">
-            <button
-              onClick={() => setMobileView("edit")}
-              className={cn("px-3 py-1.5 text-xs", mobileView === "edit" ? "bg-white text-black" : "text-white/70")}
-            >Edit</button>
-            <button
-              onClick={() => setMobileView("preview")}
-              className={cn("px-3 py-1.5 text-xs", mobileView === "preview" ? "bg-white text-black" : "text-white/70")}
-            >Preview</button>
-          </div>
+          <button
+            onClick={refreshPreview}
+            className="hidden sm:flex items-center justify-center w-8 h-8 rounded-md text-white/60 hover:text-white hover:bg-white/5 transition-colors"
+            title="Refresh preview"
+          >
+            <RefreshCw className="w-3.5 h-3.5" />
+          </button>
           {previewUrl && (
             <a
               href={previewUrl}
               target="_blank"
               rel="noreferrer"
-              className="hidden sm:inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-md border border-white/10 text-white/70 hover:text-white hover:bg-white/5"
+              className="hidden sm:inline-flex items-center gap-1.5 text-xs px-3 h-8 rounded-md border border-white/10 text-white/70 hover:text-white hover:bg-white/5 transition-colors"
             >
-              <ExternalLink className="w-3.5 h-3.5" /> Open in new tab
+              <Eye className="w-3.5 h-3.5" /> Preview
             </a>
           )}
+          <Button
+            size="sm"
+            onClick={handlePublishToggle}
+            disabled={publishing}
+            className={cn(
+              "h-8 px-3.5 text-xs font-medium gap-1.5",
+              portfolio?.is_published
+                ? "bg-white/10 text-white hover:bg-white/15 border border-white/10"
+                : "bg-white text-black hover:bg-white/90"
+            )}
+          >
+            {publishing ? (
+              <Loader2 className="w-3.5 h-3.5 animate-spin" />
+            ) : portfolio?.is_published ? (
+              <><Check className="w-3.5 h-3.5" /> Published</>
+            ) : (
+              <>Publish</>
+            )}
+          </Button>
         </div>
-      </div>
+      </header>
 
-      {/* 3-column split layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-[15rem_minmax(0,1fr)_minmax(0,1.2fr)] h-[calc(100vh-9rem)] min-h-[640px]">
-        {/* LEFT RAIL: section nav */}
+      {/* BODY: full-bleed preview with floating glass panel */}
+      <div className="flex-1 relative overflow-hidden bg-[#111] bg-[radial-gradient(ellipse_at_top,rgba(255,255,255,0.04),transparent_60%)]">
+        {/* Full-bleed preview */}
+        <div className="absolute inset-0 flex items-stretch justify-center p-4 lg:pl-[calc(360px+2rem)] lg:pr-6 overflow-auto">
+          {previewUrl ? (
+            <div
+              className={cn(
+                "bg-white rounded-xl shadow-2xl shadow-black/50 overflow-hidden ring-1 ring-white/10 transition-all duration-300",
+                previewDevice === "desktop" ? "w-full" : "h-full"
+              )}
+              style={{
+                width: previewDevice === "desktop" ? "100%" : deviceWidth[previewDevice],
+                maxWidth: "100%",
+              }}
+            >
+              <iframe
+                key={previewKey}
+                ref={iframeRef}
+                src={previewUrl}
+                title="Portfolio preview"
+                className="w-full h-full border-0"
+              />
+            </div>
+          ) : (
+            <div className="text-white/50 text-sm flex items-center justify-center w-full">
+              Set up your username to see a live preview.
+            </div>
+          )}
+        </div>
+
+        {/* Floating glass editor panel */}
         <aside
           className={cn(
-            "border-r border-white/10 bg-black/30 overflow-y-auto",
-            mobileView === "edit" ? "block" : "hidden lg:block"
+            "absolute top-4 bottom-4 left-4 w-[340px] z-10 flex flex-col rounded-2xl border border-white/[0.08] shadow-2xl shadow-black/60 backdrop-blur-2xl bg-[rgba(15,15,17,0.85)] transition-transform duration-300",
+            panelOpen ? "translate-x-0" : "-translate-x-[calc(100%+1rem)]"
           )}
         >
-          <div className="px-4 pt-5 pb-2">
-            <p className="text-[10px] uppercase tracking-[0.15em] text-white/35 font-medium">Sections</p>
-          </div>
-          <nav className="px-2 pb-4 space-y-0.5">
+          {/* Section icon rail at top */}
+          <div className="flex items-center gap-1 px-2 py-2 border-b border-white/[0.06] overflow-x-auto scrollbar-none">
             {sections.map((s) => {
               const Icon = s.icon;
               const active = activeSection === s.value;
@@ -240,106 +409,75 @@ export default function PortfolioEdit() {
                 <button
                   key={s.value}
                   onClick={() => setActiveSection(s.value)}
+                  title={s.label}
                   className={cn(
-                    "w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all text-left",
+                    "shrink-0 w-9 h-9 rounded-lg flex items-center justify-center transition-all",
                     active
                       ? "bg-white text-black"
-                      : "text-white/65 hover:text-white hover:bg-white/[0.04]"
+                      : "text-white/50 hover:text-white hover:bg-white/[0.06]"
                   )}
                 >
-                  <Icon className={cn("w-4 h-4 shrink-0", active ? "text-black" : "text-white/50")} />
-                  <span className="truncate">{s.label}</span>
+                  <Icon className="w-4 h-4" />
                 </button>
               );
             })}
-          </nav>
+          </div>
+
+          {/* Section header */}
+          <div className="px-5 pt-4 pb-3 border-b border-white/[0.05]">
+            <p className="text-[10px] uppercase tracking-[0.18em] text-white/35 font-medium">
+              Editing
+            </p>
+            <h2 className="text-base font-semibold tracking-tight mt-0.5">
+              {activeMeta?.label}
+            </h2>
+            <p className="text-xs text-white/45 mt-0.5">{activeMeta?.hint}</p>
+          </div>
+
+          {/* Form scroll area */}
+          <div className="flex-1 overflow-y-auto px-5 py-5 scrollbar-thin">
+            {renderForm()}
+          </div>
+
+          {/* Section nav footer (prev/next) */}
+          <div className="flex items-center justify-between gap-2 px-3 py-2 border-t border-white/[0.06]">
+            <button
+              onClick={() => {
+                const i = sections.findIndex((s) => s.value === activeSection);
+                if (i > 0) setActiveSection(sections[i - 1].value);
+              }}
+              disabled={sections[0]?.value === activeSection}
+              className="text-xs text-white/60 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed px-2 py-1"
+            >
+              ← Prev
+            </button>
+            <span className="text-[10px] text-white/30">
+              {sections.findIndex((s) => s.value === activeSection) + 1} / {sections.length}
+            </span>
+            <button
+              onClick={() => {
+                const i = sections.findIndex((s) => s.value === activeSection);
+                if (i < sections.length - 1) setActiveSection(sections[i + 1].value);
+              }}
+              disabled={sections[sections.length - 1]?.value === activeSection}
+              className="text-xs text-white/60 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed px-2 py-1"
+            >
+              Next →
+            </button>
+          </div>
         </aside>
 
-        {/* MIDDLE: control panel / form */}
-        <section
+        {/* Toggle button when panel hidden */}
+        <button
+          onClick={() => setPanelOpen((v) => !v)}
           className={cn(
-            "border-r border-white/10 bg-black/20 flex flex-col",
-            mobileView === "edit" ? "flex" : "hidden lg:flex"
+            "absolute top-1/2 -translate-y-1/2 z-20 w-7 h-16 rounded-r-lg bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/10 border-l-0 flex items-center justify-center transition-all",
+            panelOpen ? "left-[calc(340px+1rem)]" : "left-0"
           )}
+          title={panelOpen ? "Hide panel" : "Show panel"}
         >
-          <div className="px-6 pt-6 pb-4 border-b border-white/5">
-            <div className="flex items-start gap-3">
-              <div className="w-9 h-9 rounded-lg bg-white/[0.06] border border-white/10 flex items-center justify-center shrink-0">
-                <ActiveIcon className="w-4 h-4 text-white/80" />
-              </div>
-              <div className="min-w-0">
-                <h2 className="text-base font-semibold tracking-tight">{activeMeta?.label}</h2>
-                {activeMeta?.hint && (
-                  <p className="text-xs text-white/45 mt-0.5">{activeMeta.hint}</p>
-                )}
-              </div>
-            </div>
-          </div>
-          <div className="flex-1 overflow-y-auto px-6 py-6">
-            <div className="max-w-2xl">
-              {renderForm()}
-            </div>
-          </div>
-        </section>
-
-        {/* RIGHT: live preview */}
-        <section
-          className={cn(
-            "bg-neutral-900 flex flex-col",
-            mobileView === "preview" ? "flex" : "hidden lg:flex"
-          )}
-        >
-          <div className="flex items-center justify-between gap-2 px-4 py-2.5 border-b border-white/10">
-            <span className="text-xs text-white/45 font-medium">Live Preview</span>
-            <div className="flex items-center gap-1.5">
-              <div className="flex rounded-md border border-white/10 overflow-hidden">
-                <button
-                  onClick={() => setPreviewDevice("desktop")}
-                  className={cn("px-2.5 py-1.5", previewDevice === "desktop" ? "bg-white text-black" : "text-white/60 hover:text-white")}
-                  title="Desktop"
-                >
-                  <Monitor className="w-3.5 h-3.5" />
-                </button>
-                <button
-                  onClick={() => setPreviewDevice("mobile")}
-                  className={cn("px-2.5 py-1.5", previewDevice === "mobile" ? "bg-white text-black" : "text-white/60 hover:text-white")}
-                  title="Mobile"
-                >
-                  <Smartphone className="w-3.5 h-3.5" />
-                </button>
-              </div>
-              <Button
-                size="sm"
-                variant="ghost"
-                className="h-8 px-2 text-white/60 hover:text-white hover:bg-white/5"
-                onClick={refreshPreview}
-                title="Refresh preview"
-              >
-                <RefreshCw className="w-3.5 h-3.5" />
-              </Button>
-            </div>
-          </div>
-          <div className="flex-1 overflow-auto p-4 flex items-start justify-center bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.04),transparent_60%)]">
-            {previewUrl ? (
-              <div
-                className={cn(
-                  "bg-white rounded-lg shadow-2xl overflow-hidden transition-all ring-1 ring-white/10",
-                  previewDevice === "desktop" ? "w-full h-full" : "w-[390px] h-[760px] max-h-full"
-                )}
-              >
-                <iframe
-                  key={previewKey}
-                  ref={iframeRef}
-                  src={previewUrl}
-                  title="Portfolio preview"
-                  className="w-full h-full border-0"
-                />
-              </div>
-            ) : (
-              <div className="text-white/50 text-sm p-8">Set up your username to see a live preview.</div>
-            )}
-          </div>
-        </section>
+          <ChevronRight className={cn("w-3.5 h-3.5 text-white/70 transition-transform", panelOpen && "rotate-180")} />
+        </button>
       </div>
     </div>
   );

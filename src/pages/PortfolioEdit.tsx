@@ -133,20 +133,22 @@ export default function PortfolioEdit() {
     );
   }
 
-  const allSections: { value: SectionKey; label: string; icon: any }[] = [
-    { value: "theme", label: "Theme", icon: Palette },
-    { value: "basic", label: "Basic Info", icon: User },
-    { value: "customize", label: "Customize", icon: Wand2 },
-    { value: "branding", label: "Branding", icon: ImageIcon },
-    { value: "skills", label: "Skills", icon: Sparkles },
-    { value: "services", label: "Services", icon: Wrench },
-    { value: "projects", label: "Projects", icon: FolderOpen },
-    { value: "experience", label: "Experience", icon: Briefcase },
-    { value: "education", label: "Education", icon: GraduationCap },
-    { value: "social", label: "Social", icon: Link2 },
-    { value: "seo", label: "SEO", icon: Search },
+  const allSections: { value: SectionKey; label: string; icon: any; hint?: string }[] = [
+    { value: "theme", label: "Theme", icon: Palette, hint: "Choose your portfolio theme" },
+    { value: "basic", label: "Basic Info", icon: User, hint: "Name, bio, contact details" },
+    { value: "customize", label: "Customize", icon: Wand2, hint: "Hero, about, footer content" },
+    { value: "branding", label: "Branding", icon: ImageIcon, hint: "Logo and favicon" },
+    { value: "skills", label: "Skills", icon: Sparkles, hint: "List your skills" },
+    { value: "services", label: "Services", icon: Wrench, hint: "Offerings you provide" },
+    { value: "projects", label: "Projects", icon: FolderOpen, hint: "Showcase your work" },
+    { value: "experience", label: "Experience", icon: Briefcase, hint: "Work history" },
+    { value: "education", label: "Education", icon: GraduationCap, hint: "Academic background" },
+    { value: "social", label: "Social Links", icon: Link2, hint: "Social profiles" },
+    { value: "seo", label: "SEO", icon: Search, hint: "Search engine settings" },
   ];
   const sections = allSections.filter((s) => themeConfig.tabs.includes(s.value));
+  const activeMeta = sections.find((s) => s.value === activeSection) ?? sections[0];
+  const ActiveIcon = activeMeta?.icon ?? Palette;
 
   const username = profile?.username;
   const previewUrl = username ? `/u/${username}?preview=1` : null;
@@ -185,16 +187,16 @@ export default function PortfolioEdit() {
     }
   };
 
+
   return (
     <div className="animate-fade-in text-white -mx-4 sm:-mx-6 -my-4 sm:-my-6">
       {/* Topbar */}
-      <div className="flex items-center justify-between gap-3 px-4 sm:px-6 py-3 border-b border-white/10 bg-black/40 backdrop-blur sticky top-0 z-20">
+      <div className="flex items-center justify-between gap-3 px-5 py-3 border-b border-white/10 bg-black/40 backdrop-blur sticky top-0 z-20">
         <div className="min-w-0">
           <h1 className="text-base sm:text-lg font-semibold tracking-tight truncate">Edit Portfolio</h1>
-          <p className="text-xs text-white/50 truncate">Theme · {activeTheme}</p>
+          <p className="text-xs text-white/40 truncate">Theme · {activeTheme}</p>
         </div>
         <div className="flex items-center gap-2">
-          {/* Mobile toggle */}
           <div className="lg:hidden flex rounded-md border border-white/10 overflow-hidden">
             <button
               onClick={() => setMobileView("edit")}
@@ -210,26 +212,27 @@ export default function PortfolioEdit() {
               href={previewUrl}
               target="_blank"
               rel="noreferrer"
-              className="hidden sm:inline-flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-md border border-white/10 text-white/70 hover:text-white hover:bg-white/5"
+              className="hidden sm:inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-md border border-white/10 text-white/70 hover:text-white hover:bg-white/5"
             >
-              <ExternalLink className="w-3.5 h-3.5" /> Open
+              <ExternalLink className="w-3.5 h-3.5" /> Open in new tab
             </a>
           )}
         </div>
       </div>
 
-      {/* Split layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-[18rem_minmax(0,1fr)] h-[calc(100vh-9rem)] min-h-[600px]">
-        {/* LEFT: Control panel */}
+      {/* 3-column split layout */}
+      <div className="grid grid-cols-1 lg:grid-cols-[15rem_minmax(0,1fr)_minmax(0,1.2fr)] h-[calc(100vh-9rem)] min-h-[640px]">
+        {/* LEFT RAIL: section nav */}
         <aside
           className={cn(
-            "border-r border-white/10 bg-black/20 flex flex-col",
-            "lg:flex",
-            mobileView === "edit" ? "flex" : "hidden lg:flex"
+            "border-r border-white/10 bg-black/30 overflow-y-auto",
+            mobileView === "edit" ? "block" : "hidden lg:block"
           )}
         >
-          {/* Section nav */}
-          <nav className="flex lg:flex-col gap-1 p-2 overflow-x-auto lg:overflow-x-visible lg:overflow-y-auto border-b lg:border-b-0 border-white/10 lg:max-h-[40%]">
+          <div className="px-4 pt-5 pb-2">
+            <p className="text-[10px] uppercase tracking-[0.15em] text-white/35 font-medium">Sections</p>
+          </div>
+          <nav className="px-2 pb-4 space-y-0.5">
             {sections.map((s) => {
               const Icon = s.icon;
               const active = activeSection === s.value;
@@ -238,48 +241,68 @@ export default function PortfolioEdit() {
                   key={s.value}
                   onClick={() => setActiveSection(s.value)}
                   className={cn(
-                    "flex items-center gap-2 px-3 py-2 rounded-md text-xs font-medium whitespace-nowrap transition-all border",
+                    "w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all text-left",
                     active
-                      ? "bg-white text-black border-white"
-                      : "border-transparent text-white/60 hover:text-white hover:bg-white/5"
+                      ? "bg-white text-black"
+                      : "text-white/65 hover:text-white hover:bg-white/[0.04]"
                   )}
                 >
-                  <Icon className="w-3.5 h-3.5" />
-                  {s.label}
+                  <Icon className={cn("w-4 h-4 shrink-0", active ? "text-black" : "text-white/50")} />
+                  <span className="truncate">{s.label}</span>
                 </button>
               );
             })}
           </nav>
-
-          {/* Form area */}
-          <div className="flex-1 overflow-y-auto p-4">
-            {renderForm()}
-          </div>
         </aside>
 
-        {/* RIGHT: Live preview */}
+        {/* MIDDLE: control panel / form */}
+        <section
+          className={cn(
+            "border-r border-white/10 bg-black/20 flex flex-col",
+            mobileView === "edit" ? "flex" : "hidden lg:flex"
+          )}
+        >
+          <div className="px-6 pt-6 pb-4 border-b border-white/5">
+            <div className="flex items-start gap-3">
+              <div className="w-9 h-9 rounded-lg bg-white/[0.06] border border-white/10 flex items-center justify-center shrink-0">
+                <ActiveIcon className="w-4 h-4 text-white/80" />
+              </div>
+              <div className="min-w-0">
+                <h2 className="text-base font-semibold tracking-tight">{activeMeta?.label}</h2>
+                {activeMeta?.hint && (
+                  <p className="text-xs text-white/45 mt-0.5">{activeMeta.hint}</p>
+                )}
+              </div>
+            </div>
+          </div>
+          <div className="flex-1 overflow-y-auto px-6 py-6">
+            <div className="max-w-2xl">
+              {renderForm()}
+            </div>
+          </div>
+        </section>
+
+        {/* RIGHT: live preview */}
         <section
           className={cn(
             "bg-neutral-900 flex flex-col",
             mobileView === "preview" ? "flex" : "hidden lg:flex"
           )}
         >
-          <div className="flex items-center justify-between gap-2 px-3 py-2 border-b border-white/10">
-            <div className="flex items-center gap-2">
-              <span className="text-xs text-white/50">Live Preview</span>
-            </div>
-            <div className="flex items-center gap-1">
+          <div className="flex items-center justify-between gap-2 px-4 py-2.5 border-b border-white/10">
+            <span className="text-xs text-white/45 font-medium">Live Preview</span>
+            <div className="flex items-center gap-1.5">
               <div className="flex rounded-md border border-white/10 overflow-hidden">
                 <button
                   onClick={() => setPreviewDevice("desktop")}
-                  className={cn("px-2 py-1", previewDevice === "desktop" ? "bg-white text-black" : "text-white/70 hover:text-white")}
+                  className={cn("px-2.5 py-1.5", previewDevice === "desktop" ? "bg-white text-black" : "text-white/60 hover:text-white")}
                   title="Desktop"
                 >
                   <Monitor className="w-3.5 h-3.5" />
                 </button>
                 <button
                   onClick={() => setPreviewDevice("mobile")}
-                  className={cn("px-2 py-1", previewDevice === "mobile" ? "bg-white text-black" : "text-white/70 hover:text-white")}
+                  className={cn("px-2.5 py-1.5", previewDevice === "mobile" ? "bg-white text-black" : "text-white/60 hover:text-white")}
                   title="Mobile"
                 >
                   <Smartphone className="w-3.5 h-3.5" />
@@ -288,19 +311,19 @@ export default function PortfolioEdit() {
               <Button
                 size="sm"
                 variant="ghost"
-                className="h-7 px-2 text-white/70 hover:text-white hover:bg-white/5"
+                className="h-8 px-2 text-white/60 hover:text-white hover:bg-white/5"
                 onClick={refreshPreview}
-                title="Refresh"
+                title="Refresh preview"
               >
                 <RefreshCw className="w-3.5 h-3.5" />
               </Button>
             </div>
           </div>
-          <div className="flex-1 overflow-auto p-3 flex items-start justify-center">
+          <div className="flex-1 overflow-auto p-4 flex items-start justify-center bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.04),transparent_60%)]">
             {previewUrl ? (
               <div
                 className={cn(
-                  "bg-white rounded-md shadow-2xl overflow-hidden transition-all",
+                  "bg-white rounded-lg shadow-2xl overflow-hidden transition-all ring-1 ring-white/10",
                   previewDevice === "desktop" ? "w-full h-full" : "w-[390px] h-[760px] max-h-full"
                 )}
               >

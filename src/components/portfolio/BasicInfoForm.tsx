@@ -50,7 +50,7 @@ export function BasicInfoForm({ profile, portfolio, userId, onUpdate, onSuccess,
         .from("portfolios")
         .update({
           headline: formData.headline,
-          bio: formData.bio,
+          about_text: formData.bio,
           location: formData.location,
           phone: formData.phone,
           website: formData.website,

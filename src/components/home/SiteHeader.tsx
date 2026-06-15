@@ -3,20 +3,9 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { openWhatsApp } from "@/lib/whatsapp";
 import {
-  MessageCircle, LayoutGrid, Menu, X, LogIn,
+  MessageCircle, Menu, X, LogIn,
 } from "lucide-react";
 import alphaLogo from "@/assets/alpha-portfolio-logo.png";
-
-interface NavItem {
-  label: string;
-  icon: React.ElementType;
-  href?: string;
-  to?: string;
-}
-
-const NAV_ITEMS: NavItem[] = [
-  { label: "Themes", icon: LayoutGrid, to: "/themes" },
-];
 
 export default function SiteHeader() {
   const navigate = useNavigate();

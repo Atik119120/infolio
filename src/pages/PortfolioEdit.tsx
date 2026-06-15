@@ -104,10 +104,10 @@ export default function PortfolioEdit() {
   // Push the latest snapshot into the preview iframe (no reload).
   const pushPreviewSnapshot = (snapshot?: {
     profile?: any; portfolio?: any; skills?: any[]; projects?: any[];
-    experiences?: any[]; education?: any[]; socialLinks?: any[]; services?: any[];
+    experiences?: any[]; education?: any[]; socialLinks?: any[]; services?: any[]; contactItems?: any[];
   }) => {
     const payload = snapshot ?? {
-      profile, portfolio, skills, projects, experiences, education, socialLinks, services,
+      profile, portfolio, skills, projects, experiences, education, socialLinks, services, contactItems,
     };
     try {
       iframeRef.current?.contentWindow?.postMessage(

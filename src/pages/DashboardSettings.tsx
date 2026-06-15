@@ -350,10 +350,11 @@ export default function DashboardSettings() {
       {/* Branding toggle (Starter/Creator only) */}
       <BrandingToggleForm />
 
-      {/* Custom Domains — Pro only */}
+      {/* Custom Domains — Creator plan */}
       <ProGate
         title="Custom Domain"
         description="Connect your own domain (e.g. yourname.com) to your portfolio."
+        feature="custom_domain"
       >
         <CustomDomainManager />
       </ProGate>

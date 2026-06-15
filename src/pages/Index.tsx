@@ -4,17 +4,18 @@ import { Helmet } from "react-helmet-async";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import {
-  ArrowRight, Palette, Check, Sparkles, Tag, HelpCircle, LayoutGrid, Quote,
+  ArrowRight, Palette, Check, Sparkles, Quote,
+  Zap, Globe, Rocket, Server, Search, Cloud, Image,
 } from "lucide-react";
 import Footer from "@/components/home/Footer";
-import SiteHeader from "@/components/home/SiteHeader";
 import { GradientBars } from "@/components/ui/gradient-bars-background";
-import { SectionHeader } from "@/pages/home/shared";
+import { SectionHeader, FeatureCard, PLANS, TERMS, PlanCard } from "@/pages/home/shared";
 import stepsImage from "@/assets/steps-section.jpg";
 
 export default function Index() {
   const navigate = useNavigate();
   const [username, setUsername] = useState("");
+  const [billing, setBilling] = useState<"monthly" | "yearly">("monthly");
 
   const handleClaim = () => {
     navigate(`/auth${username ? `?username=${encodeURIComponent(username)}` : ""}`);
@@ -30,8 +31,6 @@ export default function Index() {
         <meta property="og:description" content="Pick a theme, add your work, and publish a stunning personal portfolio in minutes." />
         <meta property="og:url" content="https://infolio.online/" />
       </Helmet>
-
-      <SiteHeader />
 
       {/* HERO */}
       <section className="relative isolate min-h-screen flex items-center pt-32 md:pt-36 pb-20 px-6 overflow-hidden">
@@ -98,7 +97,6 @@ export default function Index() {
         </div>
         <div className="container mx-auto max-w-6xl">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-            {/* Left — Steps */}
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -110,21 +108,9 @@ export default function Index() {
               </h2>
               <div className="space-y-8">
                 {[
-                  {
-                    num: "1",
-                    title: "Claim your identity",
-                    desc: "Sign up for free and secure your unique username.",
-                  },
-                  {
-                    num: "2",
-                    title: "Add your content",
-                    desc: "Paste your links, socials, portfolio pieces, or stores.",
-                  },
-                  {
-                    num: "3",
-                    title: "Share everywhere",
-                    desc: "Put your Infolio link in your Instagram, TikTok, or email signature.",
-                  },
+                  { num: "1", title: "Claim your identity", desc: "Sign up for free and secure your unique username." },
+                  { num: "2", title: "Add your content", desc: "Paste your links, socials, portfolio pieces, or stores." },
+                  { num: "3", title: "Share everywhere", desc: "Put your Infolio link in your Instagram, TikTok, or email signature." },
                 ].map((step) => (
                   <div key={step.num} className="flex items-start gap-5">
                     <div className="shrink-0 w-10 h-10 rounded-full border border-primary/50 text-primary grid place-items-center text-sm font-semibold mt-0.5">
@@ -139,7 +125,6 @@ export default function Index() {
               </div>
             </motion.div>
 
-            {/* Right — Image + Testimonial */}
             <motion.div
               initial={{ opacity: 0, x: 20 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -157,7 +142,6 @@ export default function Index() {
                   height={768}
                 />
               </div>
-              {/* Testimonial card */}
               <div className="absolute -bottom-6 -left-6 md:bottom-6 md:left-[-2rem] lg:left-[-2.5rem] max-w-xs">
                 <div className="bg-card/80 backdrop-blur rounded-2xl p-5 border border-border shadow-xl">
                   <Quote className="w-5 h-5 text-primary mb-2" />
@@ -174,34 +158,64 @@ export default function Index() {
         </div>
       </section>
 
-      {/* EXPLORE MORE — teaser cards linking to dedicated pages */}
-      <section className="py-24 px-6 border-t border-border/60">
+      {/* FEATURES */}
+      <section className="py-24 md:py-32 px-6 border-t border-border/60">
+        <div className="container mx-auto max-w-5xl">
+          <SectionHeader eyebrow="Features" title="Built for creators" subtitle="Everything you need to build and publish a stunning portfolio — no code required." />
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-px bg-border/60 mt-12 rounded-3xl overflow-hidden border border-border/60">
+            <FeatureCard icon={<Palette className="w-5 h-5" />} title="Premium Themes" description="Beautiful themes for every profession." />
+            <FeatureCard icon={<Zap className="w-5 h-5" />} title="No-Code Builder" description="Drag, drop, publish — live preview." />
+            <FeatureCard icon={<Rocket className="w-5 h-5" />} title="Instant Publish" description="Go live in seconds, worldwide." />
+            <FeatureCard icon={<Globe className="w-5 h-5" />} title="Free Subdomain" description="yourname.infolio.online free." />
+            <FeatureCard icon={<Server className="w-5 h-5" />} title="Custom Domain" description="Your own domain with auto SSL." />
+            <FeatureCard icon={<Search className="w-5 h-5" />} title="SEO Tools" description="Meta, sitemap, social tags." />
+            <FeatureCard icon={<Image className="w-5 h-5" />} title="Project Gallery" description="Showcase work with images & videos." />
+            <FeatureCard icon={<Cloud className="w-5 h-5" />} title="Global CDN" description="Fast loading from anywhere." />
+          </div>
+        </div>
+      </section>
+
+      {/* PRICING */}
+      <section className="py-24 md:py-32 px-6 border-t border-border/60">
+        <div className="container mx-auto max-w-7xl">
+          <SectionHeader eyebrow="Pricing" title="Plans for every stage" subtitle="Start free with a subdomain. Upgrade as your work grows." />
+          <div className="mt-8 flex justify-center">
+            <div className="inline-flex items-center p-1 rounded-full border border-border bg-card">
+              <button onClick={() => setBilling("monthly")} className={`px-5 py-1.5 rounded-full text-sm font-medium transition-all ${billing === "monthly" ? "gradient-primary text-white shadow-md shadow-primary/30" : "text-muted-foreground hover:text-foreground"}`}>Monthly</button>
+              <button onClick={() => setBilling("yearly")} className={`px-5 py-1.5 rounded-full text-sm font-medium transition-all inline-flex items-center gap-1.5 ${billing === "yearly" ? "gradient-primary text-white shadow-md shadow-primary/30" : "text-muted-foreground hover:text-foreground"}`}>
+                Yearly <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-warning/20 text-warning">save 15%</span>
+              </button>
+            </div>
+          </div>
+          <div className="mt-10 grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+            {PLANS.map((plan) => (
+              <PlanCard key={plan.name} plan={plan} billing={billing} onClick={() => navigate("/auth")} />
+            ))}
+          </div>
+          <p className="mt-8 text-center text-xs text-muted-foreground">All prices in BDT (৳). Pay via bKash, Nagad or Rocket. Cancel anytime.</p>
+        </div>
+      </section>
+
+      {/* TERMS */}
+      <section className="py-20 px-6 border-t border-border/60">
         <div className="container mx-auto max-w-6xl">
-          <SectionHeader eyebrow="Explore" title="Dive deeper" subtitle="Everything else lives on its own page — pick what you need." />
-          <div className="mt-12 grid md:grid-cols-3 gap-5">
-            {[
-              { icon: LayoutGrid, title: "Features", desc: "16+ tools — themes, builder, deploys, SEO, CDN and more.", to: "/features" },
-              { icon: Tag, title: "Pricing", desc: "Plans from ৳59/mo. Compare side-by-side, pay via bKash.", to: "/pricing" },
-              { icon: HelpCircle, title: "FAQ", desc: "Quick answers about domains, deploys, billing and refunds.", to: "/faq" },
-            ].map((c) => (
-              <motion.button
-                key={c.title}
-                onClick={() => navigate(c.to)}
-                initial={{ opacity: 0, y: 16 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-50px" }}
-                transition={{ duration: 0.4 }}
-                className="text-left group rounded-3xl border border-border/70 bg-card/60 backdrop-blur p-6 hover:border-primary/50 hover:bg-primary/5 transition-all"
-              >
-                <div className="w-12 h-12 rounded-2xl gradient-primary text-white grid place-items-center shadow-md shadow-primary/30 mb-4">
-                  <c.icon className="w-5 h-5" />
+          <SectionHeader eyebrow="Terms" title="Fair use, plain English" subtitle="The rules of the road for using Infolio." />
+          <div className="mt-12 grid md:grid-cols-2 gap-5">
+            {TERMS.map((t) => (
+              <motion.div key={t.title} initial={{ opacity: 0, y: 14 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-50px" }} transition={{ duration: 0.4 }}
+                className="rounded-3xl border border-border/70 bg-card/60 backdrop-blur p-6 hover:border-primary/40 transition">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-10 h-10 rounded-xl gradient-primary text-white grid place-items-center shadow-md shadow-primary/30">
+                    <t.icon className="w-5 h-5" />
+                  </div>
+                  <h3 className="font-semibold tracking-tight">{t.title}</h3>
                 </div>
-                <h3 className="text-lg font-semibold tracking-tight mb-1.5">{c.title}</h3>
-                <p className="text-sm text-muted-foreground leading-relaxed">{c.desc}</p>
-                <div className="mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-primary">
-                  Learn more <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
-                </div>
-              </motion.button>
+                <ul className="space-y-2 text-sm text-muted-foreground">
+                  {t.items.map((it) => (
+                    <li key={it} className="flex gap-2"><Check className="w-3.5 h-3.5 mt-1 shrink-0 text-primary" /><span>{it}</span></li>
+                  ))}
+                </ul>
+              </motion.div>
             ))}
           </div>
         </div>
@@ -218,9 +232,6 @@ export default function Index() {
           <div className="flex items-center justify-center gap-3 flex-wrap">
             <Button onClick={() => navigate("/auth")} size="lg" className="rounded-full gradient-primary text-white hover:opacity-90 shadow-lg shadow-primary/30">
               Get started free <ArrowRight className="ml-1.5 w-4 h-4" />
-            </Button>
-            <Button onClick={() => navigate("/pricing")} size="lg" variant="outline" className="rounded-full">
-              See pricing
             </Button>
           </div>
         </div>

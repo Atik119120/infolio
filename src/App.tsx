@@ -3,7 +3,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { AdminRoute } from "@/components/AdminRoute";
@@ -44,8 +44,6 @@ const BuilderList = lazy(() => import("./pages/BuilderList"));
 const BuilderEditor = lazy(() => import("./pages/BuilderEditor"));
 const PublicBuilderPage = lazy(() => import("./pages/PublicBuilderPage"));
 const CustomizeTheme = lazy(() => import("./pages/CustomizeTheme"));
-const Features = lazy(() => import("./pages/Features"));
-const Pricing = lazy(() => import("./pages/Pricing"));
 const Faq = lazy(() => import("./pages/Faq"));
 
 const queryClient = new QueryClient();
@@ -72,8 +70,8 @@ const App = () => (
                 <Route path="/auth" element={<Auth />} />
                 <Route path="/reset-password" element={<ResetPassword />} />
                 <Route path="/themes" element={<ThemeCollection />} />
-                <Route path="/features" element={<Features />} />
-                <Route path="/pricing" element={<Pricing />} />
+                <Route path="/features" element={<Navigate to="/" replace />} />
+                <Route path="/pricing" element={<Navigate to="/" replace />} />
                 <Route path="/faq" element={<Faq />} />
                 <Route path="/admin/login" element={<AdminAuth />} />
                 <Route path="/demo/:themeName" element={<ThemeDemo />} />

@@ -150,6 +150,44 @@ export default function PortfolioEdit() {
   const activeMeta = sections.find((s) => s.value === activeSection) ?? sections[0];
   const ActiveIcon = activeMeta?.icon ?? Palette;
 
+  const username = profile?.username;
+  const previewUrl = username ? `/u/${username}?preview=1` : null;
+
+  const renderForm = () => {
+    switch (activeSection) {
+      case "theme":
+        return <ThemeSelector currentTheme={portfolio?.theme || null} userId={user?.id || ""} onUpdate={handleUpdate} />;
+      case "basic":
+        return <BasicInfoForm profile={profile} portfolio={portfolio} userId={user?.id || ""} onUpdate={handleUpdate} onSuccess={showSuccess} onError={showError} />;
+      case "customize":
+        return activeTheme === "custom-code"
+          ? <CustomCodeForm portfolio={portfolio as any} userId={user?.id || ""} onUpdate={handleUpdate} />
+          : <CustomizationForm portfolio={portfolio as any} userId={user?.id || ""} enabledFields={themeConfig.customizeFields} onUpdate={handleUpdate} onSuccess={showSuccess} onError={showError} />;
+      case "branding":
+        return (
+          <div className="space-y-4">
+            <LogoUploadForm logoUrl={portfolio?.logo_url || null} brandName={(portfolio as any)?.brand_name || null} userId={user?.id || ""} onUpdate={handleUpdate} onSuccess={showSuccess} onError={showError} />
+            <FaviconUploadForm faviconUrl={(portfolio as any)?.favicon_url || null} userId={user?.id || ""} onUpdate={handleUpdate} onSuccess={showSuccess} onError={showError} />
+          </div>
+        );
+      case "skills":
+        return <SkillsForm skills={skills} userId={user?.id || ""} onUpdate={handleUpdate} onSuccess={showSuccess} onError={showError} />;
+      case "services":
+        return <ServicesForm services={services} userId={user?.id || ""} onUpdate={handleUpdate} onSuccess={showSuccess} onError={showError} />;
+      case "projects":
+        return <ProjectsForm projects={projects} userId={user?.id || ""} onUpdate={handleUpdate} onSuccess={showSuccess} onError={showError} />;
+      case "experience":
+        return <ExperienceForm experiences={experiences} userId={user?.id || ""} onUpdate={handleUpdate} onSuccess={showSuccess} onError={showError} />;
+      case "education":
+        return <EducationForm education={education} userId={user?.id || ""} onUpdate={handleUpdate} onSuccess={showSuccess} onError={showError} />;
+      case "social":
+        return <SocialLinksForm socialLinks={socialLinks} userId={user?.id || ""} onUpdate={handleUpdate} onSuccess={showSuccess} onError={showError} />;
+      case "seo":
+        return <SeoSettingsForm portfolio={portfolio as any} userId={user?.id || ""} onUpdate={handleUpdate} onSuccess={showSuccess} onError={showError} />;
+    }
+  };
+
+
   return (
     <div className="animate-fade-in text-white -mx-4 sm:-mx-6 -my-4 sm:-my-6">
       {/* Topbar */}

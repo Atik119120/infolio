@@ -73,6 +73,7 @@ export default function PortfolioEdit() {
   const [experiences, setExperiences] = useState<Experience[]>([]);
   const [education, setEducation] = useState<Education[]>([]);
   const [socialLinks, setSocialLinks] = useState<SocialLink[]>([]);
+  const [contactItems, setContactItems] = useState<ContactItem[]>([]);
   const [services, setServices] = useState<Service[]>([]);
   const [loading, setLoading] = useState(true);
   const [previewDevice, setPreviewDevice] = useState<Device>("desktop");

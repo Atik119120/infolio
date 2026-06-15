@@ -164,6 +164,45 @@ export type Database = {
         }
         Relationships: []
       }
+      contact_items: {
+        Row: {
+          created_at: string
+          display_order: number
+          icon: string | null
+          id: string
+          label: string | null
+          type: string
+          updated_at: string
+          url: string | null
+          user_id: string
+          value: string
+        }
+        Insert: {
+          created_at?: string
+          display_order?: number
+          icon?: string | null
+          id?: string
+          label?: string | null
+          type?: string
+          updated_at?: string
+          url?: string | null
+          user_id: string
+          value?: string
+        }
+        Update: {
+          created_at?: string
+          display_order?: number
+          icon?: string | null
+          id?: string
+          label?: string | null
+          type?: string
+          updated_at?: string
+          url?: string | null
+          user_id?: string
+          value?: string
+        }
+        Relationships: []
+      }
       contact_messages: {
         Row: {
           created_at: string
@@ -1250,6 +1289,7 @@ export type Database = {
           created_at: string
           display_order: number | null
           id: string
+          label: string | null
           platform: string
           url: string
           user_id: string
@@ -1258,6 +1298,7 @@ export type Database = {
           created_at?: string
           display_order?: number | null
           id?: string
+          label?: string | null
           platform: string
           url: string
           user_id: string
@@ -1266,6 +1307,7 @@ export type Database = {
           created_at?: string
           display_order?: number | null
           id?: string
+          label?: string | null
           platform?: string
           url?: string
           user_id?: string

@@ -37,6 +37,7 @@ export default function PublicPortfolio() {
   const [education, setEducation] = useState<ThemeEducation[]>([]);
   const [socialLinks, setSocialLinks] = useState<ThemeSocialLink[]>([]);
   const [services, setServices] = useState<any[]>([]);
+  const [contactItems, setContactItems] = useState<any[]>([]);
 
   usePortfolioHead({ portfolio, displayName: profile?.display_name });
 
@@ -62,6 +63,7 @@ export default function PublicPortfolio() {
       if (Array.isArray(d.education)) setEducation(d.education);
       if (Array.isArray(d.socialLinks)) setSocialLinks(d.socialLinks);
       if (Array.isArray(d.services)) setServices(d.services);
+      if (Array.isArray(d.contactItems)) setContactItems(d.contactItems);
     };
     window.addEventListener("message", handler);
     // Tell parent we're ready to receive the initial snapshot
@@ -99,13 +101,14 @@ export default function PublicPortfolio() {
       return;
     }
 
-    const [skillsRes, projectsRes, experiencesRes, educationRes, socialRes, servicesRes] = await Promise.all([
+    const [skillsRes, projectsRes, experiencesRes, educationRes, socialRes, servicesRes, contactRes] = await Promise.all([
       supabase.from("skills").select("*").eq("user_id", fetchedUserId).order("created_at"),
       supabase.from("projects").select("*").eq("user_id", fetchedUserId).order("display_order"),
       supabase.from("experiences").select("*").eq("user_id", fetchedUserId).order("display_order"),
       supabase.from("education").select("*").eq("user_id", fetchedUserId).order("display_order"),
       supabase.from("social_links").select("*").eq("user_id", fetchedUserId).order("display_order"),
       (supabase as any).from("services").select("*").eq("user_id", fetchedUserId).order("display_order"),
+      (supabase as any).from("contact_items").select("*").eq("user_id", fetchedUserId).order("display_order"),
     ]);
 
     setProfile(profileData);
@@ -116,6 +119,7 @@ export default function PublicPortfolio() {
     if (educationRes.data) setEducation(educationRes.data);
     if (socialRes.data) setSocialLinks(socialRes.data);
     if (servicesRes.data) setServices(servicesRes.data);
+    if ((contactRes as any).data) setContactItems((contactRes as any).data);
 
     setLoading(false);
   };
@@ -151,8 +155,9 @@ export default function PublicPortfolio() {
     education,
     socialLinks,
     services,
+    contactItems,
     userId: userId || undefined,
-  };
+  } as any;
 
   const selectedTheme = portfolio?.theme || 'freelancer';
 

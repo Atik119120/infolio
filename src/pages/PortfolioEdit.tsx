@@ -7,7 +7,7 @@ import {
   User, Sparkles, Briefcase, GraduationCap, Link2, FolderOpen, Palette,
   Image as ImageIcon, Wrench, Search, Wand2, Monitor, Smartphone, Tablet,
   RefreshCw, ExternalLink, ArrowLeft, ChevronRight, Check, X, Eye, Loader2,
-  Home, Rocket, Save, Type,
+  Home, Rocket, Save, Type, Mail,
 } from "lucide-react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
@@ -17,6 +17,7 @@ import { ProjectsForm } from "@/components/portfolio/ProjectsForm";
 import { ExperienceForm } from "@/components/portfolio/ExperienceForm";
 import { EducationForm } from "@/components/portfolio/EducationForm";
 import { SocialLinksForm } from "@/components/portfolio/SocialLinksForm";
+import { ContactInfoForm, type ContactItem } from "@/components/portfolio/ContactInfoForm";
 import { ServicesForm, Service } from "@/components/portfolio/ServicesForm";
 import { ThemeSelector } from "@/components/portfolio/ThemeSelector";
 import { LogoUploadForm } from "@/components/portfolio/LogoUploadForm";
@@ -57,7 +58,7 @@ export interface SocialLink { id: string; platform: string; url: string; display
 type SectionKey =
   | "hero" | "about" | "skills" | "services" | "projects"
   | "experience" | "education" | "branding" | "header" | "footer"
-  | "social" | "seo" | "customize";
+  | "contact" | "social" | "seo" | "customize";
 
 type Stage = "theme" | "editor";
 type Device = "desktop" | "tablet" | "mobile";
@@ -72,6 +73,7 @@ export default function PortfolioEdit() {
   const [experiences, setExperiences] = useState<Experience[]>([]);
   const [education, setEducation] = useState<Education[]>([]);
   const [socialLinks, setSocialLinks] = useState<SocialLink[]>([]);
+  const [contactItems, setContactItems] = useState<ContactItem[]>([]);
   const [services, setServices] = useState<Service[]>([]);
   const [loading, setLoading] = useState(true);
   const [previewDevice, setPreviewDevice] = useState<Device>("desktop");
@@ -102,10 +104,10 @@ export default function PortfolioEdit() {
   // Push the latest snapshot into the preview iframe (no reload).
   const pushPreviewSnapshot = (snapshot?: {
     profile?: any; portfolio?: any; skills?: any[]; projects?: any[];
-    experiences?: any[]; education?: any[]; socialLinks?: any[]; services?: any[];
+    experiences?: any[]; education?: any[]; socialLinks?: any[]; services?: any[]; contactItems?: any[];
   }) => {
     const payload = snapshot ?? {
-      profile, portfolio, skills, projects, experiences, education, socialLinks, services,
+      profile, portfolio, skills, projects, experiences, education, socialLinks, services, contactItems,
     };
     try {
       iframeRef.current?.contentWindow?.postMessage(
@@ -129,7 +131,7 @@ export default function PortfolioEdit() {
 
   const fetchAllData = async () => {
     if (!user) return;
-    const [profileRes, portfolioRes, skillsRes, projectsRes, experiencesRes, educationRes, socialRes, servicesRes] =
+    const [profileRes, portfolioRes, skillsRes, projectsRes, experiencesRes, educationRes, socialRes, servicesRes, contactRes] =
       await Promise.all([
         supabase.from("profiles").select("*").eq("user_id", user.id).maybeSingle(),
         supabase.from("portfolios").select("*").eq("user_id", user.id).maybeSingle(),
@@ -139,6 +141,7 @@ export default function PortfolioEdit() {
         supabase.from("education").select("*").eq("user_id", user.id).order("display_order"),
         supabase.from("social_links").select("*").eq("user_id", user.id).order("display_order"),
         (supabase as any).from("services").select("*").eq("user_id", user.id).order("display_order"),
+        (supabase as any).from("contact_items").select("*").eq("user_id", user.id).order("display_order"),
       ]);
     const next = {
       profile: profileRes.data,
@@ -149,6 +152,7 @@ export default function PortfolioEdit() {
       education: educationRes.data || [],
       socialLinks: socialRes.data || [],
       services: servicesRes.data || [],
+      contactItems: (contactRes as any).data || [],
     };
     if (next.profile) setProfile(next.profile);
     if (next.portfolio) {
@@ -163,8 +167,8 @@ export default function PortfolioEdit() {
     setEducation(next.education);
     setSocialLinks(next.socialLinks);
     setServices(next.services);
+    setContactItems(next.contactItems);
     setLoading(false);
-    // Live-update the iframe with fresh data — no reload.
     pushPreviewSnapshot(next);
     setSaveStatus("saved");
   };
@@ -207,6 +211,7 @@ export default function PortfolioEdit() {
     { value: "branding", label: "Branding", icon: ImageIcon, hint: "Favicon", requires: "branding" },
     { value: "header", label: "Header Settings", icon: Palette, hint: "Logo & brand name", requires: "branding" },
     { value: "footer", label: "Footer Settings", icon: Type, hint: "Footer text", requires: "customize" },
+    { value: "contact", label: "Contact Info", icon: Mail, hint: "Email, phone, custom fields", requires: "social" },
     { value: "social", label: "Social Links", icon: Link2, hint: "Your social profiles" },
     { value: "seo", label: "SEO", icon: Rocket, hint: "Search visibility" },
   ];
@@ -247,6 +252,8 @@ export default function PortfolioEdit() {
         return <ExperienceForm experiences={experiences} userId={user?.id || ""} onUpdate={handleUpdate} onSuccess={showSuccess} onError={showError} />;
       case "education":
         return <EducationForm education={education} userId={user?.id || ""} onUpdate={handleUpdate} onSuccess={showSuccess} onError={showError} />;
+      case "contact":
+        return <ContactInfoForm portfolio={portfolio} contactItems={contactItems} userId={user?.id || ""} onUpdate={handleUpdate} onSuccess={showSuccess} onError={showError} />;
       case "social":
         return <SocialLinksForm socialLinks={socialLinks} userId={user?.id || ""} onUpdate={handleUpdate} onSuccess={showSuccess} onError={showError} />;
       case "seo":

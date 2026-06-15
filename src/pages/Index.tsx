@@ -35,7 +35,7 @@ export default function Index() {
       </Helmet>
 
       {/* HERO */}
-      <section className="relative isolate flex items-center pt-20 md:pt-24 pb-8 px-6 overflow-hidden">
+      <section className="relative isolate flex items-center pt-16 md:pt-20 pb-6 px-6 overflow-hidden">
         <div aria-hidden className="absolute inset-0 -z-20 bg-background" />
         <div aria-hidden className="absolute inset-0 -z-10 pointer-events-none"
           style={{ background: "radial-gradient(ellipse 90% 70% at 50% 100%, hsl(187 90% 35% / 0.55), transparent 70%)" }} />
@@ -55,7 +55,7 @@ export default function Index() {
               Build your <span className="gradient-text">portfolio</span>,<br />the smart way.
             </h1>
 
-            <p className="text-base md:text-xl text-muted-foreground max-w-2xl mx-auto mb-10 leading-relaxed">
+            <p className="text-base md:text-xl text-muted-foreground max-w-2xl mx-auto mb-6 leading-relaxed">
               Pick a theme, fill a form, share your link. Beautiful portfolios for creators, developers and freelancers — without writing a single line of code.
             </p>
 
@@ -75,13 +75,13 @@ export default function Index() {
               </Button>
             </div>
 
-            <div className="mt-5 flex items-center justify-center gap-5 text-sm text-muted-foreground flex-wrap">
+            <div className="mt-3 flex items-center justify-center gap-5 text-sm text-muted-foreground flex-wrap">
               <span className="inline-flex items-center gap-1.5"><Check className="w-4 h-4 text-primary" /> Free forever</span>
               <span className="inline-flex items-center gap-1.5"><Check className="w-4 h-4 text-primary" /> No credit card</span>
               <span className="inline-flex items-center gap-1.5"><Check className="w-4 h-4 text-primary" /> Live in 5 min</span>
             </div>
 
-            <div className="mt-6 flex items-center justify-center">
+            <div className="mt-3 flex items-center justify-center">
               <button onClick={() => navigate("/themes")} className="group inline-flex items-center gap-2 px-4 py-2 rounded-full border border-primary/30 bg-primary/5 hover:bg-primary/10 hover:border-primary/50 text-primary text-sm font-medium transition-all">
                 <Palette className="w-4 h-4" />
                 View all themes
@@ -93,7 +93,7 @@ export default function Index() {
       </section>
 
       {/* THREE STEPS */}
-      <section className="py-8 md:py-10 px-6 relative overflow-hidden">
+      <section className="py-6 md:py-8 px-6 relative overflow-hidden">
         <div aria-hidden className="absolute inset-0 -z-10 pointer-events-none">
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] rounded-full bg-primary/10 blur-[120px]" />
         </div>
@@ -161,10 +161,10 @@ export default function Index() {
       </section>
 
       {/* FEATURES */}
-      <section className="py-8 md:py-10 px-6 border-t border-border/60">
+      <section className="py-6 md:py-8 px-6 border-t border-border/60">
         <div className="container mx-auto max-w-5xl">
           <SectionHeader eyebrow="Features" title="Built for creators" subtitle="Everything you need to publish a stunning portfolio — no code required." />
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
             <FeatureCard icon={<Palette className="w-5 h-5" />} title="Premium Themes" description="Beautiful themes for every profession." />
             <FeatureCard icon={<Zap className="w-5 h-5" />} title="No-Code Builder" description="Drag, drop, publish — live preview." />
             <FeatureCard icon={<Rocket className="w-5 h-5" />} title="Instant Publish" description="Go live in seconds, worldwide." />
@@ -178,7 +178,7 @@ export default function Index() {
       </section>
 
       {/* PRICING */}
-      <section className="py-8 md:py-10 px-6 border-t border-border/60">
+      <section className="py-6 md:py-8 px-6 border-t border-border/60">
         <div className="container mx-auto max-w-7xl">
           <SectionHeader eyebrow="Pricing" title="Plans for every stage" subtitle="Start free with a subdomain. Upgrade as your work grows." />
           <div className="mt-8 flex justify-center">
@@ -199,7 +199,7 @@ export default function Index() {
       </section>
 
       {/* FINAL CTA */}
-      <section className="py-8 md:py-10 px-6 border-t border-border/60 relative overflow-hidden">
+      <section className="py-6 md:py-8 px-6 border-t border-border/60 relative overflow-hidden">
         <div aria-hidden className="absolute inset-0 -z-10 pointer-events-none">
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[400px] rounded-full bg-primary/10 blur-[140px]" />
         </div>

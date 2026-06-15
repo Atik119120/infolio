@@ -155,19 +155,24 @@ export default function PortfolioEdit() {
   const username = profile?.username;
   const previewUrl = username ? `/u/${username}?preview=1` : null;
 
-  const allSections: { value: SectionKey; label: string; icon: any; hint: string }[] = [
-    { value: "customize", label: "Hero Section", icon: Home, hint: "Main landing area" },
-    { value: "basic", label: "About Me", icon: User, hint: "Personal introduction" },
+  const allSections: { value: SectionKey; label: string; icon: any; hint: string; requires?: string }[] = [
+    { value: "hero", label: "Hero Section", icon: Home, hint: "Main landing area", requires: "customize" },
+    { value: "about", label: "About Me", icon: User, hint: "Personal introduction", requires: "basic" },
     { value: "skills", label: "Skills", icon: Sparkles, hint: "Tools and expertise" },
     { value: "services", label: "Services", icon: Wrench, hint: "What you offer" },
     { value: "projects", label: "Projects", icon: FolderOpen, hint: "Showcase your work" },
     { value: "experience", label: "Experience", icon: Briefcase, hint: "Work history" },
     { value: "education", label: "Education", icon: GraduationCap, hint: "Your education" },
-    { value: "branding", label: "Branding", icon: ImageIcon, hint: "Logo and favicon" },
+    { value: "branding", label: "Branding", icon: ImageIcon, hint: "Favicon", requires: "branding" },
+    { value: "header", label: "Header Settings", icon: Palette, hint: "Logo & brand name", requires: "branding" },
+    { value: "footer", label: "Footer Settings", icon: Type, hint: "Footer text", requires: "customize" },
     { value: "social", label: "Social Links", icon: Link2, hint: "Your social profiles" },
     { value: "seo", label: "SEO", icon: Rocket, hint: "Search visibility" },
   ];
-  const sections = allSections.filter((s) => themeConfig.tabs.includes(s.value));
+  const sections = allSections.filter((s) => {
+    const need = s.requires ?? s.value;
+    return themeConfig.tabs.includes(need);
+  });
   const activeMeta = sections.find((s) => s.value === activeSection) ?? sections[0];
 
   // Ensure active section is valid for current theme
@@ -179,19 +184,18 @@ export default function PortfolioEdit() {
 
   const renderForm = () => {
     switch (activeSection) {
-      case "basic":
+      case "about":
         return <BasicInfoForm profile={profile} portfolio={portfolio} userId={user?.id || ""} onUpdate={handleUpdate} onSuccess={showSuccess} onError={showError} />;
-      case "customize":
+      case "hero":
         return activeTheme === "custom-code"
           ? <CustomCodeForm portfolio={portfolio as any} userId={user?.id || ""} onUpdate={handleUpdate} />
-          : <CustomizationForm portfolio={portfolio as any} userId={user?.id || ""} enabledFields={themeConfig.customizeFields} onUpdate={handleUpdate} onSuccess={showSuccess} onError={showError} />;
+          : <CustomizationForm portfolio={portfolio as any} userId={user?.id || ""} enabledFields={themeConfig.customizeFields} scope="hero" onUpdate={handleUpdate} onSuccess={showSuccess} onError={showError} />;
+      case "footer":
+        return <CustomizationForm portfolio={portfolio as any} userId={user?.id || ""} enabledFields={themeConfig.customizeFields} scope="footer" onUpdate={handleUpdate} onSuccess={showSuccess} onError={showError} />;
+      case "header":
+        return <LogoUploadForm logoUrl={portfolio?.logo_url || null} brandName={(portfolio as any)?.brand_name || null} userId={user?.id || ""} onUpdate={handleUpdate} onSuccess={showSuccess} onError={showError} />;
       case "branding":
-        return (
-          <div className="space-y-4">
-            <LogoUploadForm logoUrl={portfolio?.logo_url || null} brandName={(portfolio as any)?.brand_name || null} userId={user?.id || ""} onUpdate={handleUpdate} onSuccess={showSuccess} onError={showError} />
-            <FaviconUploadForm faviconUrl={(portfolio as any)?.favicon_url || null} userId={user?.id || ""} onUpdate={handleUpdate} onSuccess={showSuccess} onError={showError} />
-          </div>
-        );
+        return <FaviconUploadForm faviconUrl={(portfolio as any)?.favicon_url || null} userId={user?.id || ""} onUpdate={handleUpdate} onSuccess={showSuccess} onError={showError} />;
       case "skills":
         return <SkillsForm skills={skills} userId={user?.id || ""} onUpdate={handleUpdate} onSuccess={showSuccess} onError={showError} />;
       case "services":

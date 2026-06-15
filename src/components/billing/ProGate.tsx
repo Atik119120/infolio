@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button";
 import { Crown, Lock } from "lucide-react";
 import { usePlan } from "@/hooks/usePlan";
+import { usePermissions, FeatureKey } from "@/lib/permissions";
 import { useAuth } from "@/contexts/AuthContext";
 import { WhatsAppUpgradeDialog } from "./WhatsAppUpgradeDialog";
 
@@ -11,15 +12,19 @@ interface ProGateProps {
   description: string;
   icon?: ReactNode;
   children: ReactNode;
+  /** Optional feature-based gate (new). Falls back to legacy isPro when omitted. */
+  feature?: FeatureKey;
 }
 
-export function ProGate({ title, description, icon, children }: ProGateProps) {
+export function ProGate({ title, description, icon, children, feature }: ProGateProps) {
   const { isPro, loading } = usePlan();
+  const { can, loading: permsLoading } = usePermissions();
   const { user } = useAuth();
   const [open, setOpen] = useState(false);
 
-  if (loading) return null;
-  if (isPro) return <>{children}</>;
+  if (loading || permsLoading) return null;
+  const allowed = feature ? can(feature) : isPro;
+  if (allowed) return <>{children}</>;
 
   return (
     <>

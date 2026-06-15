@@ -47,6 +47,7 @@ import {
 } from "lucide-react";
 import { THEME_OPTIONS } from "@/components/portfolio/themes/types";
 import CustomDomainManager from "@/components/settings/CustomDomainManager";
+import BrandingToggleForm from "@/components/settings/BrandingToggleForm";
 import { PlanCard } from "@/components/billing/PlanCard";
 import { ProGate } from "@/components/billing/ProGate";
 import { SeoSettingsCard } from "@/components/settings/SeoSettingsCard";
@@ -346,10 +347,14 @@ export default function DashboardSettings() {
       {/* Plan */}
       <PlanCard />
 
-      {/* Custom Domains — Pro only */}
+      {/* Branding toggle (Starter/Creator only) */}
+      <BrandingToggleForm />
+
+      {/* Custom Domains — Creator plan */}
       <ProGate
         title="Custom Domain"
         description="Connect your own domain (e.g. yourname.com) to your portfolio."
+        feature="custom_domain"
       >
         <CustomDomainManager />
       </ProGate>

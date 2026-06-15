@@ -24,6 +24,7 @@ export default function Index() {
 
   return (
     <div className="min-h-screen bg-background overflow-x-hidden text-foreground">
+      <SiteHeader />
       <Helmet>
         <title>Infolio — Build Your Professional Portfolio in Minutes</title>
         <meta name="description" content="Pick a theme, add your work, and publish a stunning personal portfolio in minutes — on your own subdomain or custom domain." />

@@ -7,7 +7,7 @@ import {
   User, Sparkles, Briefcase, GraduationCap, Link2, FolderOpen, Palette,
   Image as ImageIcon, Wrench, Search, Wand2, Monitor, Smartphone, Tablet,
   RefreshCw, ExternalLink, ArrowLeft, ChevronRight, Check, X, Eye, Loader2,
-  Home, Rocket, Save,
+  Home, Rocket, Save, Type,
 } from "lucide-react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";

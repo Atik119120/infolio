@@ -94,6 +94,34 @@ export default function PortfolioEdit() {
     if (user) fetchAllData();
   }, [user]);
 
+  // Scroll preview to the active section
+  useEffect(() => {
+    if (!previewReadyRef.current) return;
+    const sectionToId: Record<string, string | "__top__" | "__bottom__"> = {
+      hero: "__top__",
+      header: "__top__",
+      branding: "__top__",
+      about: "about",
+      skills: "skills",
+      services: "services",
+      projects: "projects",
+      experience: "experience",
+      education: "education",
+      contact: "contact",
+      social: "contact",
+      footer: "__bottom__",
+      seo: "__top__",
+    };
+    const target = sectionToId[activeSection];
+    if (!target) return;
+    try {
+      iframeRef.current?.contentWindow?.postMessage(
+        { type: "lovable-preview-scroll", target },
+        "*"
+      );
+    } catch {}
+  }, [activeSection]);
+
   // Lock body scroll while editor is open
   useEffect(() => {
     const prev = document.body.style.overflow;

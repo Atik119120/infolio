@@ -146,6 +146,29 @@ export function ContactInfoForm({ portfolio, contactItems, userId, onUpdate, onS
 
   useEffect(() => { setItems(contactItems); }, [contactItems]);
 
+  // Auto-seed default contact items (Email/Phone/Location/Website) on first visit
+  const seededRef = (typeof window !== "undefined") ? (window as any) : ({} as any);
+  useEffect(() => {
+    if (!userId) return;
+    if (contactItems.length > 0) return;
+    if (seededRef.__contactSeeded === userId) return;
+    seededRef.__contactSeeded = userId;
+    const defaults = [
+      { type: "email", label: "Email", value: (portfolio as any)?.email || "" },
+      { type: "phone", label: "Phone", value: portfolio?.phone || "" },
+      { type: "location", label: "Location", value: portfolio?.location || "" },
+      { type: "website", label: "Website", value: portfolio?.website || "" },
+    ];
+    (async () => {
+      const rows = defaults.map((d, idx) => ({ user_id: userId, ...d, display_order: idx }));
+      const { data } = await supabase.from("contact_items").insert(rows).select();
+      if (data) {
+        setItems(data as ContactItem[]);
+        onUpdate();
+      }
+    })();
+  }, [userId, contactItems.length]);
+
   // Debounced legacy save
   useEffect(() => {
     const t = setTimeout(async () => {

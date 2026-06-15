@@ -325,3 +325,19 @@
   0% { transform: translateX(0); }
   100% { transform: translateX(-50%); }
 }
+
+/* Theme content: prevent long words/URLs from breaking layout */
+section p,
+section li,
+section h1,
+section h2,
+section h3,
+section h4,
+section a {
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+}
+section p {
+  white-space: pre-wrap;
+}

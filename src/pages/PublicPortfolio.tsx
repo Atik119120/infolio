@@ -53,7 +53,31 @@ export default function PublicPortfolio() {
     if (!isPreview) return;
     const handler = (event: MessageEvent) => {
       const msg = event.data;
-      if (!msg || typeof msg !== "object" || msg.type !== "lovable-preview-update") return;
+      if (!msg || typeof msg !== "object") return;
+      if (msg.type === "lovable-preview-scroll") {
+        const t = msg.target as string;
+        if (t === "__top__") {
+          window.scrollTo({ top: 0, behavior: "smooth" });
+          return;
+        }
+        if (t === "__bottom__") {
+          window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+          return;
+        }
+        const el = document.getElementById(t);
+        if (el) {
+          el.scrollIntoView({ behavior: "smooth", block: "start" });
+          // brief highlight
+          el.style.transition = "box-shadow 300ms ease";
+          el.style.boxShadow = "inset 0 0 0 3px rgba(99,102,241,0.45)";
+          setTimeout(() => { el.style.boxShadow = ""; }, 900);
+        } else {
+          // Fallback: scroll to top if section not present in this theme
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        }
+        return;
+      }
+      if (msg.type !== "lovable-preview-update") return;
       const d = msg.payload || {};
       if (d.profile) setProfile((p) => ({ ...(p || {} as any), ...d.profile }));
       if (d.portfolio) setPortfolio((p) => ({ ...(p || {} as any), ...d.portfolio }));
@@ -66,7 +90,6 @@ export default function PublicPortfolio() {
       if (Array.isArray(d.contactItems)) setContactItems(d.contactItems);
     };
     window.addEventListener("message", handler);
-    // Tell parent we're ready to receive the initial snapshot
     try { window.parent?.postMessage({ type: "lovable-preview-ready" }, "*"); } catch {}
     return () => window.removeEventListener("message", handler);
   }, []);

@@ -598,6 +598,36 @@ export type Database = {
         }
         Relationships: []
       }
+      feature_overrides: {
+        Row: {
+          created_at: string
+          enabled: boolean
+          feature_key: string
+          id: string
+          note: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          enabled?: boolean
+          feature_key: string
+          id?: string
+          note?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          enabled?: boolean
+          feature_key?: string
+          id?: string
+          note?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       otp_codes: {
         Row: {
           code: string
@@ -724,6 +754,72 @@ export type Database = {
         }
         Relationships: []
       }
+      plans: {
+        Row: {
+          allow_branding_toggle: boolean
+          allow_custom_domain: boolean
+          allow_dev_features: boolean
+          allow_seo: boolean
+          created_at: string
+          description: string | null
+          extra_theme_price_bdt: number
+          id: string
+          included_premium_themes: number
+          is_active: boolean
+          key: string
+          max_projects: number
+          max_websites: number
+          name: string
+          premium_theme_access: string
+          price_bdt: number
+          sort_order: number
+          storage_mb: number
+          updated_at: string
+        }
+        Insert: {
+          allow_branding_toggle?: boolean
+          allow_custom_domain?: boolean
+          allow_dev_features?: boolean
+          allow_seo?: boolean
+          created_at?: string
+          description?: string | null
+          extra_theme_price_bdt?: number
+          id?: string
+          included_premium_themes?: number
+          is_active?: boolean
+          key: string
+          max_projects?: number
+          max_websites?: number
+          name: string
+          premium_theme_access?: string
+          price_bdt?: number
+          sort_order?: number
+          storage_mb?: number
+          updated_at?: string
+        }
+        Update: {
+          allow_branding_toggle?: boolean
+          allow_custom_domain?: boolean
+          allow_dev_features?: boolean
+          allow_seo?: boolean
+          created_at?: string
+          description?: string | null
+          extra_theme_price_bdt?: number
+          id?: string
+          included_premium_themes?: number
+          is_active?: boolean
+          key?: string
+          max_projects?: number
+          max_websites?: number
+          name?: string
+          premium_theme_access?: string
+          price_bdt?: number
+          sort_order?: number
+          storage_mb?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       portfolios: {
         Row: {
           about_image_url: string | null
@@ -762,6 +858,7 @@ export type Database = {
           phone: string | null
           primary_color: string | null
           section_visibility: Json | null
+          show_branding: boolean
           theme: string | null
           updated_at: string
           user_id: string
@@ -805,6 +902,7 @@ export type Database = {
           phone?: string | null
           primary_color?: string | null
           section_visibility?: Json | null
+          show_branding?: boolean
           theme?: string | null
           updated_at?: string
           user_id: string
@@ -848,6 +946,7 @@ export type Database = {
           phone?: string | null
           primary_color?: string | null
           section_visibility?: Json | null
+          show_branding?: boolean
           theme?: string | null
           updated_at?: string
           user_id?: string
@@ -869,6 +968,7 @@ export type Database = {
           phone_number: string | null
           plan: string
           plan_expires_at: string | null
+          plan_key: string
           plan_purchased_at: string | null
           updated_at: string
           user_id: string
@@ -886,6 +986,7 @@ export type Database = {
           phone_number?: string | null
           plan?: string
           plan_expires_at?: string | null
+          plan_key?: string
           plan_purchased_at?: string | null
           updated_at?: string
           user_id: string
@@ -903,6 +1004,7 @@ export type Database = {
           phone_number?: string | null
           plan?: string
           plan_expires_at?: string | null
+          plan_key?: string
           plan_purchased_at?: string | null
           updated_at?: string
           user_id?: string

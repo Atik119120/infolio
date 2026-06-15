@@ -629,7 +629,7 @@ export function StandardThemeShell({
               <span>{footerText || `© ${new Date().getFullYear()} ${name} — All rights reserved`}</span>
             </div>
             <div className="flex items-center gap-3">
-              <span>Crafted with Infolio</span>
+              {portfolio?.show_branding !== false && <span>Crafted with Infolio</span>}
               <a href="#home" className="ml-2 inline-flex items-center gap-1 px-3 py-1.5 rounded-full border hover:bg-white hover:text-black transition" style={{ borderColor: `${s.background}33` }}>
                 ↑ Back to top
               </a>

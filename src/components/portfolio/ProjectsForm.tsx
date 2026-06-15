@@ -1,5 +1,6 @@
 import { useState, useRef } from "react";
 import { usePlan } from "@/hooks/usePlan";
+import { usePermissions } from "@/lib/permissions";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -60,7 +61,14 @@ export function ProjectsForm({ projects, userId, onUpdate, onSuccess, onError }:
   const coverRef = useRef<HTMLInputElement>(null);
   const galleryRef = useRef<HTMLInputElement>(null);
 
+  const { limit, planKey } = usePermissions();
+  const projectLimit = limit("projects");
+
   const openNew = () => {
+    if (projects.length >= projectLimit) {
+      onError(`You've reached your plan limit of ${projectLimit} projects. Upgrade to add more.`);
+      return;
+    }
     setEditing(null);
     setForm(empty());
     setTab("basic");

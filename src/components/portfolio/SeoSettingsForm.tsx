@@ -42,6 +42,7 @@ function Inner({ portfolio, userId, onUpdate, onSuccess, onError }: SeoSettingsF
   const p: any = portfolio || {};
   const [saving, setSaving] = useState(false);
   const [form, setForm] = useState({
+    browser_title: p.browser_title || "",
     meta_title: p.meta_title || "",
     meta_description: p.meta_description || "",
     meta_keywords: p.meta_keywords || "",

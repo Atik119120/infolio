@@ -92,7 +92,7 @@ export default function Index() {
       </section>
 
       {/* THREE STEPS */}
-      <section className="py-24 md:py-32 px-6 bg-slate-950 relative overflow-hidden">
+      <section className="py-24 md:py-32 px-6 relative overflow-hidden">
         <div aria-hidden className="absolute inset-0 -z-10 pointer-events-none">
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] rounded-full bg-primary/10 blur-[120px]" />
         </div>

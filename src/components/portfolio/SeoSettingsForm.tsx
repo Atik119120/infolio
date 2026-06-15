@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -62,7 +62,7 @@ function Inner({ portfolio, userId, onUpdate, onSuccess, onError }: SeoSettingsF
     return match ? match[1] : trimmed;
   };
 
-  const handleSave = async () => {
+  const doSave = async (silent = true) => {
     setSaving(true);
     const payload = {
       meta_title: form.meta_title.trim() || null,
@@ -79,10 +79,20 @@ function Inner({ portfolio, userId, onUpdate, onSuccess, onError }: SeoSettingsF
     if (error) {
       onError(error.message);
     } else {
-      onSuccess("SEO settings saved");
+      if (!silent) onSuccess("SEO settings saved");
       onUpdate();
     }
   };
+
+  const initialForm = useRef(form);
+  useEffect(() => {
+    if (JSON.stringify(form) === JSON.stringify(initialForm.current)) return;
+    const t = setTimeout(() => {
+      doSave(true);
+      initialForm.current = form;
+    }, 800);
+    return () => clearTimeout(t);
+  }, [form]);
 
   return (
     <div className="space-y-4">
@@ -190,9 +200,6 @@ function Inner({ portfolio, userId, onUpdate, onSuccess, onError }: SeoSettingsF
         </CardContent>
       </Card>
 
-      <Button onClick={handleSave} disabled={saving} size="lg">
-        {saving ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Saving</> : "Save SEO settings"}
-      </Button>
     </div>
   );
 }

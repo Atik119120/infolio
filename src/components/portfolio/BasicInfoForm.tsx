@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { usePlan } from "@/hooks/usePlan";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -39,9 +39,8 @@ export function BasicInfoForm({ profile, portfolio, userId, onUpdate, onSuccess,
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSave = async () => {
+  const doSave = async (silent = true) => {
     setSaving(true);
-
     const [profileRes, portfolioRes] = await Promise.all([
       supabase
         .from("profiles")
@@ -58,16 +57,24 @@ export function BasicInfoForm({ profile, portfolio, userId, onUpdate, onSuccess,
         })
         .eq("user_id", userId),
     ]);
-
     setSaving(false);
-
     if (profileRes.error || portfolioRes.error) {
       onError("Failed to save changes");
     } else {
-      onSuccess("Profile updated successfully");
+      if (!silent) onSuccess("Profile updated successfully");
       onUpdate();
     }
   };
+
+  const initialData = useRef(formData);
+  useEffect(() => {
+    if (JSON.stringify(formData) === JSON.stringify(initialData.current)) return;
+    const t = setTimeout(() => {
+      doSave(true);
+      initialData.current = formData;
+    }, 800);
+    return () => clearTimeout(t);
+  }, [formData]);
 
   const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -248,16 +255,6 @@ export function BasicInfoForm({ profile, portfolio, userId, onUpdate, onSuccess,
           />
         </div>
 
-        <Button onClick={handleSave} disabled={saving} className="gradient-primary">
-          {saving ? (
-            <>
-              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-              Saving...
-            </>
-          ) : (
-            "Save Changes"
-          )}
-        </Button>
       </CardContent>
     </Card>
   );

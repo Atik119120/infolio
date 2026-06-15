@@ -131,7 +131,7 @@ export default function PortfolioEdit() {
 
   const fetchAllData = async () => {
     if (!user) return;
-    const [profileRes, portfolioRes, skillsRes, projectsRes, experiencesRes, educationRes, socialRes, servicesRes] =
+    const [profileRes, portfolioRes, skillsRes, projectsRes, experiencesRes, educationRes, socialRes, servicesRes, contactRes] =
       await Promise.all([
         supabase.from("profiles").select("*").eq("user_id", user.id).maybeSingle(),
         supabase.from("portfolios").select("*").eq("user_id", user.id).maybeSingle(),
@@ -141,6 +141,7 @@ export default function PortfolioEdit() {
         supabase.from("education").select("*").eq("user_id", user.id).order("display_order"),
         supabase.from("social_links").select("*").eq("user_id", user.id).order("display_order"),
         (supabase as any).from("services").select("*").eq("user_id", user.id).order("display_order"),
+        (supabase as any).from("contact_items").select("*").eq("user_id", user.id).order("display_order"),
       ]);
     const next = {
       profile: profileRes.data,
@@ -151,6 +152,7 @@ export default function PortfolioEdit() {
       education: educationRes.data || [],
       socialLinks: socialRes.data || [],
       services: servicesRes.data || [],
+      contactItems: (contactRes as any).data || [],
     };
     if (next.profile) setProfile(next.profile);
     if (next.portfolio) {
@@ -165,8 +167,8 @@ export default function PortfolioEdit() {
     setEducation(next.education);
     setSocialLinks(next.socialLinks);
     setServices(next.services);
+    setContactItems(next.contactItems);
     setLoading(false);
-    // Live-update the iframe with fresh data — no reload.
     pushPreviewSnapshot(next);
     setSaveStatus("saved");
   };

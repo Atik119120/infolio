@@ -32,7 +32,7 @@ export default function BiographyTheme({
 
   const name = portfolio?.brand_name || profile?.display_name || "Your Name";
   const headline = portfolio?.hero_headline || portfolio?.headline || "Creator";
-  const bio = portfolio?.about_text || portfolio?.bio || "Welcome to my page.";
+  const bio = portfolio?.hero_subheadline || portfolio?.about_text || portfolio?.bio || "Welcome to my page.";
   const avatar = portfolio?.hero_image_url || portfolio?.about_image_url || profile?.avatar_url;
   const footerText = portfolio?.footer_text;
   const email = profile?.email;

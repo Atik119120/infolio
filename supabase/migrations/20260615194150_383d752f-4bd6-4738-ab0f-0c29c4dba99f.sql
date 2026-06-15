@@ -1,0 +1,2 @@
+ALTER TABLE public.portfolios
+ADD COLUMN IF NOT EXISTS section_visibility jsonb NOT NULL DEFAULT '{"hero":true,"about":true,"skills":true,"services":true,"projects":true,"experience":true,"education":true,"contact":true,"social":true}'::jsonb;

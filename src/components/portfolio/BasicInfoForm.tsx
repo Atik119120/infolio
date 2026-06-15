@@ -210,14 +210,14 @@ export function BasicInfoForm({ profile, portfolio, userId, onUpdate, onSuccess,
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="bio">Bio</Label>
+          <Label htmlFor="bio">About / Full Biography</Label>
           <Textarea
             id="bio"
             name="bio"
             value={formData.bio}
             onChange={handleChange}
-            placeholder="Tell visitors about yourself..."
-            rows={4}
+            placeholder="Share your full story, journey, experience, and background..."
+            rows={8}
           />
         </div>
 

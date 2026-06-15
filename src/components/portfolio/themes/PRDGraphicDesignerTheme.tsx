@@ -5,6 +5,7 @@ import { ServiceIcon } from "@/lib/serviceIcons";
 import { ThemeProps } from "./types";
 import { ContactForm } from "@/components/portfolio/ContactForm";
 import { getSocialIcon } from "./utils";
+import { isVisible } from "@/lib/sectionVisibility";
 
 /**
  * Graphic Designer theme — premium glassmorphism on a soft creative gradient.
@@ -70,14 +71,22 @@ export default function PRDGraphicDesignerTheme({
     transition: { duration: 0.6 },
   };
 
+  const vHero = isVisible(portfolio, "hero");
+  const vAbout = isVisible(portfolio, "about");
+  const vSkills = isVisible(portfolio, "skills");
+  const vServices = isVisible(portfolio, "services");
+  const vProjects = isVisible(portfolio, "projects");
+  const vContact = isVisible(portfolio, "contact");
+  const vExperience = isVisible(portfolio, "experience");
+
   const NAV = [
-    { id: "home", label: "Home" },
-    { id: "about", label: "About" },
-    { id: "expertise", label: "Expertise" },
-    { id: "projects", label: "Projects" },
-    { id: "clients", label: "Clients" },
-    { id: "contact", label: "Contact" },
-  ];
+    vHero && { id: "home", label: "Home" },
+    vAbout && { id: "about", label: "About" },
+    (vSkills || vServices) && { id: "expertise", label: "Expertise" },
+    vProjects && { id: "projects", label: "Projects" },
+    vExperience && { id: "clients", label: "Clients" },
+    vContact && { id: "contact", label: "Contact" },
+  ].filter(Boolean) as { id: string; label: string }[];
 
   const columns = useMemo(() => {
     const cols: typeof projects[] = [[], [], []];
@@ -162,6 +171,7 @@ export default function PRDGraphicDesignerTheme({
       </header>
 
       {/* HERO */}
+      {vHero && (
       <section id="home" className="relative pt-12 md:pt-16 pb-16">
         <div className="container mx-auto px-5">
           <div className="grid lg:grid-cols-12 gap-10 items-center">
@@ -220,8 +230,10 @@ export default function PRDGraphicDesignerTheme({
           </div>
         </div>
       </section>
+      )}
 
       {/* ABOUT */}
+      {vAbout && (
       <section id="about" className="py-20 md:py-28 relative">
         <div className="container mx-auto px-5">
           <div className="grid md:grid-cols-12 gap-12 items-center">
@@ -267,8 +279,10 @@ export default function PRDGraphicDesignerTheme({
           </div>
         </div>
       </section>
+      )}
 
       {/* EXPERTISE */}
+      {(vSkills||vServices) && (
       <section id="expertise" className="py-20 md:py-28">
         <div className="container mx-auto px-5">
           <motion.div {...fadeUp} className="text-center max-w-2xl mx-auto mb-14">
@@ -282,7 +296,7 @@ export default function PRDGraphicDesignerTheme({
           </motion.div>
 
           {/* Skills */}
-          {skills.length > 0 && (
+          {vSkills && skills.length > 0 && (
             <motion.div {...fadeUp} className="mb-16 max-w-5xl mx-auto">
               <h3 className="gd-display text-2xl font-bold mb-6 flex items-center gap-3">
                 <span className="text-[11px] font-bold tracking-[0.3em] uppercase" style={{ color: C.primary }}>01</span>
@@ -312,7 +326,7 @@ export default function PRDGraphicDesignerTheme({
           )}
 
           {/* Services */}
-          {services.length > 0 && (
+          {vServices && services.length > 0 && (
             <motion.div {...fadeUp} className="mb-16">
               <h3 className="gd-display text-2xl font-bold mb-6 flex items-center gap-3">
                 <span className="text-[11px] font-bold tracking-[0.3em] uppercase" style={{ color: C.primary }}>02</span>
@@ -361,9 +375,10 @@ export default function PRDGraphicDesignerTheme({
           </motion.div>
         </div>
       </section>
+      )}
 
       {/* PROJECTS — Pinterest masonry */}
-      {projects.length > 0 && (
+      {vProjects && projects.length > 0 && (
         <section id="projects" className="py-20 md:py-28">
           <div className="container mx-auto px-5">
             <motion.div {...fadeUp} className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-12">
@@ -423,7 +438,7 @@ export default function PRDGraphicDesignerTheme({
       )}
 
       {/* CLIENTS */}
-      {clients.length > 0 && (
+      {vExperience && clients.length > 0 && (
         <section id="clients" className="py-20 md:py-24">
           <div className="container mx-auto px-5">
             <motion.div {...fadeUp} className="text-center max-w-2xl mx-auto mb-12">
@@ -450,6 +465,7 @@ export default function PRDGraphicDesignerTheme({
       )}
 
       {/* CONTACT */}
+      {vContact && (
       <section id="contact" className="py-20 md:py-28">
         <div className="container mx-auto px-5">
           <motion.div {...fadeUp} className="text-center max-w-2xl mx-auto mb-12">
@@ -488,6 +504,7 @@ export default function PRDGraphicDesignerTheme({
           </div>
         </div>
       </section>
+      )}
 
       {/* FOOTER */}
       <footer className="pt-16 pb-8 border-t" style={{ borderColor: C.border, background: "rgba(0,0,0,0.4)" }}>

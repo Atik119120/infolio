@@ -7,8 +7,9 @@ import {
   User, Sparkles, Briefcase, GraduationCap, Link2, FolderOpen, Palette,
   Image as ImageIcon, Wrench, Search, Wand2, Monitor, Smartphone, Tablet,
   RefreshCw, ExternalLink, ArrowLeft, ChevronRight, Check, X, Eye, Loader2,
-  Home, Rocket, Save, Type, Mail,
+  Home, Rocket, Save, Type, Mail, EyeOff,
 } from "lucide-react";
+import { SectionVisibilityForm } from "@/components/portfolio/SectionVisibilityForm";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { BasicInfoForm } from "@/components/portfolio/BasicInfoForm";
@@ -58,7 +59,7 @@ export interface SocialLink { id: string; platform: string; url: string; display
 type SectionKey =
   | "hero" | "about" | "skills" | "services" | "projects"
   | "experience" | "education" | "branding" | "header" | "footer"
-  | "contact" | "social" | "seo" | "customize";
+  | "contact" | "social" | "seo" | "customize" | "visibility";
 
 type Stage = "theme" | "editor";
 type Device = "desktop" | "tablet" | "mobile";
@@ -241,9 +242,11 @@ export default function PortfolioEdit() {
     { value: "footer", label: "Footer Settings", icon: Type, hint: "Footer text", requires: "customize" },
     { value: "contact", label: "Contact Info", icon: Mail, hint: "Email, phone, custom fields", requires: "social" },
     { value: "social", label: "Social Links", icon: Link2, hint: "Your social profiles" },
+    { value: "visibility", label: "Sections (Show/Hide)", icon: EyeOff, hint: "Toggle sections on or off" },
     { value: "seo", label: "SEO", icon: Rocket, hint: "Search visibility" },
   ];
   const sections = allSections.filter((s) => {
+    if (s.value === "visibility") return true;
     const need = s.requires ?? s.value;
     return themeConfig.tabs.includes(need);
   });
@@ -286,6 +289,8 @@ export default function PortfolioEdit() {
         return <SocialLinksForm socialLinks={socialLinks} userId={user?.id || ""} onUpdate={handleUpdate} onSuccess={showSuccess} onError={showError} />;
       case "seo":
         return <SeoSettingsForm portfolio={portfolio as any} userId={user?.id || ""} onUpdate={handleUpdate} onSuccess={showSuccess} onError={showError} />;
+      case "visibility":
+        return <SectionVisibilityForm portfolio={portfolio as any} userId={user?.id || ""} onUpdate={handleUpdate} onSuccess={showSuccess} onError={showError} />;
     }
   };
 

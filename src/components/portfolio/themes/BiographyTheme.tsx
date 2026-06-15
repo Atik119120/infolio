@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { BadgeCheck, ExternalLink, Mail, Phone, MapPin, Globe, Briefcase, GraduationCap } from "lucide-react";
 import { ThemeProps } from "./types";
 import { getSocialIcon } from "./utils";
+import { isVisible } from "@/lib/sectionVisibility";
 
 /**
  * Biography Theme — Linktree-style bio link page on a dark background.
@@ -40,14 +41,22 @@ export default function BiographyTheme({
   const location = portfolio?.location;
   const website = portfolio?.website;
 
+  const vHero = isVisible(portfolio, "hero");
+  const vAbout = isVisible(portfolio, "about");
+  const vSocial = isVisible(portfolio, "social");
+  const vContact = isVisible(portfolio, "contact");
+  const vProjects = isVisible(portfolio, "projects");
+  const vExperience = isVisible(portfolio, "experience");
+  const vEducation = isVisible(portfolio, "education");
+
   // Build link buttons from website + projects
   const links: { label: string; url: string }[] = [];
-  if (website) links.push({ label: "My Website", url: website });
-  projects?.forEach(p => {
+  if (vContact && website) links.push({ label: "My Website", url: website });
+  if (vProjects) projects?.forEach(p => {
     if (p.live_url) links.push({ label: p.title, url: p.live_url });
   });
-  if (email) links.push({ label: `Email Me`, url: `mailto:${email}` });
-  if (phone) links.push({ label: `WhatsApp`, url: `https://wa.me/${phone.replace(/[^0-9]/g, "")}` });
+  if (vContact && email) links.push({ label: `Email Me`, url: `mailto:${email}` });
+  if (vContact && phone) links.push({ label: `WhatsApp`, url: `https://wa.me/${phone.replace(/[^0-9]/g, "")}` });
 
   const fadeUp = (delay = 0) => ({
     initial: { opacity: 0, y: 14 },
@@ -107,6 +116,7 @@ export default function BiographyTheme({
         </motion.div>
 
         {/* BIO */}
+        {vAbout && (
         <motion.p
           {...fadeUp(0.15)}
           className="mt-5 text-center text-[15px] leading-relaxed mx-auto max-w-[440px] whitespace-pre-line"
@@ -114,9 +124,10 @@ export default function BiographyTheme({
         >
           {bio}
         </motion.p>
+        )}
 
         {/* META (location/website) */}
-        {(location || website) && (
+        {vContact && (location || website) && (
           <motion.div {...fadeUp(0.18)} className="mt-4 flex items-center justify-center flex-wrap gap-x-4 gap-y-1 text-[12px]" style={{ color: C.muted }}>
             {location && (<span className="inline-flex items-center gap-1.5"><MapPin className="w-3.5 h-3.5" />{location}</span>)}
             {website && (<a href={website} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 hover:text-white transition-colors"><Globe className="w-3.5 h-3.5" />{website.replace(/^https?:\/\//, "")}</a>)}
@@ -124,7 +135,7 @@ export default function BiographyTheme({
         )}
 
         {/* SOCIAL ICONS ROW */}
-        {socialLinks && socialLinks.length > 0 && (
+        {vSocial && socialLinks && socialLinks.length > 0 && (
           <motion.div {...fadeUp(0.2)} className="mt-6 flex items-center justify-center flex-wrap gap-3">
             {socialLinks.map(s => {
               const Icon = getSocialIcon(s.platform);
@@ -182,19 +193,19 @@ export default function BiographyTheme({
         </div>
 
         {/* OPTIONAL: brief experience/education chips */}
-        {(experiences?.length || education?.length) ? (
+        {((vExperience && experiences?.length) || (vEducation && education?.length)) ? (
           <motion.div {...fadeUp(0.4)} className="mt-10">
             <div className="text-center text-[11px] uppercase tracking-[0.2em] mb-3" style={{ color: C.muted }}>
               Background
             </div>
             <div className="flex flex-wrap justify-center gap-2">
-              {experiences?.slice(0, 3).map(ex => (
+              {vExperience && experiences?.slice(0, 3).map(ex => (
                 <span key={ex.id} className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12px]"
                   style={{ background: C.surface, border: `1px solid ${C.border}`, color: "#d4d4d8" }}>
                   <Briefcase className="w-3 h-3" /> {ex.position} · {ex.company}
                 </span>
               ))}
-              {education?.slice(0, 2).map(ed => (
+              {vEducation && education?.slice(0, 2).map(ed => (
                 <span key={ed.id} className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12px]"
                   style={{ background: C.surface, border: `1px solid ${C.border}`, color: "#d4d4d8" }}>
                   <GraduationCap className="w-3 h-3" /> {ed.degree} · {ed.institution}

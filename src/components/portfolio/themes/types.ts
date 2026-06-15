@@ -26,6 +26,7 @@ export interface ThemePortfolio {
   about_text?: string | null;
   footer_text?: string | null;
   browser_title?: string | null;
+  section_visibility?: any;
 }
 
 export interface ThemeSkill {

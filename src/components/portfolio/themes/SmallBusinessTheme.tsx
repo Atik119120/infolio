@@ -5,6 +5,7 @@ import { ServiceIcon } from "@/lib/serviceIcons";
 import { ThemeProps } from "./types";
 import { ContactForm } from "@/components/portfolio/ContactForm";
 import { getSocialIcon } from "./utils";
+import { isVisible } from "@/lib/sectionVisibility";
 
 /**
  * Entrepreneur Theme — for founders & business owners.
@@ -58,13 +59,19 @@ export default function SmallBusinessTheme({
     transition: { duration: 0.6 },
   };
 
+  const vHero = isVisible(portfolio, "hero");
+  const vAbout = isVisible(portfolio, "about");
+  const vProjects = isVisible(portfolio, "projects");
+  const vServices = isVisible(portfolio, "services");
+  const vContact = isVisible(portfolio, "contact");
+
   const NAV = [
-    { id: "home", label: "Home" },
-    { id: "about", label: "About" },
-    { id: "ventures", label: "Ventures" },
-    { id: "services", label: "Services" },
-    { id: "contact", label: "Contact" },
-  ];
+    vHero && { id: "home", label: "Home" },
+    vAbout && { id: "about", label: "About" },
+    vProjects && { id: "ventures", label: "Ventures" },
+    vServices && { id: "services", label: "Services" },
+    vContact && { id: "contact", label: "Contact" },
+  ].filter(Boolean) as { id: string; label: string }[];
 
   const yearsActive = experiences.length > 0 ? `${experiences.length}+` : "5+";
 
@@ -120,6 +127,7 @@ export default function SmallBusinessTheme({
       </header>
 
       {/* HERO — editorial founder intro */}
+      {vHero && (
       <section id="home" className="relative overflow-hidden">
         <div aria-hidden className="absolute inset-0 pointer-events-none"
           style={{ background: `radial-gradient(circle at 85% 20%, ${C.primary}15, transparent 50%), radial-gradient(circle at 10% 90%, ${C.accent}10, transparent 50%)` }} />
@@ -195,8 +203,10 @@ export default function SmallBusinessTheme({
           </div>
         </div>
       </section>
+      )}
 
       {/* ABOUT ME */}
+      {vAbout && (
       <section id="about" className="py-20 md:py-28" style={{ background: C.surface }}>
         <div className="container mx-auto px-5">
           <div className="grid md:grid-cols-12 gap-12 items-center">
@@ -257,9 +267,10 @@ export default function SmallBusinessTheme({
           </div>
         </div>
       </section>
+      )}
 
       {/* MY VENTURES (Companies / Startups) */}
-      {projects.length > 0 && (
+      {vProjects && projects.length > 0 && (
         <section id="ventures" className="py-20 md:py-28">
           <div className="container mx-auto px-5">
             <motion.div {...fadeUp} className="text-center max-w-2xl mx-auto mb-14">
@@ -335,7 +346,7 @@ export default function SmallBusinessTheme({
       )}
 
       {/* SERVICES */}
-      {services.length > 0 && (
+      {vServices && services.length > 0 && (
         <section id="services" className="py-20 md:py-28" style={{ background: C.cream }}>
           <div className="container mx-auto px-5">
             <motion.div {...fadeUp} className="text-center max-w-2xl mx-auto mb-14">
@@ -387,6 +398,7 @@ export default function SmallBusinessTheme({
       )}
 
       {/* CONTACT */}
+      {vContact && (
       <section id="contact" className="py-20 md:py-28" style={{ background: C.bg }}>
         <div className="container mx-auto px-5">
           <motion.div {...fadeUp} className="text-center max-w-2xl mx-auto mb-12">
@@ -470,6 +482,7 @@ export default function SmallBusinessTheme({
           </div>
         </div>
       </section>
+      )}
 
       {/* FOOTER */}
       <footer style={{ background: C.ink, color: "#fff" }} className="pt-16 pb-8">

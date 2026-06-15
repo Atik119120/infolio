@@ -5,6 +5,7 @@ import { ServiceIcon } from "@/lib/serviceIcons";
 import { ThemeProps } from "./types";
 import { ContactForm } from "@/components/portfolio/ContactForm";
 import { getSocialIcon } from "./utils";
+import { isVisible } from "@/lib/sectionVisibility";
 
 /**
  * Studio Lens — Photographer theme.
@@ -62,13 +63,19 @@ export default function PRDPhotographerTheme({
     transition: { duration: 0.6 },
   };
 
+  const vHero = isVisible(portfolio, "hero");
+  const vAbout = isVisible(portfolio, "about");
+  const vServices = isVisible(portfolio, "services");
+  const vProjects = isVisible(portfolio, "projects");
+  const vContact = isVisible(portfolio, "contact");
+
   const NAV = [
-    { id: "home", label: "Home" },
-    { id: "about", label: "About" },
-    { id: "services", label: "Services" },
-    { id: "gallery", label: "Gallery" },
-    { id: "contact", label: "Contact" },
-  ];
+    vHero && { id: "home", label: "Home" },
+    vAbout && { id: "about", label: "About" },
+    vServices && { id: "services", label: "Services" },
+    vProjects && { id: "gallery", label: "Gallery" },
+    vContact && { id: "contact", label: "Contact" },
+  ].filter(Boolean) as { id: string; label: string }[];
 
   // Hero banner: custom hero image first, then featured (or all) projects
   const heroPhotos = useMemo(() => {
@@ -158,6 +165,7 @@ export default function PRDPhotographerTheme({
       </header>
 
       {/* HERO */}
+      {vHero && (
       <section id="home" className="relative pt-12 md:pt-16 pb-20 overflow-hidden">
         <div className="gx-mesh gx-blob" />
         <div className="container mx-auto px-5 mb-10 md:mb-14 relative">
@@ -275,8 +283,10 @@ export default function PRDPhotographerTheme({
           </div>
         </div>
       </section>
+      )}
 
       {/* ABOUT (includes Awards) */}
+      {vAbout && (
       <section id="about" className="py-20 md:py-28" style={{ background: C.surface }}>
         <div className="container mx-auto px-5">
           <div className="grid md:grid-cols-12 gap-12 items-start">
@@ -343,9 +353,10 @@ export default function PRDPhotographerTheme({
           </div>
         </div>
       </section>
+      )}
 
       {/* SERVICES */}
-      {services.length > 0 && (
+      {vServices && services.length > 0 && (
         <section id="services" className="py-20 md:py-28">
           <div className="container mx-auto px-5">
             <motion.div {...fadeUp} className="text-center max-w-2xl mx-auto mb-14">
@@ -394,7 +405,7 @@ export default function PRDPhotographerTheme({
       )}
 
       {/* PHOTOGRAPHY GALLERY */}
-      {projects.length > 0 && (
+      {vProjects && projects.length > 0 && (
         <section id="gallery" className="py-20 md:py-28" style={{ background: C.surface }}>
           <div className="container mx-auto px-5">
             <motion.div {...fadeUp} className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-12">
@@ -448,6 +459,7 @@ export default function PRDPhotographerTheme({
       )}
 
       {/* CONTACT */}
+      {vContact && (
       <section id="contact" className="py-20 md:py-28">
         <div className="container mx-auto px-5">
           <motion.div {...fadeUp} className="text-center max-w-2xl mx-auto mb-12">
@@ -485,6 +497,7 @@ export default function PRDPhotographerTheme({
           </div>
         </div>
       </section>
+      )}
 
       {/* FOOTER */}
       <footer style={{ background: "#000", color: C.ink }} className="pt-16 pb-8 border-t" >

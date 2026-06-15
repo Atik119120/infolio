@@ -5,6 +5,7 @@ import { ServiceIcon } from "@/lib/serviceIcons";
 import { ThemeProps } from "./types";
 import { ContactForm } from "@/components/portfolio/ContactForm";
 import { getSocialIcon } from "./utils";
+import { isVisible } from "@/lib/sectionVisibility";
 
 /**
  * Growth Lab — Digital Marketer & SEO Expert theme.
@@ -58,13 +59,19 @@ export default function PRDDigitalMarketerTheme({
     transition: { duration: 0.6 },
   };
 
+  const vHero = isVisible(portfolio, "hero");
+  const vAbout = isVisible(portfolio, "about");
+  const vServices = isVisible(portfolio, "services");
+  const vProjects = isVisible(portfolio, "projects");
+  const vContact = isVisible(portfolio, "contact");
+
   const NAV = [
-    { id: "home", label: "Home" },
-    { id: "about", label: "About" },
-    { id: "services", label: "Services" },
-    { id: "work", label: "Work" },
-    { id: "contact", label: "Contact" },
-  ];
+    vHero && { id: "home", label: "Home" },
+    vAbout && { id: "about", label: "About" },
+    vServices && { id: "services", label: "Services" },
+    vProjects && { id: "work", label: "Work" },
+    vContact && { id: "contact", label: "Contact" },
+  ].filter(Boolean) as { id: string; label: string }[];
 
   // Clients = unique companies from experiences
   const clients = useMemo(() => {
@@ -157,6 +164,7 @@ export default function PRDDigitalMarketerTheme({
       </header>
 
       {/* HERO — split: text + dashboard preview */}
+      {vHero && (
       <section id="home" className="relative overflow-hidden">
         <div aria-hidden className="absolute inset-0 gl-grid-bg" />
         <div aria-hidden className="absolute -top-40 -right-40 w-[500px] h-[500px] rounded-full opacity-30"
@@ -266,8 +274,10 @@ export default function PRDDigitalMarketerTheme({
           </div>
         </div>
       </section>
+      )}
 
       {/* ABOUT */}
+      {vAbout && (
       <section id="about" className="py-20 md:py-28" style={{ background: C.bg2 }}>
         <div className="container mx-auto px-5">
           <div className="grid md:grid-cols-12 gap-12 items-center">
@@ -321,9 +331,10 @@ export default function PRDDigitalMarketerTheme({
           </div>
         </div>
       </section>
+      )}
 
       {/* SERVICES */}
-      {services.length > 0 && (
+      {vServices && services.length > 0 && (
         <section id="services" className="py-20 md:py-28">
           <div className="container mx-auto px-5">
             <motion.div {...fadeUp} className="text-center max-w-2xl mx-auto mb-14">
@@ -375,6 +386,7 @@ export default function PRDDigitalMarketerTheme({
       )}
 
       {/* PROJECTS & CLIENTS */}
+      {vProjects && (
       <section id="work" className="py-20 md:py-28" style={{ background: C.bg2 }}>
         <div className="container mx-auto px-5">
           <motion.div {...fadeUp} className="text-center max-w-2xl mx-auto mb-14">
@@ -388,7 +400,7 @@ export default function PRDDigitalMarketerTheme({
           </motion.div>
 
           {/* Projects as case-study cards */}
-          {projects.length > 0 && (
+          {vProjects && projects.length > 0 && (
             <div className="grid md:grid-cols-2 gap-5 mb-16">
               {projects.map((p, i) => (
                 <motion.a
@@ -459,8 +471,10 @@ export default function PRDDigitalMarketerTheme({
           )}
         </div>
       </section>
+      )}
 
       {/* CONTACT */}
+      {vContact && (
       <section id="contact" className="py-20 md:py-28 relative overflow-hidden">
         <div aria-hidden className="absolute inset-0 gl-grid-bg pointer-events-none" />
         <div className="container mx-auto px-5 relative">
@@ -497,6 +511,7 @@ export default function PRDDigitalMarketerTheme({
           </div>
         </div>
       </section>
+      )}
 
       {/* FOOTER */}
       <footer style={{ background: "#070b1a", color: C.ink }} className="pt-16 pb-8 border-t" >

@@ -6,6 +6,7 @@ import { ThemeProps, ThemeService } from "./types";
 import { ContactForm } from "@/components/portfolio/ContactForm";
 import { ProjectsSection } from "@/components/portfolio/ProjectsSection";
 import { getSocialIcon } from "./utils";
+import { isVisible } from "@/lib/sectionVisibility";
 
 /**
  * Per-theme style tokens. Each theme passes a unique aesthetic.
@@ -96,15 +97,23 @@ export function StandardThemeShell({
     transition: { duration: 0.6 },
   };
 
+  const showHero = isVisible(portfolio, "hero");
+  const showAbout = isVisible(portfolio, "about");
+  const showSkills = isVisible(portfolio, "skills") && skills.length > 0;
+  const showServices = isVisible(portfolio, "services") && services.length > 0;
+  const showProjects = isVisible(portfolio, "projects") && projects.length > 0;
+  const showContact = isVisible(portfolio, "contact");
+  const showSocial = isVisible(portfolio, "social");
+
   const NAV = [
-    { id: "home", label: "Home" },
-    { id: "about", label: "About" },
-    { id: "ventures", label: "Ventures" },
-    { id: "skills", label: "Skills" },
-    { id: "services", label: "Services" },
-    { id: "works", label: "Works" },
-    { id: "contact", label: "Contact" },
-  ];
+    showHero && { id: "home", label: "Home" },
+    showAbout && { id: "about", label: "About" },
+    showProjects && { id: "ventures", label: "Ventures" },
+    showSkills && { id: "skills", label: "Skills" },
+    showServices && { id: "services", label: "Services" },
+    showProjects && { id: "works", label: "Works" },
+    showContact && { id: "contact", label: "Contact" },
+  ].filter(Boolean) as { id: string; label: string }[];
 
   // Inline color vars for full theme isolation
   const cssVars = {
@@ -181,6 +190,7 @@ export function StandardThemeShell({
       </header>
 
       {/* HERO — editorial */}
+      {showHero && (
       <section id="home" className="relative overflow-hidden">
         <div className="absolute inset-0 t-bg-deco pointer-events-none" />
         <div className="container mx-auto px-6 sm:px-8 py-10 md:py-16 relative">
@@ -219,8 +229,10 @@ export function StandardThemeShell({
           </div>
         </div>
       </section>
+      )}
 
       {/* ABOUT — editorial split layout: photo left, typography-rich info right */}
+      {showAbout && (
       <section id="about" className="py-8 md:py-10" style={{ background: s.surface }}>
         <div className="container mx-auto px-6 sm:px-8">
           <motion.h2 {...fadeUp} className="t-display text-4xl md:text-6xl font-bold tracking-tight mb-6 md:mb-8 text-center">
@@ -285,9 +297,10 @@ export function StandardThemeShell({
           </div>
         </div>
       </section>
+      )}
 
       {/* VENTURES / BRANDS — own section */}
-      {projects.length > 0 && (
+      {showProjects && (
         <section id="ventures" className="py-8 md:py-10" style={{ background: s.background }}>
           <div className="container mx-auto px-6 sm:px-8">
             <motion.div {...fadeUp} className="text-center max-w-2xl mx-auto mb-6">
@@ -337,7 +350,7 @@ export function StandardThemeShell({
 
 
       {/* SKILLS — clean centered header + animated progress bars */}
-      {skills.length > 0 && (
+      {showSkills && (
         <section id="skills" className="py-8 md:py-10" style={{ background: s.background }}>
           <div className="container mx-auto px-6 sm:px-8">
             <motion.div {...fadeUp} className="text-center max-w-2xl mx-auto mb-8">
@@ -386,7 +399,7 @@ export function StandardThemeShell({
       )}
 
       {/* SERVICES — clean uniform cards */}
-      {services.length > 0 && (
+      {showServices && (
         <section id="services" className="py-8 md:py-10" style={{ background: s.surface }}>
           <div className="container mx-auto px-6 sm:px-8">
             <motion.div {...fadeUp} className="text-center max-w-2xl mx-auto mb-8">
@@ -467,9 +480,12 @@ export function StandardThemeShell({
       )}
 
       {/* WORKS — type-aware ProjectsSection */}
-      <ProjectsSection projects={projects as any} username={profile?.username} s={{ primary: s.primary, surface: s.surface, text: s.text, textMuted: s.textMuted, border: s.border, background: s.background }} />
+      {showProjects && (
+        <ProjectsSection projects={projects as any} username={profile?.username} s={{ primary: s.primary, surface: s.surface, text: s.text, textMuted: s.textMuted, border: s.border, background: s.background }} />
+      )}
 
       {/* CONTACT — centered modern with info pills + form card */}
+      {showContact && (
       <section id="contact" className="py-8 md:py-10 relative overflow-hidden" style={{ background: s.background }}>
         <div aria-hidden className="absolute inset-0 pointer-events-none"
           style={{ background: `radial-gradient(ellipse at top, ${s.primary}10, transparent 60%)` }} />
@@ -508,6 +524,9 @@ export function StandardThemeShell({
           </div>
         </div>
       </section>
+      )}
+
+
 
       {/* UNIQUE FOOTER — ticker + giant signature + asymmetric grid */}
       <footer style={{ background: s.text, color: s.background }} className="relative overflow-hidden">

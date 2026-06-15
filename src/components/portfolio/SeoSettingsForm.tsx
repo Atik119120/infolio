@@ -200,9 +200,6 @@ function Inner({ portfolio, userId, onUpdate, onSuccess, onError }: SeoSettingsF
         </CardContent>
       </Card>
 
-      <Button onClick={handleSave} disabled={saving} size="lg">
-        {saving ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Saving</> : "Save SEO settings"}
-      </Button>
     </div>
   );
 }

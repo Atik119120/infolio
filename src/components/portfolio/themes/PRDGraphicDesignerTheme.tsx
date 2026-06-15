@@ -438,7 +438,7 @@ export default function PRDGraphicDesignerTheme({
       )}
 
       {/* CLIENTS */}
-      {clients.length > 0 && (
+      {vExperience && clients.length > 0 && (
         <section id="clients" className="py-20 md:py-24">
           <div className="container mx-auto px-5">
             <motion.div {...fadeUp} className="text-center max-w-2xl mx-auto mb-12">

@@ -211,6 +211,7 @@ export default function PortfolioEdit() {
     { value: "branding", label: "Branding", icon: ImageIcon, hint: "Favicon", requires: "branding" },
     { value: "header", label: "Header Settings", icon: Palette, hint: "Logo & brand name", requires: "branding" },
     { value: "footer", label: "Footer Settings", icon: Type, hint: "Footer text", requires: "customize" },
+    { value: "contact", label: "Contact Info", icon: Mail, hint: "Email, phone, custom fields", requires: "social" },
     { value: "social", label: "Social Links", icon: Link2, hint: "Your social profiles" },
     { value: "seo", label: "SEO", icon: Rocket, hint: "Search visibility" },
   ];

@@ -267,9 +267,10 @@ export default function SmallBusinessTheme({
           </div>
         </div>
       </section>
+      )}
 
       {/* MY VENTURES (Companies / Startups) */}
-      {projects.length > 0 && (
+      {vProjects && projects.length > 0 && (
         <section id="ventures" className="py-20 md:py-28">
           <div className="container mx-auto px-5">
             <motion.div {...fadeUp} className="text-center max-w-2xl mx-auto mb-14">
@@ -345,7 +346,7 @@ export default function SmallBusinessTheme({
       )}
 
       {/* SERVICES */}
-      {services.length > 0 && (
+      {vServices && services.length > 0 && (
         <section id="services" className="py-20 md:py-28" style={{ background: C.cream }}>
           <div className="container mx-auto px-5">
             <motion.div {...fadeUp} className="text-center max-w-2xl mx-auto mb-14">
@@ -397,6 +398,7 @@ export default function SmallBusinessTheme({
       )}
 
       {/* CONTACT */}
+      {vContact && (
       <section id="contact" className="py-20 md:py-28" style={{ background: C.bg }}>
         <div className="container mx-auto px-5">
           <motion.div {...fadeUp} className="text-center max-w-2xl mx-auto mb-12">

@@ -18,6 +18,7 @@ interface SeoSettingsFormProps {
     custom_head_html?: string | null;
     ga_measurement_id?: string | null;
     gtm_id?: string | null;
+    browser_title?: string | null;
   } | null;
   userId: string;
   onUpdate: () => void;
@@ -41,6 +42,7 @@ function Inner({ portfolio, userId, onUpdate, onSuccess, onError }: SeoSettingsF
   const p: any = portfolio || {};
   const [saving, setSaving] = useState(false);
   const [form, setForm] = useState({
+    browser_title: p.browser_title || "",
     meta_title: p.meta_title || "",
     meta_description: p.meta_description || "",
     meta_keywords: p.meta_keywords || "",
@@ -65,6 +67,7 @@ function Inner({ portfolio, userId, onUpdate, onSuccess, onError }: SeoSettingsF
   const doSave = async (silent = true) => {
     setSaving(true);
     const payload = {
+      browser_title: form.browser_title.trim() || null,
       meta_title: form.meta_title.trim() || null,
       meta_description: form.meta_description.trim() || null,
       meta_keywords: form.meta_keywords.trim() || null,
@@ -104,6 +107,11 @@ function Inner({ portfolio, userId, onUpdate, onSuccess, onError }: SeoSettingsF
           <CardDescription>How your portfolio appears in Google and social shares.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="browser_title">Browser Tab Title</Label>
+            <Input id="browser_title" name="browser_title" value={form.browser_title} onChange={onChange} maxLength={70} placeholder="e.g., John Doe — Web Designer" />
+            <p className="text-xs text-muted-foreground">খালি রাখলে Meta Title → Brand → Display Name fallback হবে।</p>
+          </div>
           <div className="space-y-2">
             <Label htmlFor="meta_title">Meta Title</Label>
             <Input id="meta_title" name="meta_title" value={form.meta_title} onChange={onChange} maxLength={70} placeholder="John Doe — Photographer in Dhaka" />

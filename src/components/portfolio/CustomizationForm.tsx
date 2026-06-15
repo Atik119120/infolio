@@ -25,12 +25,13 @@ interface Props {
   portfolio: CustomizationData | null;
   userId: string;
   enabledFields?: import("@/config/themeFeatures").CustomizeField[];
+  scope?: "hero" | "about" | "footer" | "all";
   onUpdate: () => void;
   onSuccess: (m: string) => void;
   onError: (m: string) => void;
 }
 
-export function CustomizationForm({ portfolio, userId, enabledFields, onUpdate, onSuccess, onError }: Props) {
+export function CustomizationForm({ portfolio, userId, enabledFields, scope = "all", onUpdate, onSuccess, onError }: Props) {
   const ALL_ON = !enabledFields;
   const has = (f: import("@/config/themeFeatures").CustomizeField) =>
     ALL_ON || (enabledFields && enabledFields.includes(f));
@@ -162,9 +163,9 @@ export function CustomizationForm({ portfolio, userId, enabledFields, onUpdate, 
     </div>
   );
 
-  const showHero = has("hero_image") || has("hero_headline") || has("hero_subheadline") || has("hero_cta");
-  const showAbout = has("about_image") || has("about_text");
-  const showFooter = has("footer_text") || has("browser_title");
+  const showHero = (scope === "all" || scope === "hero") && (has("hero_image") || has("hero_headline") || has("hero_subheadline") || has("hero_cta"));
+  const showAbout = (scope === "all" || scope === "about") && (has("about_image") || has("about_text"));
+  const showFooter = (scope === "all" || scope === "footer") && has("footer_text");
 
   return (
     <div className="space-y-4">
@@ -255,24 +256,10 @@ export function CustomizationForm({ portfolio, userId, enabledFields, onUpdate, 
       {showFooter && (
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2"><Type className="w-5 h-5" /> Footer & Browser Tab</CardTitle>
-            <CardDescription>Footer text, copyright, browser tab title customize করো।</CardDescription>
+            <CardTitle className="flex items-center gap-2"><Type className="w-5 h-5" /> Footer</CardTitle>
+            <CardDescription>Footer text এবং copyright customize করো।</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            {has("browser_title") && (
-              <div className="space-y-1.5">
-                <Label className="flex items-center gap-2"><Globe className="w-4 h-4 text-muted-foreground" /> Browser Tab Title</Label>
-                <Input
-                  value={data.browser_title || ""}
-                  onChange={(e) => update("browser_title", e.target.value)}
-                  placeholder="e.g., John Doe — Web Designer"
-                  maxLength={70}
-                />
-                <p className="text-xs text-muted-foreground">
-                  খালি রাখলে: SEO Meta Title → Brand Name → Display Name থেকে fallback হবে।
-                </p>
-              </div>
-            )}
             {has("footer_text") && (
               <div className="space-y-1.5">
                 <Label>Footer Text / Copyright</Label>

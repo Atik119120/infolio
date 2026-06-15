@@ -12,22 +12,6 @@ export default function SiteHeader() {
   const [open, setOpen] = useState(false);
   const close = () => setOpen(false);
 
-  const handleNav = (item: NavItem) => {
-    close();
-    if (item.to) {
-      navigate(item.to);
-      return;
-    }
-    if (item.href?.startsWith("/#")) {
-      const id = item.href.slice(2);
-      if (window.location.pathname !== "/") {
-        navigate(`/#${id}`);
-      } else {
-        document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
-      }
-    }
-  };
-
   return (
     <nav className="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[min(1180px,calc(100%-2rem))] bg-background/70 backdrop-blur-xl border border-border/60 rounded-2xl shadow-lg shadow-primary/5">
       <div className="px-5 py-2.5 flex items-center justify-between">

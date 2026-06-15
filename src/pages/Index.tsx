@@ -8,6 +8,7 @@ import {
   Zap, Globe, Rocket, Server, Search, Cloud, Image,
 } from "lucide-react";
 import Footer from "@/components/home/Footer";
+import SiteHeader from "@/components/home/SiteHeader";
 import { GradientBars } from "@/components/ui/gradient-bars-background";
 import { SectionHeader, FeatureCard, PLANS, TERMS, PlanCard } from "@/pages/home/shared";
 import stepsImage from "@/assets/steps-section.jpg";

@@ -1,48 +1,70 @@
-# Elementor-style Builder Interface Redesign
 
-Goal: Builder-er UI ke Elementor-er moto clean, professional ebong familiar banano (uploaded screenshot anushare).
+# Theme Edit Section — Split View Redesign
 
-## Visual Reference (target)
-- **Top bar**: Dark slate, left-e logo + small icon buttons (add, settings, layers), center-e page title + device switcher, right-e search/help/preview/Publish (bright accent).
-- **Left panel**: Tabbed — `Content / Style / Advanced` — clean white-ish dark panel with form-like controls (label left, control right).
-- **Canvas**: Large center area, white background, blocks selectable with subtle blue outline.
-- **Right panel**: "Structure" / Layers tree (collapsible blocks list).
+## লক্ষ্য
+ইউজার ড্যাশবোর্ড থেকে থিম সিলেক্ট করলে একটা ডেডিকেটেড এডিটর পেজ খুলবে যেখানে **বামে ওই থিমের নিজস্ব কন্ট্রোল প্যানেল (ফর্ম)** আর **ডানে লাইভ প্রিভিউ** পাশাপাশি থাকবে। আপাতত শুধু **Simple** থিম থাকবে — বাকি সব থিম সরিয়ে দেওয়া হবে।
 
-## Changes
+## স্কোপ
 
-### 1. TopBar (`src/builder/components/TopBar.tsx`)
-- Compact icon group on left (Add, Theme/Settings, Layers toggle, Templates).
-- Center: device switcher + page name dropdown style.
-- Right: search icon, help, preview eye, **Publish** button with bright pink/violet gradient (matching Elementor).
-- Reduce height to `h-12`, use semantic tokens.
+### ১. থিম ক্লিনআপ
+- বাকি সব থিম (Standard / Pro / Elite ইত্যাদি specialized themes) কোডবেস ও ডেটাবেস থেকে সরাবো।
+- শুধু `simple` থিম রাখবো — ডিফল্ট ও একমাত্র অপশন।
+- থিম পিকার / মার্কেটিং থিম গ্যালারি / pricing tier UI সরানো বা hide করা হবে।
+- bKash পেমেন্ট-রিলেটেড premium theme UI সরাবো (যেহেতু কোনো paid theme নেই)।
 
-### 2. LeftSidebar (`src/builder/components/LeftSidebar.tsx`)
-- Convert to **"Edit Panel"** style when a block is selected — show `Content / Style / Advanced` tabs (currently in RightPanel).
-- When nothing is selected → show widgets/templates picker (current behavior).
-- Header: "Edit {BlockName}" with back arrow to widgets list.
+### ২. নতুন এডিটর লেআউট — Split View
 
-### 3. RightPanel → Becomes "Structure" panel (`src/builder/components/RightPanel.tsx`)
-- Replace property editor with the **Navigator/Layers tree** (move from floating Navigator).
-- Title: "Structure", with close button.
-- Tree of all blocks (nested) with icons, click-to-select, drag handle.
+```text
+┌──────────────────────────────────────────────────────────┐
+│  Topbar: theme name · Save · Publish · Back              │
+├──────────────────┬───────────────────────────────────────┤
+│                  │                                       │
+│  Control Panel   │        Live Preview (iframe)          │
+│  (Simple theme)  │        Desktop / Mobile toggle        │
+│  - Hero          │                                       │
+│  - Bio           │   রিয়েলটাইম আপডেট হবে                  │
+│  - Skills        │                                       │
+│  - Projects      │                                       │
+│  - Contact       │                                       │
+│                  │                                       │
+└──────────────────┴───────────────────────────────────────┘
+```
 
-### 4. Navigator (`src/builder/components/Navigator.tsx`)
-- Remove floating overlay; logic moves into RightPanel.
+- **বাম প্যানেল (~40%)**: scrollable accordion/sections, প্রতিটা section-এ ওই থিমের জন্য প্রয়োজনীয় ফিল্ড।
+- **ডান প্যানেল (~60%)**: লাইভ প্রিভিউ, ফর্মে টাইপ করলে সাথে সাথে update।
+- মোবাইলে: tab toggle (Edit / Preview)।
 
-### 5. Canvas (`src/builder/components/Canvas.tsx`)
-- Selection outline: Elementor's signature blue dashed (`#92003b` accent on hover, blue on select).
-- Hover toolbar above selected block (drag/duplicate/delete).
+### ৩. Per-Theme Control Panel আর্কিটেকচার
+এমনভাবে বানানো হবে যাতে ভবিষ্যতে নতুন থিম এলে **শুধু ওই থিমের জন্য আলাদা control panel কম্পোনেন্ট** বানালেই কাজ করে।
 
-### 6. Theme tokens
-- Add builder-specific tokens in `index.css`:
-  - `--builder-panel-bg`, `--builder-panel-border`, `--builder-accent` (Elementor pink `#92003b` / bright `#e91e63`).
+```text
+src/components/theme-editors/
+  ├── simple/
+  │     ├── SimpleControlPanel.tsx   ← এই থিমের ফর্ম
+  │     └── schema.ts                ← ফিল্ড definition
+  └── registry.ts                    ← themeId → ControlPanel mapping
+```
 
-## Technical Notes
-- No DB changes.
-- Store stays same — only UI shuffling.
-- Use existing shadcn `Tabs`, `Tooltip`, `ScrollArea`.
-- Keep all current functionality (AI, Templates, Sections, Animations).
+Editor page করবে `registry[themeId]` lookup → ওই থিমের প্যানেল রেন্ডার।
 
-## Out of scope
-- New widgets / features.
-- Mobile editor UI redesign.
+### ৪. Flow
+1. Dashboard → "Edit Portfolio" → `/editor` রুট
+2. (একটাই থিম, তাই auto-select)
+3. Split view খুলবে → বামে Simple-এর ফিল্ড, ডানে লাইভ Simple theme preview
+4. Save → Supabase-এ persist
+5. Publish → existing approval workflow
+
+## টেকনিক্যাল ডিটেইলস
+- নতুন route: `/editor` (protected)
+- State: ফর্ম state React Hook Form + Zod, debounced save
+- Live preview: same React tree, props-driven (iframe লাগবে না প্রথমে)
+- DB: existing `portfolios` table-ই ব্যবহার, schema পরিবর্তন নেই
+- Migration: existing user-দের যাদের non-simple theme সিলেক্ট করা ছিল, তাদের `theme = 'simple'` এ migrate করবো
+- পুরনো theme ফাইল ও routes ডিলিট
+
+## যা থাকবে না (এই স্কোপে)
+- নতুন থিম যোগ করা
+- পেমেন্ট flow পরিবর্তন (premium theme নেই, তাই এমনিতেই বাদ)
+- ব্যাকএন্ড schema পরিবর্তন
+
+কনফার্ম করলে implement শুরু করবো।

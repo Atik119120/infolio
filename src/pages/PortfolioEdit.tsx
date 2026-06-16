@@ -429,8 +429,8 @@ export default function PortfolioEdit() {
             <ArrowLeft className="w-3.5 h-3.5" />
             <span className="hidden sm:inline">Dashboard</span>
           </button>
-          <div className="h-4 w-px bg-[#262626]" />
-          <span className="text-[13px] font-medium tracking-tight">Portfolio Builder</span>
+          <div className="hidden sm:block h-4 w-px bg-[#262626]" />
+          <span className="hidden sm:inline text-[13px] font-medium tracking-tight">Portfolio Builder</span>
           <button
             onClick={() => setStage("theme")}
             className="hidden md:inline-flex items-center text-[12px] text-[#71717A] hover:text-white transition-colors duration-150"
@@ -438,6 +438,26 @@ export default function PortfolioEdit() {
             <span className="text-[#52525B] mr-1">·</span>
             Theme: <span className="capitalize ml-1 text-[#A1A1AA]">{activeTheme.replace(/-/g, " ")}</span>
           </button>
+        </div>
+
+        {/* Mobile view switcher (inside header) */}
+        <div className="lg:hidden absolute left-1/2 -translate-x-1/2 inline-flex items-center gap-0.5 p-0.5 rounded-full bg-[#111111] border border-[#262626]">
+          {([
+            { v: "edit", label: "Edit" },
+            { v: "split", label: "Split" },
+            { v: "preview", label: "Preview" },
+          ] as const).map(({ v, label }) => (
+            <button
+              key={v}
+              onClick={() => setMobileMode(v)}
+              className={cn(
+                "px-2.5 h-6 rounded-full text-[10.5px] font-medium tracking-tight transition-colors duration-150",
+                mobileMode === v ? "bg-white text-black" : "text-[#A1A1AA] hover:text-white"
+              )}
+            >
+              {label}
+            </button>
+          ))}
         </div>
 
         <div className="flex items-center gap-2">

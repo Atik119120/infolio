@@ -199,6 +199,26 @@ export default function CreativeSidebarProTheme({
       <style>{`
         html { scroll-behavior: smooth; }
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+        .service-card {
+          transition: all 0.35s ease;
+        }
+        .service-card:hover {
+          background-color: ${accent} !important;
+          border-color: ${accent} !important;
+          box-shadow: 0 12px 40px -12px ${accent}40 !important;
+        }
+        .service-card:hover .service-icon-wrap {
+          background: rgba(255,255,255,0.25) !important;
+        }
+        .service-card:hover .service-icon {
+          color: #FFFFFF !important;
+        }
+        .service-card:hover .service-title {
+          color: #FFFFFF !important;
+        }
+        .service-card:hover .service-desc {
+          color: rgba(255,255,255,0.9) !important;
+        }
       `}</style>
 
       {/* Mobile top header */}
@@ -339,12 +359,12 @@ export default function CreativeSidebarProTheme({
             <h2 className="text-4xl lg:text-5xl font-extrabold mb-12" style={{ color: primary }}>My Services</h2>
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {(showServices as any[]).map(s => (
-                <div key={s.id} className="bg-white rounded-2xl border border-gray-200 p-6 hover:shadow-lg transition-shadow">
-                  <div className="w-14 h-14 rounded-xl flex items-center justify-center mb-4" style={{ background: `${accent}26`, color: accent }}>
-                    <ServiceIcon icon={s.icon || "sparkles"} className="w-6 h-6" />
+              <div key={s.id} className="service-card bg-white rounded-2xl border border-gray-200 p-6 hover:shadow-lg cursor-pointer">
+                  <div className="service-icon-wrap w-14 h-14 rounded-xl flex items-center justify-center mb-4" style={{ background: `${accent}26`, color: accent }}>
+                    <ServiceIcon icon={s.icon || "sparkles"} className="service-icon w-6 h-6" />
                   </div>
-                  <h3 className="font-bold text-lg mb-2" style={{ color: primary }}>{s.title}</h3>
-                  <p className="text-sm leading-relaxed" style={{ color: primary, opacity: 0.65 }}>{s.description}</p>
+                  <h3 className="service-title font-bold text-lg mb-2" style={{ color: primary }}>{s.title}</h3>
+                  <p className="service-desc text-sm leading-relaxed" style={{ color: primary, opacity: 0.65 }}>{s.description}</p>
                 </div>
               ))}
             </div>

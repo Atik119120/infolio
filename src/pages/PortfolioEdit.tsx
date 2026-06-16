@@ -581,3 +581,152 @@ export default function PortfolioEdit() {
     </div>
   );
 }
+
+/* ---------------- Mobile editor (bottom-nav style) ---------------- */
+type SectionMeta = { value: SectionKey; label: string; icon: any; hint: string; requires?: string };
+
+const PRIMARY_KEYS: SectionKey[] = ["hero", "about", "skills", "services", "projects"];
+
+function MobilePortfolioEditor({
+  sections, activeSection, setActiveSection, activeMeta, renderForm, previewHrefFor,
+}: {
+  sections: SectionMeta[];
+  activeSection: SectionKey;
+  setActiveSection: (k: SectionKey) => void;
+  activeMeta: SectionMeta | undefined;
+  renderForm: () => React.ReactNode;
+  previewHrefFor: (k: SectionKey) => string | null;
+}) {
+  const [moreOpen, setMoreOpen] = useState(false);
+
+  // Build primary tabs from what the active theme actually exposes
+  const available = new Set(sections.map((s) => s.value));
+  const primary: SectionMeta[] = PRIMARY_KEYS
+    .filter((k) => available.has(k))
+    .map((k) => sections.find((s) => s.value === k)!)
+    .slice(0, 5);
+  const primarySet = new Set(primary.map((s) => s.value));
+  const moreItems = sections.filter((s) => !primarySet.has(s.value));
+  const isMoreActive = !primarySet.has(activeSection);
+
+  const tap = (k: SectionKey) => {
+    setActiveSection(k);
+    setMoreOpen(false);
+  };
+
+  return (
+    <section className="lg:hidden w-full flex-1 flex flex-col bg-[#0A0A0A] overflow-hidden relative">
+      {/* Editor header */}
+      <div className="shrink-0 px-5 pt-4 pb-2 flex items-center justify-between gap-3">
+        <div className="flex items-center gap-2 min-w-0">
+          {activeMeta?.icon && <activeMeta.icon className="w-4 h-4 text-[#A1A1AA] shrink-0" />}
+          <h2 className="text-[14px] font-semibold tracking-tight truncate">{activeMeta?.label}</h2>
+        </div>
+        {previewHrefFor(activeSection) && (
+          <a
+            href={previewHrefFor(activeSection)!}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center gap-1 text-[11px] text-[#A1A1AA] hover:text-white shrink-0"
+          >
+            <Eye className="w-3 h-3" /> Preview
+          </a>
+        )}
+      </div>
+
+      {/* Form scroll area — bottom padding clears the sticky nav */}
+      <div className="flex-1 overflow-y-auto px-5 pt-2 pb-[calc(env(safe-area-inset-bottom)+88px)] portfolio-minimal-form">
+        {renderForm()}
+      </div>
+
+      {/* Sticky bottom navigation */}
+      <nav
+        className="absolute bottom-0 inset-x-0 z-20 bg-[#0A0A0A]/95 backdrop-blur-xl border-t border-[#1f1f1f] pb-[env(safe-area-inset-bottom)]"
+      >
+        <div className="grid grid-cols-6 h-16">
+          {primary.map((s) => {
+            const Icon = s.icon;
+            const active = activeSection === s.value;
+            return (
+              <button
+                key={s.value}
+                onClick={() => tap(s.value)}
+                className={cn(
+                  "flex flex-col items-center justify-center gap-1 transition-colors duration-150 relative",
+                  active ? "text-white" : "text-[#71717A] hover:text-white"
+                )}
+              >
+                {active && <span className="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-0.5 rounded-full bg-white" />}
+                <Icon className="w-[18px] h-[18px]" />
+                <span className="text-[10px] font-medium leading-none">{s.label.split(" ")[0]}</span>
+              </button>
+            );
+          })}
+          <button
+            onClick={() => setMoreOpen(true)}
+            className={cn(
+              "flex flex-col items-center justify-center gap-1 transition-colors duration-150 relative",
+              isMoreActive || moreOpen ? "text-white" : "text-[#71717A] hover:text-white"
+            )}
+          >
+            {(isMoreActive || moreOpen) && <span className="absolute top-0 left-1/2 -translate-x-1/2 w-8 h-0.5 rounded-full bg-white" />}
+            <MoreHorizontal className="w-[18px] h-[18px]" />
+            <span className="text-[10px] font-medium leading-none">More</span>
+          </button>
+        </div>
+      </nav>
+
+      {/* More sheet */}
+      <Sheet open={moreOpen} onOpenChange={setMoreOpen}>
+        <SheetContent
+          side="bottom"
+          className="h-auto max-h-[75vh] p-0 bg-[#0A0A0A] border-t border-[#1f1f1f] text-white rounded-t-2xl"
+        >
+          <SheetHeader className="px-5 pt-4 pb-2 text-left">
+            <SheetTitle className="text-white text-[15px] font-semibold tracking-tight">More sections</SheetTitle>
+            <SheetDescription className="text-[#71717A] text-[12px]">
+              Tap a section to start editing.
+            </SheetDescription>
+          </SheetHeader>
+          <div className="px-3 pb-[calc(env(safe-area-inset-bottom)+12px)] pt-2 overflow-y-auto">
+            {moreItems.length === 0 ? (
+              <div className="px-3 py-8 text-center text-[12px] text-[#71717A]">
+                No additional sections for this theme.
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 divide-y divide-[#161616]">
+                {moreItems.map((s) => {
+                  const Icon = s.icon;
+                  const active = activeSection === s.value;
+                  return (
+                    <button
+                      key={s.value}
+                      onClick={() => tap(s.value)}
+                      className={cn(
+                        "flex items-center gap-3 px-3 h-14 text-left transition-colors duration-150 rounded-md",
+                        active ? "bg-[#181818] text-white" : "text-[#D4D4D8] hover:bg-[#141414]"
+                      )}
+                    >
+                      <span className={cn(
+                        "w-9 h-9 rounded-md inline-flex items-center justify-center shrink-0",
+                        active ? "bg-white text-black" : "bg-[#141414] text-[#A1A1AA]"
+                      )}>
+                        <Icon className="w-4 h-4" />
+                      </span>
+                      <span className="flex-1 min-w-0">
+                        <span className="block text-[13px] font-medium truncate">{s.label}</span>
+                        <span className="block text-[11px] text-[#71717A] truncate">{s.hint}</span>
+                      </span>
+                      <ChevronRight className="w-4 h-4 text-[#52525B]" />
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        </SheetContent>
+      </Sheet>
+    </section>
+  );
+}
+

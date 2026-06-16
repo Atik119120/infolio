@@ -516,15 +516,16 @@ export default function PortfolioEdit() {
           </div>
         </section>
 
-        {/* MOBILE: editor + sticky bottom nav (PicsArt/Canva/CapCut style) */}
+        {/* MOBILE: carousel nav + 3 view modes (Edit / Split / Preview) */}
         <MobilePortfolioEditor
           sections={sections}
           activeSection={activeSection}
           setActiveSection={setActiveSection}
           activeMeta={activeMeta}
           renderForm={renderForm}
-          previewHrefFor={previewHrefFor}
+          previewUrl={previewUrl}
         />
+
 
 
 

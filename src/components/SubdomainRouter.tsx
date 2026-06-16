@@ -10,6 +10,7 @@ import {
   PRDPhotographerTheme,
   PRDDigitalMarketerTheme,
   BiographyTheme,
+  CreativeSidebarProTheme,
   ThemeProfile,
   ThemePortfolio,
   ThemeSkill,
@@ -17,6 +18,7 @@ import {
   ThemeExperience,
   ThemeEducation,
   ThemeSocialLink,
+  ThemeService,
 } from "@/components/portfolio/themes";
 
 interface SubdomainRouterProps {
@@ -119,6 +121,8 @@ function SubdomainPortfolio({ username }: { username: string }) {
   const [experiences, setExperiences] = useState<ThemeExperience[]>([]);
   const [education, setEducation] = useState<ThemeEducation[]>([]);
   const [socialLinks, setSocialLinks] = useState<ThemeSocialLink[]>([]);
+  const [services, setServices] = useState<ThemeService[]>([]);
+  const [contactItems, setContactItems] = useState<any[]>([]);
 
   usePortfolioHead({ portfolio, displayName: profile?.display_name });
 
@@ -156,12 +160,14 @@ function SubdomainPortfolio({ username }: { username: string }) {
       return;
     }
 
-    const [skillsRes, projectsRes, experiencesRes, educationRes, socialRes] = await Promise.all([
+    const [skillsRes, projectsRes, experiencesRes, educationRes, socialRes, servicesRes, contactRes] = await Promise.all([
       supabase.from("skills").select("*").eq("user_id", userId).order("created_at"),
       supabase.from("projects").select("*").eq("user_id", userId).order("display_order"),
       supabase.from("experiences").select("*").eq("user_id", userId).order("display_order"),
       supabase.from("education").select("*").eq("user_id", userId).order("display_order"),
       supabase.from("social_links").select("*").eq("user_id", userId).order("display_order"),
+      (supabase as any).from("services").select("*").eq("user_id", userId).order("display_order"),
+      (supabase as any).from("contact_items").select("*").eq("user_id", userId).order("display_order"),
     ]);
 
     setProfile(profileData);
@@ -171,6 +177,8 @@ function SubdomainPortfolio({ username }: { username: string }) {
     if (experiencesRes.data) setExperiences(experiencesRes.data);
     if (educationRes.data) setEducation(educationRes.data);
     if (socialRes.data) setSocialLinks(socialRes.data);
+    if ((servicesRes as any).data) setServices((servicesRes as any).data);
+    if ((contactRes as any).data) setContactItems((contactRes as any).data);
 
     setLoading(false);
   };
@@ -205,6 +213,8 @@ function SubdomainPortfolio({ username }: { username: string }) {
     experiences,
     education,
     socialLinks,
+    services,
+    contactItems,
   };
 
   const selectedTheme = portfolio?.theme || 'freelancer';
@@ -220,6 +230,8 @@ function SubdomainPortfolio({ username }: { username: string }) {
       return <PRDDigitalMarketerTheme {...themeProps} />;
     case 'biography':
       return <BiographyTheme {...themeProps} />;
+    case 'creative-sidebar-pro':
+      return <CreativeSidebarProTheme {...themeProps} />;
     case 'freelancer':
     default:
       return <FreelancerTheme {...themeProps} />;

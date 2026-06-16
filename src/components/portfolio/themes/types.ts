@@ -108,7 +108,7 @@ export interface ThemeOption {
 
 export const THEME_OPTIONS: ThemeOption[] = [
   { value: 'freelancer', label: 'Theme 1', description: 'Clean modern portfolio theme', isPremium: false, price: 0, category: 'free', tier: 'free' },
-  { value: 'creative-sidebar-pro', label: 'Creative Sidebar Pro', description: 'Premium freelancer portfolio with fixed sidebar', isPremium: true, price: 499, category: 'free', tier: 'pro' },
+  { value: 'creative-sidebar-pro', label: 'Creative Sidebar Pro', description: 'Creative freelancer portfolio with fixed sidebar', isPremium: false, price: 0, category: 'free', tier: 'free' },
 ];
 
 export const getThemesByCategory = (_category: ThemeCategory): ThemeOption[] => {

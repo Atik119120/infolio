@@ -37,7 +37,7 @@ export default function DashboardThemes() {
       <div>
         <h1 className="text-2xl font-semibold text-white tracking-tight">Themes</h1>
         <p className="text-sm text-white/50 mt-1">
-          Browse, preview, and select a theme for your portfolio. Premium themes can be purchased.
+          Browse, preview, and select a theme for your portfolio.
         </p>
       </div>
       <ThemeSelector

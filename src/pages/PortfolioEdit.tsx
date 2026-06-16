@@ -576,6 +576,7 @@ export default function PortfolioEdit() {
                   ref={iframeRef}
                   src={previewUrl}
                   title="Portfolio preview"
+                  data-preview="1"
                   className="w-full h-full border-0"
                 />
               </div>

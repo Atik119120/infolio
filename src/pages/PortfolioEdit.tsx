@@ -595,7 +595,6 @@ export default function PortfolioEdit() {
 
 /* ---------------- Mobile editor (carousel nav + view modes) ---------------- */
 type SectionMeta = { value: SectionKey; label: string; icon: any; hint: string; requires?: string };
-type MobileMode = "edit" | "split" | "preview";
 
 function MobilePortfolioEditor({
   sections, activeSection, setActiveSection, activeMeta, renderForm, previewUrl,

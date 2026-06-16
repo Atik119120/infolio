@@ -316,7 +316,7 @@ export default function CreativeSidebarProTheme({
                         <div className="absolute top-0 right-0 w-24 h-24 rounded-full -mr-12 -mt-12" style={{ background: `${accent}22` }} />
                         <div className="relative">
                           <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-3" style={{ background: `${accent}33`, color: accent }}>
-                            <ServiceIcon name={v.icon || "sparkles"} className="w-5 h-5" />
+                            <ServiceIcon icon={v.icon || "sparkles"} className="w-5 h-5" />
                           </div>
                           <p className="font-bold" style={{ color: primary }}>{v.title}</p>
                           <p className="text-xs tracking-wider uppercase mt-1" style={{ color: primary, opacity: 0.5 }}>{(v.description || "").slice(0, 30)}</p>
@@ -351,7 +351,7 @@ export default function CreativeSidebarProTheme({
               {(showServices as any[]).map(s => (
                 <div key={s.id} className="bg-white rounded-2xl border border-gray-200 p-6 hover:shadow-lg transition-shadow">
                   <div className="w-14 h-14 rounded-xl flex items-center justify-center mb-4" style={{ background: `${accent}26`, color: accent }}>
-                    <ServiceIcon name={s.icon || "sparkles"} className="w-6 h-6" />
+                    <ServiceIcon icon={s.icon || "sparkles"} className="w-6 h-6" />
                   </div>
                   <h3 className="font-bold text-lg mb-2" style={{ color: primary }}>{s.title}</h3>
                   <p className="text-sm leading-relaxed" style={{ color: primary, opacity: 0.65 }}>{s.description}</p>
@@ -436,7 +436,7 @@ export default function CreativeSidebarProTheme({
             <h2 className="text-4xl lg:text-5xl font-extrabold mb-12" style={{ color: primary }}>Get in Touch</h2>
             <div className="grid lg:grid-cols-3 gap-8">
               <div className="lg:col-span-2 rounded-2xl p-6 lg:p-8" style={{ background: cream }}>
-                <ContactForm userId={userId || ""} variant="default" />
+                <ContactForm portfolioOwnerId={userId || ""} variant="default" />
               </div>
               <div className="space-y-4">
                 {showContacts.map((item: any) => {

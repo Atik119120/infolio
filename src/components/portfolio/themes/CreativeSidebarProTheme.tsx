@@ -398,7 +398,7 @@ export default function CreativeSidebarProTheme({
         </section>
 
         {/* TESTIMONIALS */}
-        <section className="px-6 lg:px-20 py-20" style={{ background: cream }}>
+        <section className="px-6 lg:px-20 py-20 bg-white">
           <h2 className="text-3xl lg:text-4xl font-extrabold mb-10" style={{ color: primary }}>
             Client <span style={{ color: accent }}>Feedback</span>
           </h2>

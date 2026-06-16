@@ -304,28 +304,6 @@ export default function CreativeSidebarProTheme({
                 <p className="text-base font-semibold mt-2" style={{ color: primary }}>{profession}</p>
                 <p className="mt-6 leading-relaxed" style={{ color: primary, opacity: 0.75 }}>{aboutText}</p>
 
-                {/* Ventures (uses services as fallback ventures if needed — keeps theme self-contained) */}
-                <div className="mt-10">
-                  <div className="flex items-center gap-3 mb-5">
-                    <span className="w-8 h-[3px] rounded" style={{ background: accent }} />
-                    <h4 className="text-lg font-bold" style={{ color: primary }}>My Professional Ventures</h4>
-                  </div>
-                  <div className="grid sm:grid-cols-2 gap-4">
-                    {(showServices as any[]).slice(0, 2).map((v) => (
-                      <div key={v.id} className="relative p-5 rounded-xl border border-gray-200 bg-white hover:shadow-md transition-shadow overflow-hidden">
-                        <div className="absolute top-0 right-0 w-24 h-24 rounded-full -mr-12 -mt-12" style={{ background: `${accent}22` }} />
-                        <div className="relative">
-                          <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-3" style={{ background: `${accent}33`, color: accent }}>
-                            <ServiceIcon icon={v.icon || "sparkles"} className="w-5 h-5" />
-                          </div>
-                          <p className="font-bold" style={{ color: primary }}>{v.title}</p>
-                          <p className="text-xs tracking-wider uppercase mt-1" style={{ color: primary, opacity: 0.5 }}>{(v.description || "").slice(0, 30)}</p>
-                          <ArrowUpRight className="absolute top-0 right-0 w-4 h-4" style={{ color: primary, opacity: 0.4 }} />
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
 
                 {/* Personal info */}
                 <div className="mt-8 grid sm:grid-cols-2 gap-y-3 gap-x-6 text-sm">

@@ -127,6 +127,17 @@ export default function BuilderEditor() {
   }
 
 
+  if (isMobile) {
+    return (
+      <MobileBuilderEditor
+        onSave={() => save(false)}
+        onPublish={publish}
+        saving={saving}
+        publishing={publishing}
+      />
+    );
+  }
+
   return (
     <div className="fixed inset-0 bg-slate-900 flex flex-col text-white z-50">
       <TopBar onSave={() => save(false)} onPublish={publish} saving={saving} publishing={publishing} />

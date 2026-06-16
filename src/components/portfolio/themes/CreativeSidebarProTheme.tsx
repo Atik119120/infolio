@@ -288,7 +288,7 @@ export default function CreativeSidebarProTheme({
 
         {/* ABOUT */}
         {vAbout && (
-          <section id="about" className="px-6 lg:px-20 py-20 style={{ background: cream }}>
+          <section id="about" className="px-6 lg:px-20 py-20" style={{ background: cream }}>
             <h2 className="text-4xl lg:text-5xl font-extrabold mb-12" style={{ color: primary }}>About Me</h2>
             <div className="grid lg:grid-cols-2 gap-12 items-start">
               <div className="relative">

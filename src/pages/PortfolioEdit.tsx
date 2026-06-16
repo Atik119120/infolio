@@ -768,14 +768,12 @@ function MobilePortfolioEditor({
       {/* Body */}
       {mode === "edit" && (
         <div className="flex-1 min-h-0 flex flex-col relative">
-          {ViewSwitcher}
           {EditorPanel}
         </div>
       )}
 
       {mode === "preview" && (
         <div className="flex-1 min-h-0 bg-white overflow-hidden relative">
-          {ViewSwitcher}
           {PreviewFrame}
         </div>
       )}
@@ -786,7 +784,6 @@ function MobilePortfolioEditor({
             className="bg-white overflow-hidden relative"
             style={{ flexBasis: `${splitRatio * 100}%`, flexGrow: 0, flexShrink: 0 }}
           >
-            {ViewSwitcher}
             {PreviewFrame}
           </div>
           <div

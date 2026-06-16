@@ -272,8 +272,20 @@ export default function CreativeSidebarProTheme({
                     <img
                       src={heroImg}
                       alt={name}
-                      className="max-h-[520px] w-auto object-contain"
-                      style={{ filter: `drop-shadow(0 0 0 ${accent}) drop-shadow(2px 0 0 ${accent}) drop-shadow(-2px 0 0 ${accent}) drop-shadow(0 2px 0 ${accent}) drop-shadow(0 -2px 0 ${accent})` }}
+                      className="max-h-[560px] w-auto object-contain relative z-10"
+                      style={{
+                        filter: [
+                          `drop-shadow(3px 0 0 ${accent})`,
+                          `drop-shadow(-3px 0 0 ${accent})`,
+                          `drop-shadow(0 3px 0 ${accent})`,
+                          `drop-shadow(0 -3px 0 ${accent})`,
+                          `drop-shadow(2px 2px 0 ${accent})`,
+                          `drop-shadow(-2px -2px 0 ${accent})`,
+                          `drop-shadow(2px -2px 0 ${accent})`,
+                          `drop-shadow(-2px 2px 0 ${accent})`,
+                          `drop-shadow(0 20px 30px rgba(245,185,28,0.25))`,
+                        ].join(' '),
+                      }}
                     />
                   </div>
                 ) : (
@@ -288,7 +300,7 @@ export default function CreativeSidebarProTheme({
 
         {/* ABOUT */}
         {vAbout && (
-          <section id="about" className="px-6 lg:px-20 py-20" style={{ background: cream }}>
+          <section id="about" className="px-6 lg:px-20 py-20 bg-white">
             <h2 className="text-4xl lg:text-5xl font-extrabold mb-12" style={{ color: primary }}>About Me</h2>
             <div className="grid lg:grid-cols-2 gap-12 items-start">
               <div className="relative">
@@ -323,7 +335,7 @@ export default function CreativeSidebarProTheme({
 
         {/* SERVICES */}
         {vServices && (
-          <section id="services" className="px-6 lg:px-20 py-20" style={{ background: cream }}>
+          <section id="services" className="px-6 lg:px-20 py-20" style={{ background: softBg }}>
             <h2 className="text-4xl lg:text-5xl font-extrabold mb-12" style={{ color: primary }}>My Services</h2>
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {(showServices as any[]).map(s => (
@@ -341,7 +353,7 @@ export default function CreativeSidebarProTheme({
 
         {/* PORTFOLIO */}
         {vProjects && (
-          <section id="portfolio" className="px-6 lg:px-20 py-20" style={{ background: cream }}>
+          <section id="portfolio" className="px-6 lg:px-20 py-20 bg-white">
             <h2 className="text-4xl lg:text-5xl font-extrabold mb-12" style={{ color: primary }}>My Works</h2>
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {(showProjects as any[]).map(p => (
@@ -372,7 +384,7 @@ export default function CreativeSidebarProTheme({
         )}
 
         {/* CLIENTS */}
-        <section className="px-6 lg:px-20 py-16" style={{ background: cream }}>
+        <section className="px-6 lg:px-20 py-16" style={{ background: softBg }}>
           <h2 className="text-2xl lg:text-3xl font-extrabold mb-8" style={{ color: primary }}>
             Trusted by <span style={{ color: accent }}>Clients</span>
           </h2>
@@ -386,7 +398,7 @@ export default function CreativeSidebarProTheme({
         </section>
 
         {/* TESTIMONIALS */}
-        <section className="px-6 lg:px-20 py-20" style={{ background: cream }}>
+        <section className="px-6 lg:px-20 py-20 bg-white">
           <h2 className="text-3xl lg:text-4xl font-extrabold mb-10" style={{ color: primary }}>
             Client <span style={{ color: accent }}>Feedback</span>
           </h2>
@@ -410,7 +422,7 @@ export default function CreativeSidebarProTheme({
 
         {/* CONTACT */}
         {vContact && (
-          <section id="contact" className="px-6 lg:px-20 py-20" style={{ background: cream }}>
+          <section id="contact" className="px-6 lg:px-20 py-20" style={{ background: softBg }}>
             <h2 className="text-4xl lg:text-5xl font-extrabold mb-12" style={{ color: primary }}>Get in Touch</h2>
             <div className="grid lg:grid-cols-3 gap-8">
               <div className="lg:col-span-2 rounded-2xl p-6 lg:p-8" style={{ background: cream }}>

@@ -240,6 +240,35 @@ export default function PortfolioEdit() {
   const username = profile?.username;
   const previewUrl = username ? `/u/${username}?preview=1` : null;
 
+  // Map editor section -> anchor id rendered by themes
+  const sectionAnchors: Partial<Record<SectionKey, string>> = {
+    hero: "hero", about: "about", skills: "skills", services: "services",
+    projects: "projects", experience: "experience", education: "education",
+    contact: "contact",
+  };
+  const previewHrefFor = (key: SectionKey) => {
+    const id = sectionAnchors[key];
+    return previewUrl ? (id ? `${previewUrl}#${id}` : previewUrl) : null;
+  };
+
+  // Auto-scroll preview iframe to the active section (same-origin)
+  useEffect(() => {
+    const iframe = iframeRef.current;
+    const id = sectionAnchors[activeSection];
+    if (!iframe || !id) return;
+    const scroll = () => {
+      try {
+        const doc = iframe.contentDocument;
+        const el = doc?.getElementById(id);
+        if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+      } catch {}
+    };
+    scroll();
+    const t = setTimeout(scroll, 400);
+    return () => clearTimeout(t);
+  }, [activeSection]);
+
+
   const allSections: { value: SectionKey; label: string; icon: any; hint: string; requires?: string }[] = [
     { value: "hero", label: "Hero Section", icon: Home, hint: "Main landing area", requires: "customize" },
     { value: "about", label: "About Me", icon: User, hint: "Personal introduction", requires: "basic" },

@@ -508,51 +508,16 @@ export default function PortfolioEdit() {
           </div>
         </section>
 
-        {/* MOBILE: always-visible section list + editor */}
-        <section className="lg:hidden w-full flex-1 flex flex-col bg-[#0A0A0A] overflow-hidden">
-          {/* Section chips — always visible, wraps to multiple rows */}
-          <div className="shrink-0 px-3 pt-3 pb-2 border-b border-[#1f1f1f] bg-[#0A0A0A]">
-            <div className="flex flex-wrap gap-1.5">
-              {sections.map((s) => {
-                const active = activeSection === s.value;
-                const Icon = s.icon;
-                return (
-                  <button
-                    key={s.value}
-                    onClick={() => setActiveSection(s.value)}
-                    className={cn(
-                      "inline-flex items-center gap-1.5 px-2.5 h-8 rounded-md text-[12px] font-medium transition-colors duration-150 border",
-                      active
-                        ? "bg-white text-black border-white"
-                        : "bg-[#111111] text-[#A1A1AA] border-[#1f1f1f] hover:text-white hover:border-[#2a2a2a]"
-                    )}
-                  >
-                    <Icon className="w-3.5 h-3.5" />
-                    {s.label}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
+        {/* MOBILE: editor + sticky bottom nav (PicsArt/Canva/CapCut style) */}
+        <MobilePortfolioEditor
+          sections={sections}
+          activeSection={activeSection}
+          setActiveSection={setActiveSection}
+          activeMeta={activeMeta}
+          renderForm={renderForm}
+          previewHrefFor={previewHrefFor}
+        />
 
-          {/* Editor for the active section */}
-          <div className="shrink-0 px-5 pt-4 pb-2 flex items-center justify-between gap-3">
-            <h2 className="text-[14px] font-semibold tracking-tight truncate">{activeMeta?.label}</h2>
-            {previewHrefFor(activeSection) && (
-              <a
-                href={previewHrefFor(activeSection)!}
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex items-center gap-1 text-[11px] text-[#A1A1AA] hover:text-white shrink-0"
-              >
-                <Eye className="w-3 h-3" /> Preview
-              </a>
-            )}
-          </div>
-          <div className="flex-1 overflow-y-auto px-5 pb-8 portfolio-minimal-form">
-            {renderForm()}
-          </div>
-        </section>
 
 
         {/* PREVIEW (~75%) */}

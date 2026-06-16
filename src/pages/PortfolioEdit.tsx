@@ -64,6 +64,7 @@ type SectionKey =
 
 type Stage = "theme" | "editor";
 type Device = "desktop" | "tablet" | "mobile";
+type MobileMode = "edit" | "split" | "preview";
 
 export default function PortfolioEdit() {
   const [stage, setStage] = useState<Stage>("theme");

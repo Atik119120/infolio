@@ -15,6 +15,7 @@ import {
   BiographyTheme,
   CustomCodeTheme,
   AdminUploadedTheme,
+  CreativeSidebarProTheme,
   ThemeProfile,
   ThemePortfolio,
   ThemeSkill,
@@ -209,6 +210,8 @@ export default function PublicPortfolio() {
       return <BiographyTheme {...themeProps} />;
     case 'custom-code':
       return <CustomCodeTheme {...themeProps} />;
+    case 'creative-sidebar-pro':
+      return <CreativeSidebarProTheme {...themeProps} />;
     case 'freelancer':
     default:
       return <FreelancerTheme {...themeProps} />;

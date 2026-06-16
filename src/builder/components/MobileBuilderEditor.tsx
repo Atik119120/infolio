@@ -40,7 +40,7 @@ export function MobileBuilderEditor({ onSave, onPublish, saving, publishing }: P
   } = useBuilderStore();
 
   const [mode, setMode] = useState<Mode>("edit");
-  const [sheet, setSheet] = useState<Sheet>(null);
+  const [sheet, setSheet] = useState<SheetKey>(null);
   const [tplOpen, setTplOpen] = useState(false);
   const [aiOpen, setAiOpen] = useState(false);
 

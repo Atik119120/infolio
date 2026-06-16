@@ -14,6 +14,8 @@ import { LeftSidebar } from "@/builder/components/LeftSidebar";
 import { Canvas } from "@/builder/components/Canvas";
 import { RightPanel } from "@/builder/components/RightPanel";
 import { TopBar } from "@/builder/components/TopBar";
+import { MobileBuilderEditor } from "@/builder/components/MobileBuilderEditor";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 import { useKeyboardShortcuts } from "@/builder/hooks/useKeyboardShortcuts";
 import { Loader2, Wrench } from "lucide-react";
@@ -28,6 +30,7 @@ export default function BuilderEditor() {
   const [publishing, setPublishing] = useState(false);
   const store = useBuilderStore();
   const autosaveTimer = useRef<any>(null);
+  const isMobile = useIsMobile();
 
   // Load page
   useEffect(() => {
@@ -123,6 +126,17 @@ export default function BuilderEditor() {
     );
   }
 
+
+  if (isMobile) {
+    return (
+      <MobileBuilderEditor
+        onSave={() => save(false)}
+        onPublish={publish}
+        saving={saving}
+        publishing={publishing}
+      />
+    );
+  }
 
   return (
     <div className="fixed inset-0 bg-slate-900 flex flex-col text-white z-50">

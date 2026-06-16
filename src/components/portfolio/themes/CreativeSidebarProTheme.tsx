@@ -272,8 +272,20 @@ export default function CreativeSidebarProTheme({
                     <img
                       src={heroImg}
                       alt={name}
-                      className="max-h-[520px] w-auto object-contain"
-                      style={{ filter: `drop-shadow(0 0 0 ${accent}) drop-shadow(2px 0 0 ${accent}) drop-shadow(-2px 0 0 ${accent}) drop-shadow(0 2px 0 ${accent}) drop-shadow(0 -2px 0 ${accent})` }}
+                      className="max-h-[560px] w-auto object-contain relative z-10"
+                      style={{
+                        filter: [
+                          `drop-shadow(3px 0 0 ${accent})`,
+                          `drop-shadow(-3px 0 0 ${accent})`,
+                          `drop-shadow(0 3px 0 ${accent})`,
+                          `drop-shadow(0 -3px 0 ${accent})`,
+                          `drop-shadow(2px 2px 0 ${accent})`,
+                          `drop-shadow(-2px -2px 0 ${accent})`,
+                          `drop-shadow(2px -2px 0 ${accent})`,
+                          `drop-shadow(-2px 2px 0 ${accent})`,
+                          `drop-shadow(0 20px 30px rgba(245,185,28,0.25))`,
+                        ].join(' '),
+                      }}
                     />
                   </div>
                 ) : (

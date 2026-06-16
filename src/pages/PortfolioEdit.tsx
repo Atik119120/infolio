@@ -64,6 +64,7 @@ type SectionKey =
 
 type Stage = "theme" | "editor";
 type Device = "desktop" | "tablet" | "mobile";
+type MobileMode = "edit" | "split" | "preview";
 
 export default function PortfolioEdit() {
   const [stage, setStage] = useState<Stage>("theme");
@@ -82,6 +83,7 @@ export default function PortfolioEdit() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [publishing, setPublishing] = useState(false);
   const [saveStatus, setSaveStatus] = useState<"saved" | "saving" | "unsaved">("saved");
+  const [mobileMode, setMobileMode] = useState<MobileMode>("edit");
   const iframeRef = useRef<HTMLIFrameElement | null>(null);
   const previewReadyRef = useRef(false);
 
@@ -427,8 +429,8 @@ export default function PortfolioEdit() {
             <ArrowLeft className="w-3.5 h-3.5" />
             <span className="hidden sm:inline">Dashboard</span>
           </button>
-          <div className="h-4 w-px bg-[#262626]" />
-          <span className="text-[13px] font-medium tracking-tight">Portfolio Builder</span>
+          <div className="hidden sm:block h-4 w-px bg-[#262626]" />
+          <span className="hidden sm:inline text-[13px] font-medium tracking-tight">Portfolio Builder</span>
           <button
             onClick={() => setStage("theme")}
             className="hidden md:inline-flex items-center text-[12px] text-[#71717A] hover:text-white transition-colors duration-150"
@@ -436,6 +438,26 @@ export default function PortfolioEdit() {
             <span className="text-[#52525B] mr-1">·</span>
             Theme: <span className="capitalize ml-1 text-[#A1A1AA]">{activeTheme.replace(/-/g, " ")}</span>
           </button>
+        </div>
+
+        {/* Mobile view switcher (inside header) */}
+        <div className="lg:hidden absolute left-1/2 -translate-x-1/2 inline-flex items-center gap-0.5 p-0.5 rounded-full bg-[#111111] border border-[#262626]">
+          {([
+            { v: "edit", label: "Edit" },
+            { v: "split", label: "Split" },
+            { v: "preview", label: "Preview" },
+          ] as const).map(({ v, label }) => (
+            <button
+              key={v}
+              onClick={() => setMobileMode(v)}
+              className={cn(
+                "px-2.5 h-6 rounded-full text-[10.5px] font-medium tracking-tight transition-colors duration-150",
+                mobileMode === v ? "bg-white text-black" : "text-[#A1A1AA] hover:text-white"
+              )}
+            >
+              {label}
+            </button>
+          ))}
         </div>
 
         <div className="flex items-center gap-2">
@@ -524,6 +546,8 @@ export default function PortfolioEdit() {
           activeMeta={activeMeta}
           renderForm={renderForm}
           previewUrl={previewUrl}
+          mode={mobileMode}
+          setMode={setMobileMode}
         />
 
 
@@ -594,10 +618,9 @@ export default function PortfolioEdit() {
 
 /* ---------------- Mobile editor (carousel nav + view modes) ---------------- */
 type SectionMeta = { value: SectionKey; label: string; icon: any; hint: string; requires?: string };
-type MobileMode = "edit" | "split" | "preview";
 
 function MobilePortfolioEditor({
-  sections, activeSection, setActiveSection, activeMeta, renderForm, previewUrl,
+  sections, activeSection, setActiveSection, activeMeta, renderForm, previewUrl, mode, setMode,
 }: {
   sections: SectionMeta[];
   activeSection: SectionKey;
@@ -605,8 +628,10 @@ function MobilePortfolioEditor({
   activeMeta: SectionMeta | undefined;
   renderForm: () => React.ReactNode;
   previewUrl: string | null;
+  mode: MobileMode;
+  setMode: (m: MobileMode) => void;
 }) {
-  const [mode, setMode] = useState<MobileMode>("edit");
+  
   const [splitRatio, setSplitRatio] = useState(0.4); // preview share (40% preview / 60% editor)
   const [navCollapsed, setNavCollapsed] = useState(false);
   const scrollerRef = useRef<HTMLDivElement | null>(null);
@@ -676,27 +701,6 @@ function MobilePortfolioEditor({
     </div>
   );
 
-  // Floating compact view switcher (Edit | Split | Preview)
-  const ViewSwitcher = (
-    <div className="absolute top-2 right-2 z-20 inline-flex items-center gap-0.5 p-0.5 rounded-full bg-black/70 backdrop-blur border border-white/10 shadow-lg">
-      {([
-        { v: "edit", label: "Edit" },
-        { v: "split", label: "Split" },
-        { v: "preview", label: "Preview" },
-      ] as const).map(({ v, label }) => (
-        <button
-          key={v}
-          onClick={() => setMode(v)}
-          className={cn(
-            "px-2.5 h-6 rounded-full text-[10.5px] font-medium tracking-tight transition-colors duration-150",
-            mode === v ? "bg-white text-black" : "text-white/70 hover:text-white"
-          )}
-        >
-          {label}
-        </button>
-      ))}
-    </div>
-  );
 
   // Compact bottom section nav (smart collapse)
   const SectionNav = (
@@ -764,14 +768,12 @@ function MobilePortfolioEditor({
       {/* Body */}
       {mode === "edit" && (
         <div className="flex-1 min-h-0 flex flex-col relative">
-          {ViewSwitcher}
           {EditorPanel}
         </div>
       )}
 
       {mode === "preview" && (
         <div className="flex-1 min-h-0 bg-white overflow-hidden relative">
-          {ViewSwitcher}
           {PreviewFrame}
         </div>
       )}
@@ -782,7 +784,6 @@ function MobilePortfolioEditor({
             className="bg-white overflow-hidden relative"
             style={{ flexBasis: `${splitRatio * 100}%`, flexGrow: 0, flexShrink: 0 }}
           >
-            {ViewSwitcher}
             {PreviewFrame}
           </div>
           <div

@@ -414,7 +414,17 @@ export default function CreativeSidebarProTheme({
             <h2 className="text-4xl lg:text-5xl font-extrabold mb-12" style={{ color: primary }}>Get in Touch</h2>
             <div className="grid lg:grid-cols-3 gap-8">
               <div className="lg:col-span-2 rounded-2xl p-6 lg:p-8" style={{ background: cream }}>
-                <ContactForm portfolioOwnerId={userId || ""} variant="default" />
+                <ContactForm
+                  portfolioOwnerId={userId || ""}
+                  themeStyle={{
+                    surface: "#0B1220",
+                    border: "rgba(11,27,51,0.15)",
+                    text: "#FFFFFF",
+                    textMuted: primary,
+                    accent: accent,
+                    accentText: primary,
+                  }}
+                />
               </div>
               <div className="space-y-4">
                 {showContacts.map((item: any) => {

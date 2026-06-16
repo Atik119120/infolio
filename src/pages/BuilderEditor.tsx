@@ -14,6 +14,8 @@ import { LeftSidebar } from "@/builder/components/LeftSidebar";
 import { Canvas } from "@/builder/components/Canvas";
 import { RightPanel } from "@/builder/components/RightPanel";
 import { TopBar } from "@/builder/components/TopBar";
+import { MobileBuilderEditor } from "@/builder/components/MobileBuilderEditor";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 import { useKeyboardShortcuts } from "@/builder/hooks/useKeyboardShortcuts";
 import { Loader2, Wrench } from "lucide-react";

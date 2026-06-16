@@ -28,7 +28,7 @@ interface Props {
   publishing: boolean;
 }
 
-type Sheet = null | "add" | "sections" | "page" | "more";
+type SheetKey = null | "add" | "sections" | "page" | "more";
 type Mode = "edit" | "preview";
 
 export function MobileBuilderEditor({ onSave, onPublish, saving, publishing }: Props) {

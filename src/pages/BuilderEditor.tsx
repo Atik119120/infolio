@@ -30,6 +30,7 @@ export default function BuilderEditor() {
   const [publishing, setPublishing] = useState(false);
   const store = useBuilderStore();
   const autosaveTimer = useRef<any>(null);
+  const isMobile = useIsMobile();
 
   // Load page
   useEffect(() => {

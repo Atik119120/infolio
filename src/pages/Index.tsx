@@ -35,7 +35,7 @@ export default function Index() {
       </Helmet>
 
       {/* HERO */}
-      <section className="relative isolate flex items-center min-h-[75vh] md:min-h-[85vh] pt-24 md:pt-32 pb-12 md:pb-16 px-6 overflow-hidden">
+      <section className="relative isolate flex items-center min-h-[90vh] md:min-h-[100vh] pt-28 md:pt-36 pb-16 md:pb-20 px-6 overflow-hidden">
         <div aria-hidden className="absolute inset-0 -z-20 bg-background" />
         <div aria-hidden className="absolute inset-0 -z-10 pointer-events-none"
           style={{ background: "radial-gradient(ellipse 90% 70% at 50% 100%, hsl(187 90% 35% / 0.55), transparent 70%)" }} />

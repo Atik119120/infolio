@@ -453,7 +453,7 @@ export default function PortfolioEdit() {
               href={previewUrl}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center gap-1.5 text-[12px] px-3 h-8 rounded-md border border-[#262626] text-[#A1A1AA] hover:text-white hover:border-[#3f3f3f] transition-all duration-150"
+              className="hidden lg:inline-flex items-center gap-1.5 text-[12px] px-3 h-8 rounded-md border border-[#262626] text-[#A1A1AA] hover:text-white hover:border-[#3f3f3f] transition-all duration-150"
             >
               Preview
             </a>

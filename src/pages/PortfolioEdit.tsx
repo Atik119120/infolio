@@ -620,7 +620,7 @@ export default function PortfolioEdit() {
 type SectionMeta = { value: SectionKey; label: string; icon: any; hint: string; requires?: string };
 
 function MobilePortfolioEditor({
-  sections, activeSection, setActiveSection, activeMeta, renderForm, previewUrl,
+  sections, activeSection, setActiveSection, activeMeta, renderForm, previewUrl, mode, setMode,
 }: {
   sections: SectionMeta[];
   activeSection: SectionKey;
@@ -628,6 +628,8 @@ function MobilePortfolioEditor({
   activeMeta: SectionMeta | undefined;
   renderForm: () => React.ReactNode;
   previewUrl: string | null;
+  mode: MobileMode;
+  setMode: (m: MobileMode) => void;
 }) {
   const [mode, setMode] = useState<MobileMode>("edit");
   const [splitRatio, setSplitRatio] = useState(0.4); // preview share (40% preview / 60% editor)

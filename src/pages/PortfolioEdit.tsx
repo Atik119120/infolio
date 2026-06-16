@@ -107,7 +107,7 @@ export default function PortfolioEdit() {
     if (user) fetchAllData();
   }, [user]);
 
-  // Scroll preview to the active section
+  // Scroll preview to the active section (broadcast to all preview iframes)
   useEffect(() => {
     if (!previewReadyRef.current) return;
     const sectionToId: Record<string, string | "__top__" | "__bottom__"> = {
@@ -128,10 +128,14 @@ export default function PortfolioEdit() {
     const target = sectionToId[activeSection];
     if (!target) return;
     try {
-      iframeRef.current?.contentWindow?.postMessage(
-        { type: "lovable-preview-scroll", target },
-        "*"
-      );
+      document
+        .querySelectorAll<HTMLIFrameElement>('iframe[data-preview="1"]')
+        .forEach((f) =>
+          f.contentWindow?.postMessage(
+            { type: "lovable-preview-scroll", target },
+            "*"
+          )
+        );
     } catch {}
   }, [activeSection]);
 
@@ -142,7 +146,7 @@ export default function PortfolioEdit() {
     return () => { document.body.style.overflow = prev; };
   }, []);
 
-  // Push the latest snapshot into the preview iframe (no reload).
+  // Push the latest snapshot into all preview iframes (no reload).
   const pushPreviewSnapshot = (snapshot?: {
     profile?: any; portfolio?: any; skills?: any[]; projects?: any[];
     experiences?: any[]; education?: any[]; socialLinks?: any[]; services?: any[]; contactItems?: any[];
@@ -151,14 +155,18 @@ export default function PortfolioEdit() {
       profile, portfolio, skills, projects, experiences, education, socialLinks, services, contactItems,
     };
     try {
-      iframeRef.current?.contentWindow?.postMessage(
-        { type: "lovable-preview-update", payload },
-        "*"
-      );
+      document
+        .querySelectorAll<HTMLIFrameElement>('iframe[data-preview="1"]')
+        .forEach((f) =>
+          f.contentWindow?.postMessage(
+            { type: "lovable-preview-update", payload },
+            "*"
+          )
+        );
     } catch {}
   };
 
-  // Listen for the iframe announcing it is ready to receive a snapshot.
+  // Listen for any iframe announcing it is ready to receive a snapshot.
   useEffect(() => {
     const onMsg = (e: MessageEvent) => {
       if (e?.data?.type === "lovable-preview-ready") {

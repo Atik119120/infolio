@@ -1,5 +1,5 @@
-import { useEffect, useState, useMemo } from "react";
-import { Menu, X, Mail, Phone, MapPin, Globe, ExternalLink, ArrowUpRight, Send } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Menu, X, Mail, Phone, MapPin, Globe, ArrowUpRight } from "lucide-react";
 import { ServiceIcon } from "@/lib/serviceIcons";
 import { ThemeProps } from "./types";
 import { ContactForm } from "@/components/portfolio/ContactForm";
@@ -7,9 +7,9 @@ import { getSocialIcon } from "./utils";
 import { isVisible } from "@/lib/sectionVisibility";
 
 /**
- * Creative Sidebar Pro — Fixed-sidebar freelancer portfolio.
- * Matches reference: cream/yellow accent, circular avatar with ring,
- * Hero / About / Services / Portfolio / Clients / Testimonials / Contact.
+ * Creative Sidebar Pro — Editorial magazine-grade refresh.
+ * Fixed left sidebar + serif/sans typography pairing, hairline borders,
+ * asymmetric layouts, section numbering, refined accent usage.
  */
 
 const NAV = [
@@ -56,7 +56,6 @@ export default function CreativeSidebarProTheme({
 
   useEffect(() => { window.scrollTo(0, 0); }, []);
 
-  // Scroll spy
   useEffect(() => {
     const handler = () => {
       const offsets = NAV.map(n => {
@@ -71,29 +70,27 @@ export default function CreativeSidebarProTheme({
     return () => window.removeEventListener("scroll", handler);
   }, []);
 
-  const primary = (portfolio as any)?.primary_color || "#0B1B33";
-  const accent = (portfolio as any)?.accent_color || "#F5B91C";
-  const cream = "#FBF6E2";
-  const softBg = "#F5F6F8";
+  const primary = (portfolio as any)?.primary_color || "#1A1A1A";
+  const accent = (portfolio as any)?.accent_color || "#C9A24C";
+  const paper = "#FAF9F6";
+  const ink = "#1A1A1A";
+  const hairline = "#EAE7E0";
 
   const name = portfolio?.brand_name || profile?.display_name || "Your Name";
   const profession = portfolio?.hero_subheadline || portfolio?.headline || "Creative Professional";
-  const heroHeadline = portfolio?.hero_headline || `Hi, I'm ${name}!`;
+  const heroHeadline = portfolio?.hero_headline || `Hi, I'm ${name}.`;
   const heroDesc = portfolio?.bio || "A passionate creative designer crafting impactful digital experiences with clean design and modern code.";
   const heroImg = portfolio?.hero_image_url || profile?.avatar_url;
   const avatar = profile?.avatar_url;
   const aboutImg = portfolio?.about_image_url || avatar;
-  const aboutHeading = `I'm ${name}`;
   const aboutText = portfolio?.about_text || heroDesc;
   const footerText = portfolio?.footer_text || `© ${new Date().getFullYear()} ${name}`;
   const cta1Text = portfolio?.hero_cta_text || "Hire Me";
   const cta1Link = portfolio?.hero_cta_link || "#contact";
-  const cta2Text = "View Work";
-  const cta2Link = "#portfolio";
 
   const showServices = services.length > 0 ? services : DEMO_SERVICES as any;
   const showProjects = projects.length > 0 ? projects : DEMO_PROJECTS as any;
-  const showTestimonials = DEMO_TESTIMONIALS; // no DB table yet
+  const showTestimonials = DEMO_TESTIMONIALS;
   const showClients = DEMO_CLIENTS;
   const showContacts = contactItems.length > 0 ? contactItems : [
     profile?.email && { id: "c-mail", type: "email", label: "Email Address", value: profile.email, icon: "mail" },
@@ -116,59 +113,59 @@ export default function CreativeSidebarProTheme({
     if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
+  const serif = "'Playfair Display', 'Cormorant Garamond', Georgia, serif";
+
   const sidebarContent = (
-    <div className="flex flex-col h-full px-6 py-8">
+    <div className="flex flex-col h-full px-8 py-10">
       {/* Top: avatar + name */}
-      <div className="flex flex-col items-center text-center">
-        <div className="relative w-32 h-32 mb-4">
-          <div
-            className="absolute inset-0 rounded-full"
-            style={{
-              background: `conic-gradient(from 220deg, ${accent} 0deg, ${accent} 200deg, transparent 200deg)`,
-              padding: 3,
-            }}
-          >
-            <div className="w-full h-full rounded-full bg-white p-1">
-              {avatar ? (
-                <img src={avatar} alt={name} className="w-full h-full rounded-full object-cover" />
-              ) : (
-                <div className="w-full h-full rounded-full bg-gray-200 flex items-center justify-center text-2xl font-bold" style={{ color: primary }}>
-                  {name.charAt(0)}
-                </div>
-              )}
+      <div className="flex flex-col items-start">
+        <div className="relative w-24 h-24 mb-6 rounded-2xl overflow-hidden" style={{ background: "#F2EFE8" }}>
+          {avatar ? (
+            <img src={avatar} alt={name} className="w-full h-full object-cover" />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center text-2xl font-bold" style={{ color: primary }}>
+              {name.charAt(0)}
             </div>
-          </div>
+          )}
         </div>
-        <h2 className="font-bold text-lg" style={{ color: primary }}>{name}</h2>
-        <p className="text-xs font-semibold tracking-[0.2em] uppercase mt-1" style={{ color: accent }}>
+        <h2 className="text-2xl font-bold leading-tight" style={{ color: ink, fontFamily: serif }}>{name}</h2>
+        <p className="text-[10px] font-semibold tracking-[0.25em] uppercase mt-2" style={{ color: accent }}>
           {profession}
         </p>
       </div>
 
       {/* Menu */}
-      <nav className="mt-10 flex flex-col gap-1">
-        {visibleNav.map(item => {
+      <nav className="mt-12 flex flex-col gap-1">
+        {visibleNav.map((item, i) => {
           const isActive = active === item.id;
           return (
             <button
               key={item.id}
               onClick={() => scrollTo(item.id)}
-              className="text-center py-3 rounded-lg text-sm font-semibold transition-all"
-              style={{
-                background: isActive ? "#F1F3F5" : "transparent",
-                color: isActive ? accent : primary,
-              }}
+              className="group text-left py-2.5 text-sm font-medium transition-all flex items-center gap-3"
+              style={{ color: isActive ? ink : "#9A958A" }}
             >
-              {item.label}
+              <span
+                className="text-[10px] tabular-nums tracking-widest font-mono"
+                style={{ color: isActive ? accent : "#C6C0B2" }}
+              >
+                {String(i + 1).padStart(2, "0")}
+              </span>
+              <span className="relative">
+                {item.label}
+                {isActive && (
+                  <span className="absolute -bottom-1 left-0 right-0 h-px" style={{ background: ink }} />
+                )}
+              </span>
             </button>
           );
         })}
       </nav>
 
-      {/* Bottom: social + copyright */}
-      <div className="mt-auto pt-6">
+      {/* Bottom */}
+      <div className="mt-auto pt-8 border-t" style={{ borderColor: hairline }}>
         {vSocial && socialLinks.length > 0 && (
-          <div className="flex justify-center flex-wrap gap-2 mb-4">
+          <div className="flex flex-wrap gap-3 mb-5">
             {socialLinks.map(s => {
               const Icon = getSocialIcon(s.platform);
               return (
@@ -177,8 +174,8 @@ export default function CreativeSidebarProTheme({
                   href={s.url}
                   target="_blank"
                   rel="noreferrer"
-                  className="w-9 h-9 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors"
-                  style={{ color: primary }}
+                  className="w-8 h-8 flex items-center justify-center transition-colors hover:opacity-60"
+                  style={{ color: ink }}
                   aria-label={s.platform}
                 >
                   <Icon className="w-4 h-4" />
@@ -187,51 +184,35 @@ export default function CreativeSidebarProTheme({
             })}
           </div>
         )}
-        <div className="text-center text-xs text-gray-400 leading-relaxed">
-          <p>{footerText}</p>
-        </div>
+        <p className="text-[10px] tracking-widest uppercase" style={{ color: "#9A958A" }}>{footerText}</p>
       </div>
     </div>
   );
 
   return (
-    <div className="min-h-screen bg-white" style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif" }}>
+    <div className="min-h-screen" style={{ fontFamily: "'Inter', system-ui, sans-serif", background: paper, color: ink }}>
       <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,700;1,500;1,700&display=swap');
         html { scroll-behavior: smooth; }
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
-        .service-card {
-          transition: all 0.35s ease;
-        }
-        .service-card:hover {
-          background-color: ${accent} !important;
-          border-color: ${accent} !important;
-          box-shadow: 0 12px 40px -12px ${accent}40 !important;
-        }
-        .service-card:hover .service-icon-wrap {
-          background: rgba(255,255,255,0.25) !important;
-        }
-        .service-card:hover .service-icon {
-          color: #FFFFFF !important;
-        }
-        .service-card:hover .service-title {
-          color: #FFFFFF !important;
-        }
-        .service-card:hover .service-desc {
-          color: rgba(255,255,255,0.9) !important;
-        }
+        .svc-card { transition: background .35s ease, color .35s ease; }
+        .svc-card:hover { background: ${ink}; color: #fff; }
+        .svc-card:hover .svc-title { color: #fff; }
+        .svc-card:hover .svc-desc { color: rgba(255,255,255,0.65); }
+        .svc-card:hover .svc-icon-wrap { background: rgba(255,255,255,0.08); color: ${accent}; }
+        .svc-card:hover .svc-num { color: ${accent}; }
       `}</style>
 
-      {/* Mobile top header */}
-      <header className="lg:hidden sticky top-0 z-40 bg-white border-b border-gray-100 px-4 h-14 flex items-center justify-between">
+      {/* Mobile header */}
+      <header className="lg:hidden sticky top-0 z-40 border-b px-5 h-14 flex items-center justify-between" style={{ background: paper, borderColor: hairline }}>
         <div className="flex items-center gap-3">
-          {avatar && <img src={avatar} alt={name} className="w-9 h-9 rounded-full object-cover ring-2" style={{ ['--tw-ring-color' as any]: accent }} />}
+          {avatar && <img src={avatar} alt={name} className="w-9 h-9 rounded-lg object-cover" />}
           <div>
-            <p className="font-bold text-sm leading-tight" style={{ color: primary }}>{name}</p>
-            <p className="text-[10px] tracking-widest uppercase" style={{ color: accent }}>{profession}</p>
+            <p className="font-bold text-sm leading-tight" style={{ color: ink, fontFamily: serif }}>{name}</p>
+            <p className="text-[9px] tracking-[0.2em] uppercase" style={{ color: accent }}>{profession}</p>
           </div>
         </div>
-        <button onClick={() => setMenuOpen(true)} className="p-2 rounded-lg hover:bg-gray-100" aria-label="Menu">
-          <Menu className="w-5 h-5" style={{ color: primary }} />
+        <button onClick={() => setMenuOpen(true)} className="p-2" aria-label="Menu">
+          <Menu className="w-5 h-5" style={{ color: ink }} />
         </button>
       </header>
 
@@ -239,9 +220,9 @@ export default function CreativeSidebarProTheme({
       {menuOpen && (
         <div className="lg:hidden fixed inset-0 z-50">
           <div className="absolute inset-0 bg-black/40" onClick={() => setMenuOpen(false)} />
-          <aside className="absolute left-0 top-0 bottom-0 w-72 bg-white shadow-xl">
+          <aside className="absolute left-0 top-0 bottom-0 w-72 shadow-xl" style={{ background: paper }}>
             <button onClick={() => setMenuOpen(false)} className="absolute top-4 right-4 p-2 z-10" aria-label="Close">
-              <X className="w-5 h-5" style={{ color: primary }} />
+              <X className="w-5 h-5" style={{ color: ink }} />
             </button>
             {sidebarContent}
           </aside>
@@ -249,68 +230,55 @@ export default function CreativeSidebarProTheme({
       )}
 
       {/* Desktop sidebar */}
-      <aside className="hidden lg:flex fixed left-0 top-0 bottom-0 w-[300px] border-r border-gray-100 bg-white z-30">
+      <aside className="hidden lg:flex fixed left-0 top-0 bottom-0 w-[300px] border-r z-30" style={{ background: paper, borderColor: hairline }}>
         {sidebarContent}
       </aside>
 
-      {/* Content */}
       <main className="lg:ml-[300px]">
         {/* HERO */}
         {vHero && (
-          <section id="home" className="min-h-screen flex items-center px-6 lg:px-20 py-16 relative overflow-hidden" style={{ background: cream }}>
-            <div className="grid lg:grid-cols-2 gap-10 items-center w-full">
-              <div>
-                <h1 className="text-4xl lg:text-6xl font-extrabold leading-tight" style={{ color: primary }}>
-                  {heroHeadline}
+          <section id="home" className="min-h-screen flex items-center px-6 lg:px-20 py-20 border-b" style={{ borderColor: hairline }}>
+            <div className="grid lg:grid-cols-12 gap-12 items-center w-full max-w-6xl mx-auto">
+              <div className="lg:col-span-7">
+                <p className="text-[11px] font-semibold tracking-[0.3em] uppercase mb-6 flex items-center gap-3" style={{ color: accent }}>
+                  <span className="h-px w-8" style={{ background: accent }} /> Available for projects
+                </p>
+                <h1 className="text-5xl lg:text-7xl leading-[1.05] tracking-tight" style={{ color: ink, fontFamily: serif, fontWeight: 700 }}>
+                  {heroHeadline.split(" ").slice(0, -1).join(" ")}{" "}
+                  <span style={{ fontStyle: "italic", fontWeight: 500 }}>{heroHeadline.split(" ").slice(-1).join(" ")}</span>
                 </h1>
-                <p className="mt-6 text-xl lg:text-2xl font-bold">
-                  <span style={{ color: primary }}>A Passionate </span>
-                  <span style={{ color: accent }}>{profession} | Passionate About Design</span>
+                <p className="mt-8 text-lg leading-relaxed max-w-lg" style={{ color: "#5C5850" }}>
+                  A passionate{" "}
+                  <span className="font-semibold border-b-2 pb-0.5" style={{ color: ink, borderColor: accent }}>{profession}</span>
+                  . {heroDesc}
                 </p>
-                <p className="mt-6 text-base leading-relaxed max-w-lg" style={{ color: primary, opacity: 0.75 }}>
-                  {heroDesc}
-                </p>
-                <div className="mt-8 flex flex-wrap gap-4">
+                <div className="mt-10 flex flex-wrap gap-4">
                   <a
                     href={cta1Link}
-                    className="px-6 py-3 rounded-full font-semibold text-sm border-2 bg-white transition-all hover:scale-[1.02]"
-                    style={{ borderColor: primary, color: primary }}
+                    className="px-8 py-4 text-[11px] font-bold uppercase tracking-[0.2em] transition-all hover:opacity-90 flex items-center gap-3"
+                    style={{ background: ink, color: "#fff" }}
                   >
-                    {cta1Text}
+                    {cta1Text} <ArrowUpRight className="w-4 h-4" />
                   </a>
                   <a
-                    href={cta2Link}
-                    className="px-6 py-3 rounded-full font-semibold text-sm text-white transition-all hover:scale-[1.02]"
-                    style={{ background: "#4FD1A0" }}
+                    href="#portfolio"
+                    className="px-8 py-4 text-[11px] font-bold uppercase tracking-[0.2em] border transition-all hover:bg-white"
+                    style={{ borderColor: "#D9D4C7", color: ink }}
                   >
-                    {cta2Text}
+                    View Work
                   </a>
                 </div>
               </div>
-              <div className="relative flex justify-center lg:justify-end">
+              <div className="lg:col-span-5 relative">
                 {heroImg ? (
                   <div className="relative">
-                    <img
-                      src={heroImg}
-                      alt={name}
-                      className="max-h-[560px] w-auto object-contain relative z-10"
-                      style={{
-                        filter: [
-                          `drop-shadow(3px 0 0 ${accent})`,
-                          `drop-shadow(-3px 0 0 ${accent})`,
-                          `drop-shadow(0 3px 0 ${accent})`,
-                          `drop-shadow(0 -3px 0 ${accent})`,
-                          `drop-shadow(2px 2px 0 ${accent})`,
-                          `drop-shadow(-2px -2px 0 ${accent})`,
-                          `drop-shadow(2px -2px 0 ${accent})`,
-                          `drop-shadow(-2px 2px 0 ${accent})`,
-                          `drop-shadow(0 20px 30px rgba(245,185,28,0.25))`,
-                        ].join(' '),
-                      }}
-                    />
+                    <div className="absolute -bottom-5 -right-5 w-full h-full border" style={{ borderColor: accent }} />
+                    <div className="relative aspect-[4/5] overflow-hidden" style={{ background: "#F2EFE8" }}>
+                      <img src={heroImg} alt={name} className="w-full h-full object-cover" />
+                    </div>
                   </div>
                 ) : (
-                  <div className="w-80 h-80 rounded-3xl flex items-center justify-center text-7xl font-bold" style={{ background: accent, color: primary }}>
+                  <div className="aspect-[4/5] flex items-center justify-center text-7xl" style={{ background: accent, color: ink, fontFamily: serif }}>
                     {name.charAt(0)}
                   </div>
                 )}
@@ -321,34 +289,38 @@ export default function CreativeSidebarProTheme({
 
         {/* ABOUT */}
         {vAbout && (
-          <section id="about" className="px-6 lg:px-20 py-20 bg-white">
-            <h2 className="text-4xl lg:text-5xl font-extrabold mb-12" style={{ color: primary }}>About Me</h2>
-            <div className="grid lg:grid-cols-2 gap-12 items-start">
-              <div className="relative">
-                {aboutImg && (
-                  <div className="relative">
-                    <div className="absolute -bottom-4 -right-4 w-full h-full rounded-xl" style={{ background: accent }} />
-                    <img src={aboutImg} alt="About" className="relative w-full max-h-[560px] object-cover rounded-xl" />
+          <section id="about" className="px-6 lg:px-20 py-28 border-b" style={{ borderColor: hairline }}>
+            <div className="max-w-6xl mx-auto">
+              <SectionLabel number="01" label="About" accent={accent} />
+              <div className="grid lg:grid-cols-2 gap-16 items-start mt-10">
+                <div className="relative">
+                  {aboutImg ? (
+                    <div className="relative aspect-[4/5] overflow-hidden" style={{ background: "#F2EFE8" }}>
+                      <img src={aboutImg} alt="About" className="w-full h-full object-cover grayscale" />
+                    </div>
+                  ) : null}
+                  <div className="absolute -bottom-6 -right-6 bg-white p-6 shadow-xl max-w-[200px] border" style={{ borderColor: hairline }}>
+                    <p className="text-4xl" style={{ fontFamily: serif, color: ink }}>05<span style={{ color: accent }}>+</span></p>
+                    <p className="text-[10px] uppercase tracking-[0.25em] mt-1" style={{ color: "#9A958A" }}>Years of craft</p>
                   </div>
-                )}
-              </div>
-              <div>
-                <h3 className="text-2xl font-bold" style={{ color: primary }}>{aboutHeading}</h3>
-                <p className="text-base font-semibold mt-2" style={{ color: primary }}>{profession}</p>
-                <p className="mt-6 leading-relaxed" style={{ color: primary, opacity: 0.75 }}>{aboutText}</p>
-
-
-                {/* Personal info */}
-                <div className="mt-8 grid sm:grid-cols-2 gap-y-3 gap-x-6 text-sm">
-                  {profile?.email && <InfoLine label="Email" value={profile.email} primary={primary} />}
-                  {portfolio?.phone && <InfoLine label="Phone" value={portfolio.phone} primary={primary} />}
-                  {portfolio?.location && <InfoLine label="Residence" value={portfolio.location} primary={primary} />}
-                  {portfolio?.website && <InfoLine label="Website" value={portfolio.website} primary={primary} />}
                 </div>
+                <div>
+                  <h2 className="text-4xl lg:text-5xl leading-tight" style={{ fontFamily: serif, color: ink, fontWeight: 700 }}>
+                    Merging <span style={{ fontStyle: "italic", fontWeight: 500 }}>aesthetic precision</span> with functional strategy.
+                  </h2>
+                  <p className="mt-8 leading-relaxed text-base" style={{ color: "#5C5850" }}>{aboutText}</p>
 
-                <a href="#contact" className="inline-block mt-8 px-6 py-3 rounded-md font-bold text-sm uppercase tracking-wider text-white" style={{ background: accent }}>
-                  Get a Custom Quote
-                </a>
+                  <div className="mt-10 grid sm:grid-cols-2 gap-y-6 gap-x-8">
+                    {profile?.email && <InfoLine label="Email" value={profile.email} ink={ink} />}
+                    {portfolio?.phone && <InfoLine label="Phone" value={portfolio.phone} ink={ink} />}
+                    {portfolio?.location && <InfoLine label="Residence" value={portfolio.location} ink={ink} />}
+                    {portfolio?.website && <InfoLine label="Website" value={portfolio.website} ink={ink} />}
+                  </div>
+
+                  <a href="#contact" className="inline-flex items-center gap-3 mt-12 px-8 py-4 text-[11px] font-bold uppercase tracking-[0.2em]" style={{ background: accent, color: ink }}>
+                    Get a Custom Quote <ArrowUpRight className="w-4 h-4" />
+                  </a>
+                </div>
               </div>
             </div>
           </section>
@@ -356,124 +328,154 @@ export default function CreativeSidebarProTheme({
 
         {/* SERVICES */}
         {vServices && (
-          <section id="services" className="px-6 lg:px-20 py-20" style={{ background: softBg }}>
-            <h2 className="text-4xl lg:text-5xl font-extrabold mb-12" style={{ color: primary }}>My Services</h2>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {(showServices as any[]).map(s => (
-              <div key={s.id} className="service-card bg-white rounded-2xl border border-gray-200 p-6 hover:shadow-lg cursor-pointer">
-                  <div className="service-icon-wrap w-14 h-14 rounded-xl flex items-center justify-center mb-4" style={{ background: `${accent}26`, color: accent }}>
-                    <ServiceIcon icon={s.icon || "sparkles"} className="service-icon w-6 h-6" />
+          <section id="services" className="px-6 lg:px-20 py-28 border-b" style={{ borderColor: hairline, background: "#F4F1EA" }}>
+            <div className="max-w-6xl mx-auto">
+              <SectionLabel number="02" label="Services" accent={accent} />
+              <h2 className="text-4xl lg:text-5xl mt-6 max-w-2xl" style={{ fontFamily: serif, color: ink, fontWeight: 700 }}>
+                How I help <span style={{ fontStyle: "italic", fontWeight: 500 }}>brands</span> grow.
+              </h2>
+              <div className="grid sm:grid-cols-2 lg:grid-cols-4 mt-16 border-t border-l" style={{ borderColor: hairline }}>
+                {(showServices as any[]).map((s, i) => (
+                  <div
+                    key={s.id}
+                    className="svc-card p-8 border-r border-b group cursor-default"
+                    style={{ borderColor: hairline, background: "#FAF9F6", color: ink }}
+                  >
+                    <div className="flex items-center justify-between mb-10">
+                      <div className="svc-icon-wrap w-11 h-11 flex items-center justify-center" style={{ background: "#F2EFE8", color: accent }}>
+                        <ServiceIcon icon={s.icon || "sparkles"} className="w-5 h-5" />
+                      </div>
+                      <span className="svc-num text-[10px] font-mono tracking-widest" style={{ color: "#C6C0B2" }}>
+                        {String(i + 1).padStart(2, "0")}
+                      </span>
+                    </div>
+                    <h3 className="svc-title text-xl mb-3" style={{ fontFamily: serif, color: ink, fontWeight: 700 }}>{s.title}</h3>
+                    <p className="svc-desc text-sm leading-relaxed" style={{ color: "#5C5850" }}>{s.description}</p>
                   </div>
-                  <h3 className="service-title font-bold text-lg mb-2" style={{ color: primary }}>{s.title}</h3>
-                  <p className="service-desc text-sm leading-relaxed" style={{ color: primary, opacity: 0.65 }}>{s.description}</p>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           </section>
         )}
 
         {/* PORTFOLIO */}
         {vProjects && (
-          <section id="portfolio" className="px-6 lg:px-20 py-20 bg-white">
-            <h2 className="text-4xl lg:text-5xl font-extrabold mb-12" style={{ color: primary }}>My Works</h2>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {(showProjects as any[]).map(p => (
-                <a
-                  key={p.id}
-                  href={p.live_url || "#"}
-                  target={p.live_url ? "_blank" : undefined}
-                  rel="noreferrer"
-                  className="group block"
-                >
-                  <div className="aspect-square rounded-2xl overflow-hidden bg-gray-100 mb-4">
-                    {p.image_url ? (
-                      <img src={p.image_url} alt={p.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center" style={{ background: `linear-gradient(135deg, ${accent}33, ${primary}22)` }}>
-                        <span className="text-4xl font-bold" style={{ color: primary }}>{p.title.charAt(0)}</span>
-                      </div>
-                    )}
-                  </div>
-                  <div className="border-t pt-4">
-                    <p className="text-xs uppercase tracking-wider mb-1" style={{ color: primary, opacity: 0.5 }}>{p.description || "Project"}</p>
-                    <h3 className="font-bold text-lg" style={{ color: primary }}>{p.title}</h3>
-                  </div>
-                </a>
-              ))}
+          <section id="portfolio" className="px-6 lg:px-20 py-28 border-b" style={{ borderColor: hairline }}>
+            <div className="max-w-6xl mx-auto">
+              <div className="flex justify-between items-end mb-16 flex-wrap gap-6">
+                <div>
+                  <SectionLabel number="03" label="Selected Works" accent={accent} />
+                  <h2 className="text-4xl lg:text-5xl mt-6" style={{ fontFamily: serif, color: ink, fontWeight: 700 }}>
+                    Portfolio <span style={{ fontStyle: "italic", fontWeight: 500 }}>highlights</span>
+                  </h2>
+                </div>
+              </div>
+              <div className="grid sm:grid-cols-2 gap-x-10 gap-y-20">
+                {(showProjects as any[]).map((p, i) => (
+                  <a
+                    key={p.id}
+                    href={p.live_url || "#"}
+                    target={p.live_url ? "_blank" : undefined}
+                    rel="noreferrer"
+                    className={`group block ${i % 2 === 1 ? "sm:translate-y-16" : ""}`}
+                  >
+                    <div className="aspect-[4/3] overflow-hidden mb-6" style={{ background: "#F2EFE8" }}>
+                      {p.image_url ? (
+                        <img src={p.image_url} alt={p.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center" style={{ background: `linear-gradient(135deg, ${accent}22, ${ink}11)` }}>
+                          <span className="text-6xl" style={{ color: ink, fontFamily: serif }}>{p.title.charAt(0)}</span>
+                        </div>
+                      )}
+                    </div>
+                    <p className="text-[10px] uppercase tracking-[0.25em] font-semibold mb-2" style={{ color: accent }}>{p.description || "Project"}</p>
+                    <h3 className="text-2xl flex items-center gap-3" style={{ fontFamily: serif, color: ink, fontWeight: 700 }}>
+                      {p.title}
+                      <ArrowUpRight className="w-5 h-5 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
+                    </h3>
+                  </a>
+                ))}
+              </div>
             </div>
           </section>
         )}
 
         {/* CLIENTS */}
-        <section className="px-6 lg:px-20 py-16" style={{ background: softBg }}>
-          <h2 className="text-2xl lg:text-3xl font-extrabold mb-8" style={{ color: primary }}>
-            Trusted by <span style={{ color: accent }}>Clients</span>
-          </h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
-            {showClients.map((c, i) => (
-              <div key={i} className="bg-white rounded-xl border border-gray-200 h-20 flex items-center justify-center font-bold text-sm" style={{ color: primary }}>
-                {c}
-              </div>
-            ))}
+        <section className="px-6 lg:px-20 py-16 border-b" style={{ borderColor: hairline }}>
+          <div className="max-w-6xl mx-auto">
+            <p className="text-[10px] uppercase tracking-[0.35em] font-bold text-center mb-10" style={{ color: "#9A958A" }}>Trusted by innovative brands</p>
+            <div className="flex flex-wrap justify-between items-center gap-8 opacity-50">
+              {showClients.map((c, i) => (
+                <span key={i} className="text-xl tracking-tighter font-bold" style={{ color: ink, fontFamily: i % 2 === 0 ? serif : "inherit", fontStyle: i % 2 === 1 ? "italic" : "normal" }}>
+                  {c}
+                </span>
+              ))}
+            </div>
           </div>
         </section>
 
         {/* TESTIMONIALS */}
-        <section className="px-6 lg:px-20 py-20 bg-white">
-          <h2 className="text-3xl lg:text-4xl font-extrabold mb-10" style={{ color: primary }}>
-            Client <span style={{ color: accent }}>Feedback</span>
-          </h2>
-          <div className="grid md:grid-cols-3 gap-6">
-            {showTestimonials.map(t => (
-              <div key={t.id} className="border border-gray-200 rounded-2xl p-6">
-                <p className="text-sm leading-relaxed mb-5" style={{ color: primary, opacity: 0.75 }}>"{t.review}"</p>
-                <div className="flex items-center gap-3 pt-4 border-t">
-                  <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center font-bold" style={{ color: primary }}>
-                    {t.name.charAt(0)}
-                  </div>
-                  <div>
-                    <p className="font-bold text-sm" style={{ color: primary }}>{t.name}</p>
-                    <p className="text-xs" style={{ color: accent }}>{t.position}</p>
+        <section className="px-6 lg:px-20 py-28" style={{ background: ink, color: "#fff" }}>
+          <div className="max-w-6xl mx-auto">
+            <p className="text-[11px] font-semibold tracking-[0.3em] uppercase mb-6" style={{ color: accent }}>
+              04 / Testimonials
+            </p>
+            <h2 className="text-3xl lg:text-4xl mb-16 max-w-2xl" style={{ fontFamily: serif, fontWeight: 700 }}>
+              Words from <span style={{ fontStyle: "italic", fontWeight: 500 }}>clients</span>.
+            </h2>
+            <div className="grid md:grid-cols-3 gap-px" style={{ background: "rgba(255,255,255,0.1)" }}>
+              {showTestimonials.map(t => (
+                <div key={t.id} className="p-10" style={{ background: ink }}>
+                  <span className="text-6xl leading-none block mb-4" style={{ color: accent, fontFamily: serif }}>"</span>
+                  <p className="text-base leading-relaxed mb-8" style={{ color: "rgba(255,255,255,0.8)", fontStyle: "italic" }}>
+                    {t.review}
+                  </p>
+                  <div className="pt-6 border-t" style={{ borderColor: "rgba(255,255,255,0.1)" }}>
+                    <p className="font-bold text-sm" style={{ fontFamily: serif }}>{t.name}</p>
+                    <p className="text-[10px] uppercase tracking-[0.25em] mt-1" style={{ color: accent }}>{t.position}</p>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </section>
 
         {/* CONTACT */}
         {vContact && (
-          <section id="contact" className="px-6 lg:px-20 py-20" style={{ background: softBg }}>
-            <h2 className="text-4xl lg:text-5xl font-extrabold mb-12" style={{ color: primary }}>Get in Touch</h2>
-            <div className="grid lg:grid-cols-3 gap-8">
-              <div className="lg:col-span-2 rounded-2xl p-6 lg:p-8" style={{ background: cream }}>
-                <ContactForm
-                  portfolioOwnerId={userId || ""}
-                  themeStyle={{
-                    surface: "#0B1220",
-                    border: "rgba(11,27,51,0.15)",
-                    text: "#FFFFFF",
-                    textMuted: primary,
-                    accent: accent,
-                    accentText: primary,
-                  }}
-                />
-              </div>
-              <div className="space-y-4">
-                {showContacts.map((item: any) => {
-                  const Icon = item.icon === "phone" ? Phone : item.icon === "map" ? MapPin : item.icon === "web" ? Globe : Mail;
-                  return (
-                    <div key={item.id} className="bg-white rounded-2xl border border-gray-200 p-5 flex items-start gap-4">
-                      <div className="w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 text-white" style={{ background: accent }}>
-                        <Icon className="w-5 h-5" />
+          <section id="contact" className="px-6 lg:px-20 py-28">
+            <div className="max-w-6xl mx-auto">
+              <SectionLabel number="05" label="Contact" accent={accent} />
+              <h2 className="text-4xl lg:text-5xl mt-6 mb-16 max-w-2xl" style={{ fontFamily: serif, color: ink, fontWeight: 700 }}>
+                Let's talk about your <span style={{ fontStyle: "italic", fontWeight: 500 }}>next project</span>.
+              </h2>
+              <div className="grid lg:grid-cols-3 gap-12">
+                <div className="lg:col-span-2">
+                  <ContactForm
+                    portfolioOwnerId={userId || ""}
+                    themeStyle={{
+                      surface: "#FAF9F6",
+                      border: hairline,
+                      text: ink,
+                      textMuted: "#5C5850",
+                      accent: ink,
+                      accentText: "#FFFFFF",
+                    }}
+                  />
+                </div>
+                <div className="space-y-8">
+                  {showContacts.map((item: any) => {
+                    const Icon = item.icon === "phone" ? Phone : item.icon === "map" ? MapPin : item.icon === "web" ? Globe : Mail;
+                    return (
+                      <div key={item.id} className="border-l-2 pl-5" style={{ borderColor: accent }}>
+                        <div className="flex items-center gap-2 mb-2">
+                          <Icon className="w-3.5 h-3.5" style={{ color: accent }} />
+                          <p className="text-[10px] uppercase tracking-[0.25em] font-bold" style={{ color: "#9A958A" }}>{item.label || item.type}</p>
+                        </div>
+                        <p className="text-base break-words" style={{ color: ink, fontFamily: serif }}>{item.value}</p>
                       </div>
-                      <div className="min-w-0">
-                        <p className="font-bold text-sm mb-1" style={{ color: primary }}>{item.label || item.type}</p>
-                        <p className="text-sm break-words" style={{ color: primary, opacity: 0.7 }}>{item.value}</p>
-                      </div>
-                    </div>
-                  );
-                })}
+                    );
+                  })}
+                </div>
               </div>
             </div>
           </section>
@@ -483,12 +485,21 @@ export default function CreativeSidebarProTheme({
   );
 }
 
-function InfoLine({ label, value, primary }: { label: string; value: string; primary: string }) {
+function SectionLabel({ number, label, accent }: { number: string; label: string; accent: string }) {
   return (
-    <div className="flex gap-3">
-      <span className="font-bold w-20 flex-shrink-0" style={{ color: primary }}>{label}</span>
-      <span className="opacity-30" style={{ color: primary }}>|</span>
-      <span className="truncate" style={{ color: primary, opacity: 0.75 }}>{value}</span>
+    <p className="text-[11px] font-semibold tracking-[0.3em] uppercase flex items-center gap-3" style={{ color: accent }}>
+      <span className="font-mono">{number}</span>
+      <span className="h-px w-8" style={{ background: accent }} />
+      <span style={{ color: "#9A958A" }}>{label}</span>
+    </p>
+  );
+}
+
+function InfoLine({ label, value, ink }: { label: string; value: string; ink: string }) {
+  return (
+    <div>
+      <p className="text-[10px] uppercase tracking-[0.25em] font-bold mb-1.5" style={{ color: "#9A958A" }}>{label}</p>
+      <p className="text-sm font-medium" style={{ color: ink }}>{value}</p>
     </div>
   );
 }

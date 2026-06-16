@@ -107,6 +107,10 @@ const themePreviews: Record<string, { hero: string; features: string[] }> = {
     hero: 'Premium space-inspired luxury universe theme',
     features: ['Solar system hero', 'Floating stars', 'Nebula effects', 'Premium animations'],
   },
+  'creative-sidebar-pro': {
+    hero: 'Fixed sidebar creative freelancer portfolio',
+    features: ['Left sidebar layout', 'Cream accent cards', 'Mobile drawer menu', 'Dynamic services and projects'],
+  },
 };
 
 interface PurchaseStatus {

@@ -199,6 +199,26 @@ export default function CreativeSidebarProTheme({
       <style>{`
         html { scroll-behavior: smooth; }
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+        .service-card {
+          transition: all 0.35s ease;
+        }
+        .service-card:hover {
+          background-color: ${accent} !important;
+          border-color: ${accent} !important;
+          box-shadow: 0 12px 40px -12px ${accent}40 !important;
+        }
+        .service-card:hover .service-icon-wrap {
+          background: rgba(255,255,255,0.25) !important;
+        }
+        .service-card:hover .service-icon {
+          color: #FFFFFF !important;
+        }
+        .service-card:hover .service-title {
+          color: #FFFFFF !important;
+        }
+        .service-card:hover .service-desc {
+          color: rgba(255,255,255,0.9) !important;
+        }
       `}</style>
 
       {/* Mobile top header */}

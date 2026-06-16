@@ -240,6 +240,35 @@ export default function PortfolioEdit() {
   const username = profile?.username;
   const previewUrl = username ? `/u/${username}?preview=1` : null;
 
+  // Map editor section -> anchor id rendered by themes
+  const sectionAnchors: Partial<Record<SectionKey, string>> = {
+    hero: "hero", about: "about", skills: "skills", services: "services",
+    projects: "projects", experience: "experience", education: "education",
+    contact: "contact",
+  };
+  const previewHrefFor = (key: SectionKey) => {
+    const id = sectionAnchors[key];
+    return previewUrl ? (id ? `${previewUrl}#${id}` : previewUrl) : null;
+  };
+
+  // Auto-scroll preview iframe to the active section (same-origin)
+  useEffect(() => {
+    const iframe = iframeRef.current;
+    const id = sectionAnchors[activeSection];
+    if (!iframe || !id) return;
+    const scroll = () => {
+      try {
+        const doc = iframe.contentDocument;
+        const el = doc?.getElementById(id);
+        if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+      } catch {}
+    };
+    scroll();
+    const t = setTimeout(scroll, 400);
+    return () => clearTimeout(t);
+  }, [activeSection]);
+
+
   const allSections: { value: SectionKey; label: string; icon: any; hint: string; requires?: string }[] = [
     { value: "hero", label: "Hero Section", icon: Home, hint: "Main landing area", requires: "customize" },
     { value: "about", label: "About Me", icon: User, hint: "Personal introduction", requires: "basic" },
@@ -478,34 +507,52 @@ export default function PortfolioEdit() {
           </div>
         </section>
 
-        {/* Mobile section pills */}
-        <div className="lg:hidden absolute top-14 left-0 right-0 z-10 px-3 py-2 border-b border-[#1f1f1f] bg-[#0A0A0A] flex items-center gap-1.5 overflow-x-auto scrollbar-none">
-          {sections.map((s) => {
-            const active = activeSection === s.value;
-            return (
-              <button
-                key={s.value}
-                onClick={() => setActiveSection(s.value)}
-                className={cn(
-                  "shrink-0 px-3 py-1.5 rounded-md text-[12px] transition-colors duration-150",
-                  active ? "bg-[#181818] text-white" : "text-[#A1A1AA] hover:text-white"
-                )}
-              >
-                {s.label}
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Mobile editor panel */}
-        <section className="lg:hidden w-full flex-1 flex flex-col bg-[#0A0A0A] pt-12 overflow-hidden">
-          <div className="px-5 pt-4 pb-3">
-            <h2 className="text-[14px] font-semibold tracking-tight">{activeMeta?.label}</h2>
+        {/* MOBILE: always-visible section list + editor */}
+        <section className="lg:hidden w-full flex-1 flex flex-col bg-[#0A0A0A] overflow-hidden">
+          {/* Section chips — always visible, wraps to multiple rows */}
+          <div className="shrink-0 px-3 pt-3 pb-2 border-b border-[#1f1f1f] bg-[#0A0A0A]">
+            <div className="flex flex-wrap gap-1.5">
+              {sections.map((s) => {
+                const active = activeSection === s.value;
+                const Icon = s.icon;
+                return (
+                  <button
+                    key={s.value}
+                    onClick={() => setActiveSection(s.value)}
+                    className={cn(
+                      "inline-flex items-center gap-1.5 px-2.5 h-8 rounded-md text-[12px] font-medium transition-colors duration-150 border",
+                      active
+                        ? "bg-white text-black border-white"
+                        : "bg-[#111111] text-[#A1A1AA] border-[#1f1f1f] hover:text-white hover:border-[#2a2a2a]"
+                    )}
+                  >
+                    <Icon className="w-3.5 h-3.5" />
+                    {s.label}
+                  </button>
+                );
+              })}
+            </div>
           </div>
-          <div className="flex-1 overflow-y-auto px-5 pb-6 portfolio-minimal-form">
+
+          {/* Editor for the active section */}
+          <div className="shrink-0 px-5 pt-4 pb-2 flex items-center justify-between gap-3">
+            <h2 className="text-[14px] font-semibold tracking-tight truncate">{activeMeta?.label}</h2>
+            {previewHrefFor(activeSection) && (
+              <a
+                href={previewHrefFor(activeSection)!}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-1 text-[11px] text-[#A1A1AA] hover:text-white shrink-0"
+              >
+                <Eye className="w-3 h-3" /> Preview
+              </a>
+            )}
+          </div>
+          <div className="flex-1 overflow-y-auto px-5 pb-8 portfolio-minimal-form">
             {renderForm()}
           </div>
         </section>
+
 
         {/* PREVIEW (~75%) */}
         <div className="hidden lg:flex flex-1 relative overflow-hidden bg-[#0A0A0A]">

@@ -701,27 +701,6 @@ function MobilePortfolioEditor({
     </div>
   );
 
-  // Floating compact view switcher (Edit | Split | Preview)
-  const ViewSwitcher = (
-    <div className="absolute top-2 right-2 z-20 inline-flex items-center gap-0.5 p-0.5 rounded-full bg-black/70 backdrop-blur border border-white/10 shadow-lg">
-      {([
-        { v: "edit", label: "Edit" },
-        { v: "split", label: "Split" },
-        { v: "preview", label: "Preview" },
-      ] as const).map(({ v, label }) => (
-        <button
-          key={v}
-          onClick={() => setMode(v)}
-          className={cn(
-            "px-2.5 h-6 rounded-full text-[10.5px] font-medium tracking-tight transition-colors duration-150",
-            mode === v ? "bg-white text-black" : "text-white/70 hover:text-white"
-          )}
-        >
-          {label}
-        </button>
-      ))}
-    </div>
-  );
 
   // Compact bottom section nav (smart collapse)
   const SectionNav = (

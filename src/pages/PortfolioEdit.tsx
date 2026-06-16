@@ -83,6 +83,7 @@ export default function PortfolioEdit() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [publishing, setPublishing] = useState(false);
   const [saveStatus, setSaveStatus] = useState<"saved" | "saving" | "unsaved">("saved");
+  const [mobileMode, setMobileMode] = useState<MobileMode>("edit");
   const iframeRef = useRef<HTMLIFrameElement | null>(null);
   const previewReadyRef = useRef(false);
 

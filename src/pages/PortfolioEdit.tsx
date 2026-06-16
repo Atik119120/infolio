@@ -631,7 +631,7 @@ function MobilePortfolioEditor({
   mode: MobileMode;
   setMode: (m: MobileMode) => void;
 }) {
-  const [mode, setMode] = useState<MobileMode>("edit");
+  
   const [splitRatio, setSplitRatio] = useState(0.4); // preview share (40% preview / 60% editor)
   const [navCollapsed, setNavCollapsed] = useState(false);
   const scrollerRef = useRef<HTMLDivElement | null>(null);

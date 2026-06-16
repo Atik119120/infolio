@@ -261,7 +261,13 @@ export default function Dashboard() {
               <Menu className="w-5 h-5" />
             </Button>
 
-            <h1 className="text-sm font-medium text-white tracking-tight">
+            <img
+              src={alphaLogo}
+              alt="Infolio"
+              className="h-7 w-auto object-contain brightness-0 invert lg:hidden"
+            />
+
+            <h1 className="hidden lg:block text-sm font-medium text-white tracking-tight">
               {navItems.find(item =>
                 !item.hash && (location.pathname === item.path ||
                 (item.path === "/dashboard" && location.pathname === "/dashboard"))
@@ -274,10 +280,10 @@ export default function Dashboard() {
               <Button
                 size="sm"
                 onClick={() => window.open(`/${profile.username}`, "_blank")}
-                className="hidden sm:flex gap-1.5 h-8 text-xs bg-white text-black hover:bg-white/90"
+                className="flex gap-1.5 h-8 text-xs bg-white text-black hover:bg-white/90"
               >
                 <Eye className="w-3.5 h-3.5" />
-                Preview
+                <span className="hidden sm:inline">Preview</span>
               </Button>
             )}
           </div>

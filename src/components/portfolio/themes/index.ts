@@ -1,4 +1,5 @@
 export { default as FreelancerTheme } from "./FreelancerTheme";
+export { default as CreativeSidebarProTheme } from "./CreativeSidebarProTheme";
 export { default as SmallBusinessTheme } from "./SmallBusinessTheme";
 export { default as PRDGraphicDesignerTheme } from "./PRDGraphicDesignerTheme";
 export { default as PRDPhotographerTheme } from "./PRDPhotographerTheme";

@@ -71,8 +71,8 @@ export default function CreativeSidebarProTheme({
     return () => window.removeEventListener("scroll", handler);
   }, []);
 
-  const primary = portfolio?.primary_color || "#0B1B33"; // deep navy ink
-  const accent = portfolio?.accent_color || "#F5B91C";   // yellow
+  const primary = (portfolio as any)?.primary_color || "#0B1B33";
+  const accent = (portfolio as any)?.accent_color || "#F5B91C";
   const cream = "#FBF6E2";
   const softBg = "#F5F6F8";
 

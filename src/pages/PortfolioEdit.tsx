@@ -546,6 +546,8 @@ export default function PortfolioEdit() {
           activeMeta={activeMeta}
           renderForm={renderForm}
           previewUrl={previewUrl}
+          mode={mobileMode}
+          setMode={setMobileMode}
         />
 
 

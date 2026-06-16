@@ -47,10 +47,8 @@ export function MobileBuilderEditor({ onSave, onPublish, saving, publishing }: P
   // Force mobile preview width on mobile devices
   useEffect(() => { setDevice("mobile"); }, [setDevice]);
 
-  // Auto-open inspector when a block is selected in edit mode
-  useEffect(() => {
-    if (mode === "edit" && selectedId) setSheet("add"); // no-op trigger
-  }, [selectedId, mode]);
+  // Auto-close inspector sheets when switching to preview
+  useEffect(() => { if (mode === "preview") setSheet(null); }, [mode]);
 
   const previewMode = mode === "preview";
   const selectedBlock = selectedId ? findBlock(content, selectedId) : null;

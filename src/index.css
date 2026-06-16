@@ -341,3 +341,7 @@ section a {
 section p {
   white-space: pre-wrap;
 }
+
+/* Hide scrollbars on horizontal section carousels */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }

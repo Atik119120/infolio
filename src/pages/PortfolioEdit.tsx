@@ -453,7 +453,7 @@ export default function PortfolioEdit() {
               href={previewUrl}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center gap-1.5 text-[12px] px-3 h-8 rounded-md border border-[#262626] text-[#A1A1AA] hover:text-white hover:border-[#3f3f3f] transition-all duration-150"
+              className="hidden lg:inline-flex items-center gap-1.5 text-[12px] px-3 h-8 rounded-md border border-[#262626] text-[#A1A1AA] hover:text-white hover:border-[#3f3f3f] transition-all duration-150"
             >
               Preview
             </a>
@@ -607,9 +607,12 @@ function MobilePortfolioEditor({
   previewUrl: string | null;
 }) {
   const [mode, setMode] = useState<MobileMode>("edit");
-  const [splitRatio, setSplitRatio] = useState(0.5); // preview share when in split
+  const [splitRatio, setSplitRatio] = useState(0.4); // preview share (40% preview / 60% editor)
+  const [navCollapsed, setNavCollapsed] = useState(false);
   const scrollerRef = useRef<HTMLDivElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const editorScrollRef = useRef<HTMLDivElement | null>(null);
+  const lastScrollY = useRef(0);
   const dragRef = useRef<{ startY: number; startRatio: number; height: number } | null>(null);
 
   // Auto-scroll the carousel so the active chip stays in view
@@ -622,6 +625,22 @@ function MobilePortfolioEditor({
       scroller.scrollTo({ left: target, behavior: "smooth" });
     }
   }, [activeSection]);
+
+  // Smart collapse: shrink nav on scroll down, expand on scroll up
+  useEffect(() => {
+    const el = editorScrollRef.current;
+    if (!el) return;
+    const onScroll = () => {
+      const y = el.scrollTop;
+      const dy = y - lastScrollY.current;
+      if (y < 24) setNavCollapsed(false);
+      else if (dy > 6) setNavCollapsed(true);
+      else if (dy < -6) setNavCollapsed(false);
+      lastScrollY.current = y;
+    };
+    el.addEventListener("scroll", onScroll, { passive: true });
+    return () => el.removeEventListener("scroll", onScroll);
+  }, [mode]);
 
   const onDividerDown = (e: React.PointerEvent) => {
     if (!containerRef.current) return;
@@ -657,13 +676,84 @@ function MobilePortfolioEditor({
     </div>
   );
 
+  // Floating compact view switcher (Edit | Split | Preview)
+  const ViewSwitcher = (
+    <div className="absolute top-2 right-2 z-20 inline-flex items-center gap-0.5 p-0.5 rounded-full bg-black/70 backdrop-blur border border-white/10 shadow-lg">
+      {([
+        { v: "edit", label: "Edit" },
+        { v: "split", label: "Split" },
+        { v: "preview", label: "Preview" },
+      ] as const).map(({ v, label }) => (
+        <button
+          key={v}
+          onClick={() => setMode(v)}
+          className={cn(
+            "px-2.5 h-6 rounded-full text-[10.5px] font-medium tracking-tight transition-colors duration-150",
+            mode === v ? "bg-white text-black" : "text-white/70 hover:text-white"
+          )}
+        >
+          {label}
+        </button>
+      ))}
+    </div>
+  );
+
+  // Compact bottom section nav (smart collapse)
+  const SectionNav = (
+    <div
+      className={cn(
+        "shrink-0 relative bg-[#0A0A0A] border-t border-[#1f1f1f] transition-all duration-200 overflow-hidden",
+        navCollapsed ? "max-h-0 opacity-0 border-t-0" : "max-h-14 opacity-100"
+      )}
+      style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
+    >
+      <div
+        ref={scrollerRef}
+        className="overflow-x-auto no-scrollbar scroll-smooth"
+        style={{ WebkitOverflowScrolling: "touch" }}
+      >
+        <div className="flex items-center gap-1 px-3 py-1.5 min-w-max">
+          {sections.map((s) => {
+            const active = activeSection === s.value;
+            return (
+              <button
+                key={s.value}
+                data-section={s.value}
+                onClick={() => setActiveSection(s.value)}
+                className={cn(
+                  "inline-flex items-center h-7 px-2.5 rounded-full text-[11.5px] font-medium whitespace-nowrap transition-colors duration-150 shrink-0",
+                  active
+                    ? "bg-white text-black"
+                    : "text-[#A1A1AA] hover:text-white"
+                )}
+              >
+                {s.label.split(" ")[0]}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+      <div className="pointer-events-none absolute top-0 bottom-0 left-0 w-5 bg-gradient-to-r from-[#0A0A0A] to-transparent" />
+      <div className="pointer-events-none absolute top-0 bottom-0 right-0 w-5 bg-gradient-to-l from-[#0A0A0A] to-transparent" />
+    </div>
+  );
+
+  // Reveal nav when user taps editor header (so they always have a way back)
+  const revealNav = () => setNavCollapsed(false);
+
   const EditorPanel = (
     <div className="flex-1 flex flex-col min-h-0 bg-[#0A0A0A]">
-      <div className="shrink-0 px-5 pt-3 pb-2 flex items-center gap-2">
+      <button
+        onClick={revealNav}
+        className="shrink-0 px-5 pt-3 pb-2 flex items-center gap-2 text-left"
+      >
         {activeMeta?.icon && <activeMeta.icon className="w-4 h-4 text-[#A1A1AA] shrink-0" />}
         <h2 className="text-[14px] font-semibold tracking-tight truncate">{activeMeta?.label}</h2>
-      </div>
-      <div className="flex-1 overflow-y-auto px-5 pt-1 pb-[calc(env(safe-area-inset-bottom)+16px)] portfolio-minimal-form">
+      </button>
+      <div
+        ref={editorScrollRef}
+        className="flex-1 overflow-y-auto px-5 pt-1 pb-4 portfolio-minimal-form"
+      >
         {renderForm()}
       </div>
     </div>
@@ -671,81 +761,28 @@ function MobilePortfolioEditor({
 
   return (
     <section ref={containerRef} className="lg:hidden w-full flex-1 flex flex-col bg-[#0A0A0A] overflow-hidden relative">
-      {/* Mode switcher */}
-      <div className="shrink-0 px-3 pt-2 pb-2 flex items-center justify-center">
-        <div className="inline-flex items-center gap-0.5 p-0.5 rounded-md bg-[#111111] border border-[#262626]">
-          {([
-            { v: "edit", label: "Edit" },
-            { v: "split", label: "Split" },
-            { v: "preview", label: "Preview" },
-          ] as const).map(({ v, label }) => (
-            <button
-              key={v}
-              onClick={() => setMode(v)}
-              className={cn(
-                "px-3 h-7 rounded text-[11px] font-medium transition-colors duration-150",
-                mode === v ? "bg-[#181818] text-white" : "text-[#71717A] hover:text-white"
-              )}
-            >
-              {label}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Carousel section nav — hidden in preview-only mode */}
-      {mode !== "preview" && (
-        <div className="shrink-0 relative">
-          <div
-            ref={scrollerRef}
-            className="overflow-x-auto no-scrollbar scroll-smooth"
-            style={{ WebkitOverflowScrolling: "touch" }}
-          >
-            <div className="flex items-center gap-1.5 px-4 py-2 min-w-max">
-              {sections.map((s) => {
-                const active = activeSection === s.value;
-                const Icon = s.icon;
-                return (
-                  <button
-                    key={s.value}
-                    data-section={s.value}
-                    onClick={() => setActiveSection(s.value)}
-                    className={cn(
-                      "inline-flex items-center gap-1.5 h-8 px-3 rounded-full text-[12px] font-medium whitespace-nowrap border transition-colors duration-150 shrink-0",
-                      active
-                        ? "bg-white text-black border-white"
-                        : "bg-[#111111] text-[#A1A1AA] border-[#262626] hover:text-white hover:border-[#3f3f3f]"
-                    )}
-                  >
-                    <Icon className="w-3.5 h-3.5" />
-                    {s.label.split(" ")[0]}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-          {/* edge fades */}
-          <div className="pointer-events-none absolute top-0 bottom-0 left-0 w-6 bg-gradient-to-r from-[#0A0A0A] to-transparent" />
-          <div className="pointer-events-none absolute top-0 bottom-0 right-0 w-6 bg-gradient-to-l from-[#0A0A0A] to-transparent" />
-          <div className="pointer-events-none absolute right-1 top-1/2 -translate-y-1/2 text-[#52525B]">
-            <ChevronRight className="w-3.5 h-3.5" />
-          </div>
+      {/* Body */}
+      {mode === "edit" && (
+        <div className="flex-1 min-h-0 flex flex-col relative">
+          {ViewSwitcher}
+          {EditorPanel}
         </div>
       )}
 
-      {/* Body — depends on mode */}
-      {mode === "edit" && EditorPanel}
-
       {mode === "preview" && (
-        <div className="flex-1 min-h-0 bg-white overflow-hidden">{PreviewFrame}</div>
+        <div className="flex-1 min-h-0 bg-white overflow-hidden relative">
+          {ViewSwitcher}
+          {PreviewFrame}
+        </div>
       )}
 
       {mode === "split" && (
         <div className="flex-1 min-h-0 flex flex-col">
           <div
-            className="bg-white overflow-hidden"
+            className="bg-white overflow-hidden relative"
             style={{ flexBasis: `${splitRatio * 100}%`, flexGrow: 0, flexShrink: 0 }}
           >
+            {ViewSwitcher}
             {PreviewFrame}
           </div>
           <div
@@ -762,6 +799,9 @@ function MobilePortfolioEditor({
           <div className="flex-1 min-h-0 flex flex-col">{EditorPanel}</div>
         </div>
       )}
+
+      {/* Section nav lives at the BOTTOM, with smart collapse */}
+      {SectionNav}
     </section>
   );
 }

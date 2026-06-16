@@ -363,7 +363,7 @@ export default function CreativeSidebarProTheme({
 
         {/* PORTFOLIO */}
         {vProjects && (
-          <section id="portfolio" className="px-6 lg:px-20 py-20 style={{ background: cream }}>
+          <section id="portfolio" className="px-6 lg:px-20 py-20" style={{ background: cream }}>
             <h2 className="text-4xl lg:text-5xl font-extrabold mb-12" style={{ color: primary }}>My Works</h2>
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {(showProjects as any[]).map(p => (
@@ -408,7 +408,7 @@ export default function CreativeSidebarProTheme({
         </section>
 
         {/* TESTIMONIALS */}
-        <section className="px-6 lg:px-20 py-20 style={{ background: cream }}>
+        <section className="px-6 lg:px-20 py-20" style={{ background: cream }}>
           <h2 className="text-3xl lg:text-4xl font-extrabold mb-10" style={{ color: primary }}>
             Client <span style={{ color: accent }}>Feedback</span>
           </h2>

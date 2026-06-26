@@ -277,12 +277,12 @@ export default function CreativeSidebarProTheme({
       )}
 
       {/* Desktop sidebar */}
-      <aside className="hidden lg:flex fixed left-0 top-0 bottom-0 w-[300px] border-r border-gray-100 bg-white z-30">
+      <aside className="hidden lg:flex fixed left-0 top-0 bottom-0 w-[360px] border-r border-gray-100 bg-white z-30">
         {sidebarContent}
       </aside>
 
       {/* Content */}
-      <main className="lg:ml-[300px]">
+      <main className="lg:ml-[360px]">
         {/* HERO */}
         {vHero && (
           <section id="home" className="min-h-screen flex items-center px-6 lg:px-20 py-16 relative overflow-hidden" style={{ background: cream }}>

@@ -111,6 +111,10 @@ const themePreviews: Record<string, { hero: string; features: string[] }> = {
     hero: 'Fixed sidebar creative freelancer portfolio',
     features: ['Left sidebar layout', 'Cream accent cards', 'Mobile drawer menu', 'Dynamic services and projects'],
   },
+  'dark-photographer': {
+    hero: 'Cinematic full-black theme tailored for photographers',
+    features: ['Pitch-black moody UI', 'Rotating 3D gallery', 'Scramble text intro', 'Gold accent + grain texture'],
+  },
 };
 
 interface PurchaseStatus {

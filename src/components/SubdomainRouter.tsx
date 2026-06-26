@@ -232,6 +232,8 @@ function SubdomainPortfolio({ username }: { username: string }) {
       return <BiographyTheme {...themeProps} />;
     case 'creative-sidebar-pro':
       return <CreativeSidebarProTheme {...themeProps} />;
+    case 'dark-photographer':
+      return <DarkPhotographerTheme {...themeProps} />;
     case 'freelancer':
     default:
       return <FreelancerTheme {...themeProps} />;

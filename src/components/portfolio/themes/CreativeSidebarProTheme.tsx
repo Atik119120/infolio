@@ -146,7 +146,7 @@ export default function CreativeSidebarProTheme({
   };
 
   const sidebarContent = (
-    <div className="flex flex-col h-full px-6 py-8">
+    <div className="relative flex flex-col h-full px-6 py-8">
       {/* Top: avatar + name */}
       <div className="flex flex-col items-center text-center">
         <div className="relative w-32 h-32 mb-4">

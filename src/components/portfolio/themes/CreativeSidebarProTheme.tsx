@@ -408,27 +408,30 @@ export default function CreativeSidebarProTheme({
         {vProjects && (
           <section id="portfolio" className="px-6 lg:px-20 py-20 bg-white">
             <h2 className="text-4xl lg:text-5xl font-extrabold mb-12" style={{ color: primary }}>My Works</h2>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
               {(showProjects as any[]).map(p => (
                 <a
                   key={p.id}
                   href={p.live_url || "#"}
                   target={p.live_url ? "_blank" : undefined}
                   rel="noreferrer"
-                  className="group block"
+                  className="group block relative rounded-2xl overflow-hidden bg-gray-100"
+                  style={{ aspectRatio: "4 / 5" }}
                 >
-                  <div className="aspect-square rounded-2xl overflow-hidden bg-gray-100 mb-4">
-                    {p.image_url ? (
-                      <img src={p.image_url} alt={p.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center" style={{ background: `linear-gradient(135deg, ${accent}33, ${primary}22)` }}>
-                        <span className="text-4xl font-bold" style={{ color: primary }}>{p.title.charAt(0)}</span>
-                      </div>
-                    )}
-                  </div>
-                  <div className="border-t pt-4">
-                    <p className="text-xs uppercase tracking-wider mb-1" style={{ color: primary, opacity: 0.5 }}>{p.description || "Project"}</p>
-                    <h3 className="font-bold text-lg" style={{ color: primary }}>{p.title}</h3>
+                  {p.image_url ? (
+                    <img src={p.image_url} alt={p.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center" style={{ background: `linear-gradient(135deg, ${accent}33, ${primary}22)` }}>
+                      <span className="text-6xl font-bold" style={{ color: primary }}>{p.title.charAt(0)}</span>
+                    </div>
+                  )}
+                  {/* Hover overlay with title */}
+                  <div
+                    className="absolute inset-0 flex flex-col justify-end p-6 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                    style={{ background: `linear-gradient(to top, ${primary}EE 0%, ${primary}88 50%, transparent 100%)` }}
+                  >
+                    <h3 className="font-extrabold text-2xl text-white translate-y-2 group-hover:translate-y-0 transition-transform duration-500">{p.title}</h3>
+                    <span className="mt-2 inline-block text-xs font-bold uppercase tracking-wider" style={{ color: accent }}>View Project →</span>
                   </div>
                 </a>
               ))}

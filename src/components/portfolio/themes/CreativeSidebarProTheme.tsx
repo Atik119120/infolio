@@ -286,7 +286,7 @@ export default function CreativeSidebarProTheme({
         {/* HERO */}
         {vHero && (
           <section id="home" className="min-h-screen flex items-center px-6 lg:px-20 py-16 relative overflow-hidden" style={{ background: cream }}>
-            <div className="grid lg:grid-cols-2 gap-10 items-center w-full">
+            <div className="grid lg:grid-cols-2 gap-10 items-center w-full max-w-6xl mx-auto">
               <div>
                 <h1 className="text-4xl lg:text-6xl font-extrabold leading-tight" style={{ color: primary }}>
                   {heroHeadline}

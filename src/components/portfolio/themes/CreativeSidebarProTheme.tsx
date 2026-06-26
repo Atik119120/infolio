@@ -91,6 +91,35 @@ export default function CreativeSidebarProTheme({
   const cta2Text = "View Work";
   const cta2Link = "#portfolio";
 
+  // Typewriter effect for hero subtitle
+  const phrases = useMemo(() => {
+    const list = [profession, "Passionate About Design", "Always Crafting Ideas"].filter(Boolean) as string[];
+    return Array.from(new Set(list));
+  }, [profession]);
+  const [typedText, setTypedText] = useState("");
+  useEffect(() => {
+    let phraseIdx = 0;
+    let charIdx = 0;
+    let deleting = false;
+    let timer: any;
+    const tick = () => {
+      const current = phrases[phraseIdx] || "";
+      if (!deleting) {
+        charIdx++;
+        setTypedText(current.slice(0, charIdx));
+        if (charIdx === current.length) { deleting = true; timer = setTimeout(tick, 1400); return; }
+      } else {
+        charIdx--;
+        setTypedText(current.slice(0, charIdx));
+        if (charIdx === 0) { deleting = false; phraseIdx = (phraseIdx + 1) % phrases.length; }
+      }
+      timer = setTimeout(tick, deleting ? 40 : 80);
+    };
+    timer = setTimeout(tick, 300);
+    return () => clearTimeout(timer);
+  }, [phrases]);
+
+
   const showServices = services.length > 0 ? services : DEMO_SERVICES as any;
   const showProjects = projects.length > 0 ? projects : DEMO_PROJECTS as any;
   const showTestimonials = DEMO_TESTIMONIALS; // no DB table yet

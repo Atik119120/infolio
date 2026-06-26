@@ -146,7 +146,7 @@ export default function CreativeSidebarProTheme({
   };
 
   const sidebarContent = (
-    <div className="relative flex flex-col h-full px-6 py-8">
+    <div className="relative flex h-full w-full flex-col items-center px-6 py-8">
       {/* Top: avatar + name */}
       <div className="flex flex-col items-center text-center">
         <div className="relative w-32 h-32 mb-4">
@@ -172,14 +172,14 @@ export default function CreativeSidebarProTheme({
       </div>
 
       {/* Menu */}
-      <nav className="absolute left-0 right-0 top-1/2 -translate-y-1/2 px-6 flex flex-col gap-1">
+      <nav className="absolute left-1/2 top-1/2 flex w-[calc(100%-48px)] max-w-[168px] -translate-x-1/2 -translate-y-1/2 flex-col items-stretch gap-1">
         {visibleNav.map(item => {
           const isActive = active === item.id;
           return (
             <button
               key={item.id}
               onClick={() => scrollTo(item.id)}
-              className="text-center py-3 rounded-lg text-sm font-semibold transition-all"
+              className="w-full rounded-lg py-3 text-center text-sm font-semibold transition-all"
               style={{
                 background: isActive ? "#F1F3F5" : "transparent",
                 color: isActive ? accent : primary,
@@ -192,7 +192,7 @@ export default function CreativeSidebarProTheme({
       </nav>
 
       {/* Bottom: social + copyright */}
-      <div className="mt-auto pt-6">
+      <div className="mt-auto w-full pt-6">
         {vSocial && socialLinks.length > 0 && (
           <div className="flex justify-center flex-wrap gap-2 mb-4">
             {socialLinks.map(s => {

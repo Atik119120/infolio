@@ -227,6 +227,8 @@ export default function CreativeSidebarProTheme({
     <div className="min-h-screen bg-white" style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif" }}>
       <style>{`
         html { scroll-behavior: smooth; }
+        .csp-caret { display: inline-block; margin-left: 2px; animation: csp-blink 1s steps(2, start) infinite; }
+        @keyframes csp-blink { to { visibility: hidden; } }
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
         .service-card {
           transition: all 0.35s ease;

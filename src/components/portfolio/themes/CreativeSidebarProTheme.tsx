@@ -404,42 +404,6 @@ export default function CreativeSidebarProTheme({
           </section>
         )}
 
-        {/* CLIENTS */}
-        <section className="px-6 lg:px-20 py-16" style={{ background: softBg }}>
-          <h2 className="text-2xl lg:text-3xl font-extrabold mb-8" style={{ color: primary }}>
-            Trusted by <span style={{ color: accent }}>Clients</span>
-          </h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
-            {showClients.map((c, i) => (
-              <div key={i} className="bg-white rounded-xl border border-gray-200 h-20 flex items-center justify-center font-bold text-sm" style={{ color: primary }}>
-                {c}
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* TESTIMONIALS */}
-        <section className="px-6 lg:px-20 py-20 bg-white">
-          <h2 className="text-3xl lg:text-4xl font-extrabold mb-10" style={{ color: primary }}>
-            Client <span style={{ color: accent }}>Feedback</span>
-          </h2>
-          <div className="grid md:grid-cols-3 gap-6">
-            {showTestimonials.map(t => (
-              <div key={t.id} className="border border-gray-200 rounded-2xl p-6">
-                <p className="text-sm leading-relaxed mb-5" style={{ color: primary, opacity: 0.75 }}>"{t.review}"</p>
-                <div className="flex items-center gap-3 pt-4 border-t">
-                  <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center font-bold" style={{ color: primary }}>
-                    {t.name.charAt(0)}
-                  </div>
-                  <div>
-                    <p className="font-bold text-sm" style={{ color: primary }}>{t.name}</p>
-                    <p className="text-xs" style={{ color: accent }}>{t.position}</p>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
 
         {/* CONTACT */}
         {vContact && (

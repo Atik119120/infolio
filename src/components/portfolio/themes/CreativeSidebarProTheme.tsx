@@ -169,9 +169,6 @@ export default function CreativeSidebarProTheme({
           </div>
         </div>
         <h2 className="font-bold text-lg" style={{ color: primary }}>{name}</h2>
-        <p className="text-xs font-semibold tracking-[0.2em] uppercase mt-1" style={{ color: accent }}>
-          {profession}
-        </p>
       </div>
 
       {/* Menu */}

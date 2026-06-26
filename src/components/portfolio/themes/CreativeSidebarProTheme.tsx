@@ -265,7 +265,8 @@ export default function CreativeSidebarProTheme({
                 </h1>
                 <p className="mt-6 text-xl lg:text-2xl font-bold">
                   <span style={{ color: primary }}>A Passionate </span>
-                  <span style={{ color: accent }}>{profession} | Passionate About Design</span>
+                  <span style={{ color: accent }}>{typedText}</span>
+                  <span className="csp-caret" style={{ color: accent }}>|</span>
                 </p>
                 <p className="mt-6 text-base leading-relaxed max-w-lg" style={{ color: primary, opacity: 0.75 }}>
                   {heroDesc}

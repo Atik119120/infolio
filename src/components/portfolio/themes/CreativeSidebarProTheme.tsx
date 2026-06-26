@@ -91,6 +91,35 @@ export default function CreativeSidebarProTheme({
   const cta2Text = "View Work";
   const cta2Link = "#portfolio";
 
+  // Typewriter effect for hero subtitle
+  const phrases = useMemo(() => {
+    const list = [profession, "Passionate About Design", "Always Crafting Ideas"].filter(Boolean) as string[];
+    return Array.from(new Set(list));
+  }, [profession]);
+  const [typedText, setTypedText] = useState("");
+  useEffect(() => {
+    let phraseIdx = 0;
+    let charIdx = 0;
+    let deleting = false;
+    let timer: any;
+    const tick = () => {
+      const current = phrases[phraseIdx] || "";
+      if (!deleting) {
+        charIdx++;
+        setTypedText(current.slice(0, charIdx));
+        if (charIdx === current.length) { deleting = true; timer = setTimeout(tick, 1400); return; }
+      } else {
+        charIdx--;
+        setTypedText(current.slice(0, charIdx));
+        if (charIdx === 0) { deleting = false; phraseIdx = (phraseIdx + 1) % phrases.length; }
+      }
+      timer = setTimeout(tick, deleting ? 40 : 80);
+    };
+    timer = setTimeout(tick, 300);
+    return () => clearTimeout(timer);
+  }, [phrases]);
+
+
   const showServices = services.length > 0 ? services : DEMO_SERVICES as any;
   const showProjects = projects.length > 0 ? projects : DEMO_PROJECTS as any;
   const showTestimonials = DEMO_TESTIMONIALS; // no DB table yet
@@ -198,6 +227,8 @@ export default function CreativeSidebarProTheme({
     <div className="min-h-screen bg-white" style={{ fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif" }}>
       <style>{`
         html { scroll-behavior: smooth; }
+        .csp-caret { display: inline-block; margin-left: 2px; animation: csp-blink 1s steps(2, start) infinite; }
+        @keyframes csp-blink { to { visibility: hidden; } }
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
         .service-card {
           transition: all 0.35s ease;
@@ -265,7 +296,8 @@ export default function CreativeSidebarProTheme({
                 </h1>
                 <p className="mt-6 text-xl lg:text-2xl font-bold">
                   <span style={{ color: primary }}>A Passionate </span>
-                  <span style={{ color: accent }}>{profession} | Passionate About Design</span>
+                  <span style={{ color: accent }}>{typedText}</span>
+                  <span className="csp-caret" style={{ color: accent }}>|</span>
                 </p>
                 <p className="mt-6 text-base leading-relaxed max-w-lg" style={{ color: primary, opacity: 0.75 }}>
                   {heroDesc}

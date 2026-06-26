@@ -172,7 +172,7 @@ export default function CreativeSidebarProTheme({
       </div>
 
       {/* Menu */}
-      <nav className="mt-10 flex flex-col gap-1">
+      <nav className="flex-1 flex flex-col justify-center gap-1">
         {visibleNav.map(item => {
           const isActive = active === item.id;
           return (

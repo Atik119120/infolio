@@ -450,7 +450,7 @@ export default function CreativeSidebarProTheme({
                 <ContactForm
                   portfolioOwnerId={userId || ""}
                   themeStyle={{
-                    surface: "#FAF7F0",
+                    surface: "#FFFFFF",
                     border: "rgba(11,27,51,0.15)",
                     text: primary,
                     textMuted: primary,

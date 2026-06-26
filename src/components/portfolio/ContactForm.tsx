@@ -186,7 +186,7 @@ export function ContactForm({ portfolioOwnerId, className = "", variant = "defau
                   placeholder="Your name"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className={`${themeStyle ? "rounded-lg" : getInputStyles()} ${errors.name ? "border-destructive" : ""}`}
+                  className={`${themeStyle ? "rounded-lg focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-none" : getInputStyles()} ${errors.name ? "border-destructive" : ""}`}
                   style={
                     themeStyle
                       ? {
@@ -217,7 +217,7 @@ export function ContactForm({ portfolioOwnerId, className = "", variant = "defau
                   placeholder="your@email.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className={`${themeStyle ? "rounded-lg" : getInputStyles()} ${errors.email ? "border-destructive" : ""}`}
+                  className={`${themeStyle ? "rounded-lg focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-none" : getInputStyles()} ${errors.email ? "border-destructive" : ""}`}
                   style={
                     themeStyle
                       ? {
@@ -249,7 +249,7 @@ export function ContactForm({ portfolioOwnerId, className = "", variant = "defau
                 placeholder="Write your message here..."
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
-                className={`min-h-[120px] resize-none ${themeStyle ? "rounded-lg" : getInputStyles()} ${errors.message ? "border-destructive" : ""}`}
+                className={`min-h-[120px] resize-none ${themeStyle ? "rounded-lg focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:outline-none" : getInputStyles()} ${errors.message ? "border-destructive" : ""}`}
                 style={
                   themeStyle
                     ? {

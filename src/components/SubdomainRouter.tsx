@@ -11,6 +11,7 @@ import {
   PRDDigitalMarketerTheme,
   BiographyTheme,
   CreativeSidebarProTheme,
+  DarkPhotographerTheme,
   ThemeProfile,
   ThemePortfolio,
   ThemeSkill,

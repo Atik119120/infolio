@@ -16,6 +16,7 @@ import {
   CustomCodeTheme,
   AdminUploadedTheme,
   CreativeSidebarProTheme,
+  DarkPhotographerTheme,
   ThemeProfile,
   ThemePortfolio,
   ThemeSkill,

@@ -16,6 +16,7 @@ import {
   CustomCodeTheme,
   AdminUploadedTheme,
   CreativeSidebarProTheme,
+  DarkPhotographerTheme,
   ThemeProfile,
   ThemePortfolio,
   ThemeSkill,
@@ -212,6 +213,8 @@ export default function PublicPortfolio() {
       return <CustomCodeTheme {...themeProps} />;
     case 'creative-sidebar-pro':
       return <CreativeSidebarProTheme {...themeProps} />;
+    case 'dark-photographer':
+      return <DarkPhotographerTheme {...themeProps} />;
     case 'freelancer':
     default:
       return <FreelancerTheme {...themeProps} />;

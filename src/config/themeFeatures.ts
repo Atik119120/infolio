@@ -34,6 +34,10 @@ export const THEME_CONFIG: Record<string, ThemeConfig> = {
     tabs: ["theme", "basic", "customize", "branding", "services", "projects", "contact", "social", "seo"],
     customizeFields: ALL_CUSTOMIZE,
   },
+  "dark-photographer": {
+    tabs: ["theme", "basic", "customize", "branding", "services", "projects", "contact", "social", "seo"],
+    customizeFields: ALL_CUSTOMIZE,
+  },
   "small-business": {
     tabs: ["theme", "basic", "customize", "branding", "skills", "services", "projects", "experience", "education", "social", "seo"],
     customizeFields: ALL_CUSTOMIZE,

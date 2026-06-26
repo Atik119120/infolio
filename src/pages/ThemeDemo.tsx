@@ -11,6 +11,7 @@ import {
   PRDDigitalMarketerTheme,
   BiographyTheme,
   CreativeSidebarProTheme,
+  DarkPhotographerTheme,
   ThemeProps,
 } from "@/components/portfolio/themes";
 
@@ -83,6 +84,8 @@ export default function ThemeDemo() {
         return <BiographyTheme {...demoData} />;
       case 'creative-sidebar-pro':
         return <CreativeSidebarProTheme {...demoData} />;
+      case 'dark-photographer':
+        return <DarkPhotographerTheme {...demoData} />;
       case 'freelancer':
       default:
         return <FreelancerTheme {...demoData} />;

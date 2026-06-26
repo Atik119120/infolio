@@ -8,6 +8,14 @@ import { Loader2, Send, CheckCircle } from "lucide-react";
 import { z } from "zod";
 import { motion, AnimatePresence } from "framer-motion";
 
+const themedInputReset = {
+  outline: "none",
+  boxShadow: "none",
+  "--tw-ring-color": "transparent",
+  "--tw-ring-shadow": "0 0 #0000",
+  "--tw-ring-offset-shadow": "0 0 #0000",
+} as React.CSSProperties;
+
 const contactSchema = z.object({
   name: z.string().trim()
     .min(1, { message: "Name is required" })
@@ -190,6 +198,7 @@ export function ContactForm({ portfolioOwnerId, className = "", variant = "defau
                   style={
                     themeStyle
                       ? {
+                          ...themedInputReset,
                           background: themeStyle.surface,
                           border: `1px solid ${themeStyle.border}`,
                           color: themeStyle.text,
@@ -221,6 +230,7 @@ export function ContactForm({ portfolioOwnerId, className = "", variant = "defau
                   style={
                     themeStyle
                       ? {
+                          ...themedInputReset,
                           background: themeStyle.surface,
                           border: `1px solid ${themeStyle.border}`,
                           color: themeStyle.text,
@@ -253,6 +263,7 @@ export function ContactForm({ portfolioOwnerId, className = "", variant = "defau
                 style={
                   themeStyle
                     ? {
+                        ...themedInputReset,
                         background: themeStyle.surface,
                         border: `1px solid ${themeStyle.border}`,
                         color: themeStyle.text,

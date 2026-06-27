@@ -38,12 +38,12 @@ const NAV = [
 ];
 
 const SOFTWARE = [
-  { name: "Photoshop", abbr: "Ps", color: "#31A8FF", bg: "#001E36" },
-  { name: "Illustrator", abbr: "Ai", color: "#FF9A00", bg: "#330000" },
-  { name: "Figma", abbr: "Fg", color: "#A259FF", bg: "#1E1E1E" },
-  { name: "After Effects", abbr: "Ae", color: "#D291FF", bg: "#00005B" },
-  { name: "Premiere Pro", abbr: "Pr", color: "#EA77FF", bg: "#00005B" },
-  { name: "Blender", abbr: "Bl", color: "#F5792A", bg: "#1E1E1E" },
+  { name: "Photoshop", slug: "photoshop" },
+  { name: "Illustrator", slug: "illustrator" },
+  { name: "Figma", slug: "figma" },
+  { name: "After Effects", slug: "aftereffects" },
+  { name: "Premiere Pro", slug: "premierepro" },
+  { name: "Blender", slug: "blender" },
 ];
 
 const PRO_SKILLS = [
@@ -494,8 +494,13 @@ export default function CreativeCanvasTheme({
               <div className="grid grid-cols-2 gap-3">
                 {SOFTWARE.map((s, i) => (
                   <div key={i} className="flex items-center gap-3 p-4 rounded-2xl border-2 hover:-translate-y-1 transition" style={{ borderColor: C.ink, background: C.paper }}>
-                    <div className="w-11 h-11 rounded-xl flex items-center justify-center shrink-0 font-extrabold text-base" style={{ background: s.bg, color: s.color, fontFamily: 'system-ui' }}>
-                      {s.abbr}
+                    <div className="w-11 h-11 rounded-xl flex items-center justify-center shrink-0" style={{ background: "#f7f7f7" }}>
+                      <img
+                        src={`https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/${s.slug}/${s.slug}-original.svg`}
+                        alt={`${s.name} logo`}
+                        className="w-8 h-8 object-contain"
+                        loading="lazy"
+                      />
                     </div>
                     <span className="font-semibold">{s.name}</span>
                   </div>

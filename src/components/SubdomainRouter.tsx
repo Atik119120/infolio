@@ -7,6 +7,7 @@ import {
   FreelancerTheme,
   SmallBusinessTheme,
   PRDGraphicDesignerTheme,
+  CreativeCanvasTheme,
   PRDPhotographerTheme,
   PRDDigitalMarketerTheme,
   BiographyTheme,
@@ -235,6 +236,8 @@ function SubdomainPortfolio({ username }: { username: string }) {
       return <CreativeSidebarProTheme {...themeProps} />;
     case 'dark-photographer':
       return <DarkPhotographerTheme {...themeProps} />;
+    case 'creative-canvas':
+      return <CreativeCanvasTheme {...themeProps} />;
     case 'freelancer':
     default:
       return <FreelancerTheme {...themeProps} />;

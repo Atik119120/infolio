@@ -10,6 +10,7 @@ import {
   FreelancerTheme,
   SmallBusinessTheme,
   PRDGraphicDesignerTheme,
+  CreativeCanvasTheme,
   PRDPhotographerTheme,
   PRDDigitalMarketerTheme,
   BiographyTheme,
@@ -215,6 +216,8 @@ export default function PublicPortfolio() {
       return <CreativeSidebarProTheme {...themeProps} />;
     case 'dark-photographer':
       return <DarkPhotographerTheme {...themeProps} />;
+    case 'creative-canvas':
+      return <CreativeCanvasTheme {...themeProps} />;
     case 'freelancer':
     default:
       return <FreelancerTheme {...themeProps} />;

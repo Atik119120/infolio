@@ -346,18 +346,26 @@ export default function CreativeCanvasTheme({
       {v.services && services.length > 0 && (
         <section id="services" className="py-14 md:py-20 relative" style={{ background: C.ink, color: C.paper }}>
           <div className="max-w-7xl mx-auto px-5 md:px-8">
-            <motion.div {...fadeUp} className="flex items-end justify-between flex-wrap gap-4 mb-8">
-              <div>
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold mb-3" style={{ background: C.secondary, color: C.ink }}>
-                  WHAT I DO
-                </div>
-                <h2 className="cc-display font-extrabold text-3xl md:text-4xl leading-tight">
-                  Services to grow your <span style={{ color: C.secondary }}>brand</span>.
-                </h2>
+            <motion.div {...fadeUp} className="mb-10">
+              <div className="flex items-center gap-3 mb-5">
+                <span className="cc-display text-xs font-bold opacity-50">03 —</span>
+                <span className="h-px w-10" style={{ background: "rgba(255,255,255,0.3)" }} />
+                <span className="text-[10px] font-extrabold tracking-[0.3em]" style={{ color: C.secondary }}>WHAT I DO</span>
               </div>
-              <p className="max-w-sm text-sm opacity-70">
-                Premium design services for modern brands.
-              </p>
+              <div className="grid md:grid-cols-[1fr_auto] gap-6 items-end">
+                <h2 className="cc-display font-extrabold text-4xl md:text-6xl leading-[1.05]">
+                  Services to grow<br />your <span className="italic" style={{ color: C.secondary }}>brand.</span>
+                </h2>
+                <div className="flex flex-col items-start md:items-end gap-2">
+                  <div className="inline-flex items-baseline gap-2 px-3 py-1.5 rounded-full border" style={{ borderColor: "rgba(255,255,255,0.15)" }}>
+                    <span className="cc-display text-lg font-bold" style={{ color: C.secondary }}>{String(services.length).padStart(2, "0")}</span>
+                    <span className="text-[10px] font-bold tracking-[0.25em] opacity-60">SERVICES</span>
+                  </div>
+                  <p className="max-w-xs text-sm opacity-60 md:text-right">
+                    Premium design services for modern brands.
+                  </p>
+                </div>
+              </div>
             </motion.div>
 
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">

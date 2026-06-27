@@ -516,7 +516,7 @@ export default function CreativeCanvasTheme({
                 <span className="h-px w-10" style={{ background: C.ink }} />
                 <span className="text-[10px] font-bold tracking-[0.3em]">EXPERTISE</span>
               </div>
-              <h2 className="cc-display font-extrabold text-4xl md:text-5xl mb-8">Skills built<br /><span className="italic font-medium" style={{ color: C.accent }}>over the years.</span></h2>
+              <h2 className="cc-display font-extrabold text-4xl md:text-5xl mb-8">What I <span className="italic font-medium" style={{ color: C.accent }}>can do.</span></h2>
               <div className="space-y-5">
                 {(skills.length ? skills.slice(0, 6).map(s => ({ name: s.name, level: s.proficiency || 85 })) : PRO_SKILLS.map((n, i) => ({ name: n, level: 95 - i * 5 }))).map((s, i) => {
                   const segments = 14;

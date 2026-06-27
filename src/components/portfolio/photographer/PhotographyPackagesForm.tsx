@@ -139,7 +139,7 @@ export function PhotographyPackagesForm({ services, userId, onUpdate, onSuccess,
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="grid md:grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
             <div className="space-y-1.5">
               <Label>Package Name *</Label>
               <Input value={draft.title} onChange={(e) => setDraft({ ...draft, title: e.target.value })} placeholder="Signature" />

@@ -700,11 +700,11 @@ export default function CreativeCanvasTheme({
    EDUCATION — Vintage Treasure Map Journey
    ============================================================ */
 const MAP_C = {
-  sepia: "#C4A882",
-  ink: "#3E2A1E",
-  cream: "#F5ECD7",
-  forest: "#4A7C59",
-  rust: "#A0522D",
+  sepia: "#FFD54A",   // brand yellow (paper tint)
+  ink: "#111111",     // brand ink
+  cream: "#FCFCFC",   // brand soft white
+  forest: "#58C7FF",  // brand sky blue (highlight)
+  rust: "#FF8A00",    // brand orange (road)
 };
 
 function EducationMap({ education }: { education: any[] }) {

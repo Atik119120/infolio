@@ -297,13 +297,8 @@ export default function CreativeCanvasTheme({
                 )}
               </div>
 
-              {/* floating sticker */}
-              <div className="absolute bottom-2 left-2 px-4 py-2 rounded-full text-xs font-bold cc-display rotate-[-6deg] shadow-md z-10" style={{ background: C.accent, border: `2px solid ${C.ink}` }}>
-                ✦ Open for Work ✦
-              </div>
-              <div className="absolute top-2 right-2 w-14 h-14 rounded-full flex items-center justify-center cc-display font-extrabold text-xl rotate-12" style={{ background: C.ink, color: C.secondary }}>
-                ✦
-              </div>
+
+
             </div>
 
           </div>

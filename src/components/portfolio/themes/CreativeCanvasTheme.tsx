@@ -51,7 +51,7 @@ const PRO_SKILLS = [
 ];
 
 const fonts =
-  "https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,700;12..96,800&family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap";
+  "https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,700;12..96,800&family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=Cinzel:wght@500;600;700;800&family=Caveat:wght@500;600;700&display=swap";
 
 export default function CreativeCanvasTheme({
   profile, portfolio, skills, projects, services = [], socialLinks, experiences, education, userId,

@@ -333,9 +333,6 @@ export default function CreativeCanvasTheme({
               <div className="relative aspect-[4/5] rounded-[28px] overflow-hidden border-4 border-black">
                 {aboutImg ? <img src={aboutImg} alt="About" className="w-full h-full object-cover" /> : <div className="w-full h-full" style={{ background: C.secondary }} />}
               </div>
-              <div className="absolute -top-5 -right-5 w-24 h-24 rounded-full flex items-center justify-center cc-spin-slow" style={{ background: C.primary }}>
-                <span className="cc-display text-xs font-bold text-white">★ HELLO ★ HELLO ★</span>
-              </div>
               <div className="absolute -bottom-5 -left-5 px-4 py-3 rounded-2xl cc-display font-bold rotate-[-4deg]" style={{ background: C.accent, border: `2px solid ${C.ink}` }}>
                 Let's create<br />something great!
               </div>

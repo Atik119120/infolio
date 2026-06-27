@@ -228,7 +228,7 @@ export default function DarkPhotographerTheme({
             )}
             <div className="relative max-w-7xl mx-auto px-6 lg:px-12 w-full py-24">
               <p className="dp-mono text-xs uppercase tracking-[0.4em] mb-6" style={{ color: accent }}>
-                <ScrambleText text={`// ${profession}`} speed={35} />
+                {`// ${profession}`}
               </p>
               <h1 className="dp-display text-5xl md:text-7xl lg:text-8xl font-bold leading-[0.95] dp-glow max-w-5xl">
                 {heroHeadline}

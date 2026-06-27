@@ -554,6 +554,12 @@ export default function DarkPhotographerTheme({
                   <div>
                     <p className="dp-mono text-[10px] uppercase tracking-[0.3em]" style={{ color: accent }}>Album · {openAlbum.photos.length} Photos</p>
                     <h3 className="dp-display text-2xl md:text-4xl font-bold mt-1">{openAlbum.title}</h3>
+                    {(openAlbum as any).subtitle && (
+                      <p className="dp-mono text-[11px] uppercase tracking-widest text-white/60 mt-2">{(openAlbum as any).subtitle}</p>
+                    )}
+                    {(openAlbum as any).description && (
+                      <p className="text-sm text-white/70 mt-3 max-w-2xl">{(openAlbum as any).description}</p>
+                    )}
                   </div>
                   <button
                     onClick={() => setOpenAlbum(null)}

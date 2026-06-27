@@ -379,10 +379,6 @@ export default function CreativeCanvasTheme({
                     className="group relative p-5 rounded-2xl border overflow-hidden transition-all hover:-translate-y-1"
                     style={{ background: "rgba(255,255,255,0.04)", borderColor: "rgba(255,255,255,0.1)" }}
                   >
-                    <div
-                      className="absolute -top-12 -right-12 w-32 h-32 rounded-full blur-3xl opacity-0 group-hover:opacity-30 transition-opacity"
-                      style={{ background: accent }}
-                    />
                     <span className="absolute top-4 right-5 cc-display text-[10px] font-bold opacity-30">
                       {String(i + 1).padStart(2, "0")}
                     </span>

@@ -38,12 +38,12 @@ const NAV = [
 ];
 
 const SOFTWARE = [
-  { name: "Photoshop", color: "#31A8FF" },
-  { name: "Illustrator", color: "#FF9A00" },
-  { name: "Figma", color: "#A259FF" },
-  { name: "After Effects", color: "#9999FF" },
-  { name: "Premiere Pro", color: "#EA77FF" },
-  { name: "Blender", color: "#F5792A" },
+  { name: "Photoshop", slug: "adobephotoshop", color: "#31A8FF" },
+  { name: "Illustrator", slug: "adobeillustrator", color: "#FF9A00" },
+  { name: "Figma", slug: "figma", color: "#A259FF" },
+  { name: "After Effects", slug: "adobeaftereffects", color: "#9999FF" },
+  { name: "Premiere Pro", slug: "adobepremierepro", color: "#EA77FF" },
+  { name: "Blender", slug: "blender", color: "#F5792A" },
 ];
 
 const PRO_SKILLS = [
@@ -494,7 +494,9 @@ export default function CreativeCanvasTheme({
               <div className="grid grid-cols-2 gap-3">
                 {SOFTWARE.map((s, i) => (
                   <div key={i} className="flex items-center gap-3 p-4 rounded-2xl border-2 hover:-translate-y-1 transition" style={{ borderColor: C.ink, background: C.paper }}>
-                    <div className="w-10 h-10 rounded-xl flex items-center justify-center text-white font-bold cc-display" style={{ background: s.color }}>{s.name.charAt(0)}</div>
+                    <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ background: `${s.color}1a` }}>
+                      <img src={`https://cdn.simpleicons.org/${s.slug}/${s.color.replace('#','')}`} alt={s.name} className="w-6 h-6" loading="lazy" />
+                    </div>
                     <span className="font-semibold">{s.name}</span>
                   </div>
                 ))}

@@ -430,19 +430,61 @@ export default function DarkPhotographerTheme({
         {vServices && (
           <section id="services" className="relative px-6 lg:px-12 py-24 lg:py-32 border-t border-white/5">
             <div className="max-w-7xl mx-auto">
-              <p className="dp-mono text-xs uppercase tracking-[0.4em] mb-3" style={{ color: accent }}>What I Offer</p>
-              <h2 className="dp-display text-4xl md:text-6xl font-bold mb-14">Services</h2>
-              <div className="grid md:grid-cols-3 gap-4">
-                {(showServices as any[]).map((s: any, i: number) => (
-                  <div key={s.id} className="group relative p-8 rounded-2xl border border-white/10 bg-white/[0.02] hover:bg-white/[0.04] hover:border-white/30 transition-all">
-                    <div className="flex items-start justify-between mb-8">
-                      <span className="dp-mono text-xs text-white/40">0{i + 1}</span>
-                      <ArrowUpRight className="w-5 h-5 text-white/30 group-hover:text-[var(--ac)] group-hover:-translate-y-1 group-hover:translate-x-1 transition-all" style={{ ['--ac' as any]: accent }} />
+              <p className="dp-mono text-xs uppercase tracking-[0.4em] mb-3" style={{ color: accent }}>Packages & Pricing</p>
+              <h2 className="dp-display text-4xl md:text-6xl font-bold mb-4">Choose Your Shoot</h2>
+              <p className="text-white/55 max-w-xl mb-14">Transparent packages for every story — from intimate portraits to full-day cinematic coverage. Custom plans available on request.</p>
+              <div className="grid md:grid-cols-3 gap-5">
+                {(showServices as any[]).map((s: any, i: number) => {
+                  const featured = s.featured;
+                  return (
+                    <div
+                      key={s.id}
+                      className="group relative p-8 rounded-2xl border transition-all flex flex-col"
+                      style={{
+                        borderColor: featured ? accent : 'rgba(255,255,255,0.1)',
+                        background: featured ? `linear-gradient(180deg, ${accent}10, rgba(255,255,255,0.02))` : 'rgba(255,255,255,0.02)',
+                        boxShadow: featured ? `0 0 60px ${accent}20` : undefined,
+                      }}
+                    >
+                      {featured && (
+                        <span className="absolute -top-3 left-8 dp-mono text-[10px] uppercase tracking-[0.3em] px-3 py-1 rounded-full text-black" style={{ background: accent }}>
+                          Most Booked
+                        </span>
+                      )}
+                      <div className="flex items-start justify-between mb-6">
+                        <span className="dp-mono text-xs text-white/40">PKG · 0{i + 1}</span>
+                        <Camera className="w-4 h-4" style={{ color: featured ? accent : 'rgba(255,255,255,0.3)' }} />
+                      </div>
+                      <h3 className="dp-display text-3xl font-bold mb-1">{s.title}</h3>
+                      <p className="text-white/50 text-sm mb-6">{s.tagline || s.description}</p>
+                      <div className="mb-6 pb-6 border-b border-white/10">
+                        <div className="flex items-baseline gap-2">
+                          <span className="dp-display text-5xl font-bold" style={{ color: featured ? accent : '#fff' }}>{s.price || '—'}</span>
+                        </div>
+                        <p className="dp-mono text-[11px] uppercase tracking-widest text-white/40 mt-2">{s.duration || 'Per Session'}</p>
+                      </div>
+                      <ul className="space-y-3 mb-8 flex-1">
+                        {(s.features || []).map((f: string, idx: number) => (
+                          <li key={idx} className="flex items-start gap-3 text-sm text-white/70">
+                            <span className="mt-1.5 w-1 h-1 rounded-full shrink-0" style={{ background: accent }} />
+                            <span>{f}</span>
+                          </li>
+                        ))}
+                      </ul>
+                      <button
+                        onClick={() => scrollTo('contact')}
+                        className="dp-mono text-xs uppercase tracking-[0.25em] py-3 px-5 rounded-full border transition-all hover:scale-[1.02]"
+                        style={{
+                          borderColor: featured ? accent : 'rgba(255,255,255,0.2)',
+                          background: featured ? accent : 'transparent',
+                          color: featured ? '#000' : '#fff',
+                        }}
+                      >
+                        Book This Package
+                      </button>
                     </div>
-                    <h3 className="dp-display text-2xl font-bold mb-3">{s.title}</h3>
-                    <p className="text-white/55 text-sm leading-relaxed">{s.description}</p>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
           </section>

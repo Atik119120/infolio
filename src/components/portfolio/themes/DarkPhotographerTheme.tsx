@@ -285,48 +285,19 @@ export default function DarkPhotographerTheme({
           </section>
         )}
 
-        {/* WORK — Circular Gallery */}
+        {/* WORK — Interactive Bento Gallery */}
         {vProjects && (
           <section id="work" className="relative px-6 lg:px-12 py-24 lg:py-32 border-t border-white/5">
             <div className="max-w-7xl mx-auto">
-              <div className="flex items-end justify-between flex-wrap gap-6 mb-12">
-                <div>
-                  <p className="dp-mono text-xs uppercase tracking-[0.4em] mb-3" style={{ color: accent }}>Selected Work</p>
-                  <h2 className="dp-display text-4xl md:text-6xl font-bold">Featured Frames</h2>
-                </div>
-                <p className="dp-mono text-xs uppercase tracking-[0.3em] text-white/40">
-                  [ Rotating · Auto-play ]
-                </p>
+              <div className="mb-12">
+                <p className="dp-mono text-xs uppercase tracking-[0.4em] mb-3" style={{ color: accent }}>Selected Work</p>
+                <h2 className="dp-display text-4xl md:text-6xl font-bold">Drag · Tap · Explore</h2>
+                <p className="mt-4 text-white/55 max-w-xl">An interactive gallery — drag the tiles to rearrange, tap any frame to view it fullscreen.</p>
               </div>
 
-              <CircularGallery images={galleryImages} accent={accent} />
-
-              {/* Grid below */}
-              <div className="mt-20 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {(showProjects as any[]).map((p: any) => (
-                  <a
-                    key={p.id}
-                    href={p.live_url || "#"}
-                    target={p.live_url ? "_blank" : undefined}
-                    rel="noreferrer"
-                    className="group relative block overflow-hidden rounded-xl border border-white/5"
-                    style={{ aspectRatio: "4/5" }}
-                  >
-                    {p.image_url ? (
-                      <img src={p.image_url} alt={p.title} className="dp-card-img w-full h-full object-cover" />
-                    ) : (
-                      <div className="w-full h-full bg-neutral-900 flex items-center justify-center">
-                        <Camera className="w-10 h-10" style={{ color: accent }} />
-                      </div>
-                    )}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent opacity-90" />
-                    <div className="absolute inset-x-0 bottom-0 p-5">
-                      <p className="dp-mono text-[10px] uppercase tracking-[0.3em]" style={{ color: accent }}>{p.description || "Project"}</p>
-                      <h3 className="dp-display text-xl font-bold mt-1">{p.title}</h3>
-                    </div>
-                  </a>
-                ))}
-              </div>
+              <InteractiveBentoGallery
+                mediaItems={bentoItems}
+              />
             </div>
           </section>
         )}

@@ -31,7 +31,7 @@ const NAV = [
   { id: "about", label: "About" },
   { id: "services", label: "Services" },
   { id: "work", label: "Work" },
-  { id: "gallery", label: "Gallery" },
+  
   { id: "skills", label: "Skills" },
   { id: "education", label: "Education" },
   { id: "contact", label: "Contact" },
@@ -444,75 +444,40 @@ export default function CreativeCanvasTheme({
               </div>
             </motion.div>
 
-            <div className="columns-1 sm:columns-2 lg:columns-3 gap-5 [&>*]:mb-5 [&>*]:break-inside-avoid">
+            <div className="columns-2 md:columns-3 lg:columns-4 gap-3 md:gap-4 [&>*]:mb-3 md:[&>*]:mb-4 [&>*]:break-inside-avoid">
               {filteredProjects.map((p, i) => {
-                const heights = ["aspect-[4/5]", "aspect-square", "aspect-[3/4]", "aspect-[5/4]", "aspect-[4/5]", "aspect-square"];
-                const tint = [C.secondary, C.accent, C.primary][i % 3];
+                const heights = ["aspect-[3/4]", "aspect-[4/5]", "aspect-square", "aspect-[3/5]", "aspect-[4/3]", "aspect-[2/3]", "aspect-[5/4]", "aspect-[3/4]"];
+                const tint = [C.secondary, C.accent, C.primary, C.ink][i % 4];
                 return (
                   <motion.div
                     key={p.id}
                     {...fadeUp}
-                    transition={{ ...fadeUp.transition, delay: (i % 6) * 0.05 }}
-                    className="group relative rounded-3xl overflow-hidden border-2 cursor-pointer"
-                    style={{ borderColor: C.ink }}
+                    transition={{ ...fadeUp.transition, delay: (i % 8) * 0.04 }}
+                    className="group relative rounded-2xl overflow-hidden cursor-pointer shadow-sm hover:shadow-2xl transition-shadow"
                     onClick={() => p.image_url && setLightbox(p.image_url)}
                   >
                     <div className={`relative ${heights[i % heights.length]} overflow-hidden`} style={{ background: tint }}>
                       {p.image_url ? (
-                        <img src={p.image_url} alt={p.title} className="w-full h-full object-cover group-hover:scale-110 transition duration-700" />
+                        <img src={p.image_url} alt={p.title} className="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
                       ) : (
-                        <div className="w-full h-full flex items-center justify-center cc-display text-6xl font-extrabold opacity-30">{p.title.charAt(0)}</div>
+                        <div className="w-full h-full flex items-center justify-center cc-display text-5xl font-extrabold opacity-30">{p.title.charAt(0)}</div>
                       )}
-                      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition flex items-end p-5" style={{ background: "linear-gradient(to top, rgba(0,0,0,0.85), transparent 60%)" }}>
+                      {/* Hover overlay */}
+                      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition flex flex-col justify-between p-3 md:p-4" style={{ background: "linear-gradient(to top, rgba(0,0,0,0.85), rgba(0,0,0,0.1) 60%, transparent)" }}>
+                        <div className="flex justify-end">
+                          {p.live_url && (
+                            <a onClick={(e)=>e.stopPropagation()} href={p.live_url} target="_blank" rel="noreferrer" className="w-8 h-8 rounded-full flex items-center justify-center" style={{ background: C.paper, color: C.ink }}>
+                              <ExternalLink size={14} />
+                            </a>
+                          )}
+                        </div>
                         <div className="text-white">
-                          {p.tech_stack?.[0] && <span className="text-xs font-bold uppercase tracking-wider" style={{ color: C.secondary }}>{p.tech_stack[0]}</span>}
-                          <h3 className="cc-display text-2xl font-bold mt-1">{p.title}</h3>
-                          <div className="flex gap-2 mt-3">
-                            {p.live_url && <a onClick={(e)=>e.stopPropagation()} href={p.live_url} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-xs font-semibold px-3 py-1.5 rounded-full" style={{ background: C.secondary, color: C.ink }}>Live <ExternalLink size={12} /></a>}
-                          </div>
+                          {p.tech_stack?.[0] && <span className="text-[10px] font-bold uppercase tracking-wider" style={{ color: C.secondary }}>{p.tech_stack[0]}</span>}
+                          <h3 className="cc-display text-base md:text-lg font-bold leading-tight mt-0.5 line-clamp-2">{p.title}</h3>
                         </div>
                       </div>
                     </div>
-                    <div className="px-4 py-3 flex items-center justify-between" style={{ background: C.paper }}>
-                      <div>
-                        <div className="cc-display font-bold">{p.title}</div>
-                        {p.tech_stack?.[0] && <div className="text-xs" style={{ color: C.muted }}>{p.tech_stack.slice(0,2).join(" · ")}</div>}
-                      </div>
-                      <ArrowUpRight size={18} className="group-hover:rotate-[-45deg] transition" />
-                    </div>
                   </motion.div>
-                );
-              })}
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* GALLERY — bento */}
-      {v.projects && projects.length > 0 && (
-        <section id="gallery" className="py-20 md:py-28" style={{ background: C.paper }}>
-          <div className="max-w-7xl mx-auto px-5 md:px-8">
-            <motion.div {...fadeUp} className="text-center mb-10">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold mb-4" style={{ background: C.primary, color: C.paper }}>GALLERY</div>
-              <h2 className="cc-display font-extrabold text-4xl md:text-5xl">Moments from the studio</h2>
-            </motion.div>
-
-            <div className="grid grid-cols-2 md:grid-cols-4 auto-rows-[140px] md:auto-rows-[180px] gap-4">
-              {projects.slice(0, 8).map((p, i) => {
-                const spans = [
-                  "col-span-2 row-span-2", "col-span-1 row-span-1", "col-span-1 row-span-2",
-                  "col-span-2 row-span-1", "col-span-1 row-span-1", "col-span-1 row-span-1",
-                  "col-span-2 row-span-1", "col-span-1 row-span-1",
-                ];
-                return (
-                  <button
-                    key={p.id}
-                    onClick={() => p.image_url && setLightbox(p.image_url)}
-                    className={`${spans[i % spans.length]} relative rounded-2xl overflow-hidden border-2 group`}
-                    style={{ borderColor: C.ink, background: [C.secondary, C.accent, C.primary][i % 3] }}
-                  >
-                    {p.image_url && <img src={p.image_url} alt={p.title} className="w-full h-full object-cover group-hover:scale-110 transition duration-500" />}
-                  </button>
                 );
               })}
             </div>

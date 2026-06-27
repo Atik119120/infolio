@@ -37,7 +37,7 @@ const NAV = [
   { id: "contact", label: "Contact" },
 ];
 
-const SOFTWARE = [
+const DEFAULT_SOFTWARE = [
   { name: "Photoshop", slug: "photoshop" },
   { name: "Illustrator", slug: "illustrator" },
   { name: "Figma", slug: "figma" },
@@ -45,6 +45,8 @@ const SOFTWARE = [
   { name: "Premiere Pro", slug: "premierepro" },
   { name: "Blender", slug: "blender" },
 ];
+
+const DEFAULT_MARQUEE = ["Brand Identity", "Illustration", "UI / UX", "Editorial", "Motion", "Packaging", "Print", "Web Design"];
 
 const PRO_SKILLS = [
   "Logo Design", "Motion Design", "Static Design", "Branding", "Packaging",
@@ -104,6 +106,12 @@ export default function CreativeCanvasTheme({
   const phone = portfolio?.phone;
   const location = portfolio?.location;
   const website = portfolio?.website;
+  const marqueeWords: string[] = Array.isArray((portfolio as any)?.hero_marquee_words) && (portfolio as any).hero_marquee_words.length
+    ? (portfolio as any).hero_marquee_words
+    : DEFAULT_MARQUEE;
+  const softwareList: { name: string; slug: string }[] = Array.isArray((portfolio as any)?.theme_software) && (portfolio as any).theme_software.length
+    ? (portfolio as any).theme_software
+    : DEFAULT_SOFTWARE;
 
   const v = {
     hero: isVisible(portfolio, "hero"),
@@ -317,7 +325,7 @@ export default function CreativeCanvasTheme({
               <div className="cc-marquee">
                 {Array.from({ length: 2 }).map((_, k) => (
                   <div key={k} className="flex items-center gap-8 px-4 cc-display text-2xl md:text-3xl font-bold whitespace-nowrap">
-                    {["Brand Identity", "Illustration", "UI / UX", "Editorial", "Motion", "Packaging", "Print", "Web Design"].map((w, i) => (
+                    {marqueeWords.map((w, i) => (
                       <span key={i} className="flex items-center gap-8" style={{ color: i % 2 ? C.secondary : C.paper }}>
                         {w} <span style={{ color: C.primary }}>✦</span>
                       </span>
@@ -643,7 +651,7 @@ export default function CreativeCanvasTheme({
               </div>
               <h2 className="cc-display font-extrabold text-4xl md:text-5xl mb-8">Software<br /><span className="italic font-medium" style={{ color: C.primary }}>I master daily.</span></h2>
               <div className="grid grid-cols-2 gap-0 border-l border-t" style={{ borderColor: C.ink }}>
-                {SOFTWARE.map((s, i) => (
+                {softwareList.map((s, i) => (
                   <motion.div
                     key={i}
                     initial={{ opacity: 0, scale: 0.85 }}

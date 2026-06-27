@@ -16,6 +16,8 @@ interface Props {
   onError: (m: string) => void;
 }
 
+const MAX_SLIDES = 10;
+
 export function HeroSlideshowForm({ portfolio, userId, onUpdate, onSuccess, onError }: Props) {
   const { perFileLimitBytes } = usePlan();
   const [images, setImages] = useState<string[]>(
@@ -49,10 +51,19 @@ export function HeroSlideshowForm({ portfolio, userId, onUpdate, onSuccess, onEr
 
   const handleFiles = async (files: FileList | null) => {
     if (!files || !files.length) return;
+    const remaining = MAX_SLIDES - images.length;
+    if (remaining <= 0) {
+      onError(`Maximum ${MAX_SLIDES} slideshow images allowed`);
+      return;
+    }
+    const toProcess = Array.from(files).slice(0, remaining);
+    if (files.length > remaining) {
+      onError(`Only ${remaining} more allowed (max ${MAX_SLIDES} total)`);
+    }
     setUploading(true);
     const uploaded: string[] = [];
     try {
-      for (const file of Array.from(files)) {
+      for (const file of toProcess) {
         if (!file.type.startsWith("image/")) continue;
         if (file.size > perFileLimitBytes) {
           onError(`${file.name} too large (max ${Math.round(perFileLimitBytes / 1024 / 1024)}MB)`);
@@ -124,7 +135,7 @@ export function HeroSlideshowForm({ portfolio, userId, onUpdate, onSuccess, onEr
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2"><Images className="w-5 h-5" /> Hero Slideshow</CardTitle>
-          <CardDescription>Hero section-এ multiple banner images auto-slide হবে। যত খুশি ছবি upload করো — drag-order এ slide হবে।</CardDescription>
+          <CardDescription>Hero section-এ multiple banner images auto-slide হবে। সর্বোচ্চ {MAX_SLIDES}টি ছবি upload করা যাবে — drag-order এ slide হবে।</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           {images.length === 0 ? (
@@ -156,12 +167,12 @@ export function HeroSlideshowForm({ portfolio, userId, onUpdate, onSuccess, onEr
             </div>
           )}
 
-          <div className="flex items-center gap-2">
-            <Button onClick={() => fileRef.current?.click()} disabled={uploading} variant="outline">
+          <div className="flex items-center gap-2 flex-wrap">
+            <Button onClick={() => fileRef.current?.click()} disabled={uploading || images.length >= MAX_SLIDES} variant="outline">
               {uploading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Upload className="w-4 h-4 mr-2" />}
               {uploading ? "Uploading…" : "Add Images"}
             </Button>
-            <p className="text-xs text-muted-foreground">Recommended 1920×1280 · max {Math.round(perFileLimitBytes / 1024 / 1024)}MB each</p>
+            <p className="text-xs text-muted-foreground">{images.length}/{MAX_SLIDES} · max {Math.round(perFileLimitBytes / 1024 / 1024)}MB each</p>
             <input
               ref={fileRef}
               type="file"

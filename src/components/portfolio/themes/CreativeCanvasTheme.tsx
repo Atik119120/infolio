@@ -569,62 +569,111 @@ export default function CreativeCanvasTheme({
         </section>
       )}
 
-      {/* CONTACT */}
+      {/* CONTACT — postcard collage */}
       {v.contact && (
-        <section id="contact" className="py-20 md:py-28">
-          <div className="max-w-3xl mx-auto px-5 md:px-8 text-center">
-            <motion.div {...fadeUp}>
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold mb-4 mx-auto" style={{ background: C.primary, color: C.paper }}>CONTACT</div>
-              <h2 className="cc-display font-extrabold text-4xl md:text-6xl leading-[0.95] mb-4">
-                Let's make<br />something <span style={{ color: C.primary }} className="italic font-medium">unforgettable</span>.
+        <section id="contact" className="py-20 md:py-28 relative overflow-hidden">
+          <div className="absolute inset-0 pointer-events-none" style={{
+            backgroundImage: `radial-gradient(${C.ink}22 1px, transparent 1px)`,
+            backgroundSize: "22px 22px",
+            maskImage: "radial-gradient(ellipse at center, black 40%, transparent 75%)",
+          }} />
+          <div className="relative max-w-6xl mx-auto px-5 md:px-8">
+            <motion.div {...fadeUp} className="text-center mb-14">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold mb-4" style={{ background: C.primary, color: C.paper }}>// SAY HI</div>
+              <h2 className="cc-display font-extrabold text-5xl md:text-7xl leading-[0.9]">
+                Slide into my<br />
+                <span className="italic font-medium" style={{ color: C.primary }}>inbox</span>
+                <span style={{ color: C.accent }}>.</span>
               </h2>
-              <p className="text-base md:text-lg mb-8" style={{ color: C.muted }}>
-                Have a project in mind? Drop a message and let's build something beautiful together.
-              </p>
+            </motion.div>
 
-              <div className="grid sm:grid-cols-2 gap-4 mb-8 text-left">
-                {email && (
-                  <a href={`mailto:${email}`} className="flex items-center gap-4 p-4 rounded-2xl border-2 hover:-translate-y-1 transition" style={{ borderColor: C.ink, background: C.paper }}>
-                    <div className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0" style={{ background: C.secondary }}><Mail size={20} /></div>
-                    <div className="min-w-0">
-                      <div className="text-xs uppercase tracking-wider font-bold" style={{ color: C.muted }}>Email</div>
-                      <div className="font-semibold truncate">{email}</div>
-                    </div>
-                  </a>
-                )}
-                {phone && (
-                  <a href={`tel:${phone}`} className="flex items-center gap-4 p-4 rounded-2xl border-2 hover:-translate-y-1 transition" style={{ borderColor: C.ink, background: C.paper }}>
-                    <div className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0" style={{ background: C.accent }}><Phone size={20} /></div>
-                    <div className="min-w-0">
-                      <div className="text-xs uppercase tracking-wider font-bold" style={{ color: C.muted }}>Phone</div>
-                      <div className="font-semibold truncate">{phone}</div>
-                    </div>
-                  </a>
-                )}
-                {location && (
-                  <div className="flex items-center gap-4 p-4 rounded-2xl border-2 sm:col-span-2" style={{ borderColor: C.ink, background: C.paper }}>
-                    <div className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0" style={{ background: C.primary, color: C.paper }}><MapPin size={20} /></div>
-                    <div className="min-w-0">
-                      <div className="text-xs uppercase tracking-wider font-bold" style={{ color: C.muted }}>Location</div>
-                      <div className="font-semibold truncate">{location}</div>
+            <div className="grid md:grid-cols-12 gap-6 items-start">
+              {/* Big postcard with email */}
+              {email && (
+                <motion.a
+                  {...fadeUp}
+                  href={`mailto:${email}`}
+                  className="md:col-span-7 group block relative p-8 md:p-10 border-2 rounded-[28px] overflow-hidden"
+                  style={{ borderColor: C.ink, background: C.secondary, boxShadow: `10px 10px 0 ${C.ink}`, transform: "rotate(-1.2deg)" }}
+                >
+                  <div className="absolute top-4 right-4 flex gap-1.5">
+                    {[C.primary, C.accent, C.ink].map((c, i) => <span key={i} className="w-3 h-3 rounded-full" style={{ background: c }} />)}
+                  </div>
+                  <div className="text-[10px] font-bold tracking-[0.3em] mb-3" style={{ color: C.ink }}>POSTCARD · DROP A LINE</div>
+                  <div className="flex items-end gap-3 flex-wrap">
+                    <Mail size={36} style={{ color: C.ink }} />
+                    <div className="cc-display font-extrabold text-2xl md:text-4xl break-all leading-none" style={{ color: C.ink }}>{email}</div>
+                  </div>
+                  <div className="mt-6 flex items-center gap-2 text-sm font-bold" style={{ color: C.ink }}>
+                    <span>Write me</span>
+                    <ArrowUpRight size={18} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition" />
+                  </div>
+                </motion.a>
+              )}
+
+              {/* Stamp / phone */}
+              {phone && (
+                <motion.a
+                  {...fadeUp}
+                  href={`tel:${phone}`}
+                  className="md:col-span-5 group block relative p-7 border-2 rounded-[28px]"
+                  style={{ borderColor: C.ink, background: C.paper, boxShadow: `8px 8px 0 ${C.primary}`, transform: "rotate(1.5deg)" }}
+                >
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="text-[10px] font-bold tracking-[0.3em]" style={{ color: C.muted }}>RING RING</div>
+                    <div className="w-10 h-10 rounded-full border-2 flex items-center justify-center" style={{ borderColor: C.ink, background: C.accent }}>
+                      <Phone size={16} style={{ color: C.ink }} />
                     </div>
                   </div>
-                )}
-              </div>
-
-              {socialLinks.length > 0 && (
-                <div className="flex gap-3 justify-center">
-                  {socialLinks.map(l => {
-                    const Icon = getSocialIcon(l.platform);
-                    return (
-                      <a key={l.id} href={l.url} target="_blank" rel="noreferrer" className="w-11 h-11 rounded-full flex items-center justify-center border-2 hover:-translate-y-1 transition" style={{ borderColor: C.ink, background: C.paper }}>
-                        <Icon size={18} />
-                      </a>
-                    );
-                  })}
-                </div>
+                  <div className="cc-display font-extrabold text-2xl md:text-3xl leading-none">{phone}</div>
+                  <div className="mt-5 text-xs font-bold" style={{ color: C.muted }}>Tap to call →</div>
+                </motion.a>
               )}
-            </motion.div>
+
+              {/* Location ticket */}
+              {location && (
+                <motion.div
+                  {...fadeUp}
+                  className="md:col-span-5 relative p-7 border-2 rounded-[28px]"
+                  style={{ borderColor: C.ink, background: C.primary, color: C.paper, boxShadow: `8px 8px 0 ${C.ink}`, transform: "rotate(-2deg)" }}
+                >
+                  <div className="absolute -left-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full border-2" style={{ borderColor: C.ink, background: C.paper }} />
+                  <div className="absolute -right-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full border-2" style={{ borderColor: C.ink, background: C.paper }} />
+                  <div className="text-[10px] font-bold tracking-[0.3em] opacity-80 mb-3">BASED IN</div>
+                  <div className="flex items-center gap-3">
+                    <MapPin size={28} />
+                    <div className="cc-display font-extrabold text-2xl md:text-3xl leading-none">{location}</div>
+                  </div>
+                  <div className="mt-5 text-xs font-bold opacity-80">Working worldwide · Remote friendly</div>
+                </motion.div>
+              )}
+
+              {/* Sticker / socials */}
+              {socialLinks.length > 0 && (
+                <motion.div
+                  {...fadeUp}
+                  className="md:col-span-7 relative p-7 border-2 rounded-[28px]"
+                  style={{ borderColor: C.ink, background: C.ink, color: C.paper, boxShadow: `8px 8px 0 ${C.accent}`, transform: "rotate(1deg)" }}
+                >
+                  <div className="text-[10px] font-bold tracking-[0.3em] opacity-70 mb-4">/ ELSEWHERE ON THE INTERNET</div>
+                  <div className="flex flex-wrap gap-3">
+                    {socialLinks.map((l, i) => {
+                      const Icon = getSocialIcon(l.platform);
+                      const bg = [C.primary, C.secondary, C.accent][i % 3];
+                      return (
+                        <a key={l.id} href={l.url} target="_blank" rel="noreferrer"
+                          className="group flex items-center gap-2 px-4 py-2.5 rounded-full border-2 hover:-translate-y-1 transition"
+                          style={{ borderColor: C.paper, background: bg, color: C.ink }}>
+                          <Icon size={16} />
+                          <span className="text-sm font-bold capitalize">{l.platform}</span>
+                          <ArrowUpRight size={14} className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition" />
+                        </a>
+                      );
+                    })}
+                  </div>
+                </motion.div>
+              )}
+            </div>
           </div>
         </section>
       )}

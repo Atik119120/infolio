@@ -567,9 +567,9 @@ export default function CreativeCanvasTheme({
       {/* CONTACT */}
       {v.contact && (
         <section id="contact" className="py-20 md:py-28">
-          <div className="max-w-7xl mx-auto px-5 md:px-8 grid lg:grid-cols-2 gap-10">
+          <div className="max-w-3xl mx-auto px-5 md:px-8 text-center">
             <motion.div {...fadeUp}>
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold mb-4" style={{ background: C.primary, color: C.paper }}>CONTACT</div>
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold mb-4 mx-auto" style={{ background: C.primary, color: C.paper }}>CONTACT</div>
               <h2 className="cc-display font-extrabold text-4xl md:text-6xl leading-[0.95] mb-4">
                 Let's make<br />something <span style={{ color: C.primary }} className="italic font-medium">unforgettable</span>.
               </h2>
@@ -577,38 +577,38 @@ export default function CreativeCanvasTheme({
                 Have a project in mind? Drop a message and let's build something beautiful together.
               </p>
 
-              <div className="space-y-4 mb-8">
+              <div className="grid sm:grid-cols-2 gap-4 mb-8 text-left">
                 {email && (
                   <a href={`mailto:${email}`} className="flex items-center gap-4 p-4 rounded-2xl border-2 hover:-translate-y-1 transition" style={{ borderColor: C.ink, background: C.paper }}>
-                    <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ background: C.secondary }}><Mail size={20} /></div>
-                    <div>
+                    <div className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0" style={{ background: C.secondary }}><Mail size={20} /></div>
+                    <div className="min-w-0">
                       <div className="text-xs uppercase tracking-wider font-bold" style={{ color: C.muted }}>Email</div>
-                      <div className="font-semibold">{email}</div>
+                      <div className="font-semibold truncate">{email}</div>
                     </div>
                   </a>
                 )}
                 {phone && (
                   <a href={`tel:${phone}`} className="flex items-center gap-4 p-4 rounded-2xl border-2 hover:-translate-y-1 transition" style={{ borderColor: C.ink, background: C.paper }}>
-                    <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ background: C.accent }}><Phone size={20} /></div>
-                    <div>
+                    <div className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0" style={{ background: C.accent }}><Phone size={20} /></div>
+                    <div className="min-w-0">
                       <div className="text-xs uppercase tracking-wider font-bold" style={{ color: C.muted }}>Phone</div>
-                      <div className="font-semibold">{phone}</div>
+                      <div className="font-semibold truncate">{phone}</div>
                     </div>
                   </a>
                 )}
                 {location && (
-                  <div className="flex items-center gap-4 p-4 rounded-2xl border-2" style={{ borderColor: C.ink, background: C.paper }}>
-                    <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ background: C.primary, color: C.paper }}><MapPin size={20} /></div>
-                    <div>
+                  <div className="flex items-center gap-4 p-4 rounded-2xl border-2 sm:col-span-2" style={{ borderColor: C.ink, background: C.paper }}>
+                    <div className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0" style={{ background: C.primary, color: C.paper }}><MapPin size={20} /></div>
+                    <div className="min-w-0">
                       <div className="text-xs uppercase tracking-wider font-bold" style={{ color: C.muted }}>Location</div>
-                      <div className="font-semibold">{location}</div>
+                      <div className="font-semibold truncate">{location}</div>
                     </div>
                   </div>
                 )}
               </div>
 
               {socialLinks.length > 0 && (
-                <div className="flex gap-3">
+                <div className="flex gap-3 justify-center">
                   {socialLinks.map(l => {
                     const Icon = getSocialIcon(l.platform);
                     return (
@@ -618,15 +618,6 @@ export default function CreativeCanvasTheme({
                     );
                   })}
                 </div>
-              )}
-            </motion.div>
-
-            <motion.div {...fadeUp} className="p-6 md:p-8 rounded-3xl border-4" style={{ borderColor: C.ink, background: C.secondary }}>
-              <h3 className="cc-display text-2xl font-extrabold mb-4">Send a message</h3>
-              {userId ? (
-                <ContactForm portfolioOwnerId={userId} variant="default" />
-              ) : (
-                <p className="text-sm" style={{ color: C.ink }}>Contact form unavailable in demo mode.</p>
               )}
             </motion.div>
           </div>

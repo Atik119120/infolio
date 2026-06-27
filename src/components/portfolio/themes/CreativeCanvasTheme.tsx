@@ -282,50 +282,30 @@ export default function CreativeCanvasTheme({
               </motion.div>
             </div>
 
-            {/* Right — magazine cutout portrait */}
-            <div className="relative h-[480px] sm:h-[540px] lg:h-[620px]">
-              {/* halftone dot field */}
-              <div className="absolute inset-6 rounded-3xl" style={{
-                backgroundImage: `radial-gradient(${C.ink} 1.4px, transparent 1.6px)`,
-                backgroundSize: "14px 14px",
-                opacity: 0.18,
-              }} />
-              {/* color block behind */}
-              <div className="absolute right-6 top-10 bottom-16 left-20 rounded-[28px]" style={{ background: C.primary, transform: "rotate(2.5deg)" }} />
-              <div className="absolute right-20 top-16 bottom-10 left-6 rounded-[28px] border-2" style={{ borderColor: C.ink, background: C.secondary, transform: "rotate(-2deg)" }} />
+            {/* Right — portrait blob */}
+            <div className="relative h-[460px] sm:h-[520px] lg:h-[600px] flex items-center justify-center">
+              {/* color blob behind */}
+              <div className="absolute inset-6 rounded-[42%_58%_55%_45%/55%_42%_58%_45%]" style={{ background: C.primary, transform: "rotate(-6deg)" }} />
+              <div className="absolute inset-10 rounded-[55%_45%_60%_40%/45%_55%_45%_55%] border-2" style={{ borderColor: C.ink, background: C.secondary, transform: "rotate(4deg)" }} />
 
-              {/* Portrait card */}
-              <div className="absolute inset-10 sm:inset-12 rounded-[28px] overflow-hidden border-2 bg-white" style={{ borderColor: C.ink, boxShadow: `14px 14px 0 ${C.ink}` }}>
+              {/* Portrait */}
+              <div className="relative w-[78%] h-[88%] rounded-[44%_56%_50%_50%/52%_48%_52%_48%] overflow-hidden border-2 bg-white" style={{ borderColor: C.ink, boxShadow: `12px 12px 0 ${C.ink}` }}>
                 {heroImg ? (
                   <img src={heroImg} alt={name} className="w-full h-full object-cover" />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center cc-display text-8xl font-extrabold text-white" style={{ background: C.ink }}>{name.charAt(0)}</div>
                 )}
-                {/* corner index ticker */}
-                <div className="absolute top-3 left-3 px-2 py-1 text-[10px] font-bold tracking-[0.25em]" style={{ background: C.paper, color: C.ink, border: `1.5px solid ${C.ink}` }}>
-                  N° 001 / PORTRAIT
-                </div>
-                {/* bottom caption strip */}
-                <div className="absolute bottom-0 left-0 right-0 flex items-center justify-between px-4 py-2 text-[10px] font-bold tracking-[0.2em]" style={{ background: C.ink, color: C.paper }}>
-                  <span>EST. STUDIO</span>
-                  <span className="flex gap-1">
-                    <span className="w-2 h-2 rounded-full" style={{ background: C.primary }} />
-                    <span className="w-2 h-2 rounded-full" style={{ background: C.secondary }} />
-                    <span className="w-2 h-2 rounded-full" style={{ background: C.accent }} />
-                  </span>
-                  <span>{new Date().getFullYear()}</span>
-                </div>
               </div>
 
               {/* floating sticker */}
-              <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 px-4 py-2 rounded-full text-xs font-bold cc-display rotate-[-6deg] shadow-md z-10" style={{ background: C.accent, border: `2px solid ${C.ink}` }}>
+              <div className="absolute bottom-2 left-2 px-4 py-2 rounded-full text-xs font-bold cc-display rotate-[-6deg] shadow-md z-10" style={{ background: C.accent, border: `2px solid ${C.ink}` }}>
                 ✦ Open for Work ✦
               </div>
-              {/* sparkle dot */}
-              <div className="absolute -top-2 -right-2 w-14 h-14 rounded-full flex items-center justify-center cc-display font-extrabold text-xl rotate-12" style={{ background: C.ink, color: C.secondary }}>
+              <div className="absolute top-2 right-2 w-14 h-14 rounded-full flex items-center justify-center cc-display font-extrabold text-xl rotate-12" style={{ background: C.ink, color: C.secondary }}>
                 ✦
               </div>
             </div>
+
           </div>
 
 

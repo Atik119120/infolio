@@ -16,6 +16,8 @@ interface Props {
   onError: (m: string) => void;
 }
 
+const MAX_SLIDES = 10;
+
 export function HeroSlideshowForm({ portfolio, userId, onUpdate, onSuccess, onError }: Props) {
   const { perFileLimitBytes } = usePlan();
   const [images, setImages] = useState<string[]>(

@@ -432,7 +432,7 @@ export function ThemeSelector({ currentTheme, userId, onUpdate }: ThemeSelectorP
                                         Unlock for ৳{theme.price}
                                       </Button>
                                     )}
-                                    <Button variant="outline" asChild>
+                                    <Button variant="outline" className="bg-transparent border-white/15 text-white hover:bg-white/5 hover:text-white" asChild>
                                       <a href={`/demo/${theme.value}`} target="_blank" rel="noopener noreferrer">
                                         <ExternalLink className="w-4 h-4 mr-2" />
                                         Live Demo

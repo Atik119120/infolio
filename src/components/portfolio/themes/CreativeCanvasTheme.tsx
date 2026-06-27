@@ -38,11 +38,11 @@ const NAV = [
 ];
 
 const SOFTWARE = [
-  { name: "Photoshop", slug: "photoshop", color: "#31A8FF" },
-  { name: "Illustrator", slug: "illustrator", color: "#FF9A00" },
+  { name: "Photoshop", slug: "adobe_photoshop", color: "#31A8FF" },
+  { name: "Illustrator", slug: "adobe_illustrator", color: "#FF9A00" },
   { name: "Figma", slug: "figma", color: "#A259FF" },
-  { name: "After Effects", slug: "aftereffects", color: "#9999FF" },
-  { name: "Premiere Pro", slug: "premierepro", color: "#EA77FF" },
+  { name: "After Effects", slug: "adobe_after_effects", color: "#9999FF" },
+  { name: "Premiere Pro", slug: "adobe_premiere_pro", color: "#EA77FF" },
   { name: "Blender", slug: "blender", color: "#F5792A" },
 ];
 
@@ -495,7 +495,7 @@ export default function CreativeCanvasTheme({
                 {SOFTWARE.map((s, i) => (
                   <div key={i} className="flex items-center gap-3 p-4 rounded-2xl border-2 hover:-translate-y-1 transition" style={{ borderColor: C.ink, background: C.paper }}>
                     <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ background: `${s.color}1a` }}>
-                      <img src={`https://cdn.jsdelivr.net/gh/devicons/devicon/icons/${s.slug}/${s.slug}-plain.svg`} alt={s.name} className="w-6 h-6" loading="lazy" />
+                      <img src={`https://www.vectorlogo.zone/logos/${s.slug}/${s.slug}-icon.svg`} alt={s.name} className="w-7 h-7" loading="lazy" />
                     </div>
                     <span className="font-semibold">{s.name}</span>
                   </div>

@@ -139,7 +139,7 @@ export function PhotoGalleryForm({ portfolio, projects, userId, onUpdate, onSucc
       description: "",
       slug,
       display_order: photos.length,
-      project_type: "photography",
+      project_type: "photographer",
     } as any);
     setAdding(false);
     if (error) onError("Failed to add photo");

@@ -457,22 +457,128 @@ export default function DarkPhotographerTheme({
           </section>
         )}
 
-        {/* WORK — Interactive Bento Gallery */}
+        {/* WORK — Interactive Bento Gallery + Albums */}
         {vProjects && (
           <section id="work" className="relative px-6 lg:px-12 py-24 lg:py-32 border-t border-white/5">
             <div className="max-w-7xl mx-auto">
-              <div className="mb-12">
-                <p className="dp-mono text-xs uppercase tracking-[0.4em] mb-3" style={{ color: accent }}>Selected Work</p>
-                <h2 className="dp-display text-4xl md:text-6xl font-bold">Through The Lens</h2>
-                <p className="mt-4 text-white/55 max-w-xl">An interactive gallery — drag the tiles to rearrange, tap any frame to view it fullscreen.</p>
+              <div className="mb-10 flex flex-col md:flex-row md:items-end md:justify-between gap-6">
+                <div>
+                  <p className="dp-mono text-xs uppercase tracking-[0.4em] mb-3" style={{ color: accent }}>Selected Work</p>
+                  <h2 className="dp-display text-4xl md:text-6xl font-bold">Through The Lens</h2>
+                  <p className="mt-4 text-white/55 max-w-xl">
+                    {workTab === "photos"
+                      ? "An interactive gallery — drag the tiles to rearrange, tap any frame to view it fullscreen."
+                      : "Curated photo collections from recent shoots — tap a cover to step inside the full album."}
+                  </p>
+                </div>
+                {/* Tabs */}
+                <div className="inline-flex p-1 rounded-full border border-white/10 bg-white/[0.03] self-start">
+                  {([
+                    { k: "photos", label: "Photos" },
+                    { k: "albums", label: "Albums" },
+                  ] as const).map((t) => {
+                    const active = workTab === t.k;
+                    return (
+                      <button
+                        key={t.k}
+                        onClick={() => setWorkTab(t.k)}
+                        className="dp-mono text-[11px] uppercase tracking-[0.25em] px-5 py-2.5 rounded-full transition-all"
+                        style={{
+                          background: active ? accent : "transparent",
+                          color: active ? "#000" : "rgba(255,255,255,0.6)",
+                        }}
+                      >
+                        {t.label}
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
 
-              <InteractiveBentoGallery
-                mediaItems={bentoItems}
-              />
+              {workTab === "photos" ? (
+                <InteractiveBentoGallery mediaItems={bentoItems} />
+              ) : (
+                <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                  {demoAlbums.map((al) => (
+                    <button
+                      key={al.id}
+                      onClick={() => setOpenAlbum(al)}
+                      className="group relative aspect-[3/4] rounded-2xl overflow-hidden border border-white/10 text-left"
+                    >
+                      <img src={al.cover} alt={al.title} className="dp-card-img absolute inset-0 w-full h-full object-cover" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
+                      <div className="absolute top-4 right-4 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-black/60 backdrop-blur border border-white/10">
+                        <Images className="w-3 h-3" style={{ color: accent }} />
+                        <span className="dp-mono text-[10px] uppercase tracking-widest text-white/80">{al.photos.length}</span>
+                      </div>
+                      <div className="absolute bottom-0 left-0 right-0 p-5">
+                        <p className="dp-mono text-[10px] uppercase tracking-[0.3em] mb-1" style={{ color: accent }}>Album</p>
+                        <h3 className="dp-display text-xl font-bold text-white">{al.title}</h3>
+                        <p className="dp-mono text-[10px] uppercase tracking-widest text-white/50 mt-2 group-hover:text-white transition-colors">
+                          View Album →
+                        </p>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
           </section>
         )}
+
+        {/* ALBUM MODAL */}
+        {openAlbum && (
+          <div
+            className="fixed inset-0 z-[100] bg-black/95 backdrop-blur-xl overflow-y-auto"
+            onClick={() => setOpenAlbum(null)}
+          >
+            <div className="min-h-screen px-6 lg:px-12 py-10" onClick={(e) => e.stopPropagation()}>
+              <div className="max-w-7xl mx-auto">
+                <div className="flex items-center justify-between mb-8 sticky top-0 py-4 bg-black/80 backdrop-blur z-10 -mx-6 px-6 lg:-mx-12 lg:px-12 border-b border-white/10">
+                  <div>
+                    <p className="dp-mono text-[10px] uppercase tracking-[0.3em]" style={{ color: accent }}>Album · {openAlbum.photos.length} Photos</p>
+                    <h3 className="dp-display text-2xl md:text-4xl font-bold mt-1">{openAlbum.title}</h3>
+                  </div>
+                  <button
+                    onClick={() => setOpenAlbum(null)}
+                    className="w-11 h-11 rounded-full border border-white/15 hover:border-white/40 flex items-center justify-center transition-colors"
+                  >
+                    <X className="w-5 h-5" />
+                  </button>
+                </div>
+                <div className="columns-2 md:columns-3 lg:columns-4 gap-4 [column-fill:_balance]">
+                  {openAlbum.photos.map((src, i) => (
+                    <button
+                      key={i}
+                      onClick={() => setLightbox(src)}
+                      className="block w-full mb-4 break-inside-avoid rounded-xl overflow-hidden border border-white/5 group relative"
+                    >
+                      <img src={src} alt={`${openAlbum.title} ${i + 1}`} loading="lazy" className="w-full h-auto dp-card-img" />
+                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* LIGHTBOX */}
+        {lightbox && (
+          <div
+            className="fixed inset-0 z-[110] bg-black/98 flex items-center justify-center p-6"
+            onClick={() => setLightbox(null)}
+          >
+            <button
+              onClick={() => setLightbox(null)}
+              className="absolute top-6 right-6 w-11 h-11 rounded-full border border-white/15 hover:border-white/40 flex items-center justify-center"
+            >
+              <X className="w-5 h-5" />
+            </button>
+            <img src={lightbox} alt="Preview" className="max-w-full max-h-full object-contain rounded-lg" />
+          </div>
+        )}
+
 
         {/* SERVICES */}
         {vServices && (

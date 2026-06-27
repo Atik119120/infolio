@@ -47,7 +47,7 @@ const SOFTWARE = [
 ];
 
 const PRO_SKILLS = [
-  "Branding", "Illustration", "UI Design", "Motion Design", "Print Design", "Web Design",
+  "Logo Design", "Motion Design", "Static Design", "Branding", "Packaging",
 ];
 
 const fonts =

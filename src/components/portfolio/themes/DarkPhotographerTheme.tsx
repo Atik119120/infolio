@@ -362,29 +362,16 @@ export default function DarkPhotographerTheme({
               <p className="mt-5 max-w-lg text-white/60 text-sm md:text-base leading-relaxed">
                 {heroDesc}
               </p>
-              <div className="mt-8 flex flex-wrap items-center gap-5">
-                {/* Film strip primary button */}
-                <button onClick={() => scrollTo("work")} className="dp-film group" style={{ ['--acc' as any]: accent }}>
-                  <span className="dp-sprockets top" aria-hidden>
-                    {Array.from({ length: 8 }).map((_, i) => <span key={i} />)}
-                  </span>
-                  <span className="dp-film-inner">
-                    <span className="dp-film-frame">36</span>
-                    <span className="dp-film-label">View My Photographs</span>
-                    <span className="dp-film-iso">ISO 400</span>
-                  </span>
-                  <span className="dp-sprockets bot" aria-hidden>
-                    {Array.from({ length: 8 }).map((_, i) => <span key={i} />)}
-                  </span>
+              <div className="mt-8 flex flex-wrap items-center gap-4">
+                <button onClick={() => scrollTo("work")} className="dp-cut-btn primary group" style={{ ['--acc' as any]: accent }}>
+                  <span className="dp-cut-dot" />
+                  <span>View My Photographs</span>
+                  <span className="dp-cut-arrow">→</span>
                 </button>
-
-                {/* Shutter release circular button */}
-                <button onClick={() => scrollTo("contact")} className="dp-shutter-btn group" style={{ ['--acc' as any]: accent }} aria-label="Book A Next Shoot">
-                  <span className="dp-shutter-ring" />
-                  <span className="dp-shutter-ring r2" />
-                  <span className="dp-shutter-dot" />
-                  <span className="dp-shutter-text">Book<br/>Shoot</span>
-                  <span className="dp-shutter-tick" />
+                <button onClick={() => scrollTo("contact")} className="dp-cut-btn ghost group" style={{ ['--acc' as any]: accent }}>
+                  <span className="dp-cut-dot" />
+                  <span>Book A Next Shoot</span>
+                  <span className="dp-cut-arrow">→</span>
                 </button>
               </div>
             </div>

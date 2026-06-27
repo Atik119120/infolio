@@ -379,7 +379,7 @@ export default function CreativeCanvasTheme({
 
 
               {/* RIGHT — copy + stats ticker */}
-              <motion.div {...fadeUp} className="lg:col-span-7">
+              <motion.div {...slideRight} className="lg:col-span-7">
                 {/* big quote mark */}
                 <div className="cc-display font-extrabold leading-none mb-2" style={{ fontSize: "80px", color: C.primary }}>
                   &ldquo;

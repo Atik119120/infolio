@@ -640,8 +640,6 @@ export default function CreativeCanvasTheme({
           </div>
         </section>
       )}
-        </div>
-      </footer>
 
       {/* Back to top */}
       <AnimatePresence>

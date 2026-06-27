@@ -439,32 +439,54 @@ export default function CreativeCanvasTheme({
       {v.projects && projects.length > 0 && (
         <section id="work" className="py-20 md:py-28">
           <div className="max-w-7xl mx-auto px-5 md:px-8">
-            <motion.div {...fadeUp} className="flex items-end justify-between flex-wrap gap-6 mb-10">
-              <div>
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold mb-4" style={{ background: C.accent }}>
-                  SELECTED WORK
+            <motion.div {...fadeUp} className="mb-10">
+              <div className="flex items-end justify-between flex-wrap gap-6">
+                <div>
+                  <div className="flex items-center gap-3 mb-4">
+                    <span className="cc-display text-xs font-bold tracking-[0.4em]" style={{ color: C.muted }}>03 —</span>
+                    <span className="h-px w-12" style={{ background: C.ink }} />
+                    <span className="text-[10px] font-bold tracking-[0.3em]" style={{ color: C.ink }}>SELECTED WORK</span>
+                  </div>
+                  <h2 className="cc-display font-extrabold text-4xl md:text-6xl leading-[0.95]">
+                    Recent<br /><span style={{ color: C.primary }} className="italic font-medium">case studies</span><span style={{ color: C.accent }}>.</span>
+                  </h2>
                 </div>
-                <h2 className="cc-display font-extrabold text-4xl md:text-6xl leading-[0.95]">
-                  Recent<br /><span style={{ color: C.primary }} className="italic font-medium">case studies</span>.
-                </h2>
+                <div className="text-right">
+                  <div className="cc-display text-5xl md:text-6xl font-extrabold leading-none" style={{ color: C.primary }}>
+                    {String(filteredProjects.length).padStart(2, "0")}
+                  </div>
+                  <div className="text-[10px] font-bold tracking-[0.3em] mt-1" style={{ color: C.muted }}>PROJECTS SHOWN</div>
+                </div>
               </div>
-              <div className="flex flex-wrap gap-2 cc-btn">
-                {categories.map(c => (
-                  <button
-                    key={c}
-                    onClick={() => setFilter(c)}
-                    className="px-4 py-2 rounded-full text-sm font-semibold border-2 transition"
-                    style={{
-                      background: filter === c ? C.ink : C.paper,
-                      color: filter === c ? C.paper : C.ink,
-                      borderColor: C.ink,
-                    }}
-                  >
-                    {c}
-                  </button>
-                ))}
+
+              {/* Underline filter tabs */}
+              <div className="mt-8 flex flex-wrap gap-x-7 gap-y-2 cc-btn border-t border-b py-3" style={{ borderColor: C.ink }}>
+                {categories.map(c => {
+                  const isActive = filter === c;
+                  return (
+                    <button
+                      key={c}
+                      onClick={() => setFilter(c)}
+                      className="relative text-sm font-semibold transition group"
+                      style={{ color: isActive ? C.ink : C.muted }}
+                    >
+                      <span className="cc-display text-[10px] font-bold mr-1.5 tracking-wider" style={{ color: isActive ? C.primary : C.muted }}>
+                        {isActive ? "●" : "○"}
+                      </span>
+                      {c}
+                      {isActive && (
+                        <motion.span
+                          layoutId="cc-filter-underline"
+                          className="absolute -bottom-3 left-0 right-0 h-[3px]"
+                          style={{ background: C.primary }}
+                        />
+                      )}
+                    </button>
+                  );
+                })}
               </div>
             </motion.div>
+
 
             <div className="columns-2 md:columns-3 lg:columns-4 gap-3 md:gap-4 [&>*]:mb-3 md:[&>*]:mb-4 [&>*]:break-inside-avoid">
               {filteredProjects.map((p, i) => {

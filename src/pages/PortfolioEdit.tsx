@@ -292,7 +292,7 @@ export default function PortfolioEdit() {
     { value: "about", label: "About Me", icon: User, hint: "Personal introduction", requires: "basic" },
     { value: "skills", label: "Skills", icon: Sparkles, hint: "Tools and expertise" },
     { value: "services", label: isPhotographer ? "Packages & Pricing" : "Services", icon: isPhotographer ? Wrench : Wrench, hint: isPhotographer ? "Shoot packages with price" : "What you offer" },
-    { value: "projects", label: isPhotographer ? "Photo Gallery" : "Projects", icon: isPhotographer ? ImageIcon : FolderOpen, hint: isPhotographer ? "Photos & albums" : "Showcase your work" },
+    { value: "projects", label: isPhotographer ? "Work" : "Projects", icon: isPhotographer ? ImageIcon : FolderOpen, hint: isPhotographer ? "Photos & albums" : "Showcase your work" },
     { value: "experience", label: "Experience", icon: Briefcase, hint: "Work history" },
     { value: "education", label: "Education", icon: GraduationCap, hint: "Your education" },
     { value: "branding", label: "Branding", icon: ImageIcon, hint: "Favicon", requires: "branding" },

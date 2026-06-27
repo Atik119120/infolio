@@ -389,12 +389,12 @@ export default function DarkPhotographerTheme({
         )}
 
         {/* FOOTER */}
-        <footer className="px-6 lg:px-12 py-10 border-t border-white/5">
-          <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4">
-            <p className="dp-mono text-xs text-white/40">{footerText}</p>
-            <p className="dp-mono text-xs text-white/40 uppercase tracking-[0.3em]">Crafted in the dark</p>
-          </div>
+        <footer className="px-6 py-8 border-t border-white/5">
+          <p className="dp-mono text-xs text-white/40 text-center">
+            © {new Date().getFullYear()} {name}. All rights reserved.
+          </p>
         </footer>
+
       </main>
     </div>
   );

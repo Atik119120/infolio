@@ -238,10 +238,10 @@ export default function DarkPhotographerTheme({
               </p>
               <div className="mt-10 flex flex-wrap gap-4">
                 <button onClick={() => scrollTo("work")} className="px-6 py-3 rounded-full text-sm font-semibold text-black" style={{ background: accent }}>
-                  View Portfolio
+                  View My Photographs
                 </button>
                 <button onClick={() => scrollTo("contact")} className="px-6 py-3 rounded-full text-sm font-semibold border border-white/20 hover:border-white/60 transition-colors">
-                  Let's Talk
+                  Book A Next Shoot
                 </button>
               </div>
             </div>

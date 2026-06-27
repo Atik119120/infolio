@@ -7,7 +7,7 @@ import {
   User, Sparkles, Briefcase, GraduationCap, Link2, FolderOpen, Palette,
   Image as ImageIcon, Wrench, Search, Wand2, Monitor, Smartphone, Tablet,
   RefreshCw, ExternalLink, ArrowLeft, ChevronRight, Check, X, Eye, Loader2,
-  Home, Rocket, Save, Type, Mail, EyeOff, MoreHorizontal,
+  Home, Rocket, Save, Type, Mail, EyeOff, MoreHorizontal, Images,
 } from "lucide-react";
 
 import { SectionVisibilityForm } from "@/components/portfolio/SectionVisibilityForm";
@@ -27,6 +27,8 @@ import { FaviconUploadForm } from "@/components/portfolio/FaviconUploadForm";
 import { SeoSettingsForm } from "@/components/portfolio/SeoSettingsForm";
 import { CustomizationForm } from "@/components/portfolio/CustomizationForm";
 import { CustomCodeForm } from "@/components/portfolio/CustomCodeForm";
+import { HeroSlideshowForm } from "@/components/portfolio/photographer/HeroSlideshowForm";
+import { PhotographyPackagesForm } from "@/components/portfolio/photographer/PhotographyPackagesForm";
 import { getThemeConfig } from "@/config/themeFeatures";
 import { cn } from "@/lib/utils";
 
@@ -280,12 +282,13 @@ export default function PortfolioEdit() {
   }, [activeSection]);
 
 
+  const isPhotographer = activeTheme === "dark-photographer";
   const allSections: { value: SectionKey; label: string; icon: any; hint: string; requires?: string }[] = [
-    { value: "hero", label: "Hero Section", icon: Home, hint: "Main landing area", requires: "customize" },
+    { value: "hero", label: isPhotographer ? "Hero Slideshow" : "Hero Section", icon: isPhotographer ? Images : Home, hint: isPhotographer ? "Banner slideshow & text" : "Main landing area", requires: "customize" },
     { value: "about", label: "About Me", icon: User, hint: "Personal introduction", requires: "basic" },
     { value: "skills", label: "Skills", icon: Sparkles, hint: "Tools and expertise" },
-    { value: "services", label: "Services", icon: Wrench, hint: "What you offer" },
-    { value: "projects", label: "Projects", icon: FolderOpen, hint: "Showcase your work" },
+    { value: "services", label: isPhotographer ? "Packages & Pricing" : "Services", icon: isPhotographer ? Wrench : Wrench, hint: isPhotographer ? "Shoot packages with price" : "What you offer" },
+    { value: "projects", label: isPhotographer ? "Photo Gallery" : "Projects", icon: isPhotographer ? ImageIcon : FolderOpen, hint: isPhotographer ? "Photos & albums" : "Showcase your work" },
     { value: "experience", label: "Experience", icon: Briefcase, hint: "Work history" },
     { value: "education", label: "Education", icon: GraduationCap, hint: "Your education" },
     { value: "branding", label: "Branding", icon: ImageIcon, hint: "Favicon", requires: "branding" },
@@ -315,9 +318,11 @@ export default function PortfolioEdit() {
       case "about":
         return <BasicInfoForm profile={profile} portfolio={portfolio} userId={user?.id || ""} onUpdate={handleUpdate} onSuccess={showSuccess} onError={showError} />;
       case "hero":
-        return activeTheme === "custom-code"
-          ? <CustomCodeForm portfolio={portfolio as any} userId={user?.id || ""} onUpdate={handleUpdate} />
-          : <CustomizationForm portfolio={portfolio as any} userId={user?.id || ""} enabledFields={themeConfig.customizeFields} scope="hero" onUpdate={handleUpdate} onSuccess={showSuccess} onError={showError} />;
+        if (activeTheme === "custom-code")
+          return <CustomCodeForm portfolio={portfolio as any} userId={user?.id || ""} onUpdate={handleUpdate} />;
+        if (activeTheme === "dark-photographer")
+          return <HeroSlideshowForm portfolio={portfolio as any} userId={user?.id || ""} onUpdate={handleUpdate} onSuccess={showSuccess} onError={showError} />;
+        return <CustomizationForm portfolio={portfolio as any} userId={user?.id || ""} enabledFields={themeConfig.customizeFields} scope="hero" onUpdate={handleUpdate} onSuccess={showSuccess} onError={showError} />;
       case "footer":
         return <CustomizationForm portfolio={portfolio as any} userId={user?.id || ""} enabledFields={themeConfig.customizeFields} scope="footer" onUpdate={handleUpdate} onSuccess={showSuccess} onError={showError} />;
       case "header":
@@ -327,6 +332,8 @@ export default function PortfolioEdit() {
       case "skills":
         return <SkillsForm skills={skills} userId={user?.id || ""} onUpdate={handleUpdate} onSuccess={showSuccess} onError={showError} />;
       case "services":
+        if (activeTheme === "dark-photographer")
+          return <PhotographyPackagesForm services={services} userId={user?.id || ""} onUpdate={handleUpdate} onSuccess={showSuccess} onError={showError} />;
         return <ServicesForm services={services} userId={user?.id || ""} onUpdate={handleUpdate} onSuccess={showSuccess} onError={showError} />;
       case "projects":
         return <ProjectsForm projects={projects} userId={user?.id || ""} onUpdate={handleUpdate} onSuccess={showSuccess} onError={showError} />;

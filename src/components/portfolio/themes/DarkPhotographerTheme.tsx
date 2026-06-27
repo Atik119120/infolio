@@ -375,7 +375,13 @@ export default function DarkPhotographerTheme({
         {/* HERO */}
         {vHero && (
           <section id="home" className="relative min-h-[92vh] flex items-center overflow-hidden dp-grain">
-            <HeroSlideshow images={[heroImg, ...galleryImages.map(g => g.url)].filter(Boolean) as string[]} />
+            <HeroSlideshow images={(() => {
+              const custom = Array.isArray((portfolio as any)?.hero_images)
+                ? (portfolio as any).hero_images.filter((x: any) => typeof x === "string" && x)
+                : [];
+              if (custom.length) return custom;
+              return [heroImg, ...galleryImages.map(g => g.url)].filter(Boolean) as string[];
+            })()} />
             <div className="relative max-w-7xl mx-auto px-6 lg:px-12 w-full py-24">
               <p className="dp-mono text-[10px] uppercase tracking-[0.4em] mb-4" style={{ color: accent }}>
                 {`// ${profession}`}
@@ -389,7 +395,7 @@ export default function DarkPhotographerTheme({
               <div className="mt-8 flex flex-wrap items-center gap-4">
                 <button onClick={() => scrollTo("work")} className="dp-cut-btn primary group" style={{ ['--acc' as any]: accent }}>
                   <span className="dp-cut-dot" />
-                  <span>View My Photographs</span>
+                  <span>{portfolio?.hero_cta_text || "View My Photographs"}</span>
                   <span className="dp-cut-arrow">→</span>
                 </button>
                 <button onClick={() => scrollTo("contact")} className="dp-cut-btn ghost group" style={{ ['--acc' as any]: accent }}>

@@ -514,82 +514,31 @@ export default function CreativeCanvasTheme({
               <div className="flex items-center gap-3 mb-4">
                 <span className="cc-display text-xs font-bold tracking-[0.4em]" style={{ color: C.muted }}>05 —</span>
                 <span className="h-px w-10" style={{ background: C.ink }} />
-                <span className="text-[10px] font-bold tracking-[0.3em]">EXPERTISE</span>
+                <span className="text-[10px] font-bold tracking-[0.3em]">EDUCATION</span>
               </div>
-              <h2 className="cc-display font-extrabold text-4xl md:text-5xl mb-8">What I <span className="italic font-medium" style={{ color: C.accent }}>can do.</span></h2>
-              <div className="space-y-5">
-                {(skills.length ? skills.slice(0, 6).map(s => ({ name: s.name, level: s.proficiency || 85 })) : PRO_SKILLS.map((n, i) => ({ name: n, level: 95 - i * 5 }))).map((s, i) => {
-                  const segments = 14;
-                  const filled = Math.round((s.level / 100) * segments);
-                  return (
-                    <div key={i}>
-                      <div className="flex items-baseline justify-between mb-2">
-                        <span className="font-semibold flex items-center gap-2">
-                          <span className="cc-display text-[10px] font-bold tracking-wider" style={{ color: C.muted }}>0{i + 1}</span>
-                          {s.name}
-                        </span>
-                        <span className="cc-display font-extrabold text-lg" style={{ color: C.ink }}>
-                          {s.level}<span style={{ color: C.primary }}>/</span><span className="text-sm" style={{ color: C.muted }}>100</span>
-                        </span>
-                      </div>
-                      <div className="flex gap-1">
-                        {Array.from({ length: segments }).map((_, k) => (
-                          <motion.span
-                            key={k}
-                            initial={{ scaleY: 0.3, opacity: 0.3 }}
-                            whileInView={{ scaleY: 1, opacity: 1 }}
-                            viewport={{ once: true }}
-                            transition={{ delay: i * 0.04 + k * 0.025, duration: 0.3 }}
-                            className="flex-1 h-5 rounded-sm origin-bottom"
-                            style={{
-                              background: k < filled ? (k === filled - 1 ? C.ink : C.primary) : "transparent",
-                              border: k < filled ? "none" : `1.5px solid ${C.border}`,
-                            }}
-                          />
-                        ))}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </motion.div>
-          </div>
-
-        </section>
-      )}
-
-      {/* EDUCATION timeline */}
-      {v.education && education && education.length > 0 && (
-        <section id="education" className="py-20 md:py-28" style={{ background: C.paper }}>
-          <div className="max-w-5xl mx-auto px-5 md:px-8">
-            <motion.div {...fadeUp} className="text-center mb-12">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold mb-4" style={{ background: C.secondary }}>EDUCATION</div>
-              <h2 className="cc-display font-extrabold text-4xl md:text-5xl">Learning journey</h2>
-            </motion.div>
-
-            <div className="relative">
-              <div className="absolute left-4 md:left-1/2 top-0 bottom-0 w-0.5 -translate-x-1/2" style={{ background: C.ink }} />
-              {education.map((e, i) => (
-                <motion.div
-                  key={e.id}
-                  {...fadeUp}
-                  className={`relative mb-10 grid md:grid-cols-2 gap-6 items-center ${i % 2 ? "md:[&>*:first-child]:order-2" : ""}`}
-                >
-                  <div className={`pl-12 md:pl-0 ${i % 2 ? "md:text-left md:pl-12" : "md:text-right md:pr-12"}`}>
-                    <div className="absolute left-4 md:left-1/2 top-3 w-4 h-4 rounded-full -translate-x-1/2 border-4" style={{ background: C.primary, borderColor: C.paper, boxShadow: `0 0 0 2px ${C.ink}` }} />
-                    <span className="cc-display text-sm font-bold" style={{ color: C.primary }}>
+              <h2 className="cc-display font-extrabold text-4xl md:text-5xl mb-8">Learning <span className="italic font-medium" style={{ color: C.accent }}>journey.</span></h2>
+              <div className="relative pl-6">
+                <div className="absolute left-1.5 top-2 bottom-2 w-0.5" style={{ background: C.ink }} />
+                {(education && education.length > 0 ? education : []).map((e, i) => (
+                  <div key={e.id} className="relative mb-6 last:mb-0">
+                    <div className="absolute -left-[19px] top-2 w-3 h-3 rounded-full border-2" style={{ background: C.primary, borderColor: C.ink }} />
+                    <span className="cc-display text-xs font-bold tracking-wider" style={{ color: C.primary }}>
                       {e.start_date?.slice(0, 4)}{e.end_date ? ` — ${e.end_date.slice(0, 4)}` : e.is_current ? " — Present" : ""}
                     </span>
-                    <h3 className="cc-display text-2xl font-bold mt-1">{e.degree}</h3>
+                    <h3 className="cc-display text-xl font-bold mt-0.5">{e.degree}</h3>
                     <p className="text-sm" style={{ color: C.muted }}>{e.institution}{e.field_of_study ? ` · ${e.field_of_study}` : ""}</p>
                   </div>
-                  <div />
-                </motion.div>
-              ))}
-            </div>
+                ))}
+                {(!education || education.length === 0) && (
+                  <p className="text-sm" style={{ color: C.muted }}>Add your education from the editor.</p>
+                )}
+              </div>
+            </motion.div>
           </div>
         </section>
       )}
+
+
 
       {/* CONTACT — single hero card */}
       {v.contact && (

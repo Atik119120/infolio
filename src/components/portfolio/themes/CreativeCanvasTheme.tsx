@@ -680,9 +680,9 @@ export default function CreativeCanvasTheme({
         <section id="contact" className="py-16 md:py-20 relative overflow-hidden">
           <div className="max-w-7xl mx-auto px-5 md:px-8">
             <motion.div
-              {...fadeUp}
+              {...scaleIn}
+              whileHover={{ y: -4 }}
               className="relative rounded-[32px] border-2 px-6 py-8 md:px-12 md:py-10 text-center overflow-hidden"
-
               style={{ borderColor: C.ink, background: C.secondary, boxShadow: `14px 14px 0 ${C.ink}` }}
             >
               {/* dotted bg */}

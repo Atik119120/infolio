@@ -31,6 +31,7 @@ import { HeroSlideshowForm } from "@/components/portfolio/photographer/HeroSlide
 import { PhotographyPackagesForm } from "@/components/portfolio/photographer/PhotographyPackagesForm";
 import { AboutPhotographerForm } from "@/components/portfolio/photographer/AboutPhotographerForm";
 import { PhotoGalleryForm } from "@/components/portfolio/photographer/PhotoGalleryForm";
+import { CreativeCanvasExtrasForm } from "@/components/portfolio/creative-canvas/CreativeCanvasExtrasForm";
 import { getThemeConfig } from "@/config/themeFeatures";
 import { cn } from "@/lib/utils";
 

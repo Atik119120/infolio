@@ -7,7 +7,7 @@ import {
   User, Sparkles, Briefcase, GraduationCap, Link2, FolderOpen, Palette,
   Image as ImageIcon, Wrench, Search, Wand2, Monitor, Smartphone, Tablet,
   RefreshCw, ExternalLink, ArrowLeft, ChevronRight, Check, X, Eye, Loader2,
-  Home, Rocket, Save, Type, Mail, EyeOff, MoreHorizontal,
+  Home, Rocket, Save, Type, Mail, EyeOff, MoreHorizontal, Images,
 } from "lucide-react";
 
 import { SectionVisibilityForm } from "@/components/portfolio/SectionVisibilityForm";

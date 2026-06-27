@@ -257,8 +257,10 @@ export default function PortfolioEdit() {
 
   // Map editor section -> anchor id rendered by themes
   const sectionAnchors: Partial<Record<SectionKey, string>> = {
-    hero: "hero", about: "about", skills: "skills", services: "services",
-    projects: "projects", experience: "experience", education: "education",
+    hero: activeTheme === "dark-photographer" ? "home" : "hero",
+    about: "about", skills: "skills", services: "services",
+    projects: activeTheme === "dark-photographer" ? "work" : "projects",
+    experience: "experience", education: "education",
     contact: "contact",
   };
   const previewHrefFor = (key: SectionKey) => {

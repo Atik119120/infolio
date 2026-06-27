@@ -85,7 +85,14 @@ export default function ThemeDemo() {
       case 'creative-sidebar-pro':
         return <CreativeSidebarProTheme {...demoData} />;
       case 'dark-photographer':
-        return <DarkPhotographerTheme {...demoData} />;
+        return <DarkPhotographerTheme {...demoData} services={[
+          { id: "s1", title: "Wedding Shoot", description: "Full-day cinematic coverage of your big day — ceremony, portraits, and candid moments.", icon: "camera" },
+          { id: "s2", title: "Pre-Wedding & Couple", description: "Romantic outdoor and studio sessions that tell your love story in light and frame.", icon: "heart" },
+          { id: "s3", title: "Bridal Portrait", description: "Editorial-style bridal portraits with dramatic lighting and timeless retouching.", icon: "sparkles" },
+          { id: "s4", title: "Single / Personal Shoot", description: "Solo portraits, fashion, and lifestyle frames crafted for your personal brand.", icon: "user" },
+          { id: "s5", title: "Video Shoot", description: "Cinematic video production — short films, reels, and highlight edits.", icon: "video" },
+          { id: "s6", title: "Corporate & Events", description: "Professional coverage for corporate programs, launches, and conferences.", icon: "briefcase" },
+        ] as any} />;
       case 'freelancer':
       default:
         return <FreelancerTheme {...demoData} />;

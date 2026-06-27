@@ -216,8 +216,8 @@ export default function DarkPhotographerTheme({
   ];
   const userAlbums = Array.isArray((portfolio as any)?.albums) ? (portfolio as any).albums : null;
   const albumsToShow = (userAlbums && userAlbums.length > 0
-    ? userAlbums.map((a: any) => ({ id: a.id, title: a.title, cover: a.cover || a.photos?.[0] || "", count: a.photos?.length || 0, photos: a.photos || [] }))
-    : demoAlbums);
+    ? userAlbums.map((a: any) => ({ id: a.id, title: a.title, subtitle: a.subtitle || "", description: a.description || "", cover: a.cover || a.photos?.[0] || "", count: a.photos?.length || 0, photos: a.photos || [] }))
+    : demoAlbums.map((a: any) => ({ ...a, subtitle: "", description: "" })));
 
   const [workTab, setWorkTab] = useState<"photos" | "albums">("photos");
   const [openAlbum, setOpenAlbum] = useState<typeof albumsToShow[number] | null>(null);
@@ -527,6 +527,9 @@ export default function DarkPhotographerTheme({
                       <div className="absolute bottom-0 left-0 right-0 p-5">
                         <p className="dp-mono text-[10px] uppercase tracking-[0.3em] mb-1" style={{ color: accent }}>Album</p>
                         <h3 className="dp-display text-xl font-bold text-white">{al.title}</h3>
+                        {(al as any).subtitle && (
+                          <p className="dp-mono text-[10px] uppercase tracking-widest text-white/60 mt-1">{(al as any).subtitle}</p>
+                        )}
                         <p className="dp-mono text-[10px] uppercase tracking-widest text-white/50 mt-2 group-hover:text-white transition-colors">
                           View Album →
                         </p>
@@ -551,6 +554,12 @@ export default function DarkPhotographerTheme({
                   <div>
                     <p className="dp-mono text-[10px] uppercase tracking-[0.3em]" style={{ color: accent }}>Album · {openAlbum.photos.length} Photos</p>
                     <h3 className="dp-display text-2xl md:text-4xl font-bold mt-1">{openAlbum.title}</h3>
+                    {(openAlbum as any).subtitle && (
+                      <p className="dp-mono text-[11px] uppercase tracking-widest text-white/60 mt-2">{(openAlbum as any).subtitle}</p>
+                    )}
+                    {(openAlbum as any).description && (
+                      <p className="text-sm text-white/70 mt-3 max-w-2xl">{(openAlbum as any).description}</p>
+                    )}
                   </div>
                   <button
                     onClick={() => setOpenAlbum(null)}

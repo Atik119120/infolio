@@ -257,8 +257,10 @@ export default function PortfolioEdit() {
 
   // Map editor section -> anchor id rendered by themes
   const sectionAnchors: Partial<Record<SectionKey, string>> = {
-    hero: "hero", about: "about", skills: "skills", services: "services",
-    projects: "projects", experience: "experience", education: "education",
+    hero: activeTheme === "dark-photographer" ? "home" : "hero",
+    about: "about", skills: "skills", services: "services",
+    projects: activeTheme === "dark-photographer" ? "work" : "projects",
+    experience: "experience", education: "education",
     contact: "contact",
   };
   const previewHrefFor = (key: SectionKey) => {
@@ -290,7 +292,7 @@ export default function PortfolioEdit() {
     { value: "about", label: "About Me", icon: User, hint: "Personal introduction", requires: "basic" },
     { value: "skills", label: "Skills", icon: Sparkles, hint: "Tools and expertise" },
     { value: "services", label: isPhotographer ? "Packages & Pricing" : "Services", icon: isPhotographer ? Wrench : Wrench, hint: isPhotographer ? "Shoot packages with price" : "What you offer" },
-    { value: "projects", label: isPhotographer ? "Photo Gallery" : "Projects", icon: isPhotographer ? ImageIcon : FolderOpen, hint: isPhotographer ? "Photos & albums" : "Showcase your work" },
+    { value: "projects", label: isPhotographer ? "Work" : "Projects", icon: isPhotographer ? ImageIcon : FolderOpen, hint: isPhotographer ? "Photos & albums" : "Showcase your work" },
     { value: "experience", label: "Experience", icon: Briefcase, hint: "Work history" },
     { value: "education", label: "Education", icon: GraduationCap, hint: "Your education" },
     { value: "branding", label: "Branding", icon: ImageIcon, hint: "Favicon", requires: "branding" },

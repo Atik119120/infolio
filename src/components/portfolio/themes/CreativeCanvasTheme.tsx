@@ -240,15 +240,14 @@ export default function CreativeCanvasTheme({
             <div className="absolute top-1/2 left-1/3 w-32 h-32 rounded-full blur-2xl opacity-30" style={{ background: C.primary }} />
           </div>
 
-          <div className="relative max-w-7xl mx-auto px-5 md:px-8 grid lg:grid-cols-2 gap-12 lg:gap-8 items-center">
-            {/* Left */}
+          <div className="relative max-w-4xl mx-auto px-5 md:px-8 text-center">
             <div className="relative z-10">
               <motion.div {...fadeUp} className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold mb-5" style={{ background: C.ink, color: C.secondary }}>
                 <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: C.secondary }} />
                 Available for new projects
               </motion.div>
 
-              <motion.h1 {...fadeUp} className="cc-display font-extrabold leading-[1.02] text-[32px] sm:text-4xl lg:text-5xl xl:text-[56px]">
+              <motion.h1 {...fadeUp} className="cc-display font-extrabold leading-[1.02] text-[36px] sm:text-5xl lg:text-6xl xl:text-7xl">
                 Hi, I'm <span style={{ color: C.primary }}>{name.split(" ")[0]}</span>.<br />
                 <span className="relative inline-block">
                   {headline.split(" ").slice(0, 2).join(" ")}
@@ -256,14 +255,14 @@ export default function CreativeCanvasTheme({
                     <path d="M2 6 Q 50 1 100 6 T 198 4" stroke={C.accent} strokeWidth="4" fill="none" strokeLinecap="round" />
                   </svg>
                 </span>{" "}
-                <span className="cc-display italic font-medium text-[26px] sm:text-3xl lg:text-4xl" style={{ color: C.muted }}>{headline.split(" ").slice(2).join(" ")}</span>
+                <span className="cc-display italic font-medium text-[30px] sm:text-4xl lg:text-5xl" style={{ color: C.muted }}>{headline.split(" ").slice(2).join(" ")}</span>
               </motion.h1>
 
-              <motion.p {...fadeUp} className="mt-5 text-sm md:text-base max-w-lg" style={{ color: C.muted }}>
+              <motion.p {...fadeUp} className="mt-6 text-sm md:text-base max-w-lg mx-auto" style={{ color: C.muted }}>
                 {subline}
               </motion.p>
 
-              <motion.div {...fadeUp} className="mt-6 flex flex-wrap gap-3 cc-btn">
+              <motion.div {...fadeUp} className="mt-7 flex flex-wrap gap-3 cc-btn justify-center">
                 <a href={heroCtaLink} className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-semibold text-sm text-white hover:scale-[1.03] transition" style={{ background: C.ink }}>
                   {heroCtaText} <ArrowRight size={16} />
                 </a>
@@ -272,7 +271,7 @@ export default function CreativeCanvasTheme({
                 </button>
               </motion.div>
 
-              <motion.div {...fadeUp} className="mt-10 flex items-center gap-6 text-sm" style={{ color: C.muted }}>
+              <motion.div {...fadeUp} className="mt-10 flex items-center gap-6 text-sm justify-center" style={{ color: C.muted }}>
                 <div className="flex -space-x-2">
                   {[C.primary, C.accent, C.secondary].map((c, i) => (
                     <div key={i} className="w-9 h-9 rounded-full border-2 border-white" style={{ background: c }} />
@@ -282,25 +281,8 @@ export default function CreativeCanvasTheme({
               </motion.div>
             </div>
 
-            {/* Right — portrait blob */}
-            <div className="relative h-[460px] sm:h-[520px] lg:h-[600px] flex items-center justify-center">
-
-
-
-              {/* Portrait */}
-              <div className="relative w-[78%] h-[88%] rounded-[44%_56%_50%_50%/52%_48%_52%_48%] overflow-hidden bg-white">
-                {heroImg ? (
-                  <img src={heroImg} alt={name} className="w-full h-full object-cover" />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center cc-display text-8xl font-extrabold text-white" style={{ background: C.ink }}>{name.charAt(0)}</div>
-                )}
-              </div>
-
-
-
-            </div>
-
           </div>
+
 
 
           {/* Marquee — tilted ribbon */}

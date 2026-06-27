@@ -527,6 +527,9 @@ export default function DarkPhotographerTheme({
                       <div className="absolute bottom-0 left-0 right-0 p-5">
                         <p className="dp-mono text-[10px] uppercase tracking-[0.3em] mb-1" style={{ color: accent }}>Album</p>
                         <h3 className="dp-display text-xl font-bold text-white">{al.title}</h3>
+                        {(al as any).subtitle && (
+                          <p className="dp-mono text-[10px] uppercase tracking-widest text-white/60 mt-1">{(al as any).subtitle}</p>
+                        )}
                         <p className="dp-mono text-[10px] uppercase tracking-widest text-white/50 mt-2 group-hover:text-white transition-colors">
                           View Album →
                         </p>

@@ -288,7 +288,7 @@ export default function CreativeCanvasTheme({
 
 
               {/* Portrait */}
-              <div className="relative w-[78%] h-[88%] rounded-[44%_56%_50%_50%/52%_48%_52%_48%] overflow-hidden border-2 bg-white" style={{ borderColor: C.ink, boxShadow: `12px 12px 0 ${C.ink}` }}>
+              <div className="relative w-[78%] h-[88%] rounded-[44%_56%_50%_50%/52%_48%_52%_48%] overflow-hidden bg-white">
                 {heroImg ? (
                   <img src={heroImg} alt={name} className="w-full h-full object-cover" />
                 ) : (

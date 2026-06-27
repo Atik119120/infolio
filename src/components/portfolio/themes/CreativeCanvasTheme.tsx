@@ -16,7 +16,7 @@ import { isVisible } from "@/lib/sectionVisibility";
  * Palette: Orange #FF8A00 · Yellow #FFD54A · Sky Blue #58C7FF · Black #111 · Soft White #FCFCFC
  */
 const C = {
-  primary: "#FF8A00",
+  primary: "#F5A623",
   secondary: "#FFD54A",
   accent: "#58C7FF",
   ink: "#111111",

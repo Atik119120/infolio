@@ -309,7 +309,7 @@ export default function DarkPhotographerTheme({
             <div className="max-w-7xl mx-auto">
               <div className="mb-12">
                 <p className="dp-mono text-xs uppercase tracking-[0.4em] mb-3" style={{ color: accent }}>Selected Work</p>
-                <h2 className="dp-display text-4xl md:text-6xl font-bold">Drag · Tap · Explore</h2>
+                <h2 className="dp-display text-4xl md:text-6xl font-bold">Through The Lens</h2>
                 <p className="mt-4 text-white/55 max-w-xl">An interactive gallery — drag the tiles to rearrange, tap any frame to view it fullscreen.</p>
               </div>
 

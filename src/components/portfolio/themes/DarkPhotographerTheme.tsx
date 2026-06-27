@@ -180,6 +180,54 @@ export default function DarkPhotographerTheme({
     span: bentoSpans[i % bentoSpans.length],
   }));
 
+  // Demo Albums — each album has a cover + 15-16 photos
+  const buildAlbum = (seedIds: number[]) =>
+    seedIds.map((sid, idx) => `https://picsum.photos/seed/${sid}/900/${idx % 2 === 0 ? 1200 : 900}`);
+
+  const demoAlbums = [
+    {
+      id: "a1",
+      title: "Wedding · Sara & Adib",
+      count: 16,
+      cover: "https://images.unsplash.com/photo-1519741497674-611481863552?w=1200&auto=format&fit=crop&q=80",
+      photos: buildAlbum([101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116]),
+    },
+    {
+      id: "a2",
+      title: "Bridal Editorial",
+      count: 15,
+      cover: "https://images.unsplash.com/photo-1606800052052-a08af7148866?w=1200&auto=format&fit=crop&q=80",
+      photos: buildAlbum([201,202,203,204,205,206,207,208,209,210,211,212,213,214,215]),
+    },
+    {
+      id: "a3",
+      title: "Pre-Wedding · Coastal",
+      count: 16,
+      cover: "https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=1200&auto=format&fit=crop&q=80",
+      photos: buildAlbum([301,302,303,304,305,306,307,308,309,310,311,312,313,314,315,316]),
+    },
+    {
+      id: "a4",
+      title: "Corporate · Annual Gala",
+      count: 15,
+      cover: "https://images.unsplash.com/photo-1511578314322-379afb476865?w=1200&auto=format&fit=crop&q=80",
+      photos: buildAlbum([401,402,403,404,405,406,407,408,409,410,411,412,413,414,415]),
+    },
+  ];
+
+  const [workTab, setWorkTab] = useState<"photos" | "albums">("photos");
+  const [openAlbum, setOpenAlbum] = useState<typeof demoAlbums[number] | null>(null);
+  const [lightbox, setLightbox] = useState<string | null>(null);
+
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === "Escape") { setLightbox(null); setOpenAlbum(null); }
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, []);
+
+
   const showServices = services.length > 0 ? services : [
     {
       id: "s1",

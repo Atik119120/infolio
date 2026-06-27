@@ -213,39 +213,44 @@ export function PhotoGalleryForm({ portfolio, projects, userId, onUpdate, onSucc
             {photos.map((p) => {
               const local = localPhotos[p.id] || { title: p.title, description: p.description };
               return (
-                <div key={p.id} className="border rounded-lg p-3 flex gap-3">
-                  <label className="relative w-28 h-28 shrink-0 rounded-md overflow-hidden border bg-muted cursor-pointer group">
-                    {p.image_url ? (
-                      <img src={p.image_url} alt="" className="w-full h-full object-cover" />
-                    ) : (
-                      <div className="flex flex-col items-center justify-center w-full h-full text-[10px] text-muted-foreground gap-1">
-                        <Upload className="w-5 h-5" /> Upload
-                      </div>
-                    )}
-                    {busyPhotoId === p.id && (
-                      <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-                        <Loader2 className="w-5 h-5 animate-spin text-white" />
-                      </div>
-                    )}
-                    <input
-                      type="file" accept="image/*" className="hidden"
-                      onChange={(e) => { const f = e.target.files?.[0]; if (f) handlePhotoImage(p.id, f); }}
-                    />
-                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition" />
-                  </label>
-                  <div className="flex-1 space-y-2 min-w-0">
-                    <div>
+                <div key={p.id} className="border rounded-lg p-3 space-y-3">
+                  <div className="flex items-start gap-3">
+                    <label className="relative w-24 h-24 shrink-0 rounded-md overflow-hidden border bg-muted cursor-pointer group">
+                      {p.image_url ? (
+                        <img src={p.image_url} alt="" className="w-full h-full object-cover" />
+                      ) : (
+                        <div className="flex flex-col items-center justify-center w-full h-full text-[10px] text-muted-foreground gap-1">
+                          <Upload className="w-5 h-5" /> Upload
+                        </div>
+                      )}
+                      {busyPhotoId === p.id && (
+                        <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+                          <Loader2 className="w-5 h-5 animate-spin text-white" />
+                        </div>
+                      )}
+                      <input
+                        type="file" accept="image/*" className="hidden"
+                        onChange={(e) => { const f = e.target.files?.[0]; if (f) handlePhotoImage(p.id, f); }}
+                      />
+                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition" />
+                    </label>
+                    <div className="flex-1 min-w-0 text-xs text-muted-foreground">
+                      Tap image to upload. Add a title & subtitle below — they appear on hover in the bento gallery.
+                    </div>
+                    <Button size="sm" variant="ghost" onClick={() => deletePhoto(p.id)} className="text-destructive self-start shrink-0">
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
+                  </div>
+                  <div className="space-y-2">
+                    <div className="space-y-1">
                       <Label className="text-xs">Title</Label>
                       <Input value={local.title} onChange={(e) => onPhotoText(p.id, "title", e.target.value)} placeholder="Golden Hour" />
                     </div>
-                    <div>
+                    <div className="space-y-1">
                       <Label className="text-xs">Subtitle</Label>
                       <Input value={local.description} onChange={(e) => onPhotoText(p.id, "description", e.target.value)} placeholder="Cox's Bazar · 2024" />
                     </div>
                   </div>
-                  <Button size="sm" variant="ghost" onClick={() => deletePhoto(p.id)} className="text-destructive self-start">
-                    <Trash2 className="w-4 h-4" />
-                  </Button>
                 </div>
               );
             })}

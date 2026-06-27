@@ -51,7 +51,7 @@ const PRO_SKILLS = [
 ];
 
 const fonts =
-  "https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,700;12..96,800&family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap";
+  "https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,700;12..96,800&family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=Cinzel:wght@500;600;700;800&family=Caveat:wght@500;600;700&display=swap";
 
 export default function CreativeCanvasTheme({
   profile, portfolio, skills, projects, services = [], socialLinks, experiences, education, userId,
@@ -501,7 +501,7 @@ export default function CreativeCanvasTheme({
       {/* SKILLS */}
       {v.skills && (
         <section id="skills" className="py-20 md:py-28">
-          <div className="max-w-7xl mx-auto px-5 md:px-8 grid lg:grid-cols-2 gap-12">
+          <div className="max-w-5xl mx-auto px-5 md:px-8">
             <motion.div {...fadeUp}>
               <div className="flex items-center gap-3 mb-4">
                 <span className="cc-display text-xs font-bold tracking-[0.4em]" style={{ color: C.muted }}>04 —</span>
@@ -509,7 +509,7 @@ export default function CreativeCanvasTheme({
                 <span className="text-[10px] font-bold tracking-[0.3em]">TOOLBOX</span>
               </div>
               <h2 className="cc-display font-extrabold text-4xl md:text-5xl mb-8">Software<br /><span className="italic font-medium" style={{ color: C.primary }}>I master daily.</span></h2>
-              <div className="grid grid-cols-2 gap-0 border-l border-t" style={{ borderColor: C.ink }}>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-0 border-l border-t" style={{ borderColor: C.ink }}>
                 {SOFTWARE.map((s, i) => (
                   <div key={i} className="group relative flex items-center gap-3 p-4 border-r border-b transition hover:bg-[var(--cc-hover)]" style={{ borderColor: C.ink, ["--cc-hover" as any]: C.secondary }}>
                     <span className="cc-display text-[10px] font-bold absolute top-2 right-2 tracking-wider" style={{ color: C.muted }}>0{i + 1}</span>
@@ -526,33 +526,13 @@ export default function CreativeCanvasTheme({
                 ))}
               </div>
             </motion.div>
-
-            <motion.div {...fadeUp}>
-              <div className="flex items-center gap-3 mb-4">
-                <span className="cc-display text-xs font-bold tracking-[0.4em]" style={{ color: C.muted }}>05 —</span>
-                <span className="h-px w-10" style={{ background: C.ink }} />
-                <span className="text-[10px] font-bold tracking-[0.3em]">EDUCATION</span>
-              </div>
-              <h2 className="cc-display font-extrabold text-4xl md:text-5xl mb-8">Learning <span className="italic font-medium" style={{ color: C.accent }}>journey.</span></h2>
-              <div className="relative pl-6">
-                <div className="absolute left-1.5 top-2 bottom-2 w-0.5" style={{ background: C.ink }} />
-                {(education && education.length > 0 ? education : []).map((e, i) => (
-                  <div key={e.id} className="relative mb-6 last:mb-0">
-                    <div className="absolute -left-[19px] top-2 w-3 h-3 rounded-full border-2" style={{ background: C.primary, borderColor: C.ink }} />
-                    <span className="cc-display text-xs font-bold tracking-wider" style={{ color: C.primary }}>
-                      {e.start_date?.slice(0, 4)}{e.end_date ? ` — ${e.end_date.slice(0, 4)}` : e.is_current ? " — Present" : ""}
-                    </span>
-                    <h3 className="cc-display text-xl font-bold mt-0.5">{e.degree}</h3>
-                    <p className="text-sm" style={{ color: C.muted }}>{e.institution}{e.field_of_study ? ` · ${e.field_of_study}` : ""}</p>
-                  </div>
-                ))}
-                {(!education || education.length === 0) && (
-                  <p className="text-sm" style={{ color: C.muted }}>Add your education from the editor.</p>
-                )}
-              </div>
-            </motion.div>
           </div>
         </section>
+      )}
+
+      {/* EDUCATION — Treasure Map Journey */}
+      {v.education && (
+        <EducationMap education={education || []} />
       )}
 
 
@@ -715,3 +695,226 @@ export default function CreativeCanvasTheme({
     </div>
   );
 }
+
+/* ============================================================
+   EDUCATION — Vintage Treasure Map Journey
+   ============================================================ */
+const MAP_C = {
+  sepia: "#C4A882",
+  ink: "#3E2A1E",
+  cream: "#F5ECD7",
+  forest: "#4A7C59",
+  rust: "#A0522D",
+};
+
+function EducationMap({ education }: { education: any[] }) {
+  const items = (education && education.length > 0
+    ? education
+    : [
+        { id: "1", degree: "SSC", institution: "School Name", start_date: "2020", end_date: "2020" },
+        { id: "2", degree: "HSC", institution: "College Name", start_date: "2022", end_date: "2022" },
+        { id: "3", degree: "BSc in CSE", institution: "University Name", start_date: "2022", end_date: "2026" },
+      ]
+  ).slice(0, 8);
+
+  // Build curved SVG path that bends left-right
+  const STEP = 220;
+  const W = 800;
+  const CX = W / 2;
+  const AMP = 180;
+  const H = STEP * items.length + 120;
+
+  const stops = items.map((_, i) => ({
+    x: CX + (i % 2 === 0 ? -AMP : AMP) * 0.85,
+    y: 90 + i * STEP,
+  }));
+
+  let d = `M ${CX} 20`;
+  stops.forEach((s, i) => {
+    const prev = i === 0 ? { x: CX, y: 20 } : stops[i - 1];
+    const midY = (prev.y + s.y) / 2;
+    const cp1x = prev.x + (s.x - prev.x) * 0.1;
+    const cp2x = s.x - (s.x - prev.x) * 0.1;
+    d += ` C ${cp1x} ${midY}, ${cp2x} ${midY}, ${s.x} ${s.y}`;
+  });
+  d += ` C ${stops[stops.length - 1].x} ${H - 60}, ${CX} ${H - 40}, ${CX} ${H - 20}`;
+
+  return (
+    <section id="education" className="relative overflow-hidden py-20 md:py-28" style={{
+      background: `
+        radial-gradient(ellipse at 20% 10%, rgba(62,42,30,0.15), transparent 50%),
+        radial-gradient(ellipse at 80% 90%, rgba(62,42,30,0.18), transparent 55%),
+        radial-gradient(circle at 50% 50%, ${MAP_C.cream}, ${MAP_C.sepia} 120%)
+      `,
+      fontFamily: "'Cinzel', serif",
+      color: MAP_C.ink,
+    }}>
+      {/* paper grain */}
+      <div className="pointer-events-none absolute inset-0 opacity-[0.18] mix-blend-multiply" style={{
+        backgroundImage: `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.24  0 0 0 0 0.16  0 0 0 0 0.12  0 0 0 0.6 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>")`,
+      }} />
+      {/* dotted border frame */}
+      <div className="pointer-events-none absolute inset-4 md:inset-8 border-2 border-dotted rounded-sm" style={{ borderColor: MAP_C.ink, opacity: 0.35 }} />
+
+      <div className="relative max-w-5xl mx-auto px-5 md:px-8">
+        {/* Header with compass */}
+        <div className="flex flex-col items-center text-center mb-10 md:mb-14">
+          <CompassRose />
+          <p className="mt-3 text-[11px] tracking-[0.5em] font-semibold" style={{ color: MAP_C.rust }}>~ CHAPTER V ~</p>
+          <h2 className="mt-2 text-4xl md:text-6xl font-extrabold" style={{ letterSpacing: "0.02em" }}>
+            The Learning Expedition
+          </h2>
+          <p className="mt-3 max-w-xl text-sm md:text-base italic" style={{ fontFamily: "'Caveat', cursive", fontSize: "1.25rem", color: MAP_C.ink }}>
+            ~ a journey marked in ink, mile by mile ~
+          </p>
+          <div className="mt-4 flex items-center gap-3 text-[10px] tracking-[0.4em]" style={{ color: MAP_C.rust }}>
+            <span>✦</span><span>EST. {items[0]?.start_date?.slice(0,4) || "2020"}</span><span>✦</span>
+          </div>
+        </div>
+
+        {/* MAP — Desktop */}
+        <div className="hidden md:block relative mx-auto" style={{ maxWidth: W }}>
+          <svg viewBox={`0 0 ${W} ${H}`} className="w-full h-auto block" style={{ overflow: "visible" }}>
+            <defs>
+              <pattern id="dashPaint" patternUnits="userSpaceOnUse" width="8" height="8">
+                <rect width="8" height="8" fill="transparent" />
+              </pattern>
+            </defs>
+            {/* road shadow */}
+            <motion.path
+              d={d} fill="none" stroke={MAP_C.ink} strokeOpacity={0.25}
+              strokeWidth={10} strokeLinecap="round" strokeDasharray="2 12"
+              initial={{ pathLength: 0 }} whileInView={{ pathLength: 1 }}
+              viewport={{ once: true, amount: 0.1 }} transition={{ duration: 2.2, ease: "easeInOut" }}
+            />
+            {/* main dashed road */}
+            <motion.path
+              d={d} fill="none" stroke={MAP_C.rust}
+              strokeWidth={3} strokeLinecap="round" strokeDasharray="10 8"
+              initial={{ pathLength: 0 }} whileInView={{ pathLength: 1 }}
+              viewport={{ once: true, amount: 0.1 }} transition={{ duration: 2.4, ease: "easeInOut" }}
+            />
+            {/* X marks the start */}
+            <g transform={`translate(${CX} 20)`}>
+              <circle r="10" fill={MAP_C.cream} stroke={MAP_C.ink} strokeWidth="2" />
+              <text textAnchor="middle" dy="4" fontSize="14" fontWeight="800" fill={MAP_C.ink}>X</text>
+            </g>
+            {/* end flag */}
+            <g transform={`translate(${CX} ${H - 20})`}>
+              <circle r="12" fill={MAP_C.forest} stroke={MAP_C.ink} strokeWidth="2" />
+              <text textAnchor="middle" dy="4.5" fontSize="13" fontWeight="800" fill={MAP_C.cream}>★</text>
+            </g>
+          </svg>
+
+          {/* landmark cards positioned over SVG */}
+          <div className="absolute inset-0">
+            {stops.map((s, i) => {
+              const left = (s.x / W) * 100;
+              const top = (s.y / H) * 100;
+              const isLeft = i % 2 === 0;
+              const item = items[i];
+              return (
+                <motion.div
+                  key={item.id || i}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, amount: 0.3 }}
+                  transition={{ delay: 0.4 + i * 0.25, duration: 0.6 }}
+                  className="absolute"
+                  style={{ left: `${left}%`, top: `${top}%`, transform: "translate(-50%, -50%)" }}
+                >
+                  {/* Landmark pin */}
+                  <div className="relative flex items-center" style={{ flexDirection: isLeft ? "row-reverse" : "row" }}>
+                    <LandmarkIcon index={i} />
+                    {/* connecting tick */}
+                    <div className="w-10 h-px" style={{ background: MAP_C.ink, opacity: 0.5 }} />
+                    {/* card */}
+                    <MapCard item={item} flip={isLeft} />
+                  </div>
+                </motion.div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* MAP — Mobile single column */}
+        <div className="md:hidden relative pl-12">
+          <motion.div
+            initial={{ scaleY: 0 }} whileInView={{ scaleY: 1 }} viewport={{ once: true }}
+            transition={{ duration: 1.5 }}
+            className="absolute left-5 top-0 bottom-0 w-0.5 origin-top"
+            style={{ background: `repeating-linear-gradient(${MAP_C.rust} 0 8px, transparent 8px 16px)` }}
+          />
+          {items.map((item, i) => (
+            <motion.div
+              key={item.id || i}
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2 + i * 0.15, duration: 0.5 }}
+              className="relative mb-8 last:mb-0"
+            >
+              <div className="absolute -left-12 top-0"><LandmarkIcon index={i} /></div>
+              <MapCard item={item} flip={false} />
+            </motion.div>
+          ))}
+        </div>
+
+        {/* footer ribbon */}
+        <div className="mt-12 text-center text-[10px] tracking-[0.4em]" style={{ color: MAP_C.rust }}>
+          ⚓ &nbsp; END OF THE MAP &nbsp; ⚓
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function CompassRose() {
+  return (
+    <svg width="68" height="68" viewBox="0 0 100 100" style={{ color: MAP_C.ink }}>
+      <circle cx="50" cy="50" r="46" fill="none" stroke="currentColor" strokeWidth="1.5" />
+      <circle cx="50" cy="50" r="38" fill="none" stroke="currentColor" strokeWidth="0.8" strokeDasharray="2 3" />
+      <polygon points="50,8 56,50 50,46 44,50" fill={MAP_C.rust} stroke={MAP_C.ink} strokeWidth="1" />
+      <polygon points="50,92 56,50 50,54 44,50" fill="currentColor" />
+      <polygon points="8,50 50,44 46,50 50,56" fill="currentColor" opacity="0.6" />
+      <polygon points="92,50 50,44 54,50 50,56" fill="currentColor" opacity="0.6" />
+      <circle cx="50" cy="50" r="3" fill={MAP_C.rust} />
+      <text x="50" y="6" textAnchor="middle" fontSize="7" fontWeight="700" fill="currentColor">N</text>
+    </svg>
+  );
+}
+
+function LandmarkIcon({ index }: { index: number }) {
+  const icons = ["🏛️", "📜", "🎓", "📚", "🗝️", "⚔️", "🏰", "🧭"];
+  return (
+    <div className="relative shrink-0 w-14 h-14 rounded-full flex items-center justify-center text-2xl" style={{
+      background: MAP_C.cream,
+      border: `2px solid ${MAP_C.ink}`,
+      boxShadow: `3px 3px 0 ${MAP_C.ink}`,
+    }}>
+      <span>{icons[index % icons.length]}</span>
+    </div>
+  );
+}
+
+function MapCard({ item, flip }: { item: any; flip: boolean }) {
+  const yr = (d?: string) => (d ? d.slice(0, 4) : "");
+  const year = item.end_date ? `${yr(item.start_date)} — ${yr(item.end_date)}` : item.is_current ? `${yr(item.start_date)} — Present` : yr(item.start_date);
+  return (
+    <div className="relative w-[230px] p-4" style={{
+      background: MAP_C.cream,
+      border: `2px solid ${MAP_C.ink}`,
+      boxShadow: `4px 4px 0 ${MAP_C.ink}`,
+      transform: `rotate(${flip ? -1.5 : 1.5}deg)`,
+      fontFamily: "'Cinzel', serif",
+    }}>
+      <div className="text-[10px] tracking-[0.3em] font-bold" style={{ color: MAP_C.forest }}>★ {year || "—"}</div>
+      <h3 className="mt-1 text-lg font-extrabold leading-tight" style={{ color: MAP_C.ink }}>{item.degree}</h3>
+      <p className="mt-1 text-sm italic" style={{ fontFamily: "'Caveat', cursive", fontSize: "1.05rem", color: MAP_C.ink }}>
+        {item.institution}{item.field_of_study ? ` · ${item.field_of_study}` : ""}
+      </p>
+      <div className="mt-2 h-px" style={{ background: `repeating-linear-gradient(90deg, ${MAP_C.ink} 0 4px, transparent 4px 8px)` }} />
+    </div>
+  );
+}
+

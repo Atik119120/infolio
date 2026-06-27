@@ -137,7 +137,7 @@ export default function CreativeCanvasTheme({
     initial: { opacity: 0, y: 28 },
     whileInView: { opacity: 1, y: 0 },
     viewport: { once: true, margin: "-60px" },
-    transition: { duration: 0.65, ease: [0.22, 1, 0.36, 1] },
+    transition: { duration: 0.65, ease: "easeOut" as const },
   };
 
   const scrollTo = (id: string) => {
@@ -417,7 +417,7 @@ export default function CreativeCanvasTheme({
                   style={{ background: "rgba(255,255,255,0.04)", borderColor: "rgba(255,255,255,0.1)" }}
                 >
                   <div className="w-12 h-12 rounded-2xl flex items-center justify-center mb-5" style={{ background: [C.primary, C.secondary, C.accent][i % 3], color: C.ink }}>
-                    <ServiceIcon name={s.icon} className="w-5 h-5" />
+                    <ServiceIcon icon={s.icon || undefined} className="w-5 h-5" />
                   </div>
                   <h3 className="cc-display text-2xl font-bold mb-2">{s.title}</h3>
                   {s.description && <p className="text-sm opacity-70 mb-5">{s.description}</p>}

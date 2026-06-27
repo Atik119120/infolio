@@ -181,12 +181,53 @@ export default function DarkPhotographerTheme({
   }));
 
   const showServices = services.length > 0 ? services : [
-    { id: "s1", title: "Wedding Shoot", description: "Full-day cinematic coverage of your big day — ceremony, portraits, and candid moments.", icon: "camera" },
-    { id: "s2", title: "Pre-Wedding & Couple", description: "Romantic outdoor and studio sessions that tell your love story in light and frame.", icon: "heart" },
-    { id: "s3", title: "Bridal Portrait", description: "Editorial-style bridal portraits with dramatic lighting and timeless retouching.", icon: "sparkles" },
-    { id: "s4", title: "Single / Personal Shoot", description: "Solo portraits, fashion, and lifestyle frames crafted for your personal brand.", icon: "user" },
-    { id: "s5", title: "Video Shoot", description: "Cinematic video production — short films, reels, and highlight edits.", icon: "video" },
-    { id: "s6", title: "Corporate & Events", description: "Professional coverage for corporate programs, launches, and conferences.", icon: "briefcase" },
+    {
+      id: "s1",
+      title: "Essential",
+      tagline: "Single / Personal Shoot",
+      price: "$199",
+      duration: "1 Hour Session",
+      featured: false,
+      features: [
+        "1 hour photo session",
+        "1 location",
+        "25+ edited photos",
+        "Online gallery delivery",
+        "Personal use license",
+      ],
+    },
+    {
+      id: "s2",
+      title: "Signature",
+      tagline: "Pre-Wedding / Couple / Bridal",
+      price: "$499",
+      duration: "Half-Day Coverage",
+      featured: true,
+      features: [
+        "Up to 4 hours coverage",
+        "2 locations / outfit changes",
+        "80+ edited photos",
+        "10 premium retouched portraits",
+        "Private online gallery",
+        "Print release included",
+      ],
+    },
+    {
+      id: "s3",
+      title: "Cinematic",
+      tagline: "Wedding / Event / Corporate",
+      price: "$1,299",
+      duration: "Full-Day Coverage",
+      featured: false,
+      features: [
+        "Up to 10 hours coverage",
+        "Unlimited locations",
+        "300+ edited photos",
+        "Cinematic highlight video (2-3 min)",
+        "USB + Online gallery",
+        "Second shooter included",
+      ],
+    },
   ] as any;
 
   const showContacts = contactItems.length > 0 ? contactItems : [

@@ -640,43 +640,9 @@ export default function CreativeCanvasTheme({
 
 
       {/* FOOTER */}
-      <footer className="relative pt-20 pb-10 overflow-hidden" style={{ background: C.ink, color: C.paper }}>
-        <div className="absolute inset-0 pointer-events-none opacity-20">
-          <div className="absolute top-10 left-10 w-40 h-40 rounded-full blur-3xl" style={{ background: C.primary }} />
-          <div className="absolute bottom-10 right-10 w-56 h-56 rounded-full blur-3xl" style={{ background: C.accent }} />
-        </div>
-        <div className="relative max-w-7xl mx-auto px-5 md:px-8">
-          <div className="grid md:grid-cols-3 gap-10 mb-12">
-            <div>
-              <div className="cc-display font-extrabold text-3xl mb-3">{name}<span style={{ color: C.primary }}>.</span></div>
-              <p className="text-sm opacity-70 max-w-xs">Creative graphic designer crafting bold brands and editorial visuals.</p>
-            </div>
-            <div>
-              <h4 className="cc-display font-bold mb-4" style={{ color: C.secondary }}>Navigation</h4>
-              <ul className="space-y-2 text-sm opacity-80">
-                {NAV.slice(0, 5).map(n => (
-                  <li key={n.id}><button onClick={() => scrollTo(n.id)} className="hover:opacity-100 opacity-80">{n.label}</button></li>
-                ))}
-              </ul>
-            </div>
-            <div>
-              <h4 className="cc-display font-bold mb-4" style={{ color: C.secondary }}>Get in touch</h4>
-              {email && <p className="text-sm opacity-80">{email}</p>}
-              {phone && <p className="text-sm opacity-80">{phone}</p>}
-              {socialLinks.length > 0 && (
-                <div className="flex gap-2 mt-4">
-                  {socialLinks.map(l => {
-                    const Icon = getSocialIcon(l.platform);
-                    return <a key={l.id} href={l.url} target="_blank" rel="noreferrer" className="w-9 h-9 rounded-full flex items-center justify-center border border-white/20"><Icon size={15} /></a>;
-                  })}
-                </div>
-              )}
-            </div>
-          </div>
-          <div className="pt-6 border-t flex flex-col md:flex-row items-center justify-between gap-3 text-xs opacity-70" style={{ borderColor: "rgba(255,255,255,0.1)" }}>
-            <span>{footerText || `© ${new Date().getFullYear()} ${name}. All rights reserved.`}</span>
-            <span>Crafted with <Heart size={12} className="inline" style={{ color: C.primary }} /> + a lot of coffee.</span>
-          </div>
+      <footer className="relative py-6" style={{ background: C.ink, color: C.paper }}>
+        <div className="relative max-w-7xl mx-auto px-5 md:px-8 text-center text-xs opacity-70">
+          {footerText || `© ${new Date().getFullYear()} ${name}. All rights reserved.`}
         </div>
       </footer>
 

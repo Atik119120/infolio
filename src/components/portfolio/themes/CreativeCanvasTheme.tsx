@@ -639,114 +639,87 @@ export default function CreativeCanvasTheme({
         </section>
       )}
 
-      {/* CONTACT — postcard collage */}
+      {/* CONTACT — minimal directory */}
       {v.contact && (
-        <section id="contact" className="py-20 md:py-28 relative overflow-hidden">
-          <div className="absolute inset-0 pointer-events-none" style={{
-            backgroundImage: `radial-gradient(${C.ink}22 1px, transparent 1px)`,
-            backgroundSize: "22px 22px",
-            maskImage: "radial-gradient(ellipse at center, black 40%, transparent 75%)",
-          }} />
-          <div className="relative max-w-6xl mx-auto px-5 md:px-8">
-            <motion.div {...fadeUp} className="text-center mb-14">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold mb-4" style={{ background: C.primary, color: C.paper }}>// SAY HI</div>
-              <h2 className="cc-display font-extrabold text-5xl md:text-7xl leading-[0.9]">
-                Slide into my<br />
-                <span className="italic font-medium" style={{ color: C.primary }}>inbox</span>
-                <span style={{ color: C.accent }}>.</span>
-              </h2>
+        <section id="contact" className="py-24 md:py-32 relative overflow-hidden">
+          <div className="max-w-5xl mx-auto px-5 md:px-8">
+            {/* Index header */}
+            <motion.div {...fadeUp} className="flex items-center gap-3 mb-10">
+              <span className="cc-display text-xs font-bold tracking-[0.4em]" style={{ color: C.muted }}>07 —</span>
+              <span className="h-px flex-1" style={{ background: C.ink }} />
+              <span className="text-[10px] font-bold tracking-[0.3em]">CONTACT · INDEX</span>
             </motion.div>
 
-            <div className="grid md:grid-cols-12 gap-6 items-start">
-              {/* Big postcard with email */}
-              {email && (
-                <motion.a
-                  {...fadeUp}
-                  href={`mailto:${email}`}
-                  className="md:col-span-7 group block relative p-8 md:p-10 border-2 rounded-[28px] overflow-hidden"
-                  style={{ borderColor: C.ink, background: C.secondary, boxShadow: `10px 10px 0 ${C.ink}`, transform: "rotate(-1.2deg)" }}
-                >
-                  <div className="absolute top-4 right-4 flex gap-1.5">
-                    {[C.primary, C.accent, C.ink].map((c, i) => <span key={i} className="w-3 h-3 rounded-full" style={{ background: c }} />)}
-                  </div>
-                  <div className="text-[10px] font-bold tracking-[0.3em] mb-3" style={{ color: C.ink }}>POSTCARD · DROP A LINE</div>
-                  <div className="flex items-end gap-3 flex-wrap">
-                    <Mail size={36} style={{ color: C.ink }} />
-                    <div className="cc-display font-extrabold text-2xl md:text-4xl break-all leading-none" style={{ color: C.ink }}>{email}</div>
-                  </div>
-                  <div className="mt-6 flex items-center gap-2 text-sm font-bold" style={{ color: C.ink }}>
-                    <span>Write me</span>
-                    <ArrowUpRight size={18} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition" />
-                  </div>
-                </motion.a>
-              )}
+            {/* Huge email — the only loud thing */}
+            {email && (
+              <motion.a
+                {...fadeUp}
+                href={`mailto:${email}`}
+                className="group block mb-16 md:mb-24"
+              >
+                <div className="cc-display font-extrabold leading-[0.95] tracking-tight break-all text-[clamp(2.2rem,8vw,6.5rem)]">
+                  <span className="italic font-medium" style={{ color: C.primary }}>→</span>{" "}
+                  <span className="underline decoration-2 underline-offset-[10px] decoration-transparent group-hover:decoration-[currentColor] transition-all duration-500">
+                    {email}
+                  </span>
+                </div>
+                <div className="mt-4 flex items-center gap-3 text-[10px] font-bold tracking-[0.3em]" style={{ color: C.muted }}>
+                  <span className="w-2 h-2 rounded-full animate-pulse" style={{ background: C.primary }} />
+                  AVAILABLE FOR PROJECTS · {new Date().toLocaleString("en-US", { month: "short", year: "numeric" }).toUpperCase()}
+                </div>
+              </motion.a>
+            )}
 
-              {/* Stamp / phone */}
+            {/* Directory rows */}
+            <div className="border-t" style={{ borderColor: C.ink }}>
               {phone && (
-                <motion.a
-                  {...fadeUp}
-                  href={`tel:${phone}`}
-                  className="md:col-span-5 group block relative p-7 border-2 rounded-[28px]"
-                  style={{ borderColor: C.ink, background: C.paper, boxShadow: `8px 8px 0 ${C.primary}`, transform: "rotate(1.5deg)" }}
-                >
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="text-[10px] font-bold tracking-[0.3em]" style={{ color: C.muted }}>RING RING</div>
-                    <div className="w-10 h-10 rounded-full border-2 flex items-center justify-center" style={{ borderColor: C.ink, background: C.accent }}>
-                      <Phone size={16} style={{ color: C.ink }} />
-                    </div>
+                <motion.a {...fadeUp} href={`tel:${phone}`} className="group flex items-center justify-between gap-6 py-5 border-b transition hover:pl-4" style={{ borderColor: C.ink }}>
+                  <div className="flex items-center gap-6 min-w-0">
+                    <span className="cc-display text-xs font-bold tracking-[0.3em] w-16 shrink-0" style={{ color: C.muted }}>/ TEL</span>
+                    <span className="cc-display text-xl md:text-2xl font-extrabold truncate">{phone}</span>
                   </div>
-                  <div className="cc-display font-extrabold text-2xl md:text-3xl leading-none">{phone}</div>
-                  <div className="mt-5 text-xs font-bold" style={{ color: C.muted }}>Tap to call →</div>
+                  <ArrowUpRight size={22} className="shrink-0 transition group-hover:rotate-45" />
                 </motion.a>
               )}
-
-              {/* Location ticket */}
               {location && (
-                <motion.div
-                  {...fadeUp}
-                  className="md:col-span-5 relative p-7 border-2 rounded-[28px]"
-                  style={{ borderColor: C.ink, background: C.primary, color: C.paper, boxShadow: `8px 8px 0 ${C.ink}`, transform: "rotate(-2deg)" }}
-                >
-                  <div className="absolute -left-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full border-2" style={{ borderColor: C.ink, background: C.paper }} />
-                  <div className="absolute -right-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full border-2" style={{ borderColor: C.ink, background: C.paper }} />
-                  <div className="text-[10px] font-bold tracking-[0.3em] opacity-80 mb-3">BASED IN</div>
-                  <div className="flex items-center gap-3">
-                    <MapPin size={28} />
-                    <div className="cc-display font-extrabold text-2xl md:text-3xl leading-none">{location}</div>
+                <motion.div {...fadeUp} className="flex items-center justify-between gap-6 py-5 border-b" style={{ borderColor: C.ink }}>
+                  <div className="flex items-center gap-6 min-w-0">
+                    <span className="cc-display text-xs font-bold tracking-[0.3em] w-16 shrink-0" style={{ color: C.muted }}>/ LOC</span>
+                    <span className="cc-display text-xl md:text-2xl font-extrabold truncate">{location}</span>
                   </div>
-                  <div className="mt-5 text-xs font-bold opacity-80">Working worldwide · Remote friendly</div>
+                  <span className="text-[10px] font-bold tracking-[0.3em] shrink-0" style={{ color: C.muted }}>WORLDWIDE</span>
                 </motion.div>
               )}
-
-              {/* Sticker / socials */}
               {socialLinks.length > 0 && (
-                <motion.div
-                  {...fadeUp}
-                  className="md:col-span-7 relative p-7 border-2 rounded-[28px]"
-                  style={{ borderColor: C.ink, background: C.ink, color: C.paper, boxShadow: `8px 8px 0 ${C.accent}`, transform: "rotate(1deg)" }}
-                >
-                  <div className="text-[10px] font-bold tracking-[0.3em] opacity-70 mb-4">/ ELSEWHERE ON THE INTERNET</div>
-                  <div className="flex flex-wrap gap-3">
-                    {socialLinks.map((l, i) => {
-                      const Icon = getSocialIcon(l.platform);
-                      const bg = [C.primary, C.secondary, C.accent][i % 3];
-                      return (
-                        <a key={l.id} href={l.url} target="_blank" rel="noreferrer"
-                          className="group flex items-center gap-2 px-4 py-2.5 rounded-full border-2 hover:-translate-y-1 transition"
-                          style={{ borderColor: C.paper, background: bg, color: C.ink }}>
-                          <Icon size={16} />
-                          <span className="text-sm font-bold capitalize">{l.platform}</span>
-                          <ArrowUpRight size={14} className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition" />
-                        </a>
-                      );
-                    })}
+                <motion.div {...fadeUp} className="flex items-center justify-between gap-6 py-5 border-b flex-wrap" style={{ borderColor: C.ink }}>
+                  <span className="cc-display text-xs font-bold tracking-[0.3em] w-16 shrink-0" style={{ color: C.muted }}>/ NET</span>
+                  <div className="flex flex-wrap gap-x-6 gap-y-2 flex-1">
+                    {socialLinks.map(l => (
+                      <a key={l.id} href={l.url} target="_blank" rel="noreferrer"
+                        className="group cc-display text-xl md:text-2xl font-extrabold capitalize flex items-center gap-1 transition"
+                        style={{ color: C.ink }}>
+                        <span className="group-hover:italic group-hover:text-[color:var(--cc-p)] transition" style={{ ["--cc-p" as any]: C.primary }}>{l.platform}</span>
+                        <span className="text-base opacity-40 group-hover:opacity-100 group-hover:-translate-y-0.5 transition">↗</span>
+                      </a>
+                    ))}
                   </div>
                 </motion.div>
               )}
             </div>
+
+            {/* tiny sign-off */}
+            <motion.div {...fadeUp} className="mt-10 flex items-center justify-between text-[10px] font-bold tracking-[0.3em]" style={{ color: C.muted }}>
+              <span>— END OF INDEX</span>
+              <span className="flex gap-1.5 items-center">
+                <span className="w-1.5 h-1.5 rounded-full" style={{ background: C.primary }} />
+                <span className="w-1.5 h-1.5 rounded-full" style={{ background: C.secondary }} />
+                <span className="w-1.5 h-1.5 rounded-full" style={{ background: C.accent }} />
+              </span>
+            </motion.div>
           </div>
         </section>
       )}
+
 
       {/* FOOTER */}
       <footer className="relative pt-20 pb-10 overflow-hidden" style={{ background: C.ink, color: C.paper }}>

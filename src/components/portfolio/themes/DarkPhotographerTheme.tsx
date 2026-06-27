@@ -609,7 +609,7 @@ export default function DarkPhotographerTheme({
               <p className="dp-mono text-xs uppercase tracking-[0.4em] mb-3" style={{ color: accent }}>Packages & Pricing</p>
               <h2 className="dp-display text-4xl md:text-6xl font-bold mb-4">Choose Your Shoot</h2>
               <p className="text-white/55 max-w-xl mb-14">Transparent packages for every story — from intimate portraits to full-day cinematic coverage. Custom plans available on request.</p>
-              <div className="grid md:grid-cols-3 gap-5">
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5">
                 {(showServices as any[]).map((s: any, i: number) => {
                   const featured = s.featured;
                   return (

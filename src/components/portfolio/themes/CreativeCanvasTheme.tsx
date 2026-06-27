@@ -427,51 +427,43 @@ export default function CreativeCanvasTheme({
       {v.services && services.length > 0 && (
         <section id="services" className="py-10 md:py-14 relative" style={{ background: C.ink, color: C.paper }}>
           <div className="max-w-7xl mx-auto px-5 md:px-8">
-            <motion.div {...fadeUp} className="mb-10 relative">
-              {/* ticket-stub header */}
-              <div className="relative rounded-[14px] overflow-hidden flex flex-col md:flex-row" style={{ background: "rgba(255,255,255,0.03)", border: `2px solid ${C.primary}` }}>
-                {/* perforation divider */}
-                <div className="hidden md:flex absolute left-[68%] top-0 bottom-0 items-center pointer-events-none">
-                  <div className="h-full border-l-2 border-dashed" style={{ borderColor: C.primary, opacity: 0.5 }} />
-                </div>
-                {/* notches */}
-                <span className="hidden md:block absolute left-[68%] -top-3 w-6 h-6 rounded-full -translate-x-1/2" style={{ background: C.ink, border: `2px solid ${C.primary}` }} />
-                <span className="hidden md:block absolute left-[68%] -bottom-3 w-6 h-6 rounded-full -translate-x-1/2" style={{ background: C.ink, border: `2px solid ${C.primary}` }} />
-
-                {/* LEFT — main */}
-                <div className="flex-1 p-6 md:p-9 relative">
-                  {/* diagonal stripes corner */}
-                  <div className="absolute top-0 right-0 w-24 h-24 opacity-20 pointer-events-none" style={{
-                    backgroundImage: `repeating-linear-gradient(45deg, ${C.primary} 0 2px, transparent 2px 8px)`,
-                  }} />
-                  <div className="flex items-center gap-3 mb-5">
-                    <span className="cc-display text-[10px] font-extrabold tracking-[0.35em] px-2 py-1 rounded-sm" style={{ background: C.primary, color: C.ink }}>03 / SERVICES</span>
-                    <span className="h-px flex-1 max-w-[80px]" style={{ background: "rgba(255,255,255,0.3)" }} />
-                    <span className="text-[10px] font-extrabold tracking-[0.3em] opacity-60">WHAT I DO</span>
-                  </div>
-                  <h2 className="cc-display font-extrabold text-4xl md:text-6xl leading-[1.05]">
-                    Services to grow<br />your <span className="italic relative inline-block" style={{ color: C.primary }}>
-                      brand.
-                      <svg className="absolute -bottom-2 left-0 w-full" height="8" viewBox="0 0 200 8" preserveAspectRatio="none">
-                        <path d="M2,5 Q50,1 100,5 T198,4" stroke={C.primary} strokeWidth="2.5" fill="none" strokeLinecap="round" />
-                      </svg>
-                    </span>
-                  </h2>
+            <motion.div {...fadeUp} className="mb-10">
+              {/* Editorial header band — matches Work */}
+              <div className="relative border-2 rounded-3xl px-5 py-6 md:px-10 md:py-8 overflow-hidden" style={{ borderColor: C.primary, background: "rgba(255,255,255,0.03)", boxShadow: `8px 8px 0 ${C.primary}` }}>
+                {/* corner sticker */}
+                <div className="absolute -top-3 -right-3 px-3 py-1.5 rounded-full border-2 text-[10px] font-extrabold tracking-[0.25em] rotate-[8deg]" style={{ borderColor: C.primary, background: C.primary, color: C.ink }}>
+                  SERVICES ’26
                 </div>
 
-                {/* RIGHT — stub */}
-                <div className="md:w-[32%] p-6 md:p-7 flex flex-col justify-between gap-4 relative" style={{ background: "rgba(245,166,35,0.06)" }}>
-                  <div className="flex items-start justify-between">
-                    <span className="text-[9px] font-bold tracking-[0.3em] opacity-60">NO.</span>
-                    <span className="text-[9px] font-bold tracking-[0.3em] opacity-60">2026</span>
+                <div className="grid md:grid-cols-[1fr_auto] gap-6 items-end">
+                  <div>
+                    <div className="flex items-center gap-3 mb-3">
+                      <span className="cc-display text-xs font-bold tracking-[0.4em] opacity-50">03 —</span>
+                      <span className="h-px w-12" style={{ background: "rgba(255,255,255,0.4)" }} />
+                      <span className="text-[10px] font-bold tracking-[0.3em]" style={{ color: C.primary }}>WHAT I DO</span>
+                    </div>
+                    <h2 className="cc-display font-extrabold text-4xl md:text-6xl leading-[0.95]">
+                      Services to grow<br />
+                      your{" "}
+                      <span className="relative inline-block italic font-medium" style={{ color: C.primary }}>
+                        brand
+                        <span aria-hidden className="absolute left-0 right-0 -bottom-1 h-[6px] -rotate-1 opacity-70" style={{ background: C.primary }} />
+                      </span>
+                      <span style={{ color: C.primary }}>.</span>
+                    </h2>
                   </div>
-                  <div className="text-center">
-                    <div className="cc-display text-6xl md:text-7xl font-extrabold leading-none" style={{ color: C.primary }}>{String(services.length).padStart(2, "0")}</div>
-                    <div className="text-[10px] font-extrabold tracking-[0.35em] mt-2 opacity-70">SERVICES</div>
+
+                  <div className="flex items-center gap-4 shrink-0">
+                    <div className="h-16 w-px hidden md:block" style={{ background: "rgba(255,255,255,0.2)" }} />
+                    <div className="text-right">
+                      <div className="cc-display text-5xl md:text-6xl font-extrabold leading-none">
+                        {String(services.length).padStart(2, "0")}
+                        <span style={{ color: C.primary }}>/</span>
+                        <span className="text-2xl md:text-3xl opacity-50">SVC</span>
+                      </div>
+                      <div className="text-[10px] font-bold tracking-[0.3em] mt-1 opacity-60">PREMIUM DESIGN</div>
+                    </div>
                   </div>
-                  <p className="text-[11px] opacity-60 text-center leading-snug">
-                    Premium design services<br />for modern brands.
-                  </p>
                 </div>
               </div>
             </motion.div>

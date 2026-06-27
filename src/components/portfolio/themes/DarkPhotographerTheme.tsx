@@ -110,7 +110,7 @@ export default function DarkPhotographerTheme({
   userId,
   contactItems = [],
 }: ThemeProps & { contactItems?: any[] }) {
-  const accent = (portfolio as any)?.accent_color || "#E7C873";
+  const accent = (portfolio as any)?.accent_color || "#FF3000";
 
   useEffect(() => { window.scrollTo(0, 0); }, []);
 

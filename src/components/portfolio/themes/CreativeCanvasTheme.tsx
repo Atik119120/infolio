@@ -427,7 +427,7 @@ export default function CreativeCanvasTheme({
 
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
               {services.map((s, i) => {
-                const accent = [C.primary, C.secondary, C.accent][i % 3];
+                const accent = C.primary;
                 return (
                   <motion.article
                     {...fadeUp}

@@ -38,12 +38,12 @@ const NAV = [
 ];
 
 const SOFTWARE = [
-  { name: "Photoshop", slug: "adobe_photoshop", color: "#31A8FF" },
-  { name: "Illustrator", slug: "adobe_illustrator", color: "#FF9A00" },
-  { name: "Figma", slug: "figma", color: "#A259FF" },
-  { name: "After Effects", slug: "adobe_after_effects", color: "#9999FF" },
-  { name: "Premiere Pro", slug: "adobe_premiere_pro", color: "#EA77FF" },
-  { name: "Blender", slug: "blender", color: "#F5792A" },
+  { name: "Photoshop", abbr: "Ps", color: "#31A8FF", bg: "#001E36" },
+  { name: "Illustrator", abbr: "Ai", color: "#FF9A00", bg: "#330000" },
+  { name: "Figma", abbr: "Fg", color: "#A259FF", bg: "#1E1E1E" },
+  { name: "After Effects", abbr: "Ae", color: "#D291FF", bg: "#00005B" },
+  { name: "Premiere Pro", abbr: "Pr", color: "#EA77FF", bg: "#00005B" },
+  { name: "Blender", abbr: "Bl", color: "#F5792A", bg: "#1E1E1E" },
 ];
 
 const PRO_SKILLS = [
@@ -494,8 +494,8 @@ export default function CreativeCanvasTheme({
               <div className="grid grid-cols-2 gap-3">
                 {SOFTWARE.map((s, i) => (
                   <div key={i} className="flex items-center gap-3 p-4 rounded-2xl border-2 hover:-translate-y-1 transition" style={{ borderColor: C.ink, background: C.paper }}>
-                    <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ background: `${s.color}1a` }}>
-                      <img src={`https://www.vectorlogo.zone/logos/${s.slug}/${s.slug}-icon.svg`} alt={s.name} className="w-7 h-7" loading="lazy" />
+                    <div className="w-11 h-11 rounded-xl flex items-center justify-center shrink-0 font-extrabold text-base" style={{ background: s.bg, color: s.color, fontFamily: 'system-ui' }}>
+                      {s.abbr}
                     </div>
                     <span className="font-semibold">{s.name}</span>
                   </div>

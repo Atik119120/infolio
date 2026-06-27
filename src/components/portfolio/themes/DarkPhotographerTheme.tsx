@@ -384,21 +384,18 @@ export default function DarkPhotographerTheme({
                   </div>
                 )}
               </div>
-              <div className="relative self-start rounded-2xl border border-white/10 bg-gradient-to-br from-white/[0.04] to-white/[0.01] p-6 lg:p-8 overflow-hidden">
-                <div className="absolute -top-24 -right-24 w-64 h-64 rounded-full blur-3xl opacity-20" style={{ background: accent }} />
-                <div className="relative">
-                  <ContactForm
-                    portfolioOwnerId={userId || ""}
-                    themeStyle={{
-                      surface: "rgba(255,255,255,0.04)",
-                      border: "rgba(255,255,255,0.15)",
-                      text: "#FFFFFF",
-                      textMuted: "rgba(255,255,255,0.6)",
-                      accent: accent,
-                      accentText: "#000000",
-                    }}
-                  />
-                </div>
+              <div className="self-start">
+                <ContactForm
+                  portfolioOwnerId={userId || ""}
+                  themeStyle={{
+                    surface: "rgba(255,255,255,0.04)",
+                    border: "rgba(255,255,255,0.15)",
+                    text: "#FFFFFF",
+                    textMuted: "rgba(255,255,255,0.6)",
+                    accent: accent,
+                    accentText: "#000000",
+                  }}
+                />
               </div>
             </div>
           </section>

@@ -216,8 +216,8 @@ export default function DarkPhotographerTheme({
   ];
   const userAlbums = Array.isArray((portfolio as any)?.albums) ? (portfolio as any).albums : null;
   const albumsToShow = (userAlbums && userAlbums.length > 0
-    ? userAlbums.map((a: any) => ({ id: a.id, title: a.title, cover: a.cover || a.photos?.[0] || "", count: a.photos?.length || 0, photos: a.photos || [] }))
-    : demoAlbums);
+    ? userAlbums.map((a: any) => ({ id: a.id, title: a.title, subtitle: a.subtitle || "", description: a.description || "", cover: a.cover || a.photos?.[0] || "", count: a.photos?.length || 0, photos: a.photos || [] }))
+    : demoAlbums.map((a: any) => ({ ...a, subtitle: "", description: "" })));
 
   const [workTab, setWorkTab] = useState<"photos" | "albums">("photos");
   const [openAlbum, setOpenAlbum] = useState<typeof albumsToShow[number] | null>(null);

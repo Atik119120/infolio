@@ -344,23 +344,23 @@ export default function CreativeCanvasTheme({
 
       {/* SERVICES */}
       {v.services && services.length > 0 && (
-        <section id="services" className="py-20 md:py-28 relative" style={{ background: C.ink, color: C.paper }}>
+        <section id="services" className="py-14 md:py-20 relative" style={{ background: C.ink, color: C.paper }}>
           <div className="max-w-7xl mx-auto px-5 md:px-8">
-            <motion.div {...fadeUp} className="flex items-end justify-between flex-wrap gap-6 mb-12">
+            <motion.div {...fadeUp} className="flex items-end justify-between flex-wrap gap-4 mb-8">
               <div>
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold mb-4" style={{ background: C.secondary, color: C.ink }}>
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold mb-3" style={{ background: C.secondary, color: C.ink }}>
                   WHAT I DO
                 </div>
-                <h2 className="cc-display font-extrabold text-4xl md:text-5xl leading-tight">
-                  Services to grow<br />your <span style={{ color: C.secondary }}>brand</span>.
+                <h2 className="cc-display font-extrabold text-3xl md:text-4xl leading-tight">
+                  Services to grow your <span style={{ color: C.secondary }}>brand</span>.
                 </h2>
               </div>
-              <p className="max-w-md text-sm md:text-base opacity-70">
-                Premium design services crafted for modern brands that want to stand out and stay memorable.
+              <p className="max-w-sm text-sm opacity-70">
+                Premium design services for modern brands.
               </p>
             </motion.div>
 
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
               {services.map((s, i) => {
                 const accent = [C.primary, C.secondary, C.accent][i % 3];
                 return (
@@ -368,28 +368,26 @@ export default function CreativeCanvasTheme({
                     {...fadeUp}
                     transition={{ ...fadeUp.transition, delay: i * 0.05 }}
                     key={s.id}
-                    className="group relative p-7 rounded-3xl border overflow-hidden transition-all hover:-translate-y-1.5"
+                    className="group relative p-5 rounded-2xl border overflow-hidden transition-all hover:-translate-y-1"
                     style={{ background: "rgba(255,255,255,0.04)", borderColor: "rgba(255,255,255,0.1)" }}
                   >
-                    {/* hover glow */}
                     <div
-                      className="absolute -top-16 -right-16 w-40 h-40 rounded-full blur-3xl opacity-0 group-hover:opacity-30 transition-opacity"
+                      className="absolute -top-12 -right-12 w-32 h-32 rounded-full blur-3xl opacity-0 group-hover:opacity-30 transition-opacity"
                       style={{ background: accent }}
                     />
-                    {/* number */}
-                    <span className="absolute top-5 right-6 cc-display text-xs font-bold opacity-30">
+                    <span className="absolute top-4 right-5 cc-display text-[10px] font-bold opacity-30">
                       {String(i + 1).padStart(2, "0")}
                     </span>
 
-                    <div className="relative w-12 h-12 rounded-2xl flex items-center justify-center mb-5" style={{ background: accent, color: C.ink }}>
-                      <ServiceIcon icon={s.icon || undefined} className="w-5 h-5" />
+                    <div className="relative w-10 h-10 rounded-xl flex items-center justify-center mb-3" style={{ background: accent, color: C.ink }}>
+                      <ServiceIcon icon={s.icon || undefined} className="w-4 h-4" />
                     </div>
-                    <h3 className="relative cc-display text-2xl font-bold mb-2">{s.title}</h3>
-                    {s.description && <p className="relative text-sm opacity-70 mb-5">{s.description}</p>}
-                    <div className="relative flex items-center justify-between pt-5 border-t" style={{ borderColor: "rgba(255,255,255,0.1)" }}>
-                      <span className="cc-display font-bold" style={{ color: accent }}>{s.price || "Get in touch"}</span>
-                      <button onClick={() => scrollTo("contact")} className="w-9 h-9 rounded-full flex items-center justify-center group-hover:rotate-[-45deg] transition" style={{ background: accent, color: C.ink }}>
-                        <ArrowUpRight size={16} />
+                    <h3 className="relative cc-display text-lg font-bold mb-1">{s.title}</h3>
+                    {s.description && <p className="relative text-xs opacity-70 mb-4 line-clamp-2">{s.description}</p>}
+                    <div className="relative flex items-center justify-between pt-3 border-t" style={{ borderColor: "rgba(255,255,255,0.1)" }}>
+                      <span className="cc-display text-sm font-bold" style={{ color: accent }}>{s.price || "Get in touch"}</span>
+                      <button onClick={() => scrollTo("contact")} className="w-8 h-8 rounded-full flex items-center justify-center group-hover:rotate-[-45deg] transition" style={{ background: accent, color: C.ink }}>
+                        <ArrowUpRight size={14} />
                       </button>
                     </div>
                   </motion.article>

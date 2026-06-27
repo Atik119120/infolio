@@ -90,7 +90,7 @@ function SortableRow({
       <div className="mt-2 flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-white/5 text-white/80">
         <Icon className="w-4 h-4" />
       </div>
-      <div className="grid flex-1 gap-2 sm:grid-cols-[140px_1fr_1fr]">
+      <div className="flex-1 min-w-0 space-y-2">
         <Select value={item.type} onValueChange={(v) => onChange({ type: v })}>
           <SelectTrigger className="h-9 bg-transparent border-white/10 text-white/90"><SelectValue /></SelectTrigger>
           <SelectContent>
@@ -101,18 +101,24 @@ function SortableRow({
             ))}
           </SelectContent>
         </Select>
-        <Input
-          placeholder="Label (optional)"
-          value={item.label ?? ""}
-          onChange={(e) => onChange({ label: e.target.value })}
-          className="h-9 bg-transparent border-white/10 text-white/90"
-        />
-        <Input
-          placeholder={meta.placeholder}
-          value={item.value}
-          onChange={(e) => onChange({ value: e.target.value })}
-          className="h-9 bg-transparent border-white/10 text-white/90"
-        />
+        <div>
+          <Label className="text-[10px] uppercase tracking-wider text-white/40">Label (optional)</Label>
+          <Input
+            placeholder="e.g. Work Email"
+            value={item.label ?? ""}
+            onChange={(e) => onChange({ label: e.target.value })}
+            className="h-9 bg-transparent border-white/10 text-white/90"
+          />
+        </div>
+        <div>
+          <Label className="text-[10px] uppercase tracking-wider text-white/40">Value / Link</Label>
+          <Input
+            placeholder={meta.placeholder}
+            value={item.value}
+            onChange={(e) => onChange({ value: e.target.value })}
+            className="h-9 bg-transparent border-white/10 text-white/90"
+          />
+        </div>
       </div>
       <Button
         type="button"

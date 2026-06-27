@@ -534,11 +534,10 @@ export default function CreativeCanvasTheme({
                 <span className="text-[10px] font-bold tracking-[0.3em]">EDUCATION</span>
               </div>
               <h2 className="cc-display font-extrabold text-4xl md:text-5xl mb-8">Learning <span className="italic font-medium" style={{ color: C.accent }}>journey.</span></h2>
-              <div className="relative pl-6">
-                <div className="absolute left-1.5 top-2 bottom-2 w-0.5" style={{ background: C.ink }} />
-                {(education && education.length > 0 ? education : []).map((e, i) => (
-                  <div key={e.id} className="relative mb-6 last:mb-0">
-                    <div className="absolute -left-[19px] top-2 w-3 h-3 rounded-full border-2" style={{ background: C.primary, borderColor: C.ink }} />
+              <div className="grid sm:grid-cols-2 gap-5">
+                {(education && education.length > 0 ? education : []).map((e) => (
+                  <div key={e.id} className="relative pl-5 border-l-2" style={{ borderColor: C.ink }}>
+                    <div className="absolute -left-[7px] top-1.5 w-3 h-3 rounded-full border-2" style={{ background: C.primary, borderColor: C.ink }} />
                     <span className="cc-display text-xs font-bold tracking-wider" style={{ color: C.primary }}>
                       {e.start_date?.slice(0, 4)}{e.end_date ? ` — ${e.end_date.slice(0, 4)}` : e.is_current ? " — Present" : ""}
                     </span>

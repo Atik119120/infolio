@@ -325,7 +325,7 @@ export default function CreativeCanvasTheme({
               <div className="cc-marquee">
                 {Array.from({ length: 2 }).map((_, k) => (
                   <div key={k} className="flex items-center gap-8 px-4 cc-display text-2xl md:text-3xl font-bold whitespace-nowrap">
-                    {["Brand Identity", "Illustration", "UI / UX", "Editorial", "Motion", "Packaging", "Print", "Web Design"].map((w, i) => (
+                    {marqueeWords.map((w, i) => (
                       <span key={i} className="flex items-center gap-8" style={{ color: i % 2 ? C.secondary : C.paper }}>
                         {w} <span style={{ color: C.primary }}>✦</span>
                       </span>

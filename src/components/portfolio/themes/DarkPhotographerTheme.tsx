@@ -485,47 +485,38 @@ export default function DarkPhotographerTheme({
       <main className="pt-16">
         {/* HERO */}
         {vHero && (
-          <section id="home" className="relative min-h-[92vh] flex items-center overflow-hidden dp-grain">
-            <HeroSlideshow images={[heroImg, ...galleryImages.map(g => g.url)].filter(Boolean) as string[]} />
-            <div className="relative max-w-7xl mx-auto px-6 lg:px-12 w-full py-24">
-              <p className="dp-mono text-[10px] uppercase tracking-[0.4em] mb-4" style={{ color: accent }}>
-                {`// ${profession}`}
-              </p>
-              <h1 className="dp-display text-3xl md:text-5xl lg:text-6xl font-bold leading-[0.95] dp-glow max-w-4xl">
-                {heroHeadline}
-              </h1>
-              <p className="mt-5 max-w-lg text-white/60 text-sm md:text-base leading-relaxed">
-                {heroDesc}
-              </p>
-              <div className="mt-8 flex flex-wrap items-center gap-4">
-                <button onClick={() => scrollTo("work")} className="dp-cut-btn primary group" style={{ ['--acc' as any]: accent }}>
-                  <span className="dp-cut-dot" />
-                  <span>View My Photographs</span>
-                  <span className="dp-cut-arrow">→</span>
-                </button>
-                <button onClick={() => scrollTo("contact")} className="dp-cut-btn ghost group" style={{ ['--acc' as any]: accent }}>
-                  <span className="dp-cut-dot" />
-                  <span>Book A Next Shoot</span>
-                  <span className="dp-cut-arrow">→</span>
-                </button>
-              </div>
-            </div>
-
-            {/* Marquee bottom */}
-            <div className="absolute bottom-0 inset-x-0 border-t border-white/10 py-4 overflow-hidden">
-              <div className="flex whitespace-nowrap dp-marquee">
-                {Array.from({ length: 2 }).map((_, k) => (
-                  <div key={k} className="flex items-center gap-12 px-6 dp-mono text-xs uppercase tracking-[0.3em] text-white/40">
-                    <span>Available for Bookings</span><span style={{ color: accent }}>✦</span>
-                    <span>Portrait · Editorial · Commercial</span><span style={{ color: accent }}>✦</span>
-                    <span>Worldwide</span><span style={{ color: accent }}>✦</span>
-                    <span>Est. {new Date().getFullYear() - 5}</span><span style={{ color: accent }}>✦</span>
-                  </div>
-                ))}
-              </div>
-            </div>
+          <section id="home" className="relative h-screen min-h-[640px] overflow-hidden dp-grain">
+            {(() => {
+              const poeticLines: [string, string][] = [
+                ["BETWEEN SHADOW", "AND LIGHT"],
+                ["SILENCE SPEAKS", "THROUGH FORM"],
+                ["ESSENCE BEYOND", "PERCEPTION"],
+                ["TRUTH IN", "EMPTINESS"],
+                ["SURRENDER TO", "THE VOID"],
+              ];
+              const imgs = [heroImg, ...galleryImages.map(g => g.url)].filter(Boolean) as string[];
+              const fallback = [
+                "https://images.unsplash.com/photo-1502082553048-f009c37129b9?w=1600&auto=format&fit=crop&q=80",
+                "https://images.unsplash.com/photo-1519608487953-e999c86e7455?w=1600&auto=format&fit=crop&q=80",
+                "https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=1600&auto=format&fit=crop&q=80",
+                "https://images.unsplash.com/photo-1542038784456-1ea8e935640e?w=1600&auto=format&fit=crop&q=80",
+                "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=1600&auto=format&fit=crop&q=80",
+              ];
+              const pool = (imgs.length ? imgs : fallback).slice(0, 5);
+              while (pool.length < 5) pool.push(fallback[pool.length]);
+              const slides = pool.map((img, i) => ({ img, text: poeticLines[i] }));
+              return (
+                <HeroSlideshow
+                  slides={slides}
+                  accent={accent}
+                  onPrimary={() => scrollTo("work")}
+                  onSecondary={() => scrollTo("contact")}
+                />
+              );
+            })()}
           </section>
         )}
+
 
         {/* ABOUT */}
         {vAbout && (

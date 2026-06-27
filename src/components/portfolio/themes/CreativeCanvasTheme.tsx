@@ -332,7 +332,7 @@ export default function CreativeCanvasTheme({
 
       {/* ABOUT */}
       {v.about && (
-        <section id="about" className="py-20 md:py-28 relative overflow-hidden" style={{ background: C.paper }}>
+        <section id="about" className="py-10 md:py-14 relative overflow-hidden" style={{ background: C.paper }}>
           {/* huge background word */}
           <div aria-hidden className="pointer-events-none absolute inset-x-0 top-6 text-center cc-display font-extrabold tracking-tighter select-none" style={{ fontSize: "clamp(120px, 22vw, 320px)", color: C.ink, opacity: 0.04, lineHeight: 0.9 }}>
             ABOUT
@@ -425,7 +425,7 @@ export default function CreativeCanvasTheme({
 
       {/* SERVICES */}
       {v.services && services.length > 0 && (
-        <section id="services" className="py-14 md:py-20 relative" style={{ background: C.ink, color: C.paper }}>
+        <section id="services" className="py-10 md:py-14 relative" style={{ background: C.ink, color: C.paper }}>
           <div className="max-w-7xl mx-auto px-5 md:px-8">
             <motion.div {...fadeUp} className="mb-10 relative rounded-[10px] border-2 p-6 md:p-8 overflow-hidden" style={{ borderColor: C.primary, background: "rgba(255,255,255,0.02)" }}>
               {/* corner ticks */}
@@ -494,7 +494,7 @@ export default function CreativeCanvasTheme({
 
       {/* WORK — masonry */}
       {v.projects && projects.length > 0 && (
-        <section id="work" className="py-20 md:py-28">
+        <section id="work" className="py-10 md:py-14">
           <div className="max-w-7xl mx-auto px-5 md:px-8">
             <motion.div {...fadeUp} className="mb-10">
               {/* Editorial header band */}
@@ -608,7 +608,7 @@ export default function CreativeCanvasTheme({
 
       {/* SKILLS */}
       {v.skills && (
-        <section id="skills" className="py-20 md:py-28">
+        <section id="skills" className="py-10 md:py-14">
           <div className="max-w-7xl mx-auto px-5 md:px-8 grid lg:grid-cols-2 gap-12">
             <motion.div {...slideLeft}>
               <div className="flex items-center gap-3 mb-4">
@@ -677,7 +677,7 @@ export default function CreativeCanvasTheme({
 
       {/* CONTACT — single hero card */}
       {v.contact && (
-        <section id="contact" className="py-16 md:py-20 relative overflow-hidden">
+        <section id="contact" className="py-10 md:py-12 relative overflow-hidden">
           <div className="max-w-7xl mx-auto px-5 md:px-8">
             <motion.div
               {...scaleIn}

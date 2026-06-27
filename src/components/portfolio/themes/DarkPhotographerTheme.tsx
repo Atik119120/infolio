@@ -47,6 +47,34 @@ function ScrambleText({ text, className, speed = 30 }: { text: string; className
   return <span ref={ref} className={className}>{out}</span>;
 }
 
+function HeroSlideshow({ images }: { images: string[] }) {
+  const [idx, setIdx] = useState(0);
+  useEffect(() => {
+    if (images.length <= 1) return;
+    const iv = setInterval(() => setIdx(i => (i + 1) % images.length), 4000);
+    return () => clearInterval(iv);
+  }, [images.length]);
+  if (images.length === 0) return null;
+  return (
+    <div className="absolute inset-0">
+      {images.map((src, i) => (
+        <img
+          key={i}
+          src={src}
+          alt=""
+          className="absolute inset-0 w-full h-full object-cover"
+          style={{
+            opacity: i === idx ? 0.45 : 0,
+            transform: i === idx ? "scale(1.05)" : "scale(1)",
+            transition: "opacity 1.4s ease, transform 6s ease",
+          }}
+        />
+      ))}
+      <div className="absolute inset-0" style={{ background: "linear-gradient(to bottom, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.85) 70%, #000 100%)" }} />
+    </div>
+  );
+}
+
 function CircularGallery({ images, accent }: { images: { url: string; title: string }[]; accent: string }) {
   const [rotation, setRotation] = useState(0);
   const reqRef = useRef<number | null>(null);
@@ -226,12 +254,7 @@ export default function DarkPhotographerTheme({
         {/* HERO */}
         {vHero && (
           <section id="home" className="relative min-h-[92vh] flex items-center overflow-hidden dp-grain">
-            {heroImg && (
-              <div className="absolute inset-0">
-                <img src={heroImg} alt="" className="w-full h-full object-cover opacity-40" />
-                <div className="absolute inset-0" style={{ background: "linear-gradient(to bottom, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.85) 70%, #000 100%)" }} />
-              </div>
-            )}
+            <HeroSlideshow images={[heroImg, ...galleryImages.map(g => g.url)].filter(Boolean) as string[]} />
             <div className="relative max-w-7xl mx-auto px-6 lg:px-12 w-full py-24">
               <p className="dp-mono text-[10px] uppercase tracking-[0.4em] mb-4" style={{ color: accent }}>
                 {`// ${profession}`}

@@ -227,6 +227,71 @@ export default function DarkPhotographerTheme({
         .dp-marquee { animation: dp-marquee 30s linear infinite; }
         .dp-card-img { transition: transform 1.2s cubic-bezier(.2,.7,.2,1), filter .6s ease; }
         .group:hover .dp-card-img { transform: scale(1.06); filter: saturate(1.1); }
+
+        /* Viewfinder-style buttons */
+        .dp-btn-primary, .dp-btn-ghost, .dp-btn-frame {
+          position: relative; display: inline-flex; align-items: center; gap: 10px;
+          padding: 14px 22px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+          font-size: 11px; letter-spacing: 0.28em; text-transform: uppercase; font-weight: 600;
+          cursor: pointer; transition: all .35s cubic-bezier(.2,.7,.2,1);
+          background: transparent; color: #fff; border: 0; isolation: isolate;
+        }
+        .dp-btn-primary { color: #050505; background: var(--acc); }
+        .dp-btn-primary::before {
+          content: ""; position: absolute; inset: 0; z-index: -1;
+          background: var(--acc); transition: transform .4s cubic-bezier(.2,.7,.2,1);
+        }
+        .dp-btn-primary:hover { color: var(--acc); }
+        .dp-btn-primary:hover::before { transform: translateY(100%); }
+        .dp-btn-primary:hover { background: transparent; box-shadow: inset 0 0 0 1px var(--acc); }
+        .dp-btn-ghost { color: rgba(255,255,255,.85); box-shadow: inset 0 0 0 1px rgba(255,255,255,.18); }
+        .dp-btn-ghost:hover { color: var(--acc); box-shadow: inset 0 0 0 1px var(--acc); }
+        .dp-btn-frame {
+          padding: 10px 16px; color: var(--acc);
+          box-shadow: inset 0 0 0 1px var(--acc);
+        }
+        .dp-btn-frame:hover { background: var(--acc); color: #050505; }
+
+        /* Corner brackets */
+        .dp-corner {
+          position: absolute; width: 10px; height: 10px; pointer-events: none;
+          border-color: var(--acc); border-style: solid; border-width: 0;
+          transition: all .35s cubic-bezier(.2,.7,.2,1);
+        }
+        .dp-corner.tl { top: -3px; left: -3px; border-top-width: 2px; border-left-width: 2px; }
+        .dp-corner.tr { top: -3px; right: -3px; border-top-width: 2px; border-right-width: 2px; }
+        .dp-corner.bl { bottom: -3px; left: -3px; border-bottom-width: 2px; border-left-width: 2px; }
+        .dp-corner.br { bottom: -3px; right: -3px; border-bottom-width: 2px; border-right-width: 2px; }
+        .group:hover .dp-corner { width: 16px; height: 16px; }
+
+        /* Aperture icon */
+        .dp-aperture {
+          width: 14px; height: 14px; border-radius: 50%;
+          border: 1.5px solid currentColor; position: relative; display: inline-block;
+          flex-shrink: 0;
+        }
+        .dp-aperture::before, .dp-aperture::after {
+          content: ""; position: absolute; inset: 1.5px; border-radius: 50%;
+          border: 1px solid currentColor; opacity: .5;
+        }
+        .dp-aperture::after { inset: 3px; opacity: .3; }
+        .group:hover .dp-aperture { animation: dp-spin 1.2s linear infinite; }
+        @keyframes dp-spin { to { transform: rotate(360deg); } }
+
+        /* Shutter icon */
+        .dp-shutter {
+          width: 12px; height: 12px; border: 1.5px solid currentColor;
+          display: inline-block; flex-shrink: 0; transform: rotate(45deg);
+          transition: transform .4s ease;
+        }
+        .group:hover .dp-shutter { transform: rotate(225deg); }
+
+        .dp-btn-label { position: relative; }
+        .dp-btn-meta {
+          font-size: 9px; opacity: .55; letter-spacing: 0.2em;
+          padding-left: 10px; margin-left: 4px;
+          border-left: 1px solid currentColor;
+        }
       `}</style>
 
 

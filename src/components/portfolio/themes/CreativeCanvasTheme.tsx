@@ -248,26 +248,26 @@ export default function CreativeCanvasTheme({
                 Available for new projects
               </motion.div>
 
-              <motion.h1 {...fadeUp} className="cc-display font-extrabold leading-[0.95] text-[44px] sm:text-6xl lg:text-7xl">
+              <motion.h1 {...fadeUp} className="cc-display font-extrabold leading-[1.02] text-[32px] sm:text-4xl lg:text-5xl xl:text-[56px]">
                 Hi, I'm <span style={{ color: C.primary }}>{name.split(" ")[0]}</span>.<br />
                 <span className="relative inline-block">
                   {headline.split(" ").slice(0, 2).join(" ")}
-                  <svg className="absolute -bottom-2 left-0 w-full" height="14" viewBox="0 0 200 14" preserveAspectRatio="none">
-                    <path d="M2 8 Q 50 2 100 8 T 198 6" stroke={C.accent} strokeWidth="5" fill="none" strokeLinecap="round" />
+                  <svg className="absolute -bottom-1.5 left-0 w-full" height="10" viewBox="0 0 200 10" preserveAspectRatio="none">
+                    <path d="M2 6 Q 50 1 100 6 T 198 4" stroke={C.accent} strokeWidth="4" fill="none" strokeLinecap="round" />
                   </svg>
                 </span>{" "}
-                <span className="cc-display italic font-medium" style={{ color: C.muted }}>{headline.split(" ").slice(2).join(" ")}</span>
+                <span className="cc-display italic font-medium text-[26px] sm:text-3xl lg:text-4xl" style={{ color: C.muted }}>{headline.split(" ").slice(2).join(" ")}</span>
               </motion.h1>
 
-              <motion.p {...fadeUp} className="mt-6 text-base md:text-lg max-w-xl" style={{ color: C.muted }}>
+              <motion.p {...fadeUp} className="mt-5 text-sm md:text-base max-w-lg" style={{ color: C.muted }}>
                 {subline}
               </motion.p>
 
-              <motion.div {...fadeUp} className="mt-8 flex flex-wrap gap-3 cc-btn">
-                <a href={heroCtaLink} className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full font-semibold text-white hover:scale-[1.03] transition" style={{ background: C.ink }}>
-                  {heroCtaText} <ArrowRight size={18} />
+              <motion.div {...fadeUp} className="mt-6 flex flex-wrap gap-3 cc-btn">
+                <a href={heroCtaLink} className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-semibold text-sm text-white hover:scale-[1.03] transition" style={{ background: C.ink }}>
+                  {heroCtaText} <ArrowRight size={16} />
                 </a>
-                <button onClick={() => scrollTo("work")} className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full font-semibold border-2 hover:scale-[1.03] transition" style={{ borderColor: C.ink }}>
+                <button onClick={() => scrollTo("work")} className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-semibold text-sm border-2 hover:scale-[1.03] transition" style={{ borderColor: C.ink }}>
                   View Portfolio
                 </button>
               </motion.div>

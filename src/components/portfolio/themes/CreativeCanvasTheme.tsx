@@ -233,12 +233,8 @@ export default function CreativeCanvasTheme({
       {/* HERO */}
       {v.hero && (
         <section id="home" className="relative pt-28 md:pt-32 pb-16 md:pb-24 overflow-hidden cc-grain">
-          {/* Floating background shapes */}
-          <div aria-hidden className="absolute inset-0 pointer-events-none">
-            <div className="absolute top-20 left-10 w-40 h-40 rounded-full blur-3xl opacity-50" style={{ background: C.secondary }} />
-            <div className="absolute bottom-10 right-10 w-56 h-56 rounded-full blur-3xl opacity-40" style={{ background: C.accent }} />
-            <div className="absolute top-1/2 left-1/3 w-32 h-32 rounded-full blur-2xl opacity-30" style={{ background: C.primary }} />
-          </div>
+
+
 
           <div className="relative max-w-4xl mx-auto px-5 md:px-8 text-center">
             <div className="relative z-10">

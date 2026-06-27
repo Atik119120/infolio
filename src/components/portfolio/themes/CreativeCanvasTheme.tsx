@@ -346,7 +346,7 @@ export default function CreativeCanvasTheme({
       {v.services && services.length > 0 && (
         <section id="services" className="py-14 md:py-20 relative" style={{ background: C.ink, color: C.paper }}>
           <div className="max-w-7xl mx-auto px-5 md:px-8">
-            <motion.div {...fadeUp} className="mb-10">
+            <motion.div {...fadeUp} className="mb-10 rounded-2xl border p-6 md:p-8" style={{ borderColor: "rgba(255,255,255,0.12)", background: "rgba(255,255,255,0.03)" }}>
               <div className="flex items-center gap-3 mb-5">
                 <span className="cc-display text-xs font-bold opacity-50">03 —</span>
                 <span className="h-px w-10" style={{ background: "rgba(255,255,255,0.3)" }} />

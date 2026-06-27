@@ -110,6 +110,7 @@ export const THEME_OPTIONS: ThemeOption[] = [
   { value: 'freelancer', label: 'Theme 1', description: 'Clean modern portfolio theme', isPremium: false, price: 0, category: 'free', tier: 'free' },
   { value: 'creative-sidebar-pro', label: 'Creative Sidebar Pro', description: 'Creative freelancer portfolio with fixed sidebar', isPremium: false, price: 0, category: 'free', tier: 'free' },
   { value: 'dark-photographer', label: 'Dark Photographer', description: 'Cinematic full-black photographer theme with rotating gallery', isPremium: false, price: 0, category: 'free', tier: 'free' },
+  { value: 'creative-canvas', label: 'Creative Canvas', description: 'Playful editorial graphic-designer theme with masonry portfolio', isPremium: false, price: 0, category: 'free', tier: 'free' },
 ];
 
 export const getThemesByCategory = (_category: ThemeCategory): ThemeOption[] => {

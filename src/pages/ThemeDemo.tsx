@@ -12,6 +12,7 @@ import {
   BiographyTheme,
   CreativeSidebarProTheme,
   DarkPhotographerTheme,
+  CreativeCanvasTheme,
   ThemeProps,
 } from "@/components/portfolio/themes";
 

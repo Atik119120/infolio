@@ -368,10 +368,21 @@ export default function CreativeCanvasTheme({
                       <span className="absolute bottom-2 left-2 w-4 h-4 border-b-2 border-l-2" style={{ borderColor: C.paper }} />
                       <span className="absolute bottom-2 right-2 w-4 h-4 border-b-2 border-r-2" style={{ borderColor: C.paper }} />
                     </div>
-                    {/* bottom caption strip */}
-                    <div className="px-4 py-3 border-t-2 flex items-center justify-between" style={{ borderColor: C.ink, background: C.paper }}>
-                      <div className="cc-display italic text-base font-bold" style={{ color: C.ink }}>{name.split(" ")[0]}.</div>
-                      <div className="text-[10px] font-bold tracking-[0.2em] uppercase opacity-70" style={{ color: C.ink }}>in the studio</div>
+                    {/* bottom caption strip — barcode style */}
+                    <div className="px-4 py-3 border-t-2 flex items-center justify-between gap-3" style={{ borderColor: C.ink, background: C.paper }}>
+                      <div className="flex items-center gap-2 min-w-0">
+                        <span className="w-2 h-2 rounded-full animate-pulse shrink-0" style={{ background: C.primary }} />
+                        <div className="cc-display italic text-base font-bold truncate" style={{ color: C.ink }}>{name.split(" ")[0]}.</div>
+                      </div>
+                      {/* barcode lines */}
+                      <div className="hidden sm:flex items-center gap-[2px] h-4 opacity-80" aria-hidden>
+                        {[3,1,2,1,3,1,2,2,1,3,1,2].map((w, i) => (
+                          <span key={i} className="h-full" style={{ width: `${w}px`, background: C.ink }} />
+                        ))}
+                      </div>
+                      <div className="flex items-center gap-2 shrink-0">
+                        <span className="text-[10px] font-bold tracking-[0.2em] uppercase opacity-70" style={{ color: C.ink }}>est. {new Date().getFullYear() - 8}</span>
+                      </div>
                     </div>
                   </div>
                 </div>

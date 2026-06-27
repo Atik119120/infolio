@@ -361,27 +361,40 @@ export default function CreativeCanvasTheme({
             </motion.div>
 
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-              {services.map((s, i) => (
-                <motion.article
-                  {...fadeUp}
-                  transition={{ ...fadeUp.transition, delay: i * 0.05 }}
-                  key={s.id}
-                  className="group relative p-7 rounded-3xl border transition-all hover:-translate-y-1.5"
-                  style={{ background: "rgba(255,255,255,0.04)", borderColor: "rgba(255,255,255,0.1)" }}
-                >
-                  <div className="w-12 h-12 rounded-2xl flex items-center justify-center mb-5" style={{ background: [C.primary, C.secondary, C.accent][i % 3], color: C.ink }}>
-                    <ServiceIcon icon={s.icon || undefined} className="w-5 h-5" />
-                  </div>
-                  <h3 className="cc-display text-2xl font-bold mb-2">{s.title}</h3>
-                  {s.description && <p className="text-sm opacity-70 mb-5">{s.description}</p>}
-                  <div className="flex items-center justify-between pt-5 border-t" style={{ borderColor: "rgba(255,255,255,0.1)" }}>
-                    <span className="cc-display font-bold" style={{ color: C.secondary }}>{s.price || "Get in touch"}</span>
-                    <button onClick={() => scrollTo("contact")} className="w-9 h-9 rounded-full flex items-center justify-center group-hover:rotate-[-45deg] transition" style={{ background: C.secondary, color: C.ink }}>
-                      <ArrowUpRight size={16} />
-                    </button>
-                  </div>
-                </motion.article>
-              ))}
+              {services.map((s, i) => {
+                const accent = [C.primary, C.secondary, C.accent][i % 3];
+                return (
+                  <motion.article
+                    {...fadeUp}
+                    transition={{ ...fadeUp.transition, delay: i * 0.05 }}
+                    key={s.id}
+                    className="group relative p-7 rounded-3xl border overflow-hidden transition-all hover:-translate-y-1.5"
+                    style={{ background: "rgba(255,255,255,0.04)", borderColor: "rgba(255,255,255,0.1)" }}
+                  >
+                    {/* hover glow */}
+                    <div
+                      className="absolute -top-16 -right-16 w-40 h-40 rounded-full blur-3xl opacity-0 group-hover:opacity-30 transition-opacity"
+                      style={{ background: accent }}
+                    />
+                    {/* number */}
+                    <span className="absolute top-5 right-6 cc-display text-xs font-bold opacity-30">
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+
+                    <div className="relative w-12 h-12 rounded-2xl flex items-center justify-center mb-5" style={{ background: accent, color: C.ink }}>
+                      <ServiceIcon icon={s.icon || undefined} className="w-5 h-5" />
+                    </div>
+                    <h3 className="relative cc-display text-2xl font-bold mb-2">{s.title}</h3>
+                    {s.description && <p className="relative text-sm opacity-70 mb-5">{s.description}</p>}
+                    <div className="relative flex items-center justify-between pt-5 border-t" style={{ borderColor: "rgba(255,255,255,0.1)" }}>
+                      <span className="cc-display font-bold" style={{ color: accent }}>{s.price || "Get in touch"}</span>
+                      <button onClick={() => scrollTo("contact")} className="w-9 h-9 rounded-full flex items-center justify-center group-hover:rotate-[-45deg] transition" style={{ background: accent, color: C.ink }}>
+                        <ArrowUpRight size={16} />
+                      </button>
+                    </div>
+                  </motion.article>
+                );
+              })}
             </div>
           </div>
         </section>

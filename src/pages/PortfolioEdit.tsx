@@ -329,6 +329,13 @@ export default function PortfolioEdit() {
           return <CustomCodeForm portfolio={portfolio as any} userId={user?.id || ""} onUpdate={handleUpdate} />;
         if (activeTheme === "dark-photographer")
           return <HeroSlideshowForm portfolio={portfolio as any} userId={user?.id || ""} onUpdate={handleUpdate} onSuccess={showSuccess} onError={showError} />;
+        if (activeTheme === "creative-canvas")
+          return (
+            <div className="space-y-6">
+              <CustomizationForm portfolio={portfolio as any} userId={user?.id || ""} enabledFields={themeConfig.customizeFields} scope="hero" onUpdate={handleUpdate} onSuccess={showSuccess} onError={showError} />
+              <CreativeCanvasExtrasForm portfolio={portfolio as any} userId={user?.id || ""} onUpdate={handleUpdate} onSuccess={showSuccess} onError={showError} mode="marquee" />
+            </div>
+          );
         return <CustomizationForm portfolio={portfolio as any} userId={user?.id || ""} enabledFields={themeConfig.customizeFields} scope="hero" onUpdate={handleUpdate} onSuccess={showSuccess} onError={showError} />;
       case "footer":
         return <CustomizationForm portfolio={portfolio as any} userId={user?.id || ""} enabledFields={themeConfig.customizeFields} scope="footer" onUpdate={handleUpdate} onSuccess={showSuccess} onError={showError} />;
@@ -337,6 +344,13 @@ export default function PortfolioEdit() {
       case "branding":
         return <FaviconUploadForm faviconUrl={(portfolio as any)?.favicon_url || null} userId={user?.id || ""} onUpdate={handleUpdate} onSuccess={showSuccess} onError={showError} />;
       case "skills":
+        if (activeTheme === "creative-canvas")
+          return (
+            <div className="space-y-6">
+              <SkillsForm skills={skills} userId={user?.id || ""} onUpdate={handleUpdate} onSuccess={showSuccess} onError={showError} />
+              <CreativeCanvasExtrasForm portfolio={portfolio as any} userId={user?.id || ""} onUpdate={handleUpdate} onSuccess={showSuccess} onError={showError} mode="software" />
+            </div>
+          );
         return <SkillsForm skills={skills} userId={user?.id || ""} onUpdate={handleUpdate} onSuccess={showSuccess} onError={showError} />;
       case "services":
         if (activeTheme === "dark-photographer")

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Mail, Phone, MapPin, ArrowUpRight, Camera } from "lucide-react";
+import { Mail, Phone, MapPin, ArrowUpRight, Camera, X, Images } from "lucide-react";
 import { ThemeProps } from "./types";
 import { ContactForm } from "@/components/portfolio/ContactForm";
 import { getSocialIcon } from "./utils";

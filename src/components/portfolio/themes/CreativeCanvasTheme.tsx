@@ -534,50 +534,75 @@ export default function CreativeCanvasTheme({
         <section id="skills" className="py-20 md:py-28">
           <div className="max-w-7xl mx-auto px-5 md:px-8 grid lg:grid-cols-2 gap-12">
             <motion.div {...fadeUp}>
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold mb-4" style={{ background: C.secondary }}>TOOLBOX</div>
-              <h2 className="cc-display font-extrabold text-4xl md:text-5xl mb-8">Software<br />I master daily.</h2>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="flex items-center gap-3 mb-4">
+                <span className="cc-display text-xs font-bold tracking-[0.4em]" style={{ color: C.muted }}>04 —</span>
+                <span className="h-px w-10" style={{ background: C.ink }} />
+                <span className="text-[10px] font-bold tracking-[0.3em]">TOOLBOX</span>
+              </div>
+              <h2 className="cc-display font-extrabold text-4xl md:text-5xl mb-8">Software<br /><span className="italic font-medium" style={{ color: C.primary }}>I master daily.</span></h2>
+              <div className="grid grid-cols-2 gap-0 border-l border-t" style={{ borderColor: C.ink }}>
                 {SOFTWARE.map((s, i) => (
-                  <div key={i} className="flex items-center gap-3 p-4 rounded-2xl border-2 hover:-translate-y-1 transition" style={{ borderColor: C.ink, background: C.paper }}>
-                    <div className="w-11 h-11 rounded-xl flex items-center justify-center shrink-0" style={{ background: "#f7f7f7" }}>
+                  <div key={i} className="group relative flex items-center gap-3 p-4 border-r border-b transition hover:bg-[var(--cc-hover)]" style={{ borderColor: C.ink, ["--cc-hover" as any]: C.secondary }}>
+                    <span className="cc-display text-[10px] font-bold absolute top-2 right-2 tracking-wider" style={{ color: C.muted }}>0{i + 1}</span>
+                    <div className="w-10 h-10 flex items-center justify-center shrink-0">
                       <img
                         src={`https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/${s.slug}/${s.slug}-original.svg`}
                         alt={`${s.name} logo`}
-                        className="w-8 h-8 object-contain"
+                        className="w-9 h-9 object-contain"
                         loading="lazy"
                       />
                     </div>
-                    <span className="font-semibold">{s.name}</span>
+                    <span className="font-semibold text-sm">{s.name}</span>
                   </div>
                 ))}
               </div>
             </motion.div>
 
             <motion.div {...fadeUp}>
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold mb-4" style={{ background: C.accent }}>EXPERTISE</div>
-              <h2 className="cc-display font-extrabold text-4xl md:text-5xl mb-8">Skills built<br />over the years.</h2>
-              <div className="space-y-4">
-                {(skills.length ? skills.slice(0, 6).map(s => ({ name: s.name, level: s.proficiency || 85 })) : PRO_SKILLS.map((n, i) => ({ name: n, level: 95 - i * 5 }))).map((s, i) => (
-                  <div key={i}>
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="font-semibold">{s.name}</span>
-                      <span className="cc-display font-bold" style={{ color: C.primary }}>{s.level}%</span>
+              <div className="flex items-center gap-3 mb-4">
+                <span className="cc-display text-xs font-bold tracking-[0.4em]" style={{ color: C.muted }}>05 —</span>
+                <span className="h-px w-10" style={{ background: C.ink }} />
+                <span className="text-[10px] font-bold tracking-[0.3em]">EXPERTISE</span>
+              </div>
+              <h2 className="cc-display font-extrabold text-4xl md:text-5xl mb-8">Skills built<br /><span className="italic font-medium" style={{ color: C.accent }}>over the years.</span></h2>
+              <div className="space-y-5">
+                {(skills.length ? skills.slice(0, 6).map(s => ({ name: s.name, level: s.proficiency || 85 })) : PRO_SKILLS.map((n, i) => ({ name: n, level: 95 - i * 5 }))).map((s, i) => {
+                  const segments = 14;
+                  const filled = Math.round((s.level / 100) * segments);
+                  return (
+                    <div key={i}>
+                      <div className="flex items-baseline justify-between mb-2">
+                        <span className="font-semibold flex items-center gap-2">
+                          <span className="cc-display text-[10px] font-bold tracking-wider" style={{ color: C.muted }}>0{i + 1}</span>
+                          {s.name}
+                        </span>
+                        <span className="cc-display font-extrabold text-lg" style={{ color: C.ink }}>
+                          {s.level}<span style={{ color: C.primary }}>/</span><span className="text-sm" style={{ color: C.muted }}>100</span>
+                        </span>
+                      </div>
+                      <div className="flex gap-1">
+                        {Array.from({ length: segments }).map((_, k) => (
+                          <motion.span
+                            key={k}
+                            initial={{ scaleY: 0.3, opacity: 0.3 }}
+                            whileInView={{ scaleY: 1, opacity: 1 }}
+                            viewport={{ once: true }}
+                            transition={{ delay: i * 0.04 + k * 0.025, duration: 0.3 }}
+                            className="flex-1 h-5 rounded-sm origin-bottom"
+                            style={{
+                              background: k < filled ? (k === filled - 1 ? C.ink : C.primary) : "transparent",
+                              border: k < filled ? "none" : `1.5px solid ${C.border}`,
+                            }}
+                          />
+                        ))}
+                      </div>
                     </div>
-                    <div className="h-2.5 rounded-full overflow-hidden" style={{ background: C.border }}>
-                      <motion.div
-                        initial={{ width: 0 }}
-                        whileInView={{ width: `${s.level}%` }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 1.2, ease: "easeOut", delay: i * 0.05 }}
-                        className="h-full rounded-full"
-                        style={{ background: `linear-gradient(90deg, ${C.primary}, ${C.secondary})` }}
-                      />
-                    </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </motion.div>
           </div>
+
         </section>
       )}
 

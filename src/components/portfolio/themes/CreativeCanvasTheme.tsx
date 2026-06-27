@@ -631,20 +631,15 @@ export default function CreativeCanvasTheme({
                     })}
                   </div>
                 )}
+
+                <div className="mt-8 pt-5 border-t-2 border-dashed text-[11px] font-bold tracking-[0.2em] uppercase" style={{ borderColor: C.ink, color: C.ink, opacity: 0.7 }}>
+                  {footerText || `© ${new Date().getFullYear()} ${name}. All rights reserved.`}
+                </div>
               </div>
             </motion.div>
           </div>
         </section>
       )}
-
-
-
-      {/* FOOTER */}
-      <footer className="relative py-6" style={{ background: C.ink, color: C.paper }}>
-        <div className="relative max-w-7xl mx-auto px-5 md:px-8 text-center text-xs opacity-70">
-          {footerText || `© ${new Date().getFullYear()} ${name}. All rights reserved.`}
-        </div>
-      </footer>
 
       {/* Back to top */}
       <AnimatePresence>

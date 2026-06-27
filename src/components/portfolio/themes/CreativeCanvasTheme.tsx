@@ -140,6 +140,35 @@ export default function CreativeCanvasTheme({
     transition: { duration: 0.65, ease: "easeOut" as const },
   };
 
+  const fadeIn = {
+    initial: { opacity: 0 },
+    whileInView: { opacity: 1 },
+    viewport: { once: true, margin: "-60px" },
+    transition: { duration: 0.8, ease: "easeOut" as const },
+  };
+
+  const scaleIn = {
+    initial: { opacity: 0, scale: 0.92 },
+    whileInView: { opacity: 1, scale: 1 },
+    viewport: { once: true, margin: "-60px" },
+    transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] as const },
+  };
+
+  const slideLeft = {
+    initial: { opacity: 0, x: -40 },
+    whileInView: { opacity: 1, x: 0 },
+    viewport: { once: true, margin: "-60px" },
+    transition: { duration: 0.7, ease: "easeOut" as const },
+  };
+
+  const slideRight = {
+    initial: { opacity: 0, x: 40 },
+    whileInView: { opacity: 1, x: 0 },
+    viewport: { once: true, margin: "-60px" },
+    transition: { duration: 0.7, ease: "easeOut" as const },
+  };
+
+
   const scrollTo = (id: string) => {
     setMenuOpen(false);
     const el = document.getElementById(id);
@@ -238,43 +267,44 @@ export default function CreativeCanvasTheme({
 
           <div className="relative max-w-4xl mx-auto px-5 md:px-8 text-center">
             <div className="relative z-10">
-              <motion.div {...fadeUp} className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold mb-5" style={{ background: C.ink, color: C.secondary }}>
+              <motion.div initial={{ opacity: 0, y: 28 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.05 }} className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold mb-5" style={{ background: C.ink, color: C.secondary }}>
                 <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: C.secondary }} />
                 Available for new projects
               </motion.div>
 
-              <motion.h1 {...fadeUp} className="cc-display font-extrabold leading-[1.02] text-[36px] sm:text-5xl lg:text-6xl xl:text-7xl">
+              <motion.h1 initial={{ opacity: 0, y: 36 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.75, delay: 0.15, ease: [0.16, 1, 0.3, 1] }} className="cc-display font-extrabold leading-[1.02] text-[36px] sm:text-5xl lg:text-6xl xl:text-7xl">
                 Hi, I'm <span style={{ color: C.primary }}>{name.split(" ")[0]}</span>.<br />
                 <span className="relative inline-block">
                   {headline.split(" ").slice(0, 2).join(" ")}
-                  <svg className="absolute -bottom-1.5 left-0 w-full" height="10" viewBox="0 0 200 10" preserveAspectRatio="none">
-                    <path d="M2 6 Q 50 1 100 6 T 198 4" stroke={C.accent} strokeWidth="4" fill="none" strokeLinecap="round" />
-                  </svg>
+                  <motion.svg initial={{ pathLength: 0, opacity: 0 }} animate={{ pathLength: 1, opacity: 1 }} transition={{ duration: 1, delay: 0.9 }} className="absolute -bottom-1.5 left-0 w-full" height="10" viewBox="0 0 200 10" preserveAspectRatio="none">
+                    <motion.path d="M2 6 Q 50 1 100 6 T 198 4" stroke={C.accent} strokeWidth="4" fill="none" strokeLinecap="round" />
+                  </motion.svg>
                 </span>{" "}
                 <span className="cc-display italic font-medium text-[30px] sm:text-4xl lg:text-5xl" style={{ color: C.muted }}>{headline.split(" ").slice(2).join(" ")}</span>
               </motion.h1>
 
-              <motion.p {...fadeUp} className="mt-6 text-sm md:text-base max-w-lg mx-auto" style={{ color: C.muted }}>
+              <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.4 }} className="mt-6 text-sm md:text-base max-w-lg mx-auto" style={{ color: C.muted }}>
                 {subline}
               </motion.p>
 
-              <motion.div {...fadeUp} className="mt-7 flex flex-wrap gap-3 cc-btn justify-center">
-                <a href={heroCtaLink} className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-semibold text-sm text-white hover:scale-[1.03] transition" style={{ background: C.ink }}>
+              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.55 }} className="mt-7 flex flex-wrap gap-3 cc-btn justify-center">
+                <motion.a whileHover={{ scale: 1.04, y: -2 }} whileTap={{ scale: 0.97 }} href={heroCtaLink} className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-semibold text-sm text-white" style={{ background: C.ink }}>
                   {heroCtaText} <ArrowRight size={16} />
-                </a>
-                <button onClick={() => scrollTo("work")} className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-semibold text-sm border-2 hover:scale-[1.03] transition" style={{ borderColor: C.ink }}>
+                </motion.a>
+                <motion.button whileHover={{ scale: 1.04, y: -2 }} whileTap={{ scale: 0.97 }} onClick={() => scrollTo("work")} className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-semibold text-sm border-2" style={{ borderColor: C.ink }}>
                   View Portfolio
-                </button>
+                </motion.button>
               </motion.div>
 
-              <motion.div {...fadeUp} className="mt-10 flex items-center gap-6 text-sm justify-center" style={{ color: C.muted }}>
+              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.7 }} className="mt-10 flex items-center gap-6 text-sm justify-center" style={{ color: C.muted }}>
                 <div className="flex -space-x-2">
                   {[C.primary, C.accent, C.secondary].map((c, i) => (
-                    <div key={i} className="w-9 h-9 rounded-full border-2 border-white" style={{ background: c }} />
+                    <motion.div key={i} initial={{ scale: 0, rotate: -180 }} animate={{ scale: 1, rotate: 0 }} transition={{ duration: 0.5, delay: 0.8 + i * 0.1, type: "spring" }} className="w-9 h-9 rounded-full border-2 border-white" style={{ background: c }} />
                   ))}
                 </div>
                 <span>Trusted by <strong style={{ color: C.ink }}>40+ brands</strong> worldwide</span>
               </motion.div>
+
             </div>
 
           </div>
@@ -318,7 +348,7 @@ export default function CreativeCanvasTheme({
 
             <div className="grid lg:grid-cols-12 gap-10 lg:gap-14 items-start">
               {/* LEFT — editorial frame */}
-              <motion.div {...fadeUp} className="lg:col-span-5 relative">
+              <motion.div {...slideLeft} whileHover={{ rotate: -1, scale: 1.01 }} className="lg:col-span-5 relative">
                 <div className="relative mx-auto max-w-sm">
                   {/* accent block behind */}
                   <div className="absolute -inset-3 rounded-[8px]" style={{ background: C.primary }} />
@@ -349,7 +379,7 @@ export default function CreativeCanvasTheme({
 
 
               {/* RIGHT — copy + stats ticker */}
-              <motion.div {...fadeUp} className="lg:col-span-7">
+              <motion.div {...slideRight} className="lg:col-span-7">
                 {/* big quote mark */}
                 <div className="cc-display font-extrabold leading-none mb-2" style={{ fontSize: "80px", color: C.primary }}>
                   &ldquo;
@@ -430,10 +460,13 @@ export default function CreativeCanvasTheme({
                 const accent = C.primary;
                 return (
                   <motion.article
-                    {...fadeUp}
-                    transition={{ ...fadeUp.transition, delay: i * 0.05 }}
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, margin: "-40px" }}
+                    transition={{ duration: 0.55, delay: i * 0.08, ease: [0.16, 1, 0.3, 1] }}
+                    whileHover={{ y: -6, scale: 1.02, borderColor: accent }}
                     key={s.id}
-                    className="group relative p-5 rounded-2xl border overflow-hidden transition-all hover:-translate-y-1"
+                    className="group relative p-5 rounded-2xl border overflow-hidden cursor-pointer"
                     style={{ background: "rgba(255,255,255,0.04)", borderColor: "rgba(255,255,255,0.1)" }}
                   >
                     <span className="absolute top-4 right-5 cc-display text-[10px] font-bold opacity-30">
@@ -536,9 +569,12 @@ export default function CreativeCanvasTheme({
                 return (
                   <motion.div
                     key={p.id}
-                    {...fadeUp}
-                    transition={{ ...fadeUp.transition, delay: (i % 8) * 0.04 }}
-                    className="group relative rounded-2xl overflow-hidden cursor-pointer shadow-sm hover:shadow-2xl transition-shadow"
+                    initial={{ opacity: 0, y: 40, scale: 0.95 }}
+                    whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                    viewport={{ once: true, margin: "-40px" }}
+                    transition={{ duration: 0.6, delay: (i % 8) * 0.06, ease: [0.16, 1, 0.3, 1] }}
+                    whileHover={{ y: -4, rotate: i % 2 ? 0.5 : -0.5 }}
+                    className="group relative rounded-2xl overflow-hidden cursor-pointer shadow-sm hover:shadow-2xl"
                     onClick={() => p.image_url && setLightbox(p.image_url)}
                   >
                     <div className={`relative ${heights[i % heights.length]} overflow-hidden`} style={{ background: tint }}>
@@ -574,7 +610,7 @@ export default function CreativeCanvasTheme({
       {v.skills && (
         <section id="skills" className="py-20 md:py-28">
           <div className="max-w-7xl mx-auto px-5 md:px-8 grid lg:grid-cols-2 gap-12">
-            <motion.div {...fadeUp}>
+            <motion.div {...slideLeft}>
               <div className="flex items-center gap-3 mb-4">
                 <span className="cc-display text-xs font-bold tracking-[0.4em]" style={{ color: C.muted }}>04 —</span>
                 <span className="h-px w-10" style={{ background: C.ink }} />
@@ -583,23 +619,31 @@ export default function CreativeCanvasTheme({
               <h2 className="cc-display font-extrabold text-4xl md:text-5xl mb-8">Software<br /><span className="italic font-medium" style={{ color: C.primary }}>I master daily.</span></h2>
               <div className="grid grid-cols-2 gap-0 border-l border-t" style={{ borderColor: C.ink }}>
                 {SOFTWARE.map((s, i) => (
-                  <div key={i} className="group relative flex items-center gap-3 p-4 border-r border-b transition hover:bg-[var(--cc-hover)]" style={{ borderColor: C.ink, ["--cc-hover" as any]: C.secondary }}>
+                  <motion.div
+                    key={i}
+                    initial={{ opacity: 0, scale: 0.85 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.4, delay: i * 0.05 }}
+                    whileHover={{ scale: 1.05, backgroundColor: C.secondary }}
+                    className="group relative flex items-center gap-3 p-4 border-r border-b" style={{ borderColor: C.ink }}
+                  >
                     <span className="cc-display text-[10px] font-bold absolute top-2 right-2 tracking-wider" style={{ color: C.muted }}>0{i + 1}</span>
-                    <div className="w-10 h-10 flex items-center justify-center shrink-0">
+                    <motion.div whileHover={{ rotate: [0, -10, 10, 0] }} transition={{ duration: 0.4 }} className="w-10 h-10 flex items-center justify-center shrink-0">
                       <img
                         src={`https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/${s.slug}/${s.slug}-original.svg`}
                         alt={`${s.name} logo`}
                         className="w-9 h-9 object-contain"
                         loading="lazy"
                       />
-                    </div>
+                    </motion.div>
                     <span className="font-semibold text-sm">{s.name}</span>
-                  </div>
+                  </motion.div>
                 ))}
               </div>
             </motion.div>
 
-            <motion.div {...fadeUp}>
+            <motion.div {...slideRight}>
               <div className="flex items-center gap-3 mb-4">
                 <span className="cc-display text-xs font-bold tracking-[0.4em]" style={{ color: C.muted }}>05 —</span>
                 <span className="h-px w-10" style={{ background: C.ink }} />
@@ -636,9 +680,9 @@ export default function CreativeCanvasTheme({
         <section id="contact" className="py-16 md:py-20 relative overflow-hidden">
           <div className="max-w-7xl mx-auto px-5 md:px-8">
             <motion.div
-              {...fadeUp}
+              {...scaleIn}
+              whileHover={{ y: -4 }}
               className="relative rounded-[32px] border-2 px-6 py-8 md:px-12 md:py-10 text-center overflow-hidden"
-
               style={{ borderColor: C.ink, background: C.secondary, boxShadow: `14px 14px 0 ${C.ink}` }}
             >
               {/* dotted bg */}
@@ -647,8 +691,8 @@ export default function CreativeCanvasTheme({
                 backgroundSize: "16px 16px",
               }} />
               {/* corner stickers */}
-              <div className="absolute -top-3 -left-3 w-12 h-12 rounded-full border-2 flex items-center justify-center cc-display font-extrabold rotate-[-12deg]" style={{ borderColor: C.ink, background: C.accent, color: C.ink }}>✦</div>
-              <div className="absolute -bottom-3 -right-3 px-3 py-1.5 rounded-full border-2 text-[10px] font-bold tracking-[0.25em] rotate-[6deg]" style={{ borderColor: C.ink, background: C.primary, color: C.paper }}>LET'S TALK</div>
+              <motion.div animate={{ rotate: 360 }} transition={{ duration: 20, repeat: Infinity, ease: "linear" }} className="absolute -top-3 -left-3 w-12 h-12 rounded-full border-2 flex items-center justify-center cc-display font-extrabold" style={{ borderColor: C.ink, background: C.accent, color: C.ink }}>✦</motion.div>
+              <motion.div animate={{ y: [0, -4, 0] }} transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut" }} className="absolute -bottom-3 -right-3 px-3 py-1.5 rounded-full border-2 text-[10px] font-bold tracking-[0.25em] rotate-[6deg]" style={{ borderColor: C.ink, background: C.primary, color: C.paper }}>LET'S TALK</motion.div>
 
               <div className="relative">
                 <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[10px] font-bold tracking-[0.3em] mb-5 border-2" style={{ borderColor: C.ink, background: C.paper, color: C.ink }}>

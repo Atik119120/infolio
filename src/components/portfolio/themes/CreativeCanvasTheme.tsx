@@ -106,6 +106,12 @@ export default function CreativeCanvasTheme({
   const phone = portfolio?.phone;
   const location = portfolio?.location;
   const website = portfolio?.website;
+  const marqueeWords: string[] = Array.isArray((portfolio as any)?.hero_marquee_words) && (portfolio as any).hero_marquee_words.length
+    ? (portfolio as any).hero_marquee_words
+    : DEFAULT_MARQUEE;
+  const softwareList: { name: string; slug: string }[] = Array.isArray((portfolio as any)?.theme_software) && (portfolio as any).theme_software.length
+    ? (portfolio as any).theme_software
+    : DEFAULT_SOFTWARE;
 
   const v = {
     hero: isVisible(portfolio, "hero"),

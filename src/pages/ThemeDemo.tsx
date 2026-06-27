@@ -50,6 +50,7 @@ const demoData: ThemeProps = {
   ],
   education: [
     { id: "1", institution: "University of Arts", degree: "Bachelor of Fine Arts", field_of_study: "Graphic Design", start_date: "2015-09-01", end_date: "2019-05-31", is_current: false },
+    { id: "2", institution: "Design Academy", degree: "Master of Design", field_of_study: "Visual Communication", start_date: "2019-09-01", end_date: "2021-06-30", is_current: false },
   ],
   socialLinks: [
     { id: "1", platform: "linkedin", url: "https://linkedin.com" },

@@ -282,29 +282,52 @@ export default function CreativeCanvasTheme({
               </motion.div>
             </div>
 
-            {/* Right — image with floating icons */}
-            <div className="relative h-[460px] sm:h-[520px] lg:h-[600px]">
-              {/* Decorative big yellow blob */}
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="relative w-[78%] aspect-square">
-                  <div className="absolute inset-0 rounded-[42%_58%_38%_62%/55%_45%_55%_45%] cc-spin-slow" style={{ background: `linear-gradient(135deg, ${C.secondary}, ${C.primary})` }} />
-                  <div className="absolute inset-3 rounded-[40%_60%_40%_60%/50%_50%_50%_50%] overflow-hidden border-4 border-black">
-                    {heroImg ? (
-                      <img src={heroImg} alt={name} className="w-full h-full object-cover" />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center cc-display text-7xl font-bold text-white" style={{ background: C.ink }}>{name.charAt(0)}</div>
-                    )}
-                  </div>
+            {/* Right — magazine cutout portrait */}
+            <div className="relative h-[480px] sm:h-[540px] lg:h-[620px]">
+              {/* halftone dot field */}
+              <div className="absolute inset-6 rounded-3xl" style={{
+                backgroundImage: `radial-gradient(${C.ink} 1.4px, transparent 1.6px)`,
+                backgroundSize: "14px 14px",
+                opacity: 0.18,
+              }} />
+              {/* color block behind */}
+              <div className="absolute right-6 top-10 bottom-16 left-20 rounded-[28px]" style={{ background: C.primary, transform: "rotate(2.5deg)" }} />
+              <div className="absolute right-20 top-16 bottom-10 left-6 rounded-[28px] border-2" style={{ borderColor: C.ink, background: C.secondary, transform: "rotate(-2deg)" }} />
+
+              {/* Portrait card */}
+              <div className="absolute inset-10 sm:inset-12 rounded-[28px] overflow-hidden border-2 bg-white" style={{ borderColor: C.ink, boxShadow: `14px 14px 0 ${C.ink}` }}>
+                {heroImg ? (
+                  <img src={heroImg} alt={name} className="w-full h-full object-cover" />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center cc-display text-8xl font-extrabold text-white" style={{ background: C.ink }}>{name.charAt(0)}</div>
+                )}
+                {/* corner index ticker */}
+                <div className="absolute top-3 left-3 px-2 py-1 text-[10px] font-bold tracking-[0.25em]" style={{ background: C.paper, color: C.ink, border: `1.5px solid ${C.ink}` }}>
+                  N° 001 / PORTRAIT
+                </div>
+                {/* bottom caption strip */}
+                <div className="absolute bottom-0 left-0 right-0 flex items-center justify-between px-4 py-2 text-[10px] font-bold tracking-[0.2em]" style={{ background: C.ink, color: C.paper }}>
+                  <span>EST. STUDIO</span>
+                  <span className="flex gap-1">
+                    <span className="w-2 h-2 rounded-full" style={{ background: C.primary }} />
+                    <span className="w-2 h-2 rounded-full" style={{ background: C.secondary }} />
+                    <span className="w-2 h-2 rounded-full" style={{ background: C.accent }} />
+                  </span>
+                  <span>{new Date().getFullYear()}</span>
                 </div>
               </div>
 
-
-              {/* Sticker badge */}
-              <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 px-4 py-2 rounded-full text-xs font-bold cc-display rotate-[-6deg] shadow-md" style={{ background: C.paper, border: `2px solid ${C.ink}` }}>
-                ✦ Design Studio ✦
+              {/* floating sticker */}
+              <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 px-4 py-2 rounded-full text-xs font-bold cc-display rotate-[-6deg] shadow-md z-10" style={{ background: C.accent, border: `2px solid ${C.ink}` }}>
+                ✦ Open for Work ✦
+              </div>
+              {/* sparkle dot */}
+              <div className="absolute -top-2 -right-2 w-14 h-14 rounded-full flex items-center justify-center cc-display font-extrabold text-xl rotate-12" style={{ background: C.ink, color: C.secondary }}>
+                ✦
               </div>
             </div>
           </div>
+
 
           {/* Marquee — tilted ribbon */}
           <div className="relative mt-16 -mx-10">
@@ -416,32 +439,54 @@ export default function CreativeCanvasTheme({
       {v.projects && projects.length > 0 && (
         <section id="work" className="py-20 md:py-28">
           <div className="max-w-7xl mx-auto px-5 md:px-8">
-            <motion.div {...fadeUp} className="flex items-end justify-between flex-wrap gap-6 mb-10">
-              <div>
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold mb-4" style={{ background: C.accent }}>
-                  SELECTED WORK
+            <motion.div {...fadeUp} className="mb-10">
+              <div className="flex items-end justify-between flex-wrap gap-6">
+                <div>
+                  <div className="flex items-center gap-3 mb-4">
+                    <span className="cc-display text-xs font-bold tracking-[0.4em]" style={{ color: C.muted }}>03 —</span>
+                    <span className="h-px w-12" style={{ background: C.ink }} />
+                    <span className="text-[10px] font-bold tracking-[0.3em]" style={{ color: C.ink }}>SELECTED WORK</span>
+                  </div>
+                  <h2 className="cc-display font-extrabold text-4xl md:text-6xl leading-[0.95]">
+                    Recent<br /><span style={{ color: C.primary }} className="italic font-medium">case studies</span><span style={{ color: C.accent }}>.</span>
+                  </h2>
                 </div>
-                <h2 className="cc-display font-extrabold text-4xl md:text-6xl leading-[0.95]">
-                  Recent<br /><span style={{ color: C.primary }} className="italic font-medium">case studies</span>.
-                </h2>
+                <div className="text-right">
+                  <div className="cc-display text-5xl md:text-6xl font-extrabold leading-none" style={{ color: C.primary }}>
+                    {String(filteredProjects.length).padStart(2, "0")}
+                  </div>
+                  <div className="text-[10px] font-bold tracking-[0.3em] mt-1" style={{ color: C.muted }}>PROJECTS SHOWN</div>
+                </div>
               </div>
-              <div className="flex flex-wrap gap-2 cc-btn">
-                {categories.map(c => (
-                  <button
-                    key={c}
-                    onClick={() => setFilter(c)}
-                    className="px-4 py-2 rounded-full text-sm font-semibold border-2 transition"
-                    style={{
-                      background: filter === c ? C.ink : C.paper,
-                      color: filter === c ? C.paper : C.ink,
-                      borderColor: C.ink,
-                    }}
-                  >
-                    {c}
-                  </button>
-                ))}
+
+              {/* Underline filter tabs */}
+              <div className="mt-8 flex flex-wrap gap-x-7 gap-y-2 cc-btn border-t border-b py-3" style={{ borderColor: C.ink }}>
+                {categories.map(c => {
+                  const isActive = filter === c;
+                  return (
+                    <button
+                      key={c}
+                      onClick={() => setFilter(c)}
+                      className="relative text-sm font-semibold transition group"
+                      style={{ color: isActive ? C.ink : C.muted }}
+                    >
+                      <span className="cc-display text-[10px] font-bold mr-1.5 tracking-wider" style={{ color: isActive ? C.primary : C.muted }}>
+                        {isActive ? "●" : "○"}
+                      </span>
+                      {c}
+                      {isActive && (
+                        <motion.span
+                          layoutId="cc-filter-underline"
+                          className="absolute -bottom-3 left-0 right-0 h-[3px]"
+                          style={{ background: C.primary }}
+                        />
+                      )}
+                    </button>
+                  );
+                })}
               </div>
             </motion.div>
+
 
             <div className="columns-2 md:columns-3 lg:columns-4 gap-3 md:gap-4 [&>*]:mb-3 md:[&>*]:mb-4 [&>*]:break-inside-avoid">
               {filteredProjects.map((p, i) => {
@@ -489,50 +534,75 @@ export default function CreativeCanvasTheme({
         <section id="skills" className="py-20 md:py-28">
           <div className="max-w-7xl mx-auto px-5 md:px-8 grid lg:grid-cols-2 gap-12">
             <motion.div {...fadeUp}>
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold mb-4" style={{ background: C.secondary }}>TOOLBOX</div>
-              <h2 className="cc-display font-extrabold text-4xl md:text-5xl mb-8">Software<br />I master daily.</h2>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="flex items-center gap-3 mb-4">
+                <span className="cc-display text-xs font-bold tracking-[0.4em]" style={{ color: C.muted }}>04 —</span>
+                <span className="h-px w-10" style={{ background: C.ink }} />
+                <span className="text-[10px] font-bold tracking-[0.3em]">TOOLBOX</span>
+              </div>
+              <h2 className="cc-display font-extrabold text-4xl md:text-5xl mb-8">Software<br /><span className="italic font-medium" style={{ color: C.primary }}>I master daily.</span></h2>
+              <div className="grid grid-cols-2 gap-0 border-l border-t" style={{ borderColor: C.ink }}>
                 {SOFTWARE.map((s, i) => (
-                  <div key={i} className="flex items-center gap-3 p-4 rounded-2xl border-2 hover:-translate-y-1 transition" style={{ borderColor: C.ink, background: C.paper }}>
-                    <div className="w-11 h-11 rounded-xl flex items-center justify-center shrink-0" style={{ background: "#f7f7f7" }}>
+                  <div key={i} className="group relative flex items-center gap-3 p-4 border-r border-b transition hover:bg-[var(--cc-hover)]" style={{ borderColor: C.ink, ["--cc-hover" as any]: C.secondary }}>
+                    <span className="cc-display text-[10px] font-bold absolute top-2 right-2 tracking-wider" style={{ color: C.muted }}>0{i + 1}</span>
+                    <div className="w-10 h-10 flex items-center justify-center shrink-0">
                       <img
                         src={`https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/${s.slug}/${s.slug}-original.svg`}
                         alt={`${s.name} logo`}
-                        className="w-8 h-8 object-contain"
+                        className="w-9 h-9 object-contain"
                         loading="lazy"
                       />
                     </div>
-                    <span className="font-semibold">{s.name}</span>
+                    <span className="font-semibold text-sm">{s.name}</span>
                   </div>
                 ))}
               </div>
             </motion.div>
 
             <motion.div {...fadeUp}>
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold mb-4" style={{ background: C.accent }}>EXPERTISE</div>
-              <h2 className="cc-display font-extrabold text-4xl md:text-5xl mb-8">Skills built<br />over the years.</h2>
-              <div className="space-y-4">
-                {(skills.length ? skills.slice(0, 6).map(s => ({ name: s.name, level: s.proficiency || 85 })) : PRO_SKILLS.map((n, i) => ({ name: n, level: 95 - i * 5 }))).map((s, i) => (
-                  <div key={i}>
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="font-semibold">{s.name}</span>
-                      <span className="cc-display font-bold" style={{ color: C.primary }}>{s.level}%</span>
+              <div className="flex items-center gap-3 mb-4">
+                <span className="cc-display text-xs font-bold tracking-[0.4em]" style={{ color: C.muted }}>05 —</span>
+                <span className="h-px w-10" style={{ background: C.ink }} />
+                <span className="text-[10px] font-bold tracking-[0.3em]">EXPERTISE</span>
+              </div>
+              <h2 className="cc-display font-extrabold text-4xl md:text-5xl mb-8">Skills built<br /><span className="italic font-medium" style={{ color: C.accent }}>over the years.</span></h2>
+              <div className="space-y-5">
+                {(skills.length ? skills.slice(0, 6).map(s => ({ name: s.name, level: s.proficiency || 85 })) : PRO_SKILLS.map((n, i) => ({ name: n, level: 95 - i * 5 }))).map((s, i) => {
+                  const segments = 14;
+                  const filled = Math.round((s.level / 100) * segments);
+                  return (
+                    <div key={i}>
+                      <div className="flex items-baseline justify-between mb-2">
+                        <span className="font-semibold flex items-center gap-2">
+                          <span className="cc-display text-[10px] font-bold tracking-wider" style={{ color: C.muted }}>0{i + 1}</span>
+                          {s.name}
+                        </span>
+                        <span className="cc-display font-extrabold text-lg" style={{ color: C.ink }}>
+                          {s.level}<span style={{ color: C.primary }}>/</span><span className="text-sm" style={{ color: C.muted }}>100</span>
+                        </span>
+                      </div>
+                      <div className="flex gap-1">
+                        {Array.from({ length: segments }).map((_, k) => (
+                          <motion.span
+                            key={k}
+                            initial={{ scaleY: 0.3, opacity: 0.3 }}
+                            whileInView={{ scaleY: 1, opacity: 1 }}
+                            viewport={{ once: true }}
+                            transition={{ delay: i * 0.04 + k * 0.025, duration: 0.3 }}
+                            className="flex-1 h-5 rounded-sm origin-bottom"
+                            style={{
+                              background: k < filled ? (k === filled - 1 ? C.ink : C.primary) : "transparent",
+                              border: k < filled ? "none" : `1.5px solid ${C.border}`,
+                            }}
+                          />
+                        ))}
+                      </div>
                     </div>
-                    <div className="h-2.5 rounded-full overflow-hidden" style={{ background: C.border }}>
-                      <motion.div
-                        initial={{ width: 0 }}
-                        whileInView={{ width: `${s.level}%` }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 1.2, ease: "easeOut", delay: i * 0.05 }}
-                        className="h-full rounded-full"
-                        style={{ background: `linear-gradient(90deg, ${C.primary}, ${C.secondary})` }}
-                      />
-                    </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </motion.div>
           </div>
+
         </section>
       )}
 
@@ -569,114 +639,87 @@ export default function CreativeCanvasTheme({
         </section>
       )}
 
-      {/* CONTACT — postcard collage */}
+      {/* CONTACT — minimal directory */}
       {v.contact && (
-        <section id="contact" className="py-20 md:py-28 relative overflow-hidden">
-          <div className="absolute inset-0 pointer-events-none" style={{
-            backgroundImage: `radial-gradient(${C.ink}22 1px, transparent 1px)`,
-            backgroundSize: "22px 22px",
-            maskImage: "radial-gradient(ellipse at center, black 40%, transparent 75%)",
-          }} />
-          <div className="relative max-w-6xl mx-auto px-5 md:px-8">
-            <motion.div {...fadeUp} className="text-center mb-14">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold mb-4" style={{ background: C.primary, color: C.paper }}>// SAY HI</div>
-              <h2 className="cc-display font-extrabold text-5xl md:text-7xl leading-[0.9]">
-                Slide into my<br />
-                <span className="italic font-medium" style={{ color: C.primary }}>inbox</span>
-                <span style={{ color: C.accent }}>.</span>
-              </h2>
+        <section id="contact" className="py-24 md:py-32 relative overflow-hidden">
+          <div className="max-w-5xl mx-auto px-5 md:px-8">
+            {/* Index header */}
+            <motion.div {...fadeUp} className="flex items-center gap-3 mb-10">
+              <span className="cc-display text-xs font-bold tracking-[0.4em]" style={{ color: C.muted }}>07 —</span>
+              <span className="h-px flex-1" style={{ background: C.ink }} />
+              <span className="text-[10px] font-bold tracking-[0.3em]">CONTACT · INDEX</span>
             </motion.div>
 
-            <div className="grid md:grid-cols-12 gap-6 items-start">
-              {/* Big postcard with email */}
-              {email && (
-                <motion.a
-                  {...fadeUp}
-                  href={`mailto:${email}`}
-                  className="md:col-span-7 group block relative p-8 md:p-10 border-2 rounded-[28px] overflow-hidden"
-                  style={{ borderColor: C.ink, background: C.secondary, boxShadow: `10px 10px 0 ${C.ink}`, transform: "rotate(-1.2deg)" }}
-                >
-                  <div className="absolute top-4 right-4 flex gap-1.5">
-                    {[C.primary, C.accent, C.ink].map((c, i) => <span key={i} className="w-3 h-3 rounded-full" style={{ background: c }} />)}
-                  </div>
-                  <div className="text-[10px] font-bold tracking-[0.3em] mb-3" style={{ color: C.ink }}>POSTCARD · DROP A LINE</div>
-                  <div className="flex items-end gap-3 flex-wrap">
-                    <Mail size={36} style={{ color: C.ink }} />
-                    <div className="cc-display font-extrabold text-2xl md:text-4xl break-all leading-none" style={{ color: C.ink }}>{email}</div>
-                  </div>
-                  <div className="mt-6 flex items-center gap-2 text-sm font-bold" style={{ color: C.ink }}>
-                    <span>Write me</span>
-                    <ArrowUpRight size={18} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition" />
-                  </div>
-                </motion.a>
-              )}
+            {/* Huge email — the only loud thing */}
+            {email && (
+              <motion.a
+                {...fadeUp}
+                href={`mailto:${email}`}
+                className="group block mb-16 md:mb-24"
+              >
+                <div className="cc-display font-extrabold leading-[0.95] tracking-tight break-all text-[clamp(2.2rem,8vw,6.5rem)]">
+                  <span className="italic font-medium" style={{ color: C.primary }}>→</span>{" "}
+                  <span className="underline decoration-2 underline-offset-[10px] decoration-transparent group-hover:decoration-[currentColor] transition-all duration-500">
+                    {email}
+                  </span>
+                </div>
+                <div className="mt-4 flex items-center gap-3 text-[10px] font-bold tracking-[0.3em]" style={{ color: C.muted }}>
+                  <span className="w-2 h-2 rounded-full animate-pulse" style={{ background: C.primary }} />
+                  AVAILABLE FOR PROJECTS · {new Date().toLocaleString("en-US", { month: "short", year: "numeric" }).toUpperCase()}
+                </div>
+              </motion.a>
+            )}
 
-              {/* Stamp / phone */}
+            {/* Directory rows */}
+            <div className="border-t" style={{ borderColor: C.ink }}>
               {phone && (
-                <motion.a
-                  {...fadeUp}
-                  href={`tel:${phone}`}
-                  className="md:col-span-5 group block relative p-7 border-2 rounded-[28px]"
-                  style={{ borderColor: C.ink, background: C.paper, boxShadow: `8px 8px 0 ${C.primary}`, transform: "rotate(1.5deg)" }}
-                >
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="text-[10px] font-bold tracking-[0.3em]" style={{ color: C.muted }}>RING RING</div>
-                    <div className="w-10 h-10 rounded-full border-2 flex items-center justify-center" style={{ borderColor: C.ink, background: C.accent }}>
-                      <Phone size={16} style={{ color: C.ink }} />
-                    </div>
+                <motion.a {...fadeUp} href={`tel:${phone}`} className="group flex items-center justify-between gap-6 py-5 border-b transition hover:pl-4" style={{ borderColor: C.ink }}>
+                  <div className="flex items-center gap-6 min-w-0">
+                    <span className="cc-display text-xs font-bold tracking-[0.3em] w-16 shrink-0" style={{ color: C.muted }}>/ TEL</span>
+                    <span className="cc-display text-xl md:text-2xl font-extrabold truncate">{phone}</span>
                   </div>
-                  <div className="cc-display font-extrabold text-2xl md:text-3xl leading-none">{phone}</div>
-                  <div className="mt-5 text-xs font-bold" style={{ color: C.muted }}>Tap to call →</div>
+                  <ArrowUpRight size={22} className="shrink-0 transition group-hover:rotate-45" />
                 </motion.a>
               )}
-
-              {/* Location ticket */}
               {location && (
-                <motion.div
-                  {...fadeUp}
-                  className="md:col-span-5 relative p-7 border-2 rounded-[28px]"
-                  style={{ borderColor: C.ink, background: C.primary, color: C.paper, boxShadow: `8px 8px 0 ${C.ink}`, transform: "rotate(-2deg)" }}
-                >
-                  <div className="absolute -left-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full border-2" style={{ borderColor: C.ink, background: C.paper }} />
-                  <div className="absolute -right-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full border-2" style={{ borderColor: C.ink, background: C.paper }} />
-                  <div className="text-[10px] font-bold tracking-[0.3em] opacity-80 mb-3">BASED IN</div>
-                  <div className="flex items-center gap-3">
-                    <MapPin size={28} />
-                    <div className="cc-display font-extrabold text-2xl md:text-3xl leading-none">{location}</div>
+                <motion.div {...fadeUp} className="flex items-center justify-between gap-6 py-5 border-b" style={{ borderColor: C.ink }}>
+                  <div className="flex items-center gap-6 min-w-0">
+                    <span className="cc-display text-xs font-bold tracking-[0.3em] w-16 shrink-0" style={{ color: C.muted }}>/ LOC</span>
+                    <span className="cc-display text-xl md:text-2xl font-extrabold truncate">{location}</span>
                   </div>
-                  <div className="mt-5 text-xs font-bold opacity-80">Working worldwide · Remote friendly</div>
+                  <span className="text-[10px] font-bold tracking-[0.3em] shrink-0" style={{ color: C.muted }}>WORLDWIDE</span>
                 </motion.div>
               )}
-
-              {/* Sticker / socials */}
               {socialLinks.length > 0 && (
-                <motion.div
-                  {...fadeUp}
-                  className="md:col-span-7 relative p-7 border-2 rounded-[28px]"
-                  style={{ borderColor: C.ink, background: C.ink, color: C.paper, boxShadow: `8px 8px 0 ${C.accent}`, transform: "rotate(1deg)" }}
-                >
-                  <div className="text-[10px] font-bold tracking-[0.3em] opacity-70 mb-4">/ ELSEWHERE ON THE INTERNET</div>
-                  <div className="flex flex-wrap gap-3">
-                    {socialLinks.map((l, i) => {
-                      const Icon = getSocialIcon(l.platform);
-                      const bg = [C.primary, C.secondary, C.accent][i % 3];
-                      return (
-                        <a key={l.id} href={l.url} target="_blank" rel="noreferrer"
-                          className="group flex items-center gap-2 px-4 py-2.5 rounded-full border-2 hover:-translate-y-1 transition"
-                          style={{ borderColor: C.paper, background: bg, color: C.ink }}>
-                          <Icon size={16} />
-                          <span className="text-sm font-bold capitalize">{l.platform}</span>
-                          <ArrowUpRight size={14} className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition" />
-                        </a>
-                      );
-                    })}
+                <motion.div {...fadeUp} className="flex items-center justify-between gap-6 py-5 border-b flex-wrap" style={{ borderColor: C.ink }}>
+                  <span className="cc-display text-xs font-bold tracking-[0.3em] w-16 shrink-0" style={{ color: C.muted }}>/ NET</span>
+                  <div className="flex flex-wrap gap-x-6 gap-y-2 flex-1">
+                    {socialLinks.map(l => (
+                      <a key={l.id} href={l.url} target="_blank" rel="noreferrer"
+                        className="group cc-display text-xl md:text-2xl font-extrabold capitalize flex items-center gap-1 transition"
+                        style={{ color: C.ink }}>
+                        <span className="group-hover:italic group-hover:text-[color:var(--cc-p)] transition" style={{ ["--cc-p" as any]: C.primary }}>{l.platform}</span>
+                        <span className="text-base opacity-40 group-hover:opacity-100 group-hover:-translate-y-0.5 transition">↗</span>
+                      </a>
+                    ))}
                   </div>
                 </motion.div>
               )}
             </div>
+
+            {/* tiny sign-off */}
+            <motion.div {...fadeUp} className="mt-10 flex items-center justify-between text-[10px] font-bold tracking-[0.3em]" style={{ color: C.muted }}>
+              <span>— END OF INDEX</span>
+              <span className="flex gap-1.5 items-center">
+                <span className="w-1.5 h-1.5 rounded-full" style={{ background: C.primary }} />
+                <span className="w-1.5 h-1.5 rounded-full" style={{ background: C.secondary }} />
+                <span className="w-1.5 h-1.5 rounded-full" style={{ background: C.accent }} />
+              </span>
+            </motion.div>
           </div>
         </section>
       )}
+
 
       {/* FOOTER */}
       <footer className="relative pt-20 pb-10 overflow-hidden" style={{ background: C.ink, color: C.paper }}>

@@ -425,7 +425,7 @@ export default function CreativeCanvasTheme({
 
       {/* SERVICES */}
       {v.services && services.length > 0 && (
-        <section id="services" className="py-14 md:py-20 relative" style={{ background: C.ink, color: C.paper }}>
+        <section id="services" className="py-10 md:py-14 relative" style={{ background: C.ink, color: C.paper }}>
           <div className="max-w-7xl mx-auto px-5 md:px-8">
             <motion.div {...fadeUp} className="mb-10 relative rounded-[10px] border-2 p-6 md:p-8 overflow-hidden" style={{ borderColor: C.primary, background: "rgba(255,255,255,0.02)" }}>
               {/* corner ticks */}

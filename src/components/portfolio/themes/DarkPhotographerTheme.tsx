@@ -4,6 +4,7 @@ import { ThemeProps } from "./types";
 import { ContactForm } from "@/components/portfolio/ContactForm";
 import { getSocialIcon } from "./utils";
 import { isVisible } from "@/lib/sectionVisibility";
+import InteractiveBentoGallery from "@/components/ui/interactive-bento-gallery";
 
 /**
  * Dark Photographer — Pitch-black moody theme with scramble text + circular gallery.

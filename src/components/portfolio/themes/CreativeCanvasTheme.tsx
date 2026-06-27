@@ -317,22 +317,36 @@ export default function CreativeCanvasTheme({
             </motion.div>
 
             <div className="grid lg:grid-cols-12 gap-10 lg:gap-14 items-start">
-              {/* LEFT — polaroid stack */}
+              {/* LEFT — editorial frame */}
               <motion.div {...fadeUp} className="lg:col-span-5 relative">
                 <div className="relative mx-auto max-w-sm">
-                  {/* back card */}
-                  <div className="absolute inset-0 translate-x-4 translate-y-4 rounded-[28px] border-2 rotate-[4deg]" style={{ borderColor: C.ink, background: C.secondary }} />
-                  {/* main polaroid */}
-                  <div className="relative rounded-[28px] border-2 p-3 pb-16 rotate-[-3deg]" style={{ borderColor: C.ink, background: C.paper, boxShadow: `10px 10px 0 ${C.ink}` }}>
-                    <div className="relative aspect-[4/5] rounded-[18px] overflow-hidden">
-                      {aboutImg ? <img src={aboutImg} alt="About" className="w-full h-full object-cover" /> : <div className="w-full h-full" style={{ background: C.secondary }} />}
+                  {/* accent block behind */}
+                  <div className="absolute -inset-3 rounded-[8px]" style={{ background: C.primary }} />
+                  <div className="absolute -bottom-3 -right-3 w-24 h-24 rounded-full border-2" style={{ borderColor: C.ink, background: C.accent }} />
+                  {/* main frame */}
+                  <div className="relative rounded-[8px] border-2 overflow-hidden" style={{ borderColor: C.ink, background: C.paper, boxShadow: `8px 8px 0 ${C.ink}` }}>
+                    {/* top meta strip */}
+                    <div className="flex items-center justify-between px-4 py-2 border-b-2" style={{ borderColor: C.ink, background: C.paper }}>
+                      <span className="text-[10px] font-bold tracking-[0.25em] uppercase" style={{ color: C.ink }}>Portrait / 01</span>
+                      <span className="text-[10px] font-bold tracking-[0.25em] uppercase opacity-60" style={{ color: C.ink }}>NO. 026</span>
                     </div>
-                    <div className="absolute bottom-4 left-0 right-0 text-center cc-display font-bold text-sm tracking-wide" style={{ color: C.ink }}>
-                      — {name.split(" ")[0]}, in the studio —
+                    <div className="relative aspect-[4/5] overflow-hidden">
+                      {aboutImg ? <img src={aboutImg} alt="About" className="w-full h-full object-cover grayscale hover:grayscale-0 transition duration-700" /> : <div className="w-full h-full" style={{ background: C.secondary }} />}
+                      {/* corner ticks */}
+                      <span className="absolute top-2 left-2 w-4 h-4 border-t-2 border-l-2" style={{ borderColor: C.paper }} />
+                      <span className="absolute top-2 right-2 w-4 h-4 border-t-2 border-r-2" style={{ borderColor: C.paper }} />
+                      <span className="absolute bottom-2 left-2 w-4 h-4 border-b-2 border-l-2" style={{ borderColor: C.paper }} />
+                      <span className="absolute bottom-2 right-2 w-4 h-4 border-b-2 border-r-2" style={{ borderColor: C.paper }} />
+                    </div>
+                    {/* bottom caption strip */}
+                    <div className="px-4 py-3 border-t-2 flex items-center justify-between" style={{ borderColor: C.ink, background: C.paper }}>
+                      <div className="cc-display italic text-base font-bold" style={{ color: C.ink }}>{name.split(" ")[0]}.</div>
+                      <div className="text-[10px] font-bold tracking-[0.2em] uppercase opacity-70" style={{ color: C.ink }}>in the studio</div>
                     </div>
                   </div>
                 </div>
               </motion.div>
+
 
               {/* RIGHT — copy + stats ticker */}
               <motion.div {...fadeUp} className="lg:col-span-7">

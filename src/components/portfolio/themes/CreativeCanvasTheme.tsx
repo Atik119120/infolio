@@ -302,45 +302,86 @@ export default function CreativeCanvasTheme({
 
       {/* ABOUT */}
       {v.about && (
-        <section id="about" className="py-20 md:py-28 relative">
-          <div className="max-w-7xl mx-auto px-5 md:px-8 grid lg:grid-cols-12 gap-10 items-center">
-            <motion.div {...fadeUp} className="lg:col-span-5 relative">
-              <div className="relative aspect-[4/5] rounded-[28px] overflow-hidden border-4 border-black">
-                {aboutImg ? <img src={aboutImg} alt="About" className="w-full h-full object-cover" /> : <div className="w-full h-full" style={{ background: C.secondary }} />}
-              </div>
-              <div className="absolute -bottom-5 -left-5 px-4 py-3 rounded-2xl cc-display font-bold rotate-[-4deg]" style={{ background: C.accent, border: `2px solid ${C.ink}` }}>
-                Let's create<br />something great!
-              </div>
+        <section id="about" className="py-20 md:py-28 relative overflow-hidden" style={{ background: C.paper }}>
+          {/* huge background word */}
+          <div aria-hidden className="pointer-events-none absolute inset-x-0 top-6 text-center cc-display font-extrabold tracking-tighter select-none" style={{ fontSize: "clamp(120px, 22vw, 320px)", color: C.ink, opacity: 0.04, lineHeight: 0.9 }}>
+            ABOUT
+          </div>
+
+          <div className="max-w-7xl mx-auto px-5 md:px-8 relative">
+            {/* section marker */}
+            <motion.div {...fadeUp} className="flex items-center gap-3 mb-10">
+              <span className="cc-display text-xs font-bold opacity-50">02 —</span>
+              <span className="h-px w-10" style={{ background: C.ink, opacity: 0.3 }} />
+              <span className="text-[10px] font-extrabold tracking-[0.3em]">ABOUT ME</span>
             </motion.div>
 
-            <motion.div {...fadeUp} className="lg:col-span-7">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold mb-4" style={{ background: C.secondary }}>
-                ABOUT ME
-              </div>
-              <h2 className="cc-display font-extrabold text-4xl md:text-5xl leading-tight mb-5">
-                Designing with <span style={{ color: C.primary }}>heart</span>, building with <span style={{ color: C.accent }}>craft</span>.
-              </h2>
-              <p className="text-base md:text-lg mb-8" style={{ color: C.muted }}>{aboutText}</p>
-
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-                {stats.map((s, i) => (
-                  <div key={i} className="p-4 rounded-2xl border-2 hover:-translate-y-1 transition" style={{ borderColor: C.ink, background: i % 2 ? C.secondary : C.paper }}>
-                    <s.icon size={20} className="mb-2" />
-                    <div className="cc-display text-3xl font-extrabold">{s.value}</div>
-                    <div className="text-xs font-semibold uppercase tracking-wider" style={{ color: C.muted }}>{s.label}</div>
+            <div className="grid lg:grid-cols-12 gap-10 lg:gap-14 items-start">
+              {/* LEFT — polaroid stack */}
+              <motion.div {...fadeUp} className="lg:col-span-5 relative">
+                <div className="relative mx-auto max-w-sm">
+                  {/* back card */}
+                  <div className="absolute inset-0 translate-x-4 translate-y-4 rounded-[28px] border-2 rotate-[4deg]" style={{ borderColor: C.ink, background: C.secondary }} />
+                  {/* main polaroid */}
+                  <div className="relative rounded-[28px] border-2 p-3 pb-16 rotate-[-3deg]" style={{ borderColor: C.ink, background: C.paper, boxShadow: `10px 10px 0 ${C.ink}` }}>
+                    <div className="relative aspect-[4/5] rounded-[18px] overflow-hidden">
+                      {aboutImg ? <img src={aboutImg} alt="About" className="w-full h-full object-cover" /> : <div className="w-full h-full" style={{ background: C.secondary }} />}
+                    </div>
+                    <div className="absolute bottom-4 left-0 right-0 text-center cc-display font-bold text-sm tracking-wide" style={{ color: C.ink }}>
+                      — {profile?.full_name?.split(" ")[0] || "me"}, in the studio —
+                    </div>
                   </div>
-                ))}
-              </div>
+                  {/* sticker badge */}
+                  <div className="absolute -top-4 -right-2 w-20 h-20 rounded-full border-2 flex items-center justify-center rotate-[12deg] cc-display text-[10px] font-extrabold text-center leading-tight" style={{ borderColor: C.ink, background: C.accent }}>
+                    OPEN<br />FOR<br />WORK
+                  </div>
+                </div>
+              </motion.div>
 
-              {website && (
-                <a href={website} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 px-6 py-3 rounded-full cc-btn font-semibold text-white" style={{ background: C.ink }}>
-                  <Download size={16} /> Download CV
-                </a>
-              )}
-            </motion.div>
+              {/* RIGHT — copy + stats ticker */}
+              <motion.div {...fadeUp} className="lg:col-span-7">
+                {/* big quote mark */}
+                <div className="cc-display font-extrabold leading-none mb-2" style={{ fontSize: "80px", color: C.primary }}>
+                  &ldquo;
+                </div>
+                <h2 className="cc-display font-extrabold text-3xl md:text-5xl leading-[1.05] mb-6 -mt-4">
+                  Designing with <span style={{ color: C.primary }}>heart</span>,<br />
+                  building with <span className="italic" style={{ color: C.accent }}>craft.</span>
+                </h2>
+                <p className="text-base md:text-lg mb-8 max-w-xl" style={{ color: C.muted }}>{aboutText}</p>
+
+                {/* stats — horizontal divider strip */}
+                <div className="grid grid-cols-2 md:grid-cols-4 border-y-2 divide-x-2 mb-8" style={{ borderColor: C.ink, ['--tw-divide-opacity' as any]: 1 }}>
+                  {stats.map((s, i) => (
+                    <div key={i} className="py-5 px-3 group hover:bg-black hover:text-white transition" style={{ borderColor: C.ink }}>
+                      <div className="flex items-center gap-2 mb-2">
+                        <s.icon size={14} className="opacity-60" />
+                        <span className="text-[10px] font-bold tracking-[0.2em] opacity-60">{String(i + 1).padStart(2, "0")}</span>
+                      </div>
+                      <div className="cc-display text-3xl md:text-4xl font-extrabold leading-none">{s.value}</div>
+                      <div className="text-[11px] font-semibold uppercase tracking-wider mt-1.5 opacity-70">{s.label}</div>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="flex items-center gap-4 flex-wrap">
+                  {website && (
+                    <a href={website} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 px-6 py-3 rounded-full cc-btn font-semibold text-white" style={{ background: C.ink }}>
+                      <Download size={16} /> Download CV
+                    </a>
+                  )}
+                  {/* signature */}
+                  <div className="cc-display italic text-2xl md:text-3xl font-bold" style={{ color: C.ink }}>
+                    {profile?.full_name || "—"}
+                    <span style={{ color: C.primary }}>.</span>
+                  </div>
+                </div>
+              </motion.div>
+            </div>
           </div>
         </section>
       )}
+
 
       {/* SERVICES */}
       {v.services && services.length > 0 && (

@@ -317,9 +317,11 @@ export default function PortfolioEdit() {
       case "about":
         return <BasicInfoForm profile={profile} portfolio={portfolio} userId={user?.id || ""} onUpdate={handleUpdate} onSuccess={showSuccess} onError={showError} />;
       case "hero":
-        return activeTheme === "custom-code"
-          ? <CustomCodeForm portfolio={portfolio as any} userId={user?.id || ""} onUpdate={handleUpdate} />
-          : <CustomizationForm portfolio={portfolio as any} userId={user?.id || ""} enabledFields={themeConfig.customizeFields} scope="hero" onUpdate={handleUpdate} onSuccess={showSuccess} onError={showError} />;
+        if (activeTheme === "custom-code")
+          return <CustomCodeForm portfolio={portfolio as any} userId={user?.id || ""} onUpdate={handleUpdate} />;
+        if (activeTheme === "dark-photographer")
+          return <HeroSlideshowForm portfolio={portfolio as any} userId={user?.id || ""} onUpdate={handleUpdate} onSuccess={showSuccess} onError={showError} />;
+        return <CustomizationForm portfolio={portfolio as any} userId={user?.id || ""} enabledFields={themeConfig.customizeFields} scope="hero" onUpdate={handleUpdate} onSuccess={showSuccess} onError={showError} />;
       case "footer":
         return <CustomizationForm portfolio={portfolio as any} userId={user?.id || ""} enabledFields={themeConfig.customizeFields} scope="footer" onUpdate={handleUpdate} onSuccess={showSuccess} onError={showError} />;
       case "header":
@@ -329,6 +331,8 @@ export default function PortfolioEdit() {
       case "skills":
         return <SkillsForm skills={skills} userId={user?.id || ""} onUpdate={handleUpdate} onSuccess={showSuccess} onError={showError} />;
       case "services":
+        if (activeTheme === "dark-photographer")
+          return <PhotographyPackagesForm services={services} userId={user?.id || ""} onUpdate={handleUpdate} onSuccess={showSuccess} onError={showError} />;
         return <ServicesForm services={services} userId={user?.id || ""} onUpdate={handleUpdate} onSuccess={showSuccess} onError={showError} />;
       case "projects":
         return <ProjectsForm projects={projects} userId={user?.id || ""} onUpdate={handleUpdate} onSuccess={showSuccess} onError={showError} />;

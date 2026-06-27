@@ -62,8 +62,6 @@ const demoData: ThemeProps = {
     { id: "s2", title: "Brand Identity", description: "Full visual systems — color, type, guidelines and brand collateral that scale across every touchpoint.", icon: "sparkles", price: "From $800" },
     { id: "s3", title: "Motion Design", description: "Animated logos, intros, and social motion graphics that bring your brand to life on screen.", icon: "zap", price: "From $400" },
     { id: "s4", title: "Packaging Design", description: "Shelf-ready product packaging — labels, boxes and dielines that pop in print and pixel.", icon: "box", price: "From $600" },
-    { id: "s5", title: "Social Media Kit", description: "Templates, post sets, and ad creatives engineered for thumb-stopping engagement.", icon: "instagram", price: "From $300" },
-    { id: "s6", title: "Print & Editorial", description: "Posters, magazines, brochures and editorial layouts with confident typography.", icon: "newspaper", price: "From $350" },
   ],
 };
 

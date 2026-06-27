@@ -822,7 +822,9 @@ export type Database = {
       }
       portfolios: {
         Row: {
+          about_headline: string | null
           about_image_url: string | null
+          about_stats: Json | null
           about_text: string | null
           accent_color: string | null
           active_engine: string
@@ -867,7 +869,9 @@ export type Database = {
           website_type: string
         }
         Insert: {
+          about_headline?: string | null
           about_image_url?: string | null
+          about_stats?: Json | null
           about_text?: string | null
           accent_color?: string | null
           active_engine?: string
@@ -912,7 +916,9 @@ export type Database = {
           website_type?: string
         }
         Update: {
+          about_headline?: string | null
           about_image_url?: string | null
+          about_stats?: Json | null
           about_text?: string | null
           accent_color?: string | null
           active_engine?: string

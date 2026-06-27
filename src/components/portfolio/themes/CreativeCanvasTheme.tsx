@@ -679,7 +679,7 @@ export default function CreativeCanvasTheme({
             <motion.div {...fadeUp} className="p-6 md:p-8 rounded-3xl border-4" style={{ borderColor: C.ink, background: C.secondary }}>
               <h3 className="cc-display text-2xl font-extrabold mb-4">Send a message</h3>
               {userId ? (
-                <ContactForm userId={userId} variant="light" />
+                <ContactForm userId={userId} variant="default" />
               ) : (
                 <p className="text-sm" style={{ color: C.ink }}>Contact form unavailable in demo mode.</p>
               )}

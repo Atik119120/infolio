@@ -117,6 +117,8 @@ export default function ThemeDemo() {
             features: ["1 hour photo session", "1 location", "25+ edited photos", "Online gallery delivery", "Personal use license"],
           },
         ] as any} />;
+      case 'creative-canvas':
+        return <CreativeCanvasTheme {...demoData} />;
       case 'freelancer':
       default:
         return <FreelancerTheme {...demoData} />;

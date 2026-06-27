@@ -397,19 +397,24 @@ export default function CreativeCanvasTheme({
       {v.services && services.length > 0 && (
         <section id="services" className="py-14 md:py-20 relative" style={{ background: C.ink, color: C.paper }}>
           <div className="max-w-7xl mx-auto px-5 md:px-8">
-            <motion.div {...fadeUp} className="mb-10 rounded-2xl border p-6 md:p-8" style={{ borderColor: "rgba(255,255,255,0.12)", background: "rgba(255,255,255,0.03)" }}>
+            <motion.div {...fadeUp} className="mb-10 relative rounded-[10px] border-2 p-6 md:p-8 overflow-hidden" style={{ borderColor: C.primary, background: "rgba(255,255,255,0.02)" }}>
+              {/* corner ticks */}
+              <span className="absolute top-2 left-2 w-3 h-3 border-t-2 border-l-2" style={{ borderColor: C.primary }} />
+              <span className="absolute top-2 right-2 w-3 h-3 border-t-2 border-r-2" style={{ borderColor: C.primary }} />
+              <span className="absolute bottom-2 left-2 w-3 h-3 border-b-2 border-l-2" style={{ borderColor: C.primary }} />
+              <span className="absolute bottom-2 right-2 w-3 h-3 border-b-2 border-r-2" style={{ borderColor: C.primary }} />
               <div className="flex items-center gap-3 mb-5">
                 <span className="cc-display text-xs font-bold opacity-50">03 —</span>
                 <span className="h-px w-10" style={{ background: "rgba(255,255,255,0.3)" }} />
-                <span className="text-[10px] font-extrabold tracking-[0.3em]" style={{ color: C.secondary }}>WHAT I DO</span>
+                <span className="text-[10px] font-extrabold tracking-[0.3em]" style={{ color: C.primary }}>WHAT I DO</span>
               </div>
               <div className="grid md:grid-cols-[1fr_auto] gap-6 items-end">
                 <h2 className="cc-display font-extrabold text-4xl md:text-6xl leading-[1.05]">
-                  Services to grow<br />your <span className="italic" style={{ color: C.secondary }}>brand.</span>
+                  Services to grow<br />your <span className="italic" style={{ color: C.primary }}>brand.</span>
                 </h2>
                 <div className="flex flex-col items-start md:items-end gap-2">
-                  <div className="inline-flex items-baseline gap-2 px-3 py-1.5 rounded-full border" style={{ borderColor: "rgba(255,255,255,0.15)" }}>
-                    <span className="cc-display text-lg font-bold" style={{ color: C.secondary }}>{String(services.length).padStart(2, "0")}</span>
+                  <div className="inline-flex items-baseline gap-2 px-3 py-1.5 rounded-[6px] border-2" style={{ borderColor: C.primary }}>
+                    <span className="cc-display text-lg font-bold" style={{ color: C.primary }}>{String(services.length).padStart(2, "0")}</span>
                     <span className="text-[10px] font-bold tracking-[0.25em] opacity-60">SERVICES</span>
                   </div>
                   <p className="max-w-xs text-sm opacity-60 md:text-right">
@@ -418,6 +423,7 @@ export default function CreativeCanvasTheme({
                 </div>
               </div>
             </motion.div>
+
 
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
               {services.map((s, i) => {

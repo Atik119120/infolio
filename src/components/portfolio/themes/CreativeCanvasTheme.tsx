@@ -331,10 +331,6 @@ export default function CreativeCanvasTheme({
                       — {name.split(" ")[0]}, in the studio —
                     </div>
                   </div>
-                  {/* sticker badge */}
-                  <div className="absolute -top-4 -right-2 w-20 h-20 rounded-full border-2 flex items-center justify-center rotate-[12deg] cc-display text-[10px] font-extrabold text-center leading-tight" style={{ borderColor: C.ink, background: C.accent }}>
-                    OPEN<br />FOR<br />WORK
-                  </div>
                 </div>
               </motion.div>
 

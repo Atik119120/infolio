@@ -47,30 +47,141 @@ function ScrambleText({ text, className, speed = 30 }: { text: string; className
   return <span ref={ref} className={className}>{out}</span>;
 }
 
-function HeroSlideshow({ images }: { images: string[] }) {
-  const [idx, setIdx] = useState(0);
+function HeroSlideshow({
+  slides,
+  accent,
+  onPrimary,
+  onSecondary,
+}: {
+  slides: { img: string; text: [string, string] }[];
+  accent: string;
+  onPrimary: () => void;
+  onSecondary: () => void;
+}) {
+  const [current, setCurrent] = useState(0);
+  const total = slides.length;
+  const next = () => setCurrent((p) => (p + 1) % total);
+  const prev = () => setCurrent((p) => (p - 1 + total) % total);
+
   useEffect(() => {
-    if (images.length <= 1) return;
-    const iv = setInterval(() => setIdx(i => (i + 1) % images.length), 4000);
+    if (total <= 1) return;
+    const iv = setInterval(next, 6000);
     return () => clearInterval(iv);
-  }, [images.length]);
-  if (images.length === 0) return null;
+  }, [total]);
+
+  if (total === 0) return null;
+  const pad = (n: number) => (n < 10 ? `0${n}` : `${n}`);
+
   return (
-    <div className="absolute inset-0">
-      {images.map((src, i) => (
-        <img
-          key={i}
-          src={src}
-          alt=""
-          className="absolute inset-0 w-full h-full object-cover"
-          style={{
-            opacity: i === idx ? 0.45 : 0,
-            transform: i === idx ? "scale(1.05)" : "scale(1)",
-            transition: "opacity 1.4s ease, transform 6s ease",
-          }}
-        />
-      ))}
-      <div className="absolute inset-0" style={{ background: "linear-gradient(to bottom, rgba(5,5,5,0.55) 0%, rgba(5,5,5,0.85) 70%, #050505 100%)" }} />
+    <div className="absolute inset-0 overflow-hidden">
+      {/* Slides */}
+      {slides.map((slide, i) => {
+        const active = i === current;
+        return (
+          <div
+            key={i}
+            className="absolute inset-0"
+            style={{
+              opacity: active ? 1 : 0,
+              transition: "opacity 1.4s ease",
+              pointerEvents: active ? "auto" : "none",
+            }}
+          >
+            <img
+              src={slide.img}
+              alt=""
+              className="absolute inset-0 w-full h-full object-cover"
+              style={{
+                transform: active ? "scale(1.08)" : "scale(1)",
+                transition: "transform 7s ease",
+              }}
+            />
+            <div
+              className="absolute inset-0"
+              style={{
+                background:
+                  "linear-gradient(to bottom, rgba(5,5,5,0.55) 0%, rgba(5,5,5,0.55) 55%, rgba(5,5,5,0.95) 100%)",
+              }}
+            />
+            {/* Centered poetic two-line text */}
+            <div className="absolute inset-0 flex items-center justify-center px-6 text-center">
+              <div
+                style={{
+                  opacity: active ? 1 : 0,
+                  transform: active ? "translateY(0)" : "translateY(20px)",
+                  transition: "opacity 1.2s ease 0.3s, transform 1.2s ease 0.3s",
+                }}
+              >
+                <h1 className="dp-display font-bold leading-[0.95] tracking-tight text-white text-4xl md:text-6xl lg:text-7xl">
+                  {slide.text[0]}
+                </h1>
+                <h1
+                  className="dp-italic font-bold leading-[0.95] tracking-tight mt-2 text-4xl md:text-6xl lg:text-7xl"
+                  style={{ color: accent }}
+                >
+                  {slide.text[1]}
+                </h1>
+              </div>
+            </div>
+          </div>
+        );
+      })}
+
+      {/* CTA buttons */}
+      <div
+        className="absolute left-1/2 -translate-x-1/2 z-20 flex flex-wrap items-center justify-center gap-4"
+        style={{ bottom: "18%" }}
+      >
+        <button onClick={onPrimary} className="dp-cut-btn primary group" style={{ ['--acc' as any]: accent }}>
+          <span className="dp-cut-dot" />
+          <span>View My Photographs</span>
+          <span className="dp-cut-arrow">→</span>
+        </button>
+        <button onClick={onSecondary} className="dp-cut-btn ghost group" style={{ ['--acc' as any]: accent }}>
+          <span className="dp-cut-dot" />
+          <span>Book A Next Shoot</span>
+          <span className="dp-cut-arrow">→</span>
+        </button>
+      </div>
+
+      {/* Prev / Next */}
+      <button
+        onClick={prev}
+        aria-label="Previous"
+        className="absolute left-6 lg:left-10 top-1/2 -translate-y-1/2 z-20 w-12 h-12 rounded-full border border-white/20 hover:border-white/60 backdrop-blur-md bg-black/30 text-white/80 hover:text-white text-xl flex items-center justify-center transition-all"
+      >
+        ←
+      </button>
+      <button
+        onClick={next}
+        aria-label="Next"
+        className="absolute right-6 lg:right-10 top-1/2 -translate-y-1/2 z-20 w-12 h-12 rounded-full border border-white/20 hover:border-white/60 backdrop-blur-md bg-black/30 text-white/80 hover:text-white text-xl flex items-center justify-center transition-all"
+      >
+        →
+      </button>
+
+      {/* Counter */}
+      <div className="absolute top-6 right-6 lg:top-8 lg:right-10 z-20 dp-mono text-xs tracking-[0.3em] text-white/70">
+        <span style={{ color: accent }}>{pad(current + 1)}</span>
+        <span className="mx-2 text-white/30">/</span>
+        <span>{pad(total)}</span>
+      </div>
+
+      {/* Dots */}
+      <div className="absolute left-1/2 -translate-x-1/2 z-20 flex gap-2" style={{ bottom: "10%" }}>
+        {slides.map((_, i) => (
+          <button
+            key={i}
+            onClick={() => setCurrent(i)}
+            aria-label={`Slide ${i + 1}`}
+            className="h-[3px] rounded-full transition-all"
+            style={{
+              width: i === current ? 32 : 14,
+              background: i === current ? accent : "rgba(255,255,255,0.3)",
+            }}
+          />
+        ))}
+      </div>
     </div>
   );
 }

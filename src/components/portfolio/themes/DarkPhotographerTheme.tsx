@@ -349,56 +349,42 @@ export default function DarkPhotographerTheme({
         {/* CONTACT */}
         {vContact && (
           <section id="contact" className="relative px-6 lg:px-12 py-24 lg:py-32 border-t border-white/5">
-            <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-12 items-start">
-              <div>
-                <p className="dp-mono text-xs uppercase tracking-[0.4em] mb-3" style={{ color: accent }}>Get in Touch</p>
-                <h2 className="dp-display text-4xl md:text-6xl font-bold leading-tight">
-                  Let's create<br />something <span style={{ color: accent }}>unforgettable</span>.
-                </h2>
-                <div className="mt-10 space-y-4">
-                  {showContacts.map((item: any) => {
-                    const Icon = item.icon === "phone" ? Phone : item.icon === "map" ? MapPin : Mail;
-                    return (
-                      <div key={item.id} className="flex items-center gap-4 p-4 rounded-xl border border-white/10 bg-white/[0.02]">
-                        <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ background: `${accent}20`, color: accent }}>
-                          <Icon className="w-4 h-4" />
-                        </div>
-                        <div className="min-w-0">
-                          <p className="text-[11px] uppercase tracking-widest text-white/40">{item.label || item.type}</p>
-                          <p className="text-sm text-white break-words">{item.value}</p>
-                        </div>
+            <div className="max-w-4xl mx-auto text-center">
+              <p className="dp-mono text-xs uppercase tracking-[0.4em] mb-3" style={{ color: accent }}>Get in Touch</p>
+              <h2 className="dp-display text-4xl md:text-6xl font-bold leading-tight">
+                Let's create<br />something <span style={{ color: accent }}>unforgettable</span>.
+              </h2>
+              <div className="mt-10 grid sm:grid-cols-2 lg:grid-cols-3 gap-4 text-left">
+                {showContacts.map((item: any) => {
+                  const Icon = item.icon === "phone" ? Phone : item.icon === "map" ? MapPin : Mail;
+                  return (
+                    <div key={item.id} className="flex items-center gap-4 p-4 rounded-xl border border-white/10 bg-white/[0.02]">
+                      <div className="w-10 h-10 rounded-full flex items-center justify-center shrink-0" style={{ background: `${accent}20`, color: accent }}>
+                        <Icon className="w-4 h-4" />
                       </div>
+                      <div className="min-w-0">
+                        <p className="text-[11px] uppercase tracking-widest text-white/40">{item.label || item.type}</p>
+                        <p className="text-sm text-white break-words">{item.value}</p>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+              {vSocial && socialLinks.length > 0 && (
+                <div className="mt-8 flex flex-wrap justify-center gap-3">
+                  {socialLinks.map(s => {
+                    const Icon = getSocialIcon(s.platform);
+                    return (
+                      <a key={s.id} href={s.url} target="_blank" rel="noreferrer" aria-label={s.platform}
+                        className="w-10 h-10 rounded-full border border-white/15 hover:border-white/60 flex items-center justify-center transition-colors">
+                        <Icon className="w-4 h-4" />
+                      </a>
                     );
                   })}
                 </div>
-                {vSocial && socialLinks.length > 0 && (
-                  <div className="mt-8 flex flex-wrap gap-3">
-                    {socialLinks.map(s => {
-                      const Icon = getSocialIcon(s.platform);
-                      return (
-                        <a key={s.id} href={s.url} target="_blank" rel="noreferrer" aria-label={s.platform}
-                          className="w-10 h-10 rounded-full border border-white/15 hover:border-white/60 flex items-center justify-center transition-colors">
-                          <Icon className="w-4 h-4" />
-                        </a>
-                      );
-                    })}
-                  </div>
-                )}
-              </div>
-              <div className="self-start">
-                <ContactForm
-                  portfolioOwnerId={userId || ""}
-                  themeStyle={{
-                    surface: "rgba(255,255,255,0.04)",
-                    border: "rgba(255,255,255,0.15)",
-                    text: "#FFFFFF",
-                    textMuted: "rgba(255,255,255,0.6)",
-                    accent: accent,
-                    accentText: "#000000",
-                  }}
-                />
-              </div>
+              )}
             </div>
+
           </section>
         )}
 

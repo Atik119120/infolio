@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Mail, Phone, MapPin, ArrowUpRight, Camera, X, Images } from "lucide-react";
+import { Mail, Phone, MapPin, ArrowUpRight, Camera, X, Images, Globe, MessageCircle, Send, Linkedin, Facebook, Instagram, Twitter, Github, Youtube, Image as ImageIcon, Calendar, Briefcase, Link2 } from "lucide-react";
 import { ThemeProps } from "./types";
 import { ContactForm } from "@/components/portfolio/ContactForm";
 import { getSocialIcon } from "./utils";
@@ -666,10 +666,22 @@ export default function DarkPhotographerTheme({
                 Let's create<br />something <span style={{ color: accent }}>unforgettable</span>.
               </h2>
               <div className="mt-10 grid sm:grid-cols-2 lg:grid-cols-3 gap-4 text-left">
-                {showContacts.map((item: any) => {
-                  const Icon = item.icon === "phone" ? Phone : item.icon === "map" ? MapPin : Mail;
-                  return (
-                    <div key={item.id} className="flex items-center gap-4 p-4 rounded-xl border border-white/10 bg-white/[0.02]">
+                {showContacts.filter((i: any) => i && i.value).map((item: any) => {
+                  const t = (item.type || item.icon || "").toLowerCase();
+                  const ICONS: Record<string, any> = {
+                    email: Mail, mail: Mail,
+                    phone: Phone, whatsapp: MessageCircle, telegram: Send, discord: MessageCircle,
+                    location: MapPin, address: MapPin, map: MapPin,
+                    website: Globe, portfolio: Globe, link: Link2, custom: Link2,
+                    linkedin: Linkedin, facebook: Facebook, instagram: Instagram, twitter: Twitter,
+                    github: Github, youtube: Youtube, behance: ImageIcon, dribbble: ImageIcon,
+                    calendly: Calendar, fiverr: Briefcase, upwork: Briefcase,
+                  };
+                  const Icon = ICONS[t] || Mail;
+                  const isLink = /^(https?:|mailto:|tel:)/i.test(item.value) || ["website","linkedin","facebook","instagram","twitter","github","youtube","behance","dribbble","calendly","fiverr","upwork"].includes(t);
+                  const href = isLink ? (item.value.startsWith("http") ? item.value : item.value) : t === "email" ? `mailto:${item.value}` : t === "phone" || t === "whatsapp" ? `tel:${item.value}` : undefined;
+                  const inner = (
+                    <>
                       <div className="w-10 h-10 rounded-full flex items-center justify-center shrink-0" style={{ background: `${accent}20`, color: accent }}>
                         <Icon className="w-4 h-4" />
                       </div>
@@ -677,7 +689,13 @@ export default function DarkPhotographerTheme({
                         <p className="text-[11px] uppercase tracking-widest text-white/40">{item.label || item.type}</p>
                         <p className="text-sm text-white break-words">{item.value}</p>
                       </div>
-                    </div>
+                    </>
+                  );
+                  const cls = "flex items-center gap-4 p-4 rounded-xl border border-white/10 bg-white/[0.02] hover:border-white/30 transition-colors";
+                  return href ? (
+                    <a key={item.id} href={href} target={isLink ? "_blank" : undefined} rel="noreferrer" className={cls}>{inner}</a>
+                  ) : (
+                    <div key={item.id} className={cls}>{inner}</div>
                   );
                 })}
               </div>

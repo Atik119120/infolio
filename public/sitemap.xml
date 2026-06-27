@@ -1,7 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://infolio.online/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>
-  <url><loc>https://infolio.online/themes</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://infolio.online/auth</loc><changefreq>monthly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://infolio.online/reset-password</loc><changefreq>yearly</changefreq><priority>0.2</priority></url>
+  <url><loc>https://infolio.online/themes</loc><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://infolio.online/faq</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://infolio.online/demo/biography</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://infolio.online/demo/freelancer</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://infolio.online/demo/small-business</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://infolio.online/demo/creative-sidebar-pro</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://infolio.online/demo/dark-photographer</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://infolio.online/demo/digital-marketer</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://infolio.online/demo/graphic-designer</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://infolio.online/demo/photographer</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://infolio.online/auth</loc><changefreq>monthly</changefreq><priority>0.4</priority></url>
 </urlset>

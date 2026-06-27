@@ -10,7 +10,7 @@ import {
 import Footer from "@/components/home/Footer";
 import SiteHeader from "@/components/home/SiteHeader";
 import { GradientBars } from "@/components/ui/gradient-bars-background";
-import { SectionHeader, FeatureCard, PLANS, TERMS, PlanCard } from "@/pages/home/shared";
+import { SectionHeader, FeatureCard, PLANS, TERMS, PlanCard, FAQS } from "@/pages/home/shared";
 import stepsImage from "@/assets/steps-section.jpg";
 
 export default function Index() {
@@ -32,6 +32,15 @@ export default function Index() {
         <meta property="og:title" content="Infolio — Build Your Professional Portfolio in Minutes" />
         <meta property="og:description" content="Pick a theme, add your work, and publish a stunning personal portfolio in minutes." />
         <meta property="og:url" content="https://infolio.online/" />
+        <script type="application/ld+json">{JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          mainEntity: FAQS.map((f: { q: string; a: string }) => ({
+            "@type": "Question",
+            name: f.q,
+            acceptedAnswer: { "@type": "Answer", text: f.a },
+          })),
+        })}</script>
       </Helmet>
 
       {/* HERO */}

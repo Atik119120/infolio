@@ -167,12 +167,12 @@ export function HeroSlideshowForm({ portfolio, userId, onUpdate, onSuccess, onEr
             </div>
           )}
 
-          <div className="flex items-center gap-2">
-            <Button onClick={() => fileRef.current?.click()} disabled={uploading} variant="outline">
+          <div className="flex items-center gap-2 flex-wrap">
+            <Button onClick={() => fileRef.current?.click()} disabled={uploading || images.length >= MAX_SLIDES} variant="outline">
               {uploading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Upload className="w-4 h-4 mr-2" />}
               {uploading ? "Uploading…" : "Add Images"}
             </Button>
-            <p className="text-xs text-muted-foreground">Recommended 1920×1280 · max {Math.round(perFileLimitBytes / 1024 / 1024)}MB each</p>
+            <p className="text-xs text-muted-foreground">{images.length}/{MAX_SLIDES} · max {Math.round(perFileLimitBytes / 1024 / 1024)}MB each</p>
             <input
               ref={fileRef}
               type="file"

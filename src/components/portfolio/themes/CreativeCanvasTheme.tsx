@@ -534,19 +534,22 @@ export default function CreativeCanvasTheme({
                 <span className="text-[10px] font-bold tracking-[0.3em]">EDUCATION</span>
               </div>
               <h2 className="cc-display font-extrabold text-4xl md:text-5xl mb-8">Learning <span className="italic font-medium" style={{ color: C.accent }}>journey.</span></h2>
-              <div className="grid sm:grid-cols-2 gap-5">
-                {(education && education.length > 0 ? education : []).map((e) => (
-                  <div key={e.id} className="relative pl-5 border-l-2" style={{ borderColor: C.ink }}>
-                    <div className="absolute -left-[7px] top-1.5 w-3 h-3 rounded-full border-2" style={{ background: C.primary, borderColor: C.ink }} />
-                    <span className="cc-display text-xs font-bold tracking-wider" style={{ color: C.primary }}>
-                      {e.start_date?.slice(0, 4)}{e.end_date ? ` — ${e.end_date.slice(0, 4)}` : e.is_current ? " — Present" : ""}
-                    </span>
-                    <h3 className="cc-display text-xl font-bold mt-0.5">{e.degree}</h3>
-                    <p className="text-sm" style={{ color: C.muted }}>{e.institution}{e.field_of_study ? ` · ${e.field_of_study}` : ""}</p>
+              <div className="grid grid-cols-2 gap-0 border-2 rounded-2xl overflow-hidden" style={{ borderColor: C.ink }}>
+                {(education && education.length > 0 ? education : []).slice(0, 2).map((e, i) => (
+                  <div key={e.id} className={`relative p-5 ${i === 0 ? "border-r-2" : ""}`} style={{ borderColor: C.ink }}>
+                    <span className="absolute top-3 right-4 cc-display text-[10px] font-bold opacity-50">{String(i + 1).padStart(2, "0")}</span>
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-2.5 h-2.5 rounded-full border-2" style={{ background: C.primary, borderColor: C.ink }} />
+                      <span className="cc-display text-xs font-bold tracking-wider" style={{ color: C.primary }}>
+                        {e.start_date?.slice(0, 4)}{e.end_date ? ` — ${e.end_date.slice(0, 4)}` : e.is_current ? " — Present" : ""}
+                      </span>
+                    </div>
+                    <h3 className="cc-display text-xl font-bold leading-tight">{e.degree}</h3>
+                    <p className="text-sm mt-1" style={{ color: C.muted }}>{e.institution}{e.field_of_study ? ` · ${e.field_of_study}` : ""}</p>
                   </div>
                 ))}
                 {(!education || education.length === 0) && (
-                  <p className="text-sm" style={{ color: C.muted }}>Add your education from the editor.</p>
+                  <p className="text-sm p-5 col-span-2" style={{ color: C.muted }}>Add your education from the editor.</p>
                 )}
               </div>
             </motion.div>

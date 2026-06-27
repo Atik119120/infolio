@@ -284,9 +284,8 @@ export default function CreativeCanvasTheme({
 
             {/* Right — portrait blob */}
             <div className="relative h-[460px] sm:h-[520px] lg:h-[600px] flex items-center justify-center">
-              {/* color blob behind */}
-              <div className="absolute inset-6 rounded-[42%_58%_55%_45%/55%_42%_58%_45%]" style={{ background: C.primary, transform: "rotate(-6deg)" }} />
-              <div className="absolute inset-10 rounded-[55%_45%_60%_40%/45%_55%_45%_55%] border-2" style={{ borderColor: C.ink, background: C.secondary, transform: "rotate(4deg)" }} />
+
+
 
               {/* Portrait */}
               <div className="relative w-[78%] h-[88%] rounded-[44%_56%_50%_50%/52%_48%_52%_48%] overflow-hidden border-2 bg-white" style={{ borderColor: C.ink, boxShadow: `12px 12px 0 ${C.ink}` }}>

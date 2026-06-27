@@ -643,7 +643,7 @@ export default function CreativeCanvasTheme({
               </div>
             </motion.div>
 
-            <motion.div {...fadeUp}>
+            <motion.div {...slideRight}>
               <div className="flex items-center gap-3 mb-4">
                 <span className="cc-display text-xs font-bold tracking-[0.4em]" style={{ color: C.muted }}>05 —</span>
                 <span className="h-px w-10" style={{ background: C.ink }} />

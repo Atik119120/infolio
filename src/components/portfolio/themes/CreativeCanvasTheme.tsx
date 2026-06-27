@@ -298,27 +298,6 @@ export default function CreativeCanvasTheme({
                 </div>
               </div>
 
-              {/* Floating icons */}
-              {[
-                { Icon: PenTool, top: "8%", left: "6%", bg: C.primary, delay: 0 },
-                { Icon: Palette, top: "12%", right: "10%", bg: C.accent, delay: 1 },
-                { Icon: Brush, bottom: "18%", left: "4%", bg: C.secondary, delay: 2 },
-                { Icon: Lightbulb, bottom: "8%", right: "8%", bg: C.ink, delay: 1.5, fg: C.secondary },
-                { Icon: Star, top: "44%", left: "0%", bg: C.ink, delay: 0.5, fg: C.primary },
-                { Icon: Heart, top: "38%", right: "2%", bg: C.paper, delay: 2.5, fg: C.primary, ring: true },
-              ].map((it: any, i) => (
-                <div
-                  key={i}
-                  className="absolute w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg cc-float"
-                  style={{
-                    top: it.top, left: it.left, right: it.right, bottom: it.bottom,
-                    background: it.bg, animationDelay: `${it.delay}s`,
-                    border: it.ring ? `2px solid ${C.ink}` : "none",
-                  }}
-                >
-                  <it.Icon size={22} style={{ color: it.fg || C.paper }} />
-                </div>
-              ))}
 
               {/* Sticker badge */}
               <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 px-4 py-2 rounded-full text-xs font-bold cc-display rotate-[-6deg] shadow-md" style={{ background: C.paper, border: `2px solid ${C.ink}` }}>

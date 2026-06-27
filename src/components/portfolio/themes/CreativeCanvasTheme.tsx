@@ -306,18 +306,20 @@ export default function CreativeCanvasTheme({
             </div>
           </div>
 
-          {/* Marquee */}
-          <div className="relative mt-16 py-5 overflow-hidden border-y" style={{ background: C.ink, borderColor: C.ink }}>
-            <div className="cc-marquee">
-              {Array.from({ length: 2 }).map((_, k) => (
-                <div key={k} className="flex items-center gap-8 px-4 cc-display text-2xl md:text-3xl font-bold whitespace-nowrap">
-                  {["Brand Identity", "Illustration", "UI / UX", "Editorial", "Motion", "Packaging", "Print", "Web Design"].map((w, i) => (
-                    <span key={i} className="flex items-center gap-8" style={{ color: i % 2 ? C.secondary : C.paper }}>
-                      {w} <span style={{ color: C.primary }}>✦</span>
-                    </span>
-                  ))}
-                </div>
-              ))}
+          {/* Marquee — tilted ribbon */}
+          <div className="relative mt-16 -mx-10">
+            <div className="py-5 overflow-hidden border-y -rotate-2 shadow-xl" style={{ background: C.ink, borderColor: C.ink }}>
+              <div className="cc-marquee">
+                {Array.from({ length: 2 }).map((_, k) => (
+                  <div key={k} className="flex items-center gap-8 px-4 cc-display text-2xl md:text-3xl font-bold whitespace-nowrap">
+                    {["Brand Identity", "Illustration", "UI / UX", "Editorial", "Motion", "Packaging", "Print", "Web Design"].map((w, i) => (
+                      <span key={i} className="flex items-center gap-8" style={{ color: i % 2 ? C.secondary : C.paper }}>
+                        {w} <span style={{ color: C.primary }}>✦</span>
+                      </span>
+                    ))}
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </section>

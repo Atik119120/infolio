@@ -230,22 +230,23 @@ export default function DarkPhotographerTheme({
               </div>
             )}
             <div className="relative max-w-7xl mx-auto px-6 lg:px-12 w-full py-24">
-              <p className="dp-mono text-xs uppercase tracking-[0.4em] mb-6" style={{ color: accent }}>
+              <p className="dp-mono text-[10px] uppercase tracking-[0.4em] mb-4" style={{ color: accent }}>
                 {`// ${profession}`}
               </p>
-              <h1 className="dp-display text-5xl md:text-7xl lg:text-8xl font-bold leading-[0.95] dp-glow max-w-5xl">
+              <h1 className="dp-display text-3xl md:text-5xl lg:text-6xl font-bold leading-[0.95] dp-glow max-w-4xl">
                 {heroHeadline}
               </h1>
-              <p className="mt-8 max-w-xl text-white/60 text-base md:text-lg leading-relaxed">
+              <p className="mt-5 max-w-lg text-white/60 text-sm md:text-base leading-relaxed">
                 {heroDesc}
               </p>
-              <div className="mt-10 flex flex-wrap gap-4">
-                <button onClick={() => scrollTo("work")} className="px-6 py-3 rounded-full text-sm font-semibold text-black" style={{ background: accent }}>
+              <div className="mt-7 flex flex-wrap gap-3">
+                <button onClick={() => scrollTo("work")} className="px-5 py-2.5 rounded-full text-xs font-semibold text-black" style={{ background: accent }}>
                   View My Photographs
                 </button>
-                <button onClick={() => scrollTo("contact")} className="px-6 py-3 rounded-full text-sm font-semibold border border-white/20 hover:border-white/60 transition-colors">
+                <button onClick={() => scrollTo("contact")} className="px-5 py-2.5 rounded-full text-xs font-semibold border border-white/20 hover:border-white/60 transition-colors">
                   Book A Next Shoot
                 </button>
+
               </div>
             </div>
 

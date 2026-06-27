@@ -255,10 +255,6 @@ export default function DarkPhotographerTheme({
         {vHero && (
           <section id="home" className="relative min-h-[92vh] flex items-center overflow-hidden dp-grain">
             <HeroSlideshow images={[heroImg, ...galleryImages.map(g => g.url)].filter(Boolean) as string[]} />
-            {/* Cyan blurred gradient orbs */}
-            <div aria-hidden className="pointer-events-none absolute -top-32 -left-32 w-[520px] h-[520px] rounded-full" style={{ background: `radial-gradient(circle, ${accent}55 0%, transparent 70%)`, filter: "blur(80px)" }} />
-            <div aria-hidden className="pointer-events-none absolute -bottom-40 -right-32 w-[600px] h-[600px] rounded-full" style={{ background: `radial-gradient(circle, ${accent}40 0%, transparent 70%)`, filter: "blur(100px)" }} />
-            <div aria-hidden className="pointer-events-none absolute inset-0" style={{ background: `linear-gradient(135deg, ${accent}10 0%, transparent 40%, transparent 60%, ${accent}15 100%)` }} />
             <div className="relative max-w-7xl mx-auto px-6 lg:px-12 w-full py-24">
               <p className="dp-mono text-[10px] uppercase tracking-[0.4em] mb-4" style={{ color: accent }}>
                 {`// ${profession}`}

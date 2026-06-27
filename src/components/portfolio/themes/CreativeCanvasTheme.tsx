@@ -501,7 +501,7 @@ export default function CreativeCanvasTheme({
       {/* SKILLS */}
       {v.skills && (
         <section id="skills" className="py-20 md:py-28">
-          <div className="max-w-7xl mx-auto px-5 md:px-8 grid lg:grid-cols-2 gap-12">
+          <div className="max-w-5xl mx-auto px-5 md:px-8">
             <motion.div {...fadeUp}>
               <div className="flex items-center gap-3 mb-4">
                 <span className="cc-display text-xs font-bold tracking-[0.4em]" style={{ color: C.muted }}>04 —</span>
@@ -509,7 +509,7 @@ export default function CreativeCanvasTheme({
                 <span className="text-[10px] font-bold tracking-[0.3em]">TOOLBOX</span>
               </div>
               <h2 className="cc-display font-extrabold text-4xl md:text-5xl mb-8">Software<br /><span className="italic font-medium" style={{ color: C.primary }}>I master daily.</span></h2>
-              <div className="grid grid-cols-2 gap-0 border-l border-t" style={{ borderColor: C.ink }}>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-0 border-l border-t" style={{ borderColor: C.ink }}>
                 {SOFTWARE.map((s, i) => (
                   <div key={i} className="group relative flex items-center gap-3 p-4 border-r border-b transition hover:bg-[var(--cc-hover)]" style={{ borderColor: C.ink, ["--cc-hover" as any]: C.secondary }}>
                     <span className="cc-display text-[10px] font-bold absolute top-2 right-2 tracking-wider" style={{ color: C.muted }}>0{i + 1}</span>
@@ -526,33 +526,13 @@ export default function CreativeCanvasTheme({
                 ))}
               </div>
             </motion.div>
-
-            <motion.div {...fadeUp}>
-              <div className="flex items-center gap-3 mb-4">
-                <span className="cc-display text-xs font-bold tracking-[0.4em]" style={{ color: C.muted }}>05 —</span>
-                <span className="h-px w-10" style={{ background: C.ink }} />
-                <span className="text-[10px] font-bold tracking-[0.3em]">EDUCATION</span>
-              </div>
-              <h2 className="cc-display font-extrabold text-4xl md:text-5xl mb-8">Learning <span className="italic font-medium" style={{ color: C.accent }}>journey.</span></h2>
-              <div className="relative pl-6">
-                <div className="absolute left-1.5 top-2 bottom-2 w-0.5" style={{ background: C.ink }} />
-                {(education && education.length > 0 ? education : []).map((e, i) => (
-                  <div key={e.id} className="relative mb-6 last:mb-0">
-                    <div className="absolute -left-[19px] top-2 w-3 h-3 rounded-full border-2" style={{ background: C.primary, borderColor: C.ink }} />
-                    <span className="cc-display text-xs font-bold tracking-wider" style={{ color: C.primary }}>
-                      {e.start_date?.slice(0, 4)}{e.end_date ? ` — ${e.end_date.slice(0, 4)}` : e.is_current ? " — Present" : ""}
-                    </span>
-                    <h3 className="cc-display text-xl font-bold mt-0.5">{e.degree}</h3>
-                    <p className="text-sm" style={{ color: C.muted }}>{e.institution}{e.field_of_study ? ` · ${e.field_of_study}` : ""}</p>
-                  </div>
-                ))}
-                {(!education || education.length === 0) && (
-                  <p className="text-sm" style={{ color: C.muted }}>Add your education from the editor.</p>
-                )}
-              </div>
-            </motion.div>
           </div>
         </section>
+      )}
+
+      {/* EDUCATION — Treasure Map Journey */}
+      {v.education && (
+        <EducationMap education={education || []} />
       )}
 
 

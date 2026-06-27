@@ -558,7 +558,7 @@ export default function CreativeCanvasTheme({
                       </span>
                     </div>
                     <h3 className="cc-display text-xl font-bold leading-tight">{e.degree}</h3>
-                    <p className="text-sm mt-1" style={{ color: C.muted }}>{e.institution}{e.field_of_study ? ` · ${e.field_of_study}` : ""}</p>
+                    <p className="text-sm mt-1 line-clamp-1" style={{ color: C.muted }}>{e.institution}{e.field_of_study ? ` · ${e.field_of_study}` : ""}</p>
                   </div>
                 ))}
                 {(!education || education.length === 0) && (

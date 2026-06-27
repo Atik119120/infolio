@@ -37,7 +37,7 @@ const NAV = [
   { id: "contact", label: "Contact" },
 ];
 
-const SOFTWARE = [
+const DEFAULT_SOFTWARE = [
   { name: "Photoshop", slug: "photoshop" },
   { name: "Illustrator", slug: "illustrator" },
   { name: "Figma", slug: "figma" },
@@ -45,6 +45,8 @@ const SOFTWARE = [
   { name: "Premiere Pro", slug: "premierepro" },
   { name: "Blender", slug: "blender" },
 ];
+
+const DEFAULT_MARQUEE = ["Brand Identity", "Illustration", "UI / UX", "Editorial", "Motion", "Packaging", "Print", "Web Design"];
 
 const PRO_SKILLS = [
   "Logo Design", "Motion Design", "Static Design", "Branding", "Packaging",

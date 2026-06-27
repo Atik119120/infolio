@@ -348,7 +348,7 @@ export default function CreativeCanvasTheme({
 
             <div className="grid lg:grid-cols-12 gap-10 lg:gap-14 items-start">
               {/* LEFT — editorial frame */}
-              <motion.div {...fadeUp} className="lg:col-span-5 relative">
+              <motion.div {...slideLeft} whileHover={{ rotate: -1, scale: 1.01 }} className="lg:col-span-5 relative">
                 <div className="relative mx-auto max-w-sm">
                   {/* accent block behind */}
                   <div className="absolute -inset-3 rounded-[8px]" style={{ background: C.primary }} />

@@ -29,6 +29,7 @@ import { CustomizationForm } from "@/components/portfolio/CustomizationForm";
 import { CustomCodeForm } from "@/components/portfolio/CustomCodeForm";
 import { HeroSlideshowForm } from "@/components/portfolio/photographer/HeroSlideshowForm";
 import { PhotographyPackagesForm } from "@/components/portfolio/photographer/PhotographyPackagesForm";
+import { AboutPhotographerForm } from "@/components/portfolio/photographer/AboutPhotographerForm";
 import { getThemeConfig } from "@/config/themeFeatures";
 import { cn } from "@/lib/utils";
 
@@ -316,6 +317,8 @@ export default function PortfolioEdit() {
   const renderForm = () => {
     switch (activeSection) {
       case "about":
+        if (activeTheme === "dark-photographer")
+          return <AboutPhotographerForm profile={profile} portfolio={portfolio} userId={user?.id || ""} onUpdate={handleUpdate} onSuccess={showSuccess} onError={showError} />;
         return <BasicInfoForm profile={profile} portfolio={portfolio} userId={user?.id || ""} onUpdate={handleUpdate} onSuccess={showSuccess} onError={showError} />;
       case "hero":
         if (activeTheme === "custom-code")

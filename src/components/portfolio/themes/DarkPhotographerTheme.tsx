@@ -443,15 +443,18 @@ export default function DarkPhotographerTheme({
               <div className="lg:col-span-7">
                 <p className="dp-mono text-xs uppercase tracking-[0.4em] mb-4" style={{ color: accent }}>About</p>
                 <h2 className="dp-display text-4xl md:text-5xl lg:text-6xl font-bold leading-tight">
-                  Light, shadow,<br />and the space between.
+                  {(portfolio as any)?.about_headline || "Light, shadow, and the space between."}
                 </h2>
                 <p className="mt-8 text-white/60 leading-relaxed text-lg max-w-2xl">{aboutText}</p>
                 <div className="mt-10 grid grid-cols-3 gap-6 max-w-md">
-                  {[
-                    { k: "120+", v: "Projects" },
-                    { k: "08", v: "Years" },
-                    { k: "40+", v: "Clients" },
-                  ].map(s => (
+                  {(() => {
+                    const s = (portfolio as any)?.about_stats || {};
+                    return [
+                      { k: s.projects || "120+", v: "Projects" },
+                      { k: s.years || "08", v: "Years" },
+                      { k: s.clients || "40+", v: "Clients" },
+                    ];
+                  })().map(s => (
                     <div key={s.v} className="border-l border-white/15 pl-4">
                       <p className="dp-display text-3xl font-bold" style={{ color: accent }}>{s.k}</p>
                       <p className="text-[11px] uppercase tracking-widest text-white/50 mt-1">{s.v}</p>

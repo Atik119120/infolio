@@ -153,9 +153,12 @@ export default function DarkPhotographerTheme({
   }));
 
   const showServices = services.length > 0 ? services : [
-    { id: "s1", title: "Portrait Sessions", description: "Editorial and personal portraits with cinematic light.", icon: "camera" },
-    { id: "s2", title: "Event Coverage", description: "Full-day storytelling for weddings, launches, and shows.", icon: "sparkles" },
-    { id: "s3", title: "Commercial", description: "Product, brand and lifestyle photography for campaigns.", icon: "palette" },
+    { id: "s1", title: "Wedding Shoot", description: "Full-day cinematic coverage of your big day — ceremony, portraits, and candid moments.", icon: "camera" },
+    { id: "s2", title: "Pre-Wedding & Couple", description: "Romantic outdoor and studio sessions that tell your love story in light and frame.", icon: "heart" },
+    { id: "s3", title: "Bridal Portrait", description: "Editorial-style bridal portraits with dramatic lighting and timeless retouching.", icon: "sparkles" },
+    { id: "s4", title: "Single / Personal Shoot", description: "Solo portraits, fashion, and lifestyle frames crafted for your personal brand.", icon: "user" },
+    { id: "s5", title: "Video Shoot", description: "Cinematic video production — short films, reels, and highlight edits.", icon: "video" },
+    { id: "s6", title: "Corporate & Events", description: "Professional coverage for corporate programs, launches, and conferences.", icon: "briefcase" },
   ] as any;
 
   const showContacts = contactItems.length > 0 ? contactItems : [

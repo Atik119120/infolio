@@ -619,18 +619,26 @@ export default function CreativeCanvasTheme({
               <h2 className="cc-display font-extrabold text-4xl md:text-5xl mb-8">Software<br /><span className="italic font-medium" style={{ color: C.primary }}>I master daily.</span></h2>
               <div className="grid grid-cols-2 gap-0 border-l border-t" style={{ borderColor: C.ink }}>
                 {SOFTWARE.map((s, i) => (
-                  <div key={i} className="group relative flex items-center gap-3 p-4 border-r border-b transition hover:bg-[var(--cc-hover)]" style={{ borderColor: C.ink, ["--cc-hover" as any]: C.secondary }}>
+                  <motion.div
+                    key={i}
+                    initial={{ opacity: 0, scale: 0.85 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.4, delay: i * 0.05 }}
+                    whileHover={{ scale: 1.05, backgroundColor: C.secondary }}
+                    className="group relative flex items-center gap-3 p-4 border-r border-b" style={{ borderColor: C.ink }}
+                  >
                     <span className="cc-display text-[10px] font-bold absolute top-2 right-2 tracking-wider" style={{ color: C.muted }}>0{i + 1}</span>
-                    <div className="w-10 h-10 flex items-center justify-center shrink-0">
+                    <motion.div whileHover={{ rotate: [0, -10, 10, 0] }} transition={{ duration: 0.4 }} className="w-10 h-10 flex items-center justify-center shrink-0">
                       <img
                         src={`https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/${s.slug}/${s.slug}-original.svg`}
                         alt={`${s.name} logo`}
                         className="w-9 h-9 object-contain"
                         loading="lazy"
                       />
-                    </div>
+                    </motion.div>
                     <span className="font-semibold text-sm">{s.name}</span>
-                  </div>
+                  </motion.div>
                 ))}
               </div>
             </motion.div>

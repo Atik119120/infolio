@@ -345,7 +345,7 @@ export default function DarkPhotographerTheme({
         {/* CONTACT */}
         {vContact && (
           <section id="contact" className="relative px-6 lg:px-12 py-24 lg:py-32 border-t border-white/5">
-            <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-12">
+            <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-12 items-start">
               <div>
                 <p className="dp-mono text-xs uppercase tracking-[0.4em] mb-3" style={{ color: accent }}>Get in Touch</p>
                 <h2 className="dp-display text-4xl md:text-6xl font-bold leading-tight">

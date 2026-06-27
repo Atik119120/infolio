@@ -267,43 +267,44 @@ export default function CreativeCanvasTheme({
 
           <div className="relative max-w-4xl mx-auto px-5 md:px-8 text-center">
             <div className="relative z-10">
-              <motion.div {...fadeUp} className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold mb-5" style={{ background: C.ink, color: C.secondary }}>
+              <motion.div initial={{ opacity: 0, y: 28 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.05 }} className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold mb-5" style={{ background: C.ink, color: C.secondary }}>
                 <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: C.secondary }} />
                 Available for new projects
               </motion.div>
 
-              <motion.h1 {...fadeUp} className="cc-display font-extrabold leading-[1.02] text-[36px] sm:text-5xl lg:text-6xl xl:text-7xl">
+              <motion.h1 initial={{ opacity: 0, y: 36 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.75, delay: 0.15, ease: [0.16, 1, 0.3, 1] }} className="cc-display font-extrabold leading-[1.02] text-[36px] sm:text-5xl lg:text-6xl xl:text-7xl">
                 Hi, I'm <span style={{ color: C.primary }}>{name.split(" ")[0]}</span>.<br />
                 <span className="relative inline-block">
                   {headline.split(" ").slice(0, 2).join(" ")}
-                  <svg className="absolute -bottom-1.5 left-0 w-full" height="10" viewBox="0 0 200 10" preserveAspectRatio="none">
-                    <path d="M2 6 Q 50 1 100 6 T 198 4" stroke={C.accent} strokeWidth="4" fill="none" strokeLinecap="round" />
-                  </svg>
+                  <motion.svg initial={{ pathLength: 0, opacity: 0 }} animate={{ pathLength: 1, opacity: 1 }} transition={{ duration: 1, delay: 0.9 }} className="absolute -bottom-1.5 left-0 w-full" height="10" viewBox="0 0 200 10" preserveAspectRatio="none">
+                    <motion.path d="M2 6 Q 50 1 100 6 T 198 4" stroke={C.accent} strokeWidth="4" fill="none" strokeLinecap="round" />
+                  </motion.svg>
                 </span>{" "}
                 <span className="cc-display italic font-medium text-[30px] sm:text-4xl lg:text-5xl" style={{ color: C.muted }}>{headline.split(" ").slice(2).join(" ")}</span>
               </motion.h1>
 
-              <motion.p {...fadeUp} className="mt-6 text-sm md:text-base max-w-lg mx-auto" style={{ color: C.muted }}>
+              <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.4 }} className="mt-6 text-sm md:text-base max-w-lg mx-auto" style={{ color: C.muted }}>
                 {subline}
               </motion.p>
 
-              <motion.div {...fadeUp} className="mt-7 flex flex-wrap gap-3 cc-btn justify-center">
-                <a href={heroCtaLink} className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-semibold text-sm text-white hover:scale-[1.03] transition" style={{ background: C.ink }}>
+              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.55 }} className="mt-7 flex flex-wrap gap-3 cc-btn justify-center">
+                <motion.a whileHover={{ scale: 1.04, y: -2 }} whileTap={{ scale: 0.97 }} href={heroCtaLink} className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-semibold text-sm text-white" style={{ background: C.ink }}>
                   {heroCtaText} <ArrowRight size={16} />
-                </a>
-                <button onClick={() => scrollTo("work")} className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-semibold text-sm border-2 hover:scale-[1.03] transition" style={{ borderColor: C.ink }}>
+                </motion.a>
+                <motion.button whileHover={{ scale: 1.04, y: -2 }} whileTap={{ scale: 0.97 }} onClick={() => scrollTo("work")} className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-semibold text-sm border-2" style={{ borderColor: C.ink }}>
                   View Portfolio
-                </button>
+                </motion.button>
               </motion.div>
 
-              <motion.div {...fadeUp} className="mt-10 flex items-center gap-6 text-sm justify-center" style={{ color: C.muted }}>
+              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.7 }} className="mt-10 flex items-center gap-6 text-sm justify-center" style={{ color: C.muted }}>
                 <div className="flex -space-x-2">
                   {[C.primary, C.accent, C.secondary].map((c, i) => (
-                    <div key={i} className="w-9 h-9 rounded-full border-2 border-white" style={{ background: c }} />
+                    <motion.div key={i} initial={{ scale: 0, rotate: -180 }} animate={{ scale: 1, rotate: 0 }} transition={{ duration: 0.5, delay: 0.8 + i * 0.1, type: "spring" }} className="w-9 h-9 rounded-full border-2 border-white" style={{ background: c }} />
                   ))}
                 </div>
                 <span>Trusted by <strong style={{ color: C.ink }}>40+ brands</strong> worldwide</span>
               </motion.div>
+
             </div>
 
           </div>

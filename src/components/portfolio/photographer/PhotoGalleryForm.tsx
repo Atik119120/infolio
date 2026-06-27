@@ -274,41 +274,46 @@ export function PhotoGalleryForm({ portfolio, projects, userId, onUpdate, onSucc
 
             {albums.map((al) => (
               <div key={al.id} className="border rounded-lg p-4 space-y-3">
-                <div className="flex gap-3">
-                  {/* Cover */}
-                  <label className="relative w-28 h-28 shrink-0 rounded-md overflow-hidden border bg-muted cursor-pointer group">
-                    {al.cover ? (
-                      <img src={al.cover} alt="" className="w-full h-full object-cover" />
-                    ) : (
-                      <div className="flex flex-col items-center justify-center w-full h-full text-[10px] text-muted-foreground gap-1">
-                        <Upload className="w-5 h-5" /> Cover
-                      </div>
-                    )}
-                    {savingCoverId === al.id && (
-                      <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-                        <Loader2 className="w-5 h-5 animate-spin text-white" />
-                      </div>
-                    )}
-                    <input
-                      type="file" accept="image/*" className="hidden"
-                      onChange={(e) => { const f = e.target.files?.[0]; if (f) handleCover(al.id, f); }}
-                    />
-                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition" />
-                  </label>
+                <div className="space-y-3">
+                  <div className="flex items-start gap-3">
+                    {/* Cover */}
+                    <label className="relative w-24 h-24 shrink-0 rounded-md overflow-hidden border bg-muted cursor-pointer group">
+                      {al.cover ? (
+                        <img src={al.cover} alt="" className="w-full h-full object-cover" />
+                      ) : (
+                        <div className="flex flex-col items-center justify-center w-full h-full text-[10px] text-muted-foreground gap-1">
+                          <Upload className="w-5 h-5" /> Cover
+                        </div>
+                      )}
+                      {savingCoverId === al.id && (
+                        <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+                          <Loader2 className="w-5 h-5 animate-spin text-white" />
+                        </div>
+                      )}
+                      <input
+                        type="file" accept="image/*" className="hidden"
+                        onChange={(e) => { const f = e.target.files?.[0]; if (f) handleCover(al.id, f); }}
+                      />
+                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition" />
+                    </label>
+                    <div className="flex-1 min-w-0 text-xs text-muted-foreground">
+                      Tap to set cover image for this album.
+                    </div>
+                    <Button size="sm" variant="ghost" onClick={() => removeAlbum(al.id)} className="text-destructive self-start shrink-0">
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
+                  </div>
 
-                  <div className="flex-1 space-y-2 min-w-0">
-                    <div>
+                  <div className="space-y-2">
+                    <div className="space-y-1">
                       <Label className="text-xs">Album Title</Label>
                       <Input value={al.title} onChange={(e) => updateAlbum(al.id, { title: e.target.value })} placeholder="Wedding · Sara & Adib" />
                     </div>
-                    <div>
+                    <div className="space-y-1">
                       <Label className="text-xs">Subtitle</Label>
                       <Input value={al.subtitle || ""} onChange={(e) => updateAlbum(al.id, { subtitle: e.target.value })} placeholder="Dhaka · Feb 2024" />
                     </div>
                   </div>
-                  <Button size="sm" variant="ghost" onClick={() => removeAlbum(al.id)} className="text-destructive self-start">
-                    <Trash2 className="w-4 h-4" />
-                  </Button>
                 </div>
 
                 <div>

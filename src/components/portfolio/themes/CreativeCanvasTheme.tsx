@@ -460,10 +460,13 @@ export default function CreativeCanvasTheme({
                 const accent = C.primary;
                 return (
                   <motion.article
-                    {...fadeUp}
-                    transition={{ ...fadeUp.transition, delay: i * 0.05 }}
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, margin: "-40px" }}
+                    transition={{ duration: 0.55, delay: i * 0.08, ease: [0.16, 1, 0.3, 1] }}
+                    whileHover={{ y: -6, scale: 1.02, borderColor: accent }}
                     key={s.id}
-                    className="group relative p-5 rounded-2xl border overflow-hidden transition-all hover:-translate-y-1"
+                    className="group relative p-5 rounded-2xl border overflow-hidden cursor-pointer"
                     style={{ background: "rgba(255,255,255,0.04)", borderColor: "rgba(255,255,255,0.1)" }}
                   >
                     <span className="absolute top-4 right-5 cc-display text-[10px] font-bold opacity-30">

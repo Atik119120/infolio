@@ -70,7 +70,7 @@ function HeroSlideshow({ images }: { images: string[] }) {
           }}
         />
       ))}
-      <div className="absolute inset-0" style={{ background: "linear-gradient(to bottom, rgba(5,5,5,0.55) 0%, rgba(5,5,5,0.85) 70%, #050505 100%)" }} />
+      <div className="absolute inset-0" style={{ background: "linear-gradient(to bottom, rgba(5,5,5,0.15) 0%, rgba(5,5,5,0.35) 70%, #050505 100%)" }} />
     </div>
   );
 }

@@ -850,6 +850,7 @@ export type Database = {
           hero_headline: string | null
           hero_image_url: string | null
           hero_images: Json | null
+          hero_marquee_words: string[] | null
           hero_subheadline: string | null
           id: string
           is_published: boolean | null
@@ -864,6 +865,7 @@ export type Database = {
           section_visibility: Json | null
           show_branding: boolean
           theme: string | null
+          theme_software: Json | null
           updated_at: string
           user_id: string
           website: string | null
@@ -898,6 +900,7 @@ export type Database = {
           hero_headline?: string | null
           hero_image_url?: string | null
           hero_images?: Json | null
+          hero_marquee_words?: string[] | null
           hero_subheadline?: string | null
           id?: string
           is_published?: boolean | null
@@ -912,6 +915,7 @@ export type Database = {
           section_visibility?: Json | null
           show_branding?: boolean
           theme?: string | null
+          theme_software?: Json | null
           updated_at?: string
           user_id: string
           website?: string | null
@@ -946,6 +950,7 @@ export type Database = {
           hero_headline?: string | null
           hero_image_url?: string | null
           hero_images?: Json | null
+          hero_marquee_words?: string[] | null
           hero_subheadline?: string | null
           id?: string
           is_published?: boolean | null
@@ -960,6 +965,7 @@ export type Database = {
           section_visibility?: Json | null
           show_branding?: boolean
           theme?: string | null
+          theme_software?: Json | null
           updated_at?: string
           user_id?: string
           website?: string | null

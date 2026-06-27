@@ -512,7 +512,7 @@ export default function DarkPhotographerTheme({
                 <InteractiveBentoGallery mediaItems={bentoItems} />
               ) : (
                 <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
-                  {demoAlbums.map((al) => (
+                  {albumsToShow.map((al) => (
                     <button
                       key={al.id}
                       onClick={() => setOpenAlbum(al)}

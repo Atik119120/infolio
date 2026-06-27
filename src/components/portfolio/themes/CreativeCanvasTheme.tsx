@@ -569,9 +569,12 @@ export default function CreativeCanvasTheme({
                 return (
                   <motion.div
                     key={p.id}
-                    {...fadeUp}
-                    transition={{ ...fadeUp.transition, delay: (i % 8) * 0.04 }}
-                    className="group relative rounded-2xl overflow-hidden cursor-pointer shadow-sm hover:shadow-2xl transition-shadow"
+                    initial={{ opacity: 0, y: 40, scale: 0.95 }}
+                    whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                    viewport={{ once: true, margin: "-40px" }}
+                    transition={{ duration: 0.6, delay: (i % 8) * 0.06, ease: [0.16, 1, 0.3, 1] }}
+                    whileHover={{ y: -4, rotate: i % 2 ? 0.5 : -0.5 }}
+                    className="group relative rounded-2xl overflow-hidden cursor-pointer shadow-sm hover:shadow-2xl"
                     onClick={() => p.image_url && setLightbox(p.image_url)}
                   >
                     <div className={`relative ${heights[i % heights.length]} overflow-hidden`} style={{ background: tint }}>

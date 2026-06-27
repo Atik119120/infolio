@@ -214,9 +214,13 @@ export default function DarkPhotographerTheme({
       photos: buildAlbum([401,402,403,404,405,406,407,408,409,410,411,412,413,414,415]),
     },
   ];
+  const userAlbums = Array.isArray((portfolio as any)?.albums) ? (portfolio as any).albums : null;
+  const albumsToShow = (userAlbums && userAlbums.length > 0
+    ? userAlbums.map((a: any) => ({ id: a.id, title: a.title, cover: a.cover || a.photos?.[0] || "", count: a.photos?.length || 0, photos: a.photos || [] }))
+    : demoAlbums);
 
   const [workTab, setWorkTab] = useState<"photos" | "albums">("photos");
-  const [openAlbum, setOpenAlbum] = useState<typeof demoAlbums[number] | null>(null);
+  const [openAlbum, setOpenAlbum] = useState<typeof albumsToShow[number] | null>(null);
   const [lightbox, setLightbox] = useState<string | null>(null);
 
   useEffect(() => {
@@ -508,7 +512,7 @@ export default function DarkPhotographerTheme({
                 <InteractiveBentoGallery mediaItems={bentoItems} />
               ) : (
                 <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
-                  {demoAlbums.map((al) => (
+                  {albumsToShow.map((al) => (
                     <button
                       key={al.id}
                       onClick={() => setOpenAlbum(al)}

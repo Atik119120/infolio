@@ -828,6 +828,7 @@ export type Database = {
           about_text: string | null
           accent_color: string | null
           active_engine: string
+          albums: Json | null
           bio: string | null
           brand_name: string | null
           browser_title: string | null
@@ -875,6 +876,7 @@ export type Database = {
           about_text?: string | null
           accent_color?: string | null
           active_engine?: string
+          albums?: Json | null
           bio?: string | null
           brand_name?: string | null
           browser_title?: string | null
@@ -922,6 +924,7 @@ export type Database = {
           about_text?: string | null
           accent_color?: string | null
           active_engine?: string
+          albums?: Json | null
           bio?: string | null
           brand_name?: string | null
           browser_title?: string | null

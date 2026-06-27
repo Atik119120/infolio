@@ -30,6 +30,7 @@ import { CustomCodeForm } from "@/components/portfolio/CustomCodeForm";
 import { HeroSlideshowForm } from "@/components/portfolio/photographer/HeroSlideshowForm";
 import { PhotographyPackagesForm } from "@/components/portfolio/photographer/PhotographyPackagesForm";
 import { AboutPhotographerForm } from "@/components/portfolio/photographer/AboutPhotographerForm";
+import { PhotoGalleryForm } from "@/components/portfolio/photographer/PhotoGalleryForm";
 import { getThemeConfig } from "@/config/themeFeatures";
 import { cn } from "@/lib/utils";
 
@@ -339,6 +340,8 @@ export default function PortfolioEdit() {
           return <PhotographyPackagesForm services={services} userId={user?.id || ""} onUpdate={handleUpdate} onSuccess={showSuccess} onError={showError} />;
         return <ServicesForm services={services} userId={user?.id || ""} onUpdate={handleUpdate} onSuccess={showSuccess} onError={showError} />;
       case "projects":
+        if (activeTheme === "dark-photographer")
+          return <PhotoGalleryForm portfolio={portfolio} projects={projects} userId={user?.id || ""} onUpdate={handleUpdate} onSuccess={showSuccess} onError={showError} />;
         return <ProjectsForm projects={projects} userId={user?.id || ""} onUpdate={handleUpdate} onSuccess={showSuccess} onError={showError} />;
       case "experience":
         return <ExperienceForm experiences={experiences} userId={user?.id || ""} onUpdate={handleUpdate} onSuccess={showSuccess} onError={showError} />;

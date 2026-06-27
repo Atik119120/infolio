@@ -281,12 +281,8 @@ export default function CreativeCanvasTheme({
               </motion.div>
             </div>
 
-
-
-
-            </div>
-
           </div>
+
 
 
           {/* Marquee — tilted ribbon */}

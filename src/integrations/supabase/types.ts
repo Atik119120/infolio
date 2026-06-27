@@ -846,6 +846,7 @@ export type Database = {
           hero_cta_text: string | null
           hero_headline: string | null
           hero_image_url: string | null
+          hero_images: Json | null
           hero_subheadline: string | null
           id: string
           is_published: boolean | null
@@ -890,6 +891,7 @@ export type Database = {
           hero_cta_text?: string | null
           hero_headline?: string | null
           hero_image_url?: string | null
+          hero_images?: Json | null
           hero_subheadline?: string | null
           id?: string
           is_published?: boolean | null
@@ -934,6 +936,7 @@ export type Database = {
           hero_cta_text?: string | null
           hero_headline?: string | null
           hero_image_url?: string | null
+          hero_images?: Json | null
           hero_subheadline?: string | null
           id?: string
           is_published?: boolean | null
@@ -1304,9 +1307,13 @@ export type Database = {
           created_at: string
           description: string | null
           display_order: number | null
+          duration: string | null
+          featured: boolean | null
+          features: Json | null
           icon: string | null
           id: string
           price: string | null
+          tagline: string | null
           title: string
           updated_at: string
           user_id: string
@@ -1315,9 +1322,13 @@ export type Database = {
           created_at?: string
           description?: string | null
           display_order?: number | null
+          duration?: string | null
+          featured?: boolean | null
+          features?: Json | null
           icon?: string | null
           id?: string
           price?: string | null
+          tagline?: string | null
           title: string
           updated_at?: string
           user_id: string
@@ -1326,9 +1337,13 @@ export type Database = {
           created_at?: string
           description?: string | null
           display_order?: number | null
+          duration?: string | null
+          featured?: boolean | null
+          features?: Json | null
           icon?: string | null
           id?: string
           price?: string | null
+          tagline?: string | null
           title?: string
           updated_at?: string
           user_id?: string

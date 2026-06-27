@@ -27,6 +27,8 @@ import { FaviconUploadForm } from "@/components/portfolio/FaviconUploadForm";
 import { SeoSettingsForm } from "@/components/portfolio/SeoSettingsForm";
 import { CustomizationForm } from "@/components/portfolio/CustomizationForm";
 import { CustomCodeForm } from "@/components/portfolio/CustomCodeForm";
+import { HeroSlideshowForm } from "@/components/portfolio/photographer/HeroSlideshowForm";
+import { PhotographyPackagesForm } from "@/components/portfolio/photographer/PhotographyPackagesForm";
 import { getThemeConfig } from "@/config/themeFeatures";
 import { cn } from "@/lib/utils";
 

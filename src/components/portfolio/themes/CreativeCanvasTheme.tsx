@@ -392,52 +392,69 @@ export default function CreativeCanvasTheme({
         <section id="work" className="py-20 md:py-28">
           <div className="max-w-7xl mx-auto px-5 md:px-8">
             <motion.div {...fadeUp} className="mb-10">
-              <div className="flex items-end justify-between flex-wrap gap-6">
-                <div>
-                  <div className="flex items-center gap-3 mb-4">
-                    <span className="cc-display text-xs font-bold tracking-[0.4em]" style={{ color: C.muted }}>03 —</span>
-                    <span className="h-px w-12" style={{ background: C.ink }} />
-                    <span className="text-[10px] font-bold tracking-[0.3em]" style={{ color: C.ink }}>SELECTED WORK</span>
-                  </div>
-                  <h2 className="cc-display font-extrabold text-4xl md:text-6xl leading-[0.95]">
-                    Recent<br /><span style={{ color: C.primary }} className="italic font-medium">case studies</span><span style={{ color: C.accent }}>.</span>
-                  </h2>
+              {/* Editorial header band */}
+              <div className="relative border-2 rounded-3xl px-5 py-6 md:px-10 md:py-8 overflow-hidden" style={{ borderColor: C.ink, background: C.paper, boxShadow: `8px 8px 0 ${C.ink}` }}>
+                {/* corner sticker */}
+                <div className="absolute -top-3 -right-3 px-3 py-1.5 rounded-full border-2 text-[10px] font-extrabold tracking-[0.25em] rotate-[8deg]" style={{ borderColor: C.ink, background: C.accent, color: C.ink }}>
+                  PORTFOLIO ’26
                 </div>
-                <div className="text-right">
-                  <div className="cc-display text-5xl md:text-6xl font-extrabold leading-none" style={{ color: C.primary }}>
-                    {String(filteredProjects.length).padStart(2, "0")}
-                  </div>
-                  <div className="text-[10px] font-bold tracking-[0.3em] mt-1" style={{ color: C.muted }}>PROJECTS SHOWN</div>
-                </div>
-              </div>
 
-              {/* Underline filter tabs */}
-              <div className="mt-8 flex flex-wrap gap-x-7 gap-y-2 cc-btn border-t border-b py-3" style={{ borderColor: C.ink }}>
-                {categories.map(c => {
-                  const isActive = filter === c;
-                  return (
-                    <button
-                      key={c}
-                      onClick={() => setFilter(c)}
-                      className="relative text-sm font-semibold transition group"
-                      style={{ color: isActive ? C.ink : C.muted }}
-                    >
-                      <span className="cc-display text-[10px] font-bold mr-1.5 tracking-wider" style={{ color: isActive ? C.primary : C.muted }}>
-                        {isActive ? "●" : "○"}
+                <div className="grid md:grid-cols-[1fr_auto] gap-6 items-end">
+                  <div>
+                    <div className="flex items-center gap-3 mb-3">
+                      <span className="cc-display text-xs font-bold tracking-[0.4em]" style={{ color: C.muted }}>03 —</span>
+                      <span className="h-px w-12" style={{ background: C.ink }} />
+                      <span className="text-[10px] font-bold tracking-[0.3em]" style={{ color: C.ink }}>SELECTED WORK</span>
+                    </div>
+                    <h2 className="cc-display font-extrabold text-4xl md:text-6xl leading-[0.95]">
+                      A peek at my<br />
+                      <span style={{ color: C.primary }} className="italic font-medium">favorite</span>{" "}
+                      <span className="relative inline-block">
+                        projects
+                        <span aria-hidden className="absolute left-0 right-0 -bottom-1 h-[6px] -rotate-1" style={{ background: C.accent }} />
                       </span>
-                      {c}
-                      {isActive && (
-                        <motion.span
-                          layoutId="cc-filter-underline"
-                          className="absolute -bottom-3 left-0 right-0 h-[3px]"
-                          style={{ background: C.primary }}
-                        />
-                      )}
-                    </button>
-                  );
-                })}
+                      <span style={{ color: C.primary }}>.</span>
+                    </h2>
+                  </div>
+
+                  <div className="flex items-center gap-4 shrink-0">
+                    <div className="h-16 w-px hidden md:block" style={{ background: C.ink }} />
+                    <div className="text-right">
+                      <div className="cc-display text-5xl md:text-6xl font-extrabold leading-none" style={{ color: C.ink }}>
+                        {String(filteredProjects.length).padStart(2, "0")}
+                        <span style={{ color: C.primary }}>/</span>
+                        <span className="text-2xl md:text-3xl" style={{ color: C.muted }}>{String(projects.length).padStart(2, "0")}</span>
+                      </div>
+                      <div className="text-[10px] font-bold tracking-[0.3em] mt-1" style={{ color: C.muted }}>SHOWN / TOTAL</div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Pill filter tabs */}
+                <div className="mt-7 flex flex-wrap gap-2 cc-btn">
+                  {categories.map(c => {
+                    const isActive = filter === c;
+                    return (
+                      <button
+                        key={c}
+                        onClick={() => setFilter(c)}
+                        className="px-3.5 py-1.5 rounded-full text-xs font-semibold border-2 transition"
+                        style={{
+                          borderColor: C.ink,
+                          background: isActive ? C.ink : "transparent",
+                          color: isActive ? C.paper : C.ink,
+                          boxShadow: isActive ? `3px 3px 0 ${C.primary}` : "none",
+                        }}
+                      >
+                        {c}
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
             </motion.div>
+
+
 
 
             <div className="columns-2 md:columns-3 lg:columns-4 gap-3 md:gap-4 [&>*]:mb-3 md:[&>*]:mb-4 [&>*]:break-inside-avoid">

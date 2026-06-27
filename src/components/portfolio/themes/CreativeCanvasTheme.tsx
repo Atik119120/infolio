@@ -619,86 +619,85 @@ export default function CreativeCanvasTheme({
         </section>
       )}
 
-      {/* CONTACT — minimal directory */}
+      {/* CONTACT — single hero card */}
       {v.contact && (
-        <section id="contact" className="py-24 md:py-32 relative overflow-hidden">
-          <div className="max-w-5xl mx-auto px-5 md:px-8">
-            {/* Index header */}
-            <motion.div {...fadeUp} className="flex items-center gap-3 mb-10">
-              <span className="cc-display text-xs font-bold tracking-[0.4em]" style={{ color: C.muted }}>07 —</span>
-              <span className="h-px flex-1" style={{ background: C.ink }} />
-              <span className="text-[10px] font-bold tracking-[0.3em]">CONTACT · INDEX</span>
-            </motion.div>
+        <section id="contact" className="py-20 md:py-28 relative overflow-hidden">
+          <div className="max-w-4xl mx-auto px-5 md:px-8">
+            <motion.div
+              {...fadeUp}
+              className="relative rounded-[32px] border-2 p-8 md:p-14 text-center overflow-hidden"
+              style={{ borderColor: C.ink, background: C.secondary, boxShadow: `14px 14px 0 ${C.ink}` }}
+            >
+              {/* dotted bg */}
+              <div className="absolute inset-0 pointer-events-none opacity-20" style={{
+                backgroundImage: `radial-gradient(${C.ink} 1.2px, transparent 1.4px)`,
+                backgroundSize: "16px 16px",
+              }} />
+              {/* corner stickers */}
+              <div className="absolute -top-3 -left-3 w-12 h-12 rounded-full border-2 flex items-center justify-center cc-display font-extrabold rotate-[-12deg]" style={{ borderColor: C.ink, background: C.accent, color: C.ink }}>✦</div>
+              <div className="absolute -bottom-3 -right-3 px-3 py-1.5 rounded-full border-2 text-[10px] font-bold tracking-[0.25em] rotate-[6deg]" style={{ borderColor: C.ink, background: C.primary, color: C.paper }}>LET'S TALK</div>
 
-            {/* Huge email — the only loud thing */}
-            {email && (
-              <motion.a
-                {...fadeUp}
-                href={`mailto:${email}`}
-                className="group block mb-16 md:mb-24"
-              >
-                <div className="cc-display font-extrabold leading-[0.95] tracking-tight break-all text-[clamp(2.2rem,8vw,6.5rem)]">
-                  <span className="italic font-medium" style={{ color: C.primary }}>→</span>{" "}
-                  <span className="underline decoration-2 underline-offset-[10px] decoration-transparent group-hover:decoration-[currentColor] transition-all duration-500">
-                    {email}
-                  </span>
+              <div className="relative">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[10px] font-bold tracking-[0.3em] mb-5 border-2" style={{ borderColor: C.ink, background: C.paper, color: C.ink }}>
+                  <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ background: C.primary }} />
+                  AVAILABLE FOR WORK
                 </div>
-                <div className="mt-4 flex items-center gap-3 text-[10px] font-bold tracking-[0.3em]" style={{ color: C.muted }}>
-                  <span className="w-2 h-2 rounded-full animate-pulse" style={{ background: C.primary }} />
-                  AVAILABLE FOR PROJECTS · {new Date().toLocaleString("en-US", { month: "short", year: "numeric" }).toUpperCase()}
+                <h2 className="cc-display font-extrabold text-4xl md:text-6xl leading-[0.95] mb-3" style={{ color: C.ink }}>
+                  Got a project<br />
+                  <span className="italic font-medium" style={{ color: C.primary }}>in mind</span>
+                  <span style={{ color: C.accent }}>?</span>
+                </h2>
+                <p className="text-sm md:text-base max-w-md mx-auto mb-8" style={{ color: C.ink, opacity: 0.7 }}>
+                  Drop a line — I usually reply within 24 hours.
+                </p>
+
+                {email && (
+                  <a
+                    href={`mailto:${email}`}
+                    className="group inline-flex items-center gap-3 px-7 py-4 rounded-full cc-display font-extrabold text-base md:text-lg border-2 transition hover:-translate-y-1"
+                    style={{ background: C.ink, color: C.paper, borderColor: C.ink, boxShadow: `6px 6px 0 ${C.primary}` }}
+                  >
+                    <Mail size={18} />
+                    <span className="break-all">{email}</span>
+                    <ArrowUpRight size={18} className="group-hover:rotate-45 transition" />
+                  </a>
+                )}
+
+                {/* secondary row */}
+                <div className="mt-8 flex flex-wrap justify-center items-center gap-x-6 gap-y-3 text-sm font-bold" style={{ color: C.ink }}>
+                  {phone && (
+                    <a href={`tel:${phone}`} className="flex items-center gap-2 hover:underline underline-offset-4">
+                      <Phone size={14} /> {phone}
+                    </a>
+                  )}
+                  {location && (
+                    <span className="flex items-center gap-2 opacity-80">
+                      <MapPin size={14} /> {location}
+                    </span>
+                  )}
                 </div>
-              </motion.a>
-            )}
 
-            {/* Directory rows */}
-            <div className="border-t" style={{ borderColor: C.ink }}>
-              {phone && (
-                <motion.a {...fadeUp} href={`tel:${phone}`} className="group flex items-center justify-between gap-6 py-5 border-b transition hover:pl-4" style={{ borderColor: C.ink }}>
-                  <div className="flex items-center gap-6 min-w-0">
-                    <span className="cc-display text-xs font-bold tracking-[0.3em] w-16 shrink-0" style={{ color: C.muted }}>/ TEL</span>
-                    <span className="cc-display text-xl md:text-2xl font-extrabold truncate">{phone}</span>
+                {socialLinks.length > 0 && (
+                  <div className="mt-6 flex flex-wrap justify-center gap-2">
+                    {socialLinks.map(l => {
+                      const Icon = getSocialIcon(l.platform);
+                      return (
+                        <a key={l.id} href={l.url} target="_blank" rel="noreferrer"
+                          className="w-10 h-10 rounded-full border-2 flex items-center justify-center transition hover:-translate-y-1"
+                          style={{ borderColor: C.ink, background: C.paper, color: C.ink }}
+                          aria-label={l.platform}>
+                          <Icon size={16} />
+                        </a>
+                      );
+                    })}
                   </div>
-                  <ArrowUpRight size={22} className="shrink-0 transition group-hover:rotate-45" />
-                </motion.a>
-              )}
-              {location && (
-                <motion.div {...fadeUp} className="flex items-center justify-between gap-6 py-5 border-b" style={{ borderColor: C.ink }}>
-                  <div className="flex items-center gap-6 min-w-0">
-                    <span className="cc-display text-xs font-bold tracking-[0.3em] w-16 shrink-0" style={{ color: C.muted }}>/ LOC</span>
-                    <span className="cc-display text-xl md:text-2xl font-extrabold truncate">{location}</span>
-                  </div>
-                  <span className="text-[10px] font-bold tracking-[0.3em] shrink-0" style={{ color: C.muted }}>WORLDWIDE</span>
-                </motion.div>
-              )}
-              {socialLinks.length > 0 && (
-                <motion.div {...fadeUp} className="flex items-center justify-between gap-6 py-5 border-b flex-wrap" style={{ borderColor: C.ink }}>
-                  <span className="cc-display text-xs font-bold tracking-[0.3em] w-16 shrink-0" style={{ color: C.muted }}>/ NET</span>
-                  <div className="flex flex-wrap gap-x-6 gap-y-2 flex-1">
-                    {socialLinks.map(l => (
-                      <a key={l.id} href={l.url} target="_blank" rel="noreferrer"
-                        className="group cc-display text-xl md:text-2xl font-extrabold capitalize flex items-center gap-1 transition"
-                        style={{ color: C.ink }}>
-                        <span className="group-hover:italic group-hover:text-[color:var(--cc-p)] transition" style={{ ["--cc-p" as any]: C.primary }}>{l.platform}</span>
-                        <span className="text-base opacity-40 group-hover:opacity-100 group-hover:-translate-y-0.5 transition">↗</span>
-                      </a>
-                    ))}
-                  </div>
-                </motion.div>
-              )}
-            </div>
-
-            {/* tiny sign-off */}
-            <motion.div {...fadeUp} className="mt-10 flex items-center justify-between text-[10px] font-bold tracking-[0.3em]" style={{ color: C.muted }}>
-              <span>— END OF INDEX</span>
-              <span className="flex gap-1.5 items-center">
-                <span className="w-1.5 h-1.5 rounded-full" style={{ background: C.primary }} />
-                <span className="w-1.5 h-1.5 rounded-full" style={{ background: C.secondary }} />
-                <span className="w-1.5 h-1.5 rounded-full" style={{ background: C.accent }} />
-              </span>
+                )}
+              </div>
             </motion.div>
           </div>
         </section>
       )}
+
 
 
       {/* FOOTER */}

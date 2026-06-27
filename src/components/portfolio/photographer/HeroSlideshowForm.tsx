@@ -135,7 +135,7 @@ export function HeroSlideshowForm({ portfolio, userId, onUpdate, onSuccess, onEr
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2"><Images className="w-5 h-5" /> Hero Slideshow</CardTitle>
-          <CardDescription>Hero section-এ multiple banner images auto-slide হবে। যত খুশি ছবি upload করো — drag-order এ slide হবে।</CardDescription>
+          <CardDescription>Hero section-এ multiple banner images auto-slide হবে। সর্বোচ্চ {MAX_SLIDES}টি ছবি upload করা যাবে — drag-order এ slide হবে।</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           {images.length === 0 ? (

@@ -186,8 +186,9 @@ export function HeroSlideshowForm({ portfolio, userId, onUpdate, onSuccess, onEr
               <Input value={headline} onChange={(e) => setHeadline(e.target.value)} placeholder="Frames by Alex" maxLength={120} />
             </div>
             <div className="space-y-1.5">
-              <Label>Subheadline / Profession</Label>
-              <Input value={subheadline} onChange={(e) => setSubheadline(e.target.value)} placeholder="Visual Storyteller" maxLength={160} />
+              <Label>Tagline (top ribbon text)</Label>
+              <Input value={subheadline} onChange={(e) => setSubheadline(e.target.value)} placeholder="Visual Storyteller" maxLength={200} />
+              <p className="text-[11px] text-muted-foreground">Headline-এর উপরে যে ছোট ribbon text দেখায় (যেমন: "// Bangladeshi Visual Creator...")</p>
             </div>
             <div className="space-y-1.5">
               <Label>Primary Button Text</Label>

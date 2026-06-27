@@ -651,7 +651,7 @@ export default function CreativeCanvasTheme({
               </div>
               <h2 className="cc-display font-extrabold text-4xl md:text-5xl mb-8">Software<br /><span className="italic font-medium" style={{ color: C.primary }}>I master daily.</span></h2>
               <div className="grid grid-cols-2 gap-0 border-l border-t" style={{ borderColor: C.ink }}>
-                {SOFTWARE.map((s, i) => (
+                {softwareList.map((s, i) => (
                   <motion.div
                     key={i}
                     initial={{ opacity: 0, scale: 0.85 }}

@@ -345,7 +345,7 @@ export default function DarkPhotographerTheme({
         {/* CONTACT */}
         {vContact && (
           <section id="contact" className="relative px-6 lg:px-12 py-24 lg:py-32 border-t border-white/5">
-            <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-12">
+            <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-12 items-start">
               <div>
                 <p className="dp-mono text-xs uppercase tracking-[0.4em] mb-3" style={{ color: accent }}>Get in Touch</p>
                 <h2 className="dp-display text-4xl md:text-6xl font-bold leading-tight">
@@ -381,18 +381,30 @@ export default function DarkPhotographerTheme({
                   </div>
                 )}
               </div>
-              <div className="rounded-2xl border border-white/10 bg-white/[0.02] p-6 lg:p-8">
-                <ContactForm
-                  portfolioOwnerId={userId || ""}
-                  themeStyle={{
-                    surface: "rgba(255,255,255,0.04)",
-                    border: "rgba(255,255,255,0.15)",
-                    text: "#FFFFFF",
-                    textMuted: "rgba(255,255,255,0.6)",
-                    accent: accent,
-                    accentText: "#000000",
-                  }}
-                />
+              <div className="relative self-start rounded-2xl border border-white/10 bg-gradient-to-br from-white/[0.04] to-white/[0.01] p-6 lg:p-8 overflow-hidden">
+                <div className="absolute -top-24 -right-24 w-64 h-64 rounded-full blur-3xl opacity-20" style={{ background: accent }} />
+                <div className="relative">
+                  <div className="flex items-center gap-3 mb-6 pb-6 border-b border-white/10">
+                    <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ background: `${accent}20`, color: accent }}>
+                      <Mail className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <p className="dp-display font-semibold text-white text-base leading-tight">Send a message</p>
+                      <p className="dp-mono text-[11px] text-white/40 uppercase tracking-widest">Usually replies within 24h</p>
+                    </div>
+                  </div>
+                  <ContactForm
+                    portfolioOwnerId={userId || ""}
+                    themeStyle={{
+                      surface: "rgba(255,255,255,0.04)",
+                      border: "rgba(255,255,255,0.15)",
+                      text: "#FFFFFF",
+                      textMuted: "rgba(255,255,255,0.6)",
+                      accent: accent,
+                      accentText: "#000000",
+                    }}
+                  />
+                </div>
               </div>
             </div>
           </section>

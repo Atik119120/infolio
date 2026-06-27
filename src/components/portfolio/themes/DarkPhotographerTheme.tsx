@@ -214,7 +214,7 @@ export default function DarkPhotographerTheme({
             ))}
           </nav>
           <button onClick={() => scrollTo("contact")} className="hidden md:inline-flex items-center gap-1 text-xs uppercase tracking-[0.2em] text-black px-4 py-2 rounded-full font-semibold" style={{ background: accent }}>
-            Hire Me <ArrowUpRight className="w-3.5 h-3.5" />
+            Book Me <ArrowUpRight className="w-3.5 h-3.5" />
           </button>
         </div>
       </header>

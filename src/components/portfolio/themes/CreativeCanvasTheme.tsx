@@ -328,7 +328,7 @@ export default function CreativeCanvasTheme({
                       {aboutImg ? <img src={aboutImg} alt="About" className="w-full h-full object-cover" /> : <div className="w-full h-full" style={{ background: C.secondary }} />}
                     </div>
                     <div className="absolute bottom-4 left-0 right-0 text-center cc-display font-bold text-sm tracking-wide" style={{ color: C.ink }}>
-                      — {profile?.full_name?.split(" ")[0] || "me"}, in the studio —
+                      — {name.split(" ")[0]}, in the studio —
                     </div>
                   </div>
                   {/* sticker badge */}
@@ -372,7 +372,7 @@ export default function CreativeCanvasTheme({
                   )}
                   {/* signature */}
                   <div className="cc-display italic text-2xl md:text-3xl font-bold" style={{ color: C.ink }}>
-                    {profile?.full_name || "—"}
+                    {name}
                     <span style={{ color: C.primary }}>.</span>
                   </div>
                 </div>

@@ -228,101 +228,36 @@ export default function DarkPhotographerTheme({
         .dp-card-img { transition: transform 1.2s cubic-bezier(.2,.7,.2,1), filter .6s ease; }
         .group:hover .dp-card-img { transform: scale(1.06); filter: saturate(1.1); }
 
-        /* ====== FILM STRIP BUTTON ====== */
-        .dp-film {
-          position: relative; display: inline-block; cursor: pointer;
-          background: transparent; border: 0; padding: 0;
-          transform: rotate(-2deg); transition: transform .4s cubic-bezier(.2,.7,.2,1);
-        }
-        .dp-film:hover { transform: rotate(0deg) translateY(-2px); }
-        .dp-film-inner {
-          display: flex; align-items: center; gap: 14px;
-          background: #0a0a0a; padding: 16px 24px;
-          border-left: 3px solid var(--acc); border-right: 3px solid var(--acc);
+        /* ====== CUT-CORNER BUTTONS (simple + unique) ====== */
+        .dp-cut-btn {
+          position: relative; display: inline-flex; align-items: center; gap: 10px;
+          padding: 14px 22px; cursor: pointer; border: 0;
           font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-          color: #fff; position: relative;
-          box-shadow: 0 8px 30px rgba(0,0,0,.6);
+          font-size: 11px; letter-spacing: 0.26em; text-transform: uppercase; font-weight: 600;
+          background: transparent;
+          clip-path: polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px);
+          transition: all .35s cubic-bezier(.2,.7,.2,1);
         }
-        .dp-film-frame {
-          font-size: 28px; font-weight: 700; color: var(--acc);
-          font-family: 'Playfair Display', serif; line-height: 1;
-          padding-right: 14px; border-right: 1px dashed rgba(255,255,255,.2);
+        .dp-cut-btn.sm { padding: 10px 16px; font-size: 10px; gap: 8px; }
+        .dp-cut-btn.primary { background: var(--acc); color: #050505; }
+        .dp-cut-btn.primary:hover { transform: translate(-2px,-2px); box-shadow: 4px 4px 0 0 rgba(255,255,255,.15); }
+        .dp-cut-btn.ghost {
+          color: #fff;
+          background:
+            linear-gradient(#0a0a0a,#0a0a0a) padding-box,
+            var(--acc) border-box;
+          border: 1px solid transparent;
         }
-        .dp-film-label {
-          font-size: 11px; letter-spacing: 0.28em; text-transform: uppercase; font-weight: 600;
+        .dp-cut-btn.ghost:hover { color: var(--acc); transform: translate(-2px,-2px); box-shadow: 4px 4px 0 0 var(--acc); }
+        .dp-cut-dot {
+          width: 6px; height: 6px; background: currentColor; border-radius: 50%;
+          flex-shrink: 0; transition: transform .35s ease;
         }
-        .dp-film-iso {
-          font-size: 9px; letter-spacing: 0.3em; color: var(--acc); opacity: .8;
-          padding-left: 12px; border-left: 1px dashed rgba(255,255,255,.2);
+        .dp-cut-btn:hover .dp-cut-dot { transform: scale(1.6); }
+        .dp-cut-arrow {
+          display: inline-block; transition: transform .35s ease; font-size: 14px;
         }
-        .dp-sprockets {
-          display: flex; justify-content: space-between; align-items: center;
-          background: var(--acc); padding: 4px 8px; gap: 6px;
-        }
-        .dp-sprockets span {
-          width: 10px; height: 6px; background: #050505; border-radius: 1px;
-          display: block; flex: 1;
-        }
-        .dp-film:hover .dp-sprockets span { animation: dp-roll .6s linear infinite; }
-        @keyframes dp-roll {
-          0% { transform: translateX(0); }
-          100% { transform: translateX(-16px); }
-        }
-
-        /* ====== SHUTTER RELEASE BUTTON (circular) ====== */
-        .dp-shutter-btn {
-          position: relative; width: 96px; height: 96px; border-radius: 50%;
-          background: radial-gradient(circle at 30% 30%, #1a1a1a, #050505 70%);
-          border: 0; cursor: pointer; flex-shrink: 0;
-          box-shadow: 0 6px 20px rgba(0,0,0,.7), inset 0 -3px 8px rgba(0,0,0,.8), inset 0 2px 4px rgba(255,255,255,.05);
-          display: flex; align-items: center; justify-content: center;
-          transition: transform .2s ease, box-shadow .3s ease;
-        }
-        .dp-shutter-btn:active { transform: translateY(2px); box-shadow: 0 2px 8px rgba(0,0,0,.7), inset 0 -1px 4px rgba(0,0,0,.8); }
-        .dp-shutter-ring, .dp-shutter-ring.r2 {
-          position: absolute; inset: 6px; border-radius: 50%;
-          border: 1px dashed rgba(255,255,255,.15); pointer-events: none;
-        }
-        .dp-shutter-ring.r2 { inset: 12px; border: 1px solid var(--acc); opacity: .4; }
-        .dp-shutter-btn:hover .dp-shutter-ring.r2 { opacity: .9; animation: dp-spin 4s linear infinite; }
-        .dp-shutter-dot {
-          position: absolute; top: 8px; left: 50%; transform: translateX(-50%);
-          width: 6px; height: 6px; border-radius: 50%; background: var(--acc);
-          box-shadow: 0 0 8px var(--acc);
-        }
-        .dp-shutter-text {
-          font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-          font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase;
-          color: #fff; text-align: center; font-weight: 700; line-height: 1.2;
-        }
-        .dp-shutter-tick {
-          position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%);
-          width: 1px; height: 6px; background: var(--acc);
-        }
-        @keyframes dp-spin { to { transform: rotate(360deg); } }
-
-        /* ====== LENS HEADER BUTTON (circular) ====== */
-        .dp-lens-btn {
-          position: relative; width: 64px; height: 64px; border-radius: 50%;
-          background: radial-gradient(circle at 35% 35%, #2a2a2a, #050505 75%);
-          border: 0; cursor: pointer; flex-shrink: 0;
-          box-shadow: inset 0 0 0 2px var(--acc), 0 4px 14px rgba(0,0,0,.6);
-          display: flex; align-items: center; justify-content: center;
-          transition: transform .35s cubic-bezier(.2,.7,.2,1);
-        }
-        .dp-lens-btn:hover { transform: scale(1.08) rotate(-15deg); }
-        .dp-lens-glass {
-          position: absolute; inset: 8px; border-radius: 50%;
-          background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.12), transparent 50%), radial-gradient(circle, transparent 50%, var(--acc) 51%, transparent 53%);
-          border: 1px solid rgba(255,255,255,.08);
-          pointer-events: none;
-        }
-        .dp-lens-label {
-          position: relative; z-index: 1;
-          font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-          font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase;
-          color: var(--acc); font-weight: 700; line-height: 1.1; text-align: center;
-        }
+        .dp-cut-btn:hover .dp-cut-arrow { transform: translateX(4px); }
       `}</style>
 
 

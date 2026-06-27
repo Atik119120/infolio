@@ -182,22 +182,25 @@ export default function DarkPhotographerTheme({
   return (
     <div className="min-h-screen bg-black text-white" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
-        html { scroll-behavior: smooth; background:#000; }
-        .dp-display { font-family: 'Space Grotesk', system-ui, sans-serif; letter-spacing: -0.02em; }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&display=swap');
+        html { scroll-behavior: smooth; background:#050505; }
+        .dp-display { font-family: 'Playfair Display', serif; letter-spacing: -0.02em; }
+        .dp-italic { font-family: 'Playfair Display', serif; font-style: italic; }
         .dp-mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
         .dp-grain::before {
           content: "";
           position: absolute; inset: 0; pointer-events: none;
           background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.08 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
-          mix-blend-mode: overlay; opacity: .6;
+          mix-blend-mode: overlay; opacity: .5;
         }
-        .dp-glow { text-shadow: 0 0 30px ${accent}55, 0 0 80px ${accent}22; }
+        .dp-glow { text-shadow: 0 0 30px ${accent}40, 0 0 80px ${accent}15; }
+        .dp-stroke { -webkit-text-stroke: 1px rgba(255,255,255,0.4); color: transparent; }
         @keyframes dp-marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
         .dp-marquee { animation: dp-marquee 30s linear infinite; }
         .dp-card-img { transition: transform 1.2s cubic-bezier(.2,.7,.2,1), filter .6s ease; }
         .group:hover .dp-card-img { transform: scale(1.06); filter: saturate(1.1); }
       `}</style>
+
 
       {/* NAV */}
       <header className="fixed top-0 inset-x-0 z-50 bg-black/60 backdrop-blur-md border-b border-white/5">

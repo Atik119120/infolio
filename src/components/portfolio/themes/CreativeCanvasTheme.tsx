@@ -700,11 +700,11 @@ export default function CreativeCanvasTheme({
    EDUCATION — Vintage Treasure Map Journey
    ============================================================ */
 const MAP_C = {
-  sepia: "#C4A882",
-  ink: "#3E2A1E",
-  cream: "#F5ECD7",
-  forest: "#4A7C59",
-  rust: "#A0522D",
+  sepia: "#FFD54A",   // brand yellow (paper tint)
+  ink: "#111111",     // brand ink
+  cream: "#FCFCFC",   // brand soft white
+  forest: "#58C7FF",  // brand sky blue (highlight)
+  rust: "#FF8A00",    // brand orange (road)
 };
 
 function EducationMap({ education }: { education: any[] }) {
@@ -742,16 +742,16 @@ function EducationMap({ education }: { education: any[] }) {
   return (
     <section id="education" className="relative overflow-hidden py-20 md:py-28" style={{
       background: `
-        radial-gradient(ellipse at 20% 10%, rgba(62,42,30,0.15), transparent 50%),
-        radial-gradient(ellipse at 80% 90%, rgba(62,42,30,0.18), transparent 55%),
-        radial-gradient(circle at 50% 50%, ${MAP_C.cream}, ${MAP_C.sepia} 120%)
+        radial-gradient(ellipse at 20% 10%, rgba(255,138,0,0.10), transparent 50%),
+        radial-gradient(ellipse at 80% 90%, rgba(88,199,255,0.12), transparent 55%),
+        radial-gradient(circle at 50% 50%, ${MAP_C.cream}, #FFF4D6 120%)
       `,
       fontFamily: "'Cinzel', serif",
       color: MAP_C.ink,
     }}>
       {/* paper grain */}
-      <div className="pointer-events-none absolute inset-0 opacity-[0.18] mix-blend-multiply" style={{
-        backgroundImage: `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.24  0 0 0 0 0.16  0 0 0 0 0.12  0 0 0 0.6 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>")`,
+      <div className="pointer-events-none absolute inset-0 opacity-[0.10] mix-blend-multiply" style={{
+        backgroundImage: `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.07  0 0 0 0 0.07  0 0 0 0 0.07  0 0 0 0.6 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>")`,
       }} />
       {/* dotted border frame */}
       <div className="pointer-events-none absolute inset-4 md:inset-8 border-2 border-dotted rounded-sm" style={{ borderColor: MAP_C.ink, opacity: 0.35 }} />

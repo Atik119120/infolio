@@ -340,9 +340,9 @@ export default function DarkPhotographerTheme({
               </button>
             ))}
           </nav>
-          <button onClick={() => scrollTo("contact")} className="dp-lens-btn group hidden md:inline-flex" style={{ ['--acc' as any]: accent }}>
-            <span className="dp-lens-glass" />
-            <span className="dp-lens-label">Book<br/>Me</span>
+          <button onClick={() => scrollTo("contact")} className="dp-cut-btn primary sm group hidden md:inline-flex" style={{ ['--acc' as any]: accent }}>
+            <span className="dp-cut-dot" />
+            <span>Book Me</span>
           </button>
         </div>
       </header>

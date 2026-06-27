@@ -383,7 +383,7 @@ export default function CreativeCanvasTheme({
                       <ServiceIcon icon={s.icon || undefined} className="w-4 h-4" />
                     </div>
                     <h3 className="relative cc-display text-lg font-bold mb-1">{s.title}</h3>
-                    {s.description && <p className="relative text-xs opacity-70 mb-4 line-clamp-2">{s.description}</p>}
+                    {s.description && <p className="relative text-xs opacity-70 mb-4 line-clamp-1">{s.description}</p>}
                     <div className="relative flex items-center justify-between pt-3 border-t" style={{ borderColor: "rgba(255,255,255,0.1)" }}>
                       <span className="cc-display text-sm font-bold" style={{ color: accent }}>{s.price || "Get in touch"}</span>
                       <button onClick={() => scrollTo("contact")} className="w-8 h-8 rounded-full flex items-center justify-center group-hover:rotate-[-45deg] transition" style={{ background: accent, color: C.ink }}>

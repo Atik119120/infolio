@@ -265,14 +265,19 @@ export default function DarkPhotographerTheme({
               <p className="mt-5 max-w-lg text-white/60 text-sm md:text-base leading-relaxed">
                 {heroDesc}
               </p>
-              <div className="mt-7 flex flex-wrap gap-3">
-                <button onClick={() => scrollTo("work")} className="px-5 py-2.5 rounded-full text-xs font-semibold text-black" style={{ background: accent }}>
-                  View My Photographs
+              <div className="mt-7 flex flex-wrap gap-4">
+                <button onClick={() => scrollTo("work")} className="dp-btn-primary group" style={{ ['--acc' as any]: accent }}>
+                  <span className="dp-corner tl" /><span className="dp-corner tr" /><span className="dp-corner bl" /><span className="dp-corner br" />
+                  <span className="dp-aperture" />
+                  <span className="dp-btn-label">View My Photographs</span>
+                  <span className="dp-btn-meta">f/1.4</span>
                 </button>
-                <button onClick={() => scrollTo("contact")} className="px-5 py-2.5 rounded-full text-xs font-semibold border border-white/20 hover:border-white/60 transition-colors">
-                  Book A Next Shoot
+                <button onClick={() => scrollTo("contact")} className="dp-btn-ghost group" style={{ ['--acc' as any]: accent }}>
+                  <span className="dp-corner tl" /><span className="dp-corner tr" /><span className="dp-corner bl" /><span className="dp-corner br" />
+                  <span className="dp-shutter" />
+                  <span className="dp-btn-label">Book A Next Shoot</span>
+                  <span className="dp-btn-meta">1/250s</span>
                 </button>
-
               </div>
             </div>
 

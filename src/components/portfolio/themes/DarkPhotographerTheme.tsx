@@ -228,69 +228,100 @@ export default function DarkPhotographerTheme({
         .dp-card-img { transition: transform 1.2s cubic-bezier(.2,.7,.2,1), filter .6s ease; }
         .group:hover .dp-card-img { transform: scale(1.06); filter: saturate(1.1); }
 
-        /* Viewfinder-style buttons */
-        .dp-btn-primary, .dp-btn-ghost, .dp-btn-frame {
-          position: relative; display: inline-flex; align-items: center; gap: 10px;
-          padding: 14px 22px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+        /* ====== FILM STRIP BUTTON ====== */
+        .dp-film {
+          position: relative; display: inline-block; cursor: pointer;
+          background: transparent; border: 0; padding: 0;
+          transform: rotate(-2deg); transition: transform .4s cubic-bezier(.2,.7,.2,1);
+        }
+        .dp-film:hover { transform: rotate(0deg) translateY(-2px); }
+        .dp-film-inner {
+          display: flex; align-items: center; gap: 14px;
+          background: #0a0a0a; padding: 16px 24px;
+          border-left: 3px solid var(--acc); border-right: 3px solid var(--acc);
+          font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+          color: #fff; position: relative;
+          box-shadow: 0 8px 30px rgba(0,0,0,.6);
+        }
+        .dp-film-frame {
+          font-size: 28px; font-weight: 700; color: var(--acc);
+          font-family: 'Playfair Display', serif; line-height: 1;
+          padding-right: 14px; border-right: 1px dashed rgba(255,255,255,.2);
+        }
+        .dp-film-label {
           font-size: 11px; letter-spacing: 0.28em; text-transform: uppercase; font-weight: 600;
-          cursor: pointer; transition: all .35s cubic-bezier(.2,.7,.2,1);
-          background: transparent; color: #fff; border: 0; isolation: isolate;
         }
-        .dp-btn-primary { color: #050505; background: var(--acc); }
-        .dp-btn-primary::before {
-          content: ""; position: absolute; inset: 0; z-index: -1;
-          background: var(--acc); transition: transform .4s cubic-bezier(.2,.7,.2,1);
+        .dp-film-iso {
+          font-size: 9px; letter-spacing: 0.3em; color: var(--acc); opacity: .8;
+          padding-left: 12px; border-left: 1px dashed rgba(255,255,255,.2);
         }
-        .dp-btn-primary:hover { color: var(--acc); }
-        .dp-btn-primary:hover::before { transform: translateY(100%); }
-        .dp-btn-primary:hover { background: transparent; box-shadow: inset 0 0 0 1px var(--acc); }
-        .dp-btn-ghost { color: rgba(255,255,255,.85); box-shadow: inset 0 0 0 1px rgba(255,255,255,.18); }
-        .dp-btn-ghost:hover { color: var(--acc); box-shadow: inset 0 0 0 1px var(--acc); }
-        .dp-btn-frame {
-          padding: 10px 16px; color: var(--acc);
-          box-shadow: inset 0 0 0 1px var(--acc);
+        .dp-sprockets {
+          display: flex; justify-content: space-between; align-items: center;
+          background: var(--acc); padding: 4px 8px; gap: 6px;
         }
-        .dp-btn-frame:hover { background: var(--acc); color: #050505; }
+        .dp-sprockets span {
+          width: 10px; height: 6px; background: #050505; border-radius: 1px;
+          display: block; flex: 1;
+        }
+        .dp-film:hover .dp-sprockets span { animation: dp-roll .6s linear infinite; }
+        @keyframes dp-roll {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-16px); }
+        }
 
-        /* Corner brackets */
-        .dp-corner {
-          position: absolute; width: 10px; height: 10px; pointer-events: none;
-          border-color: var(--acc); border-style: solid; border-width: 0;
-          transition: all .35s cubic-bezier(.2,.7,.2,1);
+        /* ====== SHUTTER RELEASE BUTTON (circular) ====== */
+        .dp-shutter-btn {
+          position: relative; width: 96px; height: 96px; border-radius: 50%;
+          background: radial-gradient(circle at 30% 30%, #1a1a1a, #050505 70%);
+          border: 0; cursor: pointer; flex-shrink: 0;
+          box-shadow: 0 6px 20px rgba(0,0,0,.7), inset 0 -3px 8px rgba(0,0,0,.8), inset 0 2px 4px rgba(255,255,255,.05);
+          display: flex; align-items: center; justify-content: center;
+          transition: transform .2s ease, box-shadow .3s ease;
         }
-        .dp-corner.tl { top: -3px; left: -3px; border-top-width: 2px; border-left-width: 2px; }
-        .dp-corner.tr { top: -3px; right: -3px; border-top-width: 2px; border-right-width: 2px; }
-        .dp-corner.bl { bottom: -3px; left: -3px; border-bottom-width: 2px; border-left-width: 2px; }
-        .dp-corner.br { bottom: -3px; right: -3px; border-bottom-width: 2px; border-right-width: 2px; }
-        .group:hover .dp-corner { width: 16px; height: 16px; }
-
-        /* Aperture icon */
-        .dp-aperture {
-          width: 14px; height: 14px; border-radius: 50%;
-          border: 1.5px solid currentColor; position: relative; display: inline-block;
-          flex-shrink: 0;
+        .dp-shutter-btn:active { transform: translateY(2px); box-shadow: 0 2px 8px rgba(0,0,0,.7), inset 0 -1px 4px rgba(0,0,0,.8); }
+        .dp-shutter-ring, .dp-shutter-ring.r2 {
+          position: absolute; inset: 6px; border-radius: 50%;
+          border: 1px dashed rgba(255,255,255,.15); pointer-events: none;
         }
-        .dp-aperture::before, .dp-aperture::after {
-          content: ""; position: absolute; inset: 1.5px; border-radius: 50%;
-          border: 1px solid currentColor; opacity: .5;
+        .dp-shutter-ring.r2 { inset: 12px; border: 1px solid var(--acc); opacity: .4; }
+        .dp-shutter-btn:hover .dp-shutter-ring.r2 { opacity: .9; animation: dp-spin 4s linear infinite; }
+        .dp-shutter-dot {
+          position: absolute; top: 8px; left: 50%; transform: translateX(-50%);
+          width: 6px; height: 6px; border-radius: 50%; background: var(--acc);
+          box-shadow: 0 0 8px var(--acc);
         }
-        .dp-aperture::after { inset: 3px; opacity: .3; }
-        .group:hover .dp-aperture { animation: dp-spin 1.2s linear infinite; }
+        .dp-shutter-text {
+          font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+          font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase;
+          color: #fff; text-align: center; font-weight: 700; line-height: 1.2;
+        }
+        .dp-shutter-tick {
+          position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%);
+          width: 1px; height: 6px; background: var(--acc);
+        }
         @keyframes dp-spin { to { transform: rotate(360deg); } }
 
-        /* Shutter icon */
-        .dp-shutter {
-          width: 12px; height: 12px; border: 1.5px solid currentColor;
-          display: inline-block; flex-shrink: 0; transform: rotate(45deg);
-          transition: transform .4s ease;
+        /* ====== LENS HEADER BUTTON (circular) ====== */
+        .dp-lens-btn {
+          position: relative; width: 64px; height: 64px; border-radius: 50%;
+          background: radial-gradient(circle at 35% 35%, #2a2a2a, #050505 75%);
+          border: 0; cursor: pointer; flex-shrink: 0;
+          box-shadow: inset 0 0 0 2px var(--acc), 0 4px 14px rgba(0,0,0,.6);
+          display: flex; align-items: center; justify-content: center;
+          transition: transform .35s cubic-bezier(.2,.7,.2,1);
         }
-        .group:hover .dp-shutter { transform: rotate(225deg); }
-
-        .dp-btn-label { position: relative; }
-        .dp-btn-meta {
-          font-size: 9px; opacity: .55; letter-spacing: 0.2em;
-          padding-left: 10px; margin-left: 4px;
-          border-left: 1px solid currentColor;
+        .dp-lens-btn:hover { transform: scale(1.08) rotate(-15deg); }
+        .dp-lens-glass {
+          position: absolute; inset: 8px; border-radius: 50%;
+          background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.12), transparent 50%), radial-gradient(circle, transparent 50%, var(--acc) 51%, transparent 53%);
+          border: 1px solid rgba(255,255,255,.08);
+          pointer-events: none;
+        }
+        .dp-lens-label {
+          position: relative; z-index: 1;
+          font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+          font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase;
+          color: var(--acc); font-weight: 700; line-height: 1.1; text-align: center;
         }
       `}</style>
 
@@ -309,8 +340,9 @@ export default function DarkPhotographerTheme({
               </button>
             ))}
           </nav>
-          <button onClick={() => scrollTo("contact")} className="dp-btn-frame hidden md:inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.3em] px-4 py-2 font-semibold" style={{ ['--acc' as any]: accent, color: accent }}>
-            <span className="dp-aperture" /> Book Me
+          <button onClick={() => scrollTo("contact")} className="dp-lens-btn group hidden md:inline-flex" style={{ ['--acc' as any]: accent }}>
+            <span className="dp-lens-glass" />
+            <span className="dp-lens-label">Book<br/>Me</span>
           </button>
         </div>
       </header>
@@ -330,18 +362,29 @@ export default function DarkPhotographerTheme({
               <p className="mt-5 max-w-lg text-white/60 text-sm md:text-base leading-relaxed">
                 {heroDesc}
               </p>
-              <div className="mt-7 flex flex-wrap gap-4">
-                <button onClick={() => scrollTo("work")} className="dp-btn-primary group" style={{ ['--acc' as any]: accent }}>
-                  <span className="dp-corner tl" /><span className="dp-corner tr" /><span className="dp-corner bl" /><span className="dp-corner br" />
-                  <span className="dp-aperture" />
-                  <span className="dp-btn-label">View My Photographs</span>
-                  <span className="dp-btn-meta">f/1.4</span>
+              <div className="mt-8 flex flex-wrap items-center gap-5">
+                {/* Film strip primary button */}
+                <button onClick={() => scrollTo("work")} className="dp-film group" style={{ ['--acc' as any]: accent }}>
+                  <span className="dp-sprockets top" aria-hidden>
+                    {Array.from({ length: 8 }).map((_, i) => <span key={i} />)}
+                  </span>
+                  <span className="dp-film-inner">
+                    <span className="dp-film-frame">36</span>
+                    <span className="dp-film-label">View My Photographs</span>
+                    <span className="dp-film-iso">ISO 400</span>
+                  </span>
+                  <span className="dp-sprockets bot" aria-hidden>
+                    {Array.from({ length: 8 }).map((_, i) => <span key={i} />)}
+                  </span>
                 </button>
-                <button onClick={() => scrollTo("contact")} className="dp-btn-ghost group" style={{ ['--acc' as any]: accent }}>
-                  <span className="dp-corner tl" /><span className="dp-corner tr" /><span className="dp-corner bl" /><span className="dp-corner br" />
-                  <span className="dp-shutter" />
-                  <span className="dp-btn-label">Book A Next Shoot</span>
-                  <span className="dp-btn-meta">1/250s</span>
+
+                {/* Shutter release circular button */}
+                <button onClick={() => scrollTo("contact")} className="dp-shutter-btn group" style={{ ['--acc' as any]: accent }} aria-label="Book A Next Shoot">
+                  <span className="dp-shutter-ring" />
+                  <span className="dp-shutter-ring r2" />
+                  <span className="dp-shutter-dot" />
+                  <span className="dp-shutter-text">Book<br/>Shoot</span>
+                  <span className="dp-shutter-tick" />
                 </button>
               </div>
             </div>

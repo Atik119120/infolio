@@ -615,7 +615,7 @@ export default function DarkPhotographerTheme({
                   return (
                     <div
                       key={s.id}
-                      className="group relative p-8 rounded-2xl border transition-all flex flex-col"
+                      className="group relative p-4 md:p-8 rounded-2xl border transition-all flex flex-col"
                       style={{
                         borderColor: featured ? accent : 'rgba(255,255,255,0.1)',
                         background: featured ? `linear-gradient(180deg, ${accent}10, rgba(255,255,255,0.02))` : 'rgba(255,255,255,0.02)',

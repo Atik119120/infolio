@@ -355,7 +355,7 @@ export function ThemeSelector({ currentTheme, userId, onUpdate }: ThemeSelectorP
                                   Preview
                                 </Button>
                               </DialogTrigger>
-                              <DialogContent className="max-w-2xl">
+                              <DialogContent className="max-w-2xl bg-black border-white/10 text-white">
                                 <DialogHeader>
                                   <DialogTitle className="flex items-center gap-3">
                                     <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${gradient} border border-white/10 flex items-center justify-center`}>

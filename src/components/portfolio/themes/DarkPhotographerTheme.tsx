@@ -309,8 +309,9 @@ export default function DarkPhotographerTheme({
               </button>
             ))}
           </nav>
-          <button onClick={() => scrollTo("contact")} className="dp-btn-frame hidden md:inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.3em] px-4 py-2 font-semibold" style={{ ['--acc' as any]: accent, color: accent }}>
-            <span className="dp-aperture" /> Book Me
+          <button onClick={() => scrollTo("contact")} className="dp-lens-btn group hidden md:inline-flex" style={{ ['--acc' as any]: accent }}>
+            <span className="dp-lens-glass" />
+            <span className="dp-lens-label">Book<br/>Me</span>
           </button>
         </div>
       </header>

@@ -22,6 +22,10 @@ const THEME_SECTIONS: Record<string, { keys: SectionKey[]; labels?: Partial<Reco
     keys: ["hero", "about", "projects", "services", "contact", "social"],
     labels: { projects: "Work", services: "Packages & Pricing" },
   },
+  "creative-canvas": {
+    keys: ["hero", "about", "skills", "services", "projects", "education", "contact", "social"],
+    labels: { projects: "Selected Work", skills: "Toolbox" },
+  },
 };
 
 export function SectionVisibilityForm({

@@ -282,12 +282,13 @@ export default function PortfolioEdit() {
   }, [activeSection]);
 
 
+  const isPhotographer = activeTheme === "dark-photographer";
   const allSections: { value: SectionKey; label: string; icon: any; hint: string; requires?: string }[] = [
-    { value: "hero", label: "Hero Section", icon: Home, hint: "Main landing area", requires: "customize" },
+    { value: "hero", label: isPhotographer ? "Hero Slideshow" : "Hero Section", icon: isPhotographer ? Images : Home, hint: isPhotographer ? "Banner slideshow & text" : "Main landing area", requires: "customize" },
     { value: "about", label: "About Me", icon: User, hint: "Personal introduction", requires: "basic" },
     { value: "skills", label: "Skills", icon: Sparkles, hint: "Tools and expertise" },
-    { value: "services", label: "Services", icon: Wrench, hint: "What you offer" },
-    { value: "projects", label: "Projects", icon: FolderOpen, hint: "Showcase your work" },
+    { value: "services", label: isPhotographer ? "Packages & Pricing" : "Services", icon: isPhotographer ? Wrench : Wrench, hint: isPhotographer ? "Shoot packages with price" : "What you offer" },
+    { value: "projects", label: isPhotographer ? "Photo Gallery" : "Projects", icon: isPhotographer ? ImageIcon : FolderOpen, hint: isPhotographer ? "Photos & albums" : "Showcase your work" },
     { value: "experience", label: "Experience", icon: Briefcase, hint: "Work history" },
     { value: "education", label: "Education", icon: GraduationCap, hint: "Your education" },
     { value: "branding", label: "Branding", icon: ImageIcon, hint: "Favicon", requires: "branding" },

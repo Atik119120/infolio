@@ -691,8 +691,8 @@ export default function CreativeCanvasTheme({
                 backgroundSize: "16px 16px",
               }} />
               {/* corner stickers */}
-              <div className="absolute -top-3 -left-3 w-12 h-12 rounded-full border-2 flex items-center justify-center cc-display font-extrabold rotate-[-12deg]" style={{ borderColor: C.ink, background: C.accent, color: C.ink }}>✦</div>
-              <div className="absolute -bottom-3 -right-3 px-3 py-1.5 rounded-full border-2 text-[10px] font-bold tracking-[0.25em] rotate-[6deg]" style={{ borderColor: C.ink, background: C.primary, color: C.paper }}>LET'S TALK</div>
+              <motion.div animate={{ rotate: 360 }} transition={{ duration: 20, repeat: Infinity, ease: "linear" }} className="absolute -top-3 -left-3 w-12 h-12 rounded-full border-2 flex items-center justify-center cc-display font-extrabold" style={{ borderColor: C.ink, background: C.accent, color: C.ink }}>✦</motion.div>
+              <motion.div animate={{ y: [0, -4, 0] }} transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut" }} className="absolute -bottom-3 -right-3 px-3 py-1.5 rounded-full border-2 text-[10px] font-bold tracking-[0.25em] rotate-[6deg]" style={{ borderColor: C.ink, background: C.primary, color: C.paper }}>LET'S TALK</motion.div>
 
               <div className="relative">
                 <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[10px] font-bold tracking-[0.3em] mb-5 border-2" style={{ borderColor: C.ink, background: C.paper, color: C.ink }}>

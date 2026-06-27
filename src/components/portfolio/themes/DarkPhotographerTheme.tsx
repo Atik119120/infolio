@@ -226,12 +226,7 @@ export default function DarkPhotographerTheme({
         {/* HERO */}
         {vHero && (
           <section id="home" className="relative min-h-[92vh] flex items-center overflow-hidden dp-grain">
-            {heroImg && (
-              <div className="absolute inset-0">
-                <img src={heroImg} alt="" className="w-full h-full object-cover opacity-40" />
-                <div className="absolute inset-0" style={{ background: "linear-gradient(to bottom, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.85) 70%, #000 100%)" }} />
-              </div>
-            )}
+            <HeroSlideshow images={[heroImg, ...galleryImages.map(g => g.url)].filter(Boolean) as string[]} />
             <div className="relative max-w-7xl mx-auto px-6 lg:px-12 w-full py-24">
               <p className="dp-mono text-[10px] uppercase tracking-[0.4em] mb-4" style={{ color: accent }}>
                 {`// ${profession}`}

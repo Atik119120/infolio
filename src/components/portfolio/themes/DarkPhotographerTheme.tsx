@@ -134,6 +134,23 @@ export default function DarkPhotographerTheme({
 
   const showProjects = projects.length > 0 ? projects : (demoProjects as any);
   const galleryImages = (showProjects as any[]).map((p: any) => ({ url: p.image_url || "", title: p.title }));
+  const bentoSpans = [
+    "md:col-span-1 md:row-span-3 sm:col-span-1 sm:row-span-2",
+    "md:col-span-2 md:row-span-2 sm:col-span-2 sm:row-span-2",
+    "md:col-span-1 md:row-span-3 sm:col-span-2 sm:row-span-2",
+    "md:col-span-2 md:row-span-2 sm:col-span-1 sm:row-span-2",
+    "md:col-span-1 md:row-span-3 sm:col-span-1 sm:row-span-2",
+    "md:col-span-2 md:row-span-2 sm:col-span-1 sm:row-span-2",
+    "md:col-span-1 md:row-span-3 sm:col-span-1 sm:row-span-2",
+  ];
+  const bentoItems = (showProjects as any[]).map((p: any, i: number) => ({
+    id: i + 1,
+    type: "image",
+    title: p.title,
+    desc: p.description || "Project",
+    url: p.image_url || "https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?w=900&auto=format&fit=crop&q=80",
+    span: bentoSpans[i % bentoSpans.length],
+  }));
 
   const showServices = services.length > 0 ? services : [
     { id: "s1", title: "Portrait Sessions", description: "Editorial and personal portraits with cinematic light.", icon: "camera" },

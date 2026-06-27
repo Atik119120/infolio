@@ -51,10 +51,19 @@ export function HeroSlideshowForm({ portfolio, userId, onUpdate, onSuccess, onEr
 
   const handleFiles = async (files: FileList | null) => {
     if (!files || !files.length) return;
+    const remaining = MAX_SLIDES - images.length;
+    if (remaining <= 0) {
+      onError(`Maximum ${MAX_SLIDES} slideshow images allowed`);
+      return;
+    }
+    const toProcess = Array.from(files).slice(0, remaining);
+    if (files.length > remaining) {
+      onError(`Only ${remaining} more allowed (max ${MAX_SLIDES} total)`);
+    }
     setUploading(true);
     const uploaded: string[] = [];
     try {
-      for (const file of Array.from(files)) {
+      for (const file of toProcess) {
         if (!file.type.startsWith("image/")) continue;
         if (file.size > perFileLimitBytes) {
           onError(`${file.name} too large (max ${Math.round(perFileLimitBytes / 1024 / 1024)}MB)`);

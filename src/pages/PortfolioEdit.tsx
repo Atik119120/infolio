@@ -136,6 +136,15 @@ export default function PortfolioEdit() {
       footer: "__bottom__",
       seo: "__top__",
     };
+    // Theme-specific overrides
+    if (activeTheme === "creative-canvas") {
+      sectionToId.hero = "home";
+      sectionToId.projects = "work";
+      sectionToId.education = "skills"; // education lives inside skills section
+    } else if (activeTheme === "dark-photographer") {
+      sectionToId.hero = "home";
+      sectionToId.projects = "work";
+    }
     const target = sectionToId[activeSection];
     if (!target) return;
     try {
@@ -148,7 +157,8 @@ export default function PortfolioEdit() {
           )
         );
     } catch {}
-  }, [activeSection]);
+  }, [activeSection, activeTheme]);
+
 
   // Lock body scroll while editor is open
   useEffect(() => {

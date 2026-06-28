@@ -686,32 +686,7 @@ export default function CreativeCanvasTheme({
                   >
                     <span className="cc-display text-[10px] font-bold absolute top-2 right-2 tracking-wider" style={{ color: C.muted }}>0{i + 1}</span>
                     <motion.div whileHover={{ rotate: [0, -10, 10, 0] }} transition={{ duration: 0.4 }} className="w-10 h-10 flex items-center justify-center shrink-0">
-                      <img
-                        src={`https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/${s.slug}/${s.slug}-original.svg`}
-                        alt={`${s.name} logo`}
-                        className="w-9 h-9 object-contain"
-                        loading="lazy"
-                        onError={(e) => {
-                          const el = e.currentTarget as HTMLImageElement;
-                          const tried = el.dataset.tried || "";
-                          if (!tried.includes("plain")) {
-                            el.dataset.tried = tried + ",plain";
-                            el.src = `https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/${s.slug}/${s.slug}-plain.svg`;
-                          } else if (!tried.includes("simple")) {
-                            el.dataset.tried = tried + ",simple";
-                            el.src = `https://cdn.simpleicons.org/adobe${s.slug.replace(/^adobe/, "")}`;
-                          } else if (!tried.includes("simple2")) {
-                            el.dataset.tried = tried + ",simple2";
-                            el.src = `https://cdn.simpleicons.org/${s.slug}`;
-                          } else {
-                            el.style.display = "none";
-                            const fb = document.createElement("span");
-                            fb.textContent = s.name.charAt(0).toUpperCase();
-                            fb.className = "w-9 h-9 flex items-center justify-center rounded bg-black/10 font-bold text-sm";
-                            el.parentElement?.appendChild(fb);
-                          }
-                        }}
-                      />
+                      <AutoIcon name={s.name} slug={s.slug} />
                     </motion.div>
                     <span className="font-semibold text-sm">{s.name}</span>
                   </motion.div>

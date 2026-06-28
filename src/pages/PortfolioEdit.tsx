@@ -365,6 +365,7 @@ export default function PortfolioEdit() {
         if (activeTheme === "creative-canvas")
           return (
             <div className="space-y-6">
+              <HeroNameForm profile={profile} portfolio={portfolio as any} userId={user?.id || ""} onUpdate={handleUpdate} onSuccess={showSuccess} onError={showError} />
               <CustomizationForm portfolio={portfolio as any} userId={user?.id || ""} enabledFields={themeConfig.customizeFields} scope="hero" onUpdate={handleUpdate} onSuccess={showSuccess} onError={showError} />
               <CreativeCanvasExtrasForm portfolio={portfolio as any} userId={user?.id || ""} onUpdate={handleUpdate} onSuccess={showSuccess} onError={showError} mode="marquee" />
             </div>

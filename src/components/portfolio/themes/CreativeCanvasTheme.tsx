@@ -406,7 +406,13 @@ export default function CreativeCanvasTheme({
                   &ldquo;
                 </div>
                 <h2 className="cc-display font-extrabold text-3xl md:text-5xl leading-[1.05] mb-6 -mt-4" style={{ overflowWrap: "anywhere", color: C.ink }}>
-                  {aboutHeadline}
+                  {aboutHeadline.split(/(\*[^*]+\*)/g).map((part, i) =>
+                    part.startsWith("*") && part.endsWith("*") && part.length > 2 ? (
+                      <span key={i} style={{ color: C.primary, fontStyle: "italic" }}>{part.slice(1, -1)}</span>
+                    ) : (
+                      <span key={i}>{part}</span>
+                    )
+                  )}
                 </h2>
                 <p className="text-base md:text-lg mb-8 max-w-xl whitespace-pre-wrap" style={{ color: C.muted, overflowWrap: "anywhere" }}>{aboutText}</p>
 

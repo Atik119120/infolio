@@ -23,16 +23,40 @@ import { motion } from "framer-motion";
 import { useToast } from "@/hooks/use-toast";
 import { format } from "date-fns";
 
-const themes = [
-  { 
-    id: "freelancer", 
-    name: "Theme 1", 
-    icon: Briefcase, 
-    color: "from-blue-500 to-indigo-600",
-    description: "Clean modern portfolio theme",
-    isPremium: false
-  },
-];
+import { THEME_OPTIONS } from "@/components/portfolio/themes/types";
+
+const THEME_ICONS: Record<string, any> = {
+  "freelancer": Briefcase,
+  "creative-sidebar-pro": Palette,
+  "dark-photographer": Camera,
+  "creative-canvas": BookOpen,
+  "small-business": Store,
+  "prd-graphic-designer": Palette,
+  "prd-photographer": Camera,
+  "prd-digital-marketer": TrendingUp,
+  "biography": BookOpen,
+};
+
+const THEME_COLORS: Record<string, string> = {
+  "freelancer": "from-blue-500 to-indigo-600",
+  "creative-sidebar-pro": "from-yellow-500 to-orange-600",
+  "dark-photographer": "from-gray-700 to-black",
+  "creative-canvas": "from-orange-500 to-pink-600",
+  "small-business": "from-green-500 to-emerald-600",
+  "prd-graphic-designer": "from-purple-500 to-fuchsia-600",
+  "prd-photographer": "from-slate-600 to-zinc-800",
+  "prd-digital-marketer": "from-cyan-500 to-blue-600",
+  "biography": "from-amber-500 to-rose-600",
+};
+
+const themes = THEME_OPTIONS.map((t) => ({
+  id: t.value,
+  name: t.label,
+  icon: THEME_ICONS[t.value] || Palette,
+  color: THEME_COLORS[t.value] || "from-gray-500 to-gray-700",
+  description: t.description,
+  isPremium: t.isPremium,
+}));
 
 interface ThemeUsage {
   theme: string;

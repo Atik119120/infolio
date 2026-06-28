@@ -2,27 +2,23 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import {
-  Briefcase, Store, Palette, Camera, TrendingUp, BookOpen,
+  Briefcase, Palette, Camera, LayoutGrid,
   Sparkles, ArrowRight, Eye,
 } from "lucide-react";
 import { THEME_OPTIONS } from "@/components/portfolio/themes/types";
 
 const themeIcons: Record<string, React.ElementType> = {
   freelancer: Briefcase,
-  "small-business": Store,
-  "prd-graphic-designer": Palette,
-  "prd-photographer": Camera,
-  "prd-digital-marketer": TrendingUp,
-  biography: BookOpen,
+  "creative-sidebar-pro": LayoutGrid,
+  "dark-photographer": Camera,
+  "creative-canvas": Palette,
 };
 
 const themeGradients: Record<string, string> = {
   freelancer: "from-blue-600 via-indigo-600 to-violet-700",
-  "small-business": "from-amber-500 via-orange-500 to-red-500",
-  "prd-graphic-designer": "from-fuchsia-500 via-pink-500 to-rose-500",
-  "prd-photographer": "from-zinc-700 via-zinc-800 to-black",
-  "prd-digital-marketer": "from-emerald-500 via-teal-500 to-cyan-600",
-  biography: "from-rose-400 via-pink-400 to-fuchsia-400",
+  "creative-sidebar-pro": "from-amber-400 via-yellow-500 to-orange-500",
+  "dark-photographer": "from-zinc-700 via-zinc-800 to-black",
+  "creative-canvas": "from-orange-500 via-amber-500 to-yellow-500",
 };
 
 const renderPattern = (value: string) => {
@@ -34,21 +30,14 @@ const renderPattern = (value: string) => {
           backgroundSize: "16px 16px",
         }} />
       );
-    case "small-business":
+    case "creative-sidebar-pro":
       return (
         <>
           <div className="absolute -bottom-6 -left-6 w-24 h-24 rounded-full bg-white/15 mix-blend-overlay" />
           <div className="absolute -top-4 right-4 w-16 h-16 rounded-full bg-white/20 mix-blend-overlay" />
         </>
       );
-    case "prd-graphic-designer":
-      return (
-        <>
-          <div className="absolute bottom-6 right-8 w-10 h-10 rotate-45 bg-white/15" />
-          <div className="absolute top-6 left-10 w-8 h-8 rounded-full bg-white/20" />
-        </>
-      );
-    case "prd-photographer":
+    case "dark-photographer":
       return (
         <div className="absolute inset-3 grid grid-cols-3 gap-1.5">
           {[0.3, 0.5, 0.2, 0.4, 0.6, 0.35].map((o, i) => (
@@ -56,20 +45,12 @@ const renderPattern = (value: string) => {
           ))}
         </div>
       );
-    case "prd-digital-marketer":
+    case "creative-canvas":
       return (
-        <svg className="absolute inset-0 w-full h-full" viewBox="0 0 100 60" preserveAspectRatio="none">
-          <polyline points="0,50 15,40 30,42 45,28 60,32 75,18 100,8" fill="none" stroke="white" strokeOpacity="0.7" strokeWidth="1.5" />
-          <polyline points="0,55 15,48 30,50 45,40 60,44 75,30 100,22" fill="none" stroke="white" strokeOpacity="0.3" strokeWidth="1.5" />
-        </svg>
-      );
-    case "biography":
-      return (
-        <div className="absolute inset-3 space-y-1.5">
-          {[90, 70, 80, 60, 75].map((w, i) => (
-            <div key={i} className="h-1.5 rounded bg-white/40" style={{ width: `${w}%` }} />
-          ))}
-        </div>
+        <>
+          <div className="absolute bottom-6 right-8 w-10 h-10 rotate-45 bg-white/15" />
+          <div className="absolute top-6 left-10 w-8 h-8 rounded-full bg-white/20" />
+        </>
       );
     default:
       return null;

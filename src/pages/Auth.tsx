@@ -116,21 +116,37 @@ export default function Auth() {
 
     setIsLoading(true);
     const { error } = await signIn(email, password);
-    setIsLoading(false);
 
     if (error) {
+      setIsLoading(false);
       toast({
         variant: "destructive",
         title: "Login failed",
-        description: error.message === "Invalid login credentials" 
+        description: error.message === "Invalid login credentials"
           ? "Invalid email or password. Please try again."
           : error.message,
       });
-    } else {
-      toast({
-        title: "Welcome back!",
-        description: "You have successfully logged in.",
-      });
+      return;
+    }
+
+    // Immediately resolve admin role and navigate — don't wait for useEffect race.
+    try {
+      const { data: sessionData } = await supabase.auth.getSession();
+      const uid = sessionData.session?.user?.id;
+      let target = from;
+      if (uid) {
+        const { data: adminRole } = await supabase
+          .from("user_roles")
+          .select("role")
+          .eq("user_id", uid)
+          .eq("role", "admin")
+          .maybeSingle();
+        if (adminRole) target = "/admin";
+      }
+      toast({ title: "Welcome back!", description: "You have successfully logged in." });
+      navigate(target, { replace: true });
+    } finally {
+      setIsLoading(false);
     }
   };
 

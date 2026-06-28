@@ -204,8 +204,6 @@ export function CreativeCanvasExtrasForm({ portfolio, userId, onUpdate, onSucces
           </div>
         </div>
 
-        </div>
-
         {software.length === 0 ? (
           <p className="text-sm text-muted-foreground">No software yet — add some above.</p>
         ) : (
@@ -216,12 +214,8 @@ export function CreativeCanvasExtrasForm({ portfolio, userId, onUpdate, onSucces
                 className="flex items-center gap-3 p-2.5 rounded-lg border bg-card"
               >
                 <GripVertical className="w-4 h-4 text-muted-foreground shrink-0" />
-                <img
-                  src={`https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/${s.slug}/${s.slug}-original.svg`}
-                  alt=""
-                  className="w-8 h-8 object-contain shrink-0"
-                  onError={(e) => ((e.currentTarget.style.opacity = "0.2"))}
-                />
+                <SoftwareIconPreview name={s.name} slug={s.slug} />
+
                 <div className="flex-1 min-w-0">
                   <div className="text-sm font-medium truncate">{s.name}</div>
                   <div className="text-xs text-muted-foreground truncate">{s.slug}</div>

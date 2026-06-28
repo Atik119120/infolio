@@ -99,13 +99,14 @@ export function CreativeCanvasExtrasForm({ portfolio, userId, onUpdate, onSucces
 
   const addSoftware = () => {
     const n = swName.trim();
-    const s = swSlug.trim().toLowerCase();
-    if (!n || !s) return onError("Both name and slug are required");
+    if (!n) return onError("Name is required");
     if (software.length >= 12) return onError("Max 12 software");
+    const s = n.toLowerCase().replace(/[^a-z0-9]/g, "");
     const next = [...software, { name: n, slug: s }];
     setSoftware(next); setSwName(""); setSwSlug("");
     saveSoftware(next);
   };
+
   const removeSoftware = (i: number) => {
     const next = software.filter((_, idx) => idx !== i);
     setSoftware(next); saveSoftware(next);

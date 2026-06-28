@@ -270,11 +270,11 @@ export default function CreativeCanvasTheme({
 
   const savedStats = ((portfolio as any)?.about_stats) || {};
   const stats = [
-    { icon: Award, label: "Years", value: savedStats.years ?? (experiences?.length ? `${Math.max(1, experiences.length * 2)}+` : "5+") },
-    { icon: Briefcase, label: "Projects", value: savedStats.projects ?? (projects.length ? `${projects.length}+` : "120+") },
-    { icon: Users, label: "Clients", value: savedStats.clients ?? "40+" },
-    { icon: Smile, label: "Awards", value: savedStats.awards ?? "08" },
-  ];
+    { icon: Award, label: "Years", value: savedStats.years },
+    { icon: Briefcase, label: "Projects", value: savedStats.projects },
+    { icon: Users, label: "Clients", value: savedStats.clients },
+    { icon: Smile, label: "Awards", value: savedStats.awards },
+  ].filter(s => s.value !== undefined && s.value !== null && String(s.value).trim() !== "");
 
   const fadeUp = {
     initial: { opacity: 0, y: 28 },

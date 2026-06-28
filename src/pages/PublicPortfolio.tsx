@@ -8,14 +8,7 @@ import { trackView } from "@/lib/trackView";
 
 import {
   FreelancerTheme,
-  SmallBusinessTheme,
-  PRDGraphicDesignerTheme,
   CreativeCanvasTheme,
-  PRDPhotographerTheme,
-  PRDDigitalMarketerTheme,
-  BiographyTheme,
-  CustomCodeTheme,
-  AdminUploadedTheme,
   CreativeSidebarProTheme,
   DarkPhotographerTheme,
   ThemeProfile,

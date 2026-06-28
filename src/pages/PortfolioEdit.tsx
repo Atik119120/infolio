@@ -33,6 +33,7 @@ import { AboutPhotographerForm } from "@/components/portfolio/photographer/About
 import { PhotoGalleryForm } from "@/components/portfolio/photographer/PhotoGalleryForm";
 import { CreativeCanvasExtrasForm } from "@/components/portfolio/creative-canvas/CreativeCanvasExtrasForm";
 import { CreativeCanvasStatsForm } from "@/components/portfolio/creative-canvas/CreativeCanvasStatsForm";
+import { CreativeCanvasHeadingsForm } from "@/components/portfolio/creative-canvas/CreativeCanvasHeadingsForm";
 import { getThemeConfig } from "@/config/themeFeatures";
 import { cn } from "@/lib/utils";
 
@@ -369,6 +370,17 @@ export default function PortfolioEdit() {
           return (
             <div className="space-y-6">
               <SkillsForm skills={skills} userId={user?.id || ""} onUpdate={handleUpdate} onSuccess={showSuccess} onError={showError} />
+              <CreativeCanvasHeadingsForm
+                portfolio={portfolio as any}
+                userId={user?.id || ""}
+                onUpdate={handleUpdate}
+                onSuccess={showSuccess}
+                onError={showError}
+                field="toolbox_heading"
+                title="Toolbox Section Heading"
+                description='Shown above your Software list (default: "Software / I master daily.").'
+                defaultValue={"Software\n*I master daily.*"}
+              />
               <CreativeCanvasExtrasForm portfolio={portfolio as any} userId={user?.id || ""} onUpdate={handleUpdate} onSuccess={showSuccess} onError={showError} mode="software" />
             </div>
           );
@@ -384,6 +396,23 @@ export default function PortfolioEdit() {
       case "experience":
         return <ExperienceForm experiences={experiences} userId={user?.id || ""} onUpdate={handleUpdate} onSuccess={showSuccess} onError={showError} />;
       case "education":
+        if (activeTheme === "creative-canvas")
+          return (
+            <div className="space-y-6">
+              <EducationForm education={education} userId={user?.id || ""} onUpdate={handleUpdate} onSuccess={showSuccess} onError={showError} />
+              <CreativeCanvasHeadingsForm
+                portfolio={portfolio as any}
+                userId={user?.id || ""}
+                onUpdate={handleUpdate}
+                onSuccess={showSuccess}
+                onError={showError}
+                field="education_heading"
+                title="Education Section Heading"
+                description='Shown above your Education list (default: "Learning / journey.").'
+                defaultValue={"Learning\n*journey.*"}
+              />
+            </div>
+          );
         return <EducationForm education={education} userId={user?.id || ""} onUpdate={handleUpdate} onSuccess={showSuccess} onError={showError} />;
       case "contact":
         return <ContactInfoForm portfolio={portfolio} contactItems={contactItems} userId={user?.id || ""} onUpdate={handleUpdate} onSuccess={showSuccess} onError={showError} />;

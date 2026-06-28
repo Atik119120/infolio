@@ -837,6 +837,7 @@ export type Database = {
           custom_head_html: string | null
           custom_html: string | null
           custom_js: string | null
+          education_heading: string | null
           engine_backups: Json
           favicon_url: string | null
           footer_text: string | null
@@ -866,6 +867,7 @@ export type Database = {
           show_branding: boolean
           theme: string | null
           theme_software: Json | null
+          toolbox_heading: string | null
           updated_at: string
           user_id: string
           website: string | null
@@ -887,6 +889,7 @@ export type Database = {
           custom_head_html?: string | null
           custom_html?: string | null
           custom_js?: string | null
+          education_heading?: string | null
           engine_backups?: Json
           favicon_url?: string | null
           footer_text?: string | null
@@ -916,6 +919,7 @@ export type Database = {
           show_branding?: boolean
           theme?: string | null
           theme_software?: Json | null
+          toolbox_heading?: string | null
           updated_at?: string
           user_id: string
           website?: string | null
@@ -937,6 +941,7 @@ export type Database = {
           custom_head_html?: string | null
           custom_html?: string | null
           custom_js?: string | null
+          education_heading?: string | null
           engine_backups?: Json
           favicon_url?: string | null
           footer_text?: string | null
@@ -966,6 +971,7 @@ export type Database = {
           show_branding?: boolean
           theme?: string | null
           theme_software?: Json | null
+          toolbox_heading?: string | null
           updated_at?: string
           user_id?: string
           website?: string | null

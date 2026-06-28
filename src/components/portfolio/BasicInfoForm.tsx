@@ -18,9 +18,10 @@ interface BasicInfoFormProps {
   onUpdate: () => void;
   onSuccess: (message: string) => void;
   onError: (message: string) => void;
+  hideContactFields?: boolean;
 }
 
-export function BasicInfoForm({ profile, portfolio, userId, onUpdate, onSuccess, onError }: BasicInfoFormProps) {
+export function BasicInfoForm({ profile, portfolio, userId, onUpdate, onSuccess, onError, hideContactFields }: BasicInfoFormProps) {
   const { perFileLimitBytes, isPro } = usePlan();
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -221,39 +222,43 @@ export function BasicInfoForm({ profile, portfolio, userId, onUpdate, onSuccess,
           />
         </div>
 
-        <div className="grid gap-4 md:grid-cols-2">
-          <div className="space-y-2">
-            <Label htmlFor="location">Location</Label>
-            <Input
-              id="location"
-              name="location"
-              value={formData.location}
-              onChange={handleChange}
-              placeholder="San Francisco, CA"
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="phone">Phone</Label>
-            <Input
-              id="phone"
-              name="phone"
-              value={formData.phone}
-              onChange={handleChange}
-              placeholder="+1 (555) 123-4567"
-            />
-          </div>
-        </div>
+        {!hideContactFields && (
+          <>
+            <div className="grid gap-4 md:grid-cols-2">
+              <div className="space-y-2">
+                <Label htmlFor="location">Location</Label>
+                <Input
+                  id="location"
+                  name="location"
+                  value={formData.location}
+                  onChange={handleChange}
+                  placeholder="San Francisco, CA"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="phone">Phone</Label>
+                <Input
+                  id="phone"
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleChange}
+                  placeholder="+1 (555) 123-4567"
+                />
+              </div>
+            </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="website">Personal Website</Label>
-          <Input
-            id="website"
-            name="website"
-            value={formData.website}
-            onChange={handleChange}
-            placeholder="https://yourwebsite.com"
-          />
-        </div>
+            <div className="space-y-2">
+              <Label htmlFor="website">Personal Website</Label>
+              <Input
+                id="website"
+                name="website"
+                value={formData.website}
+                onChange={handleChange}
+                placeholder="https://yourwebsite.com"
+              />
+            </div>
+          </>
+        )}
 
       </CardContent>
     </Card>

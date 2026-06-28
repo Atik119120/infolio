@@ -327,7 +327,8 @@ export default function PortfolioEdit() {
         if (activeTheme === "creative-canvas")
           return (
             <div className="space-y-6">
-              <BasicInfoForm profile={profile} portfolio={portfolio} userId={user?.id || ""} onUpdate={handleUpdate} onSuccess={showSuccess} onError={showError} />
+              <BasicInfoForm profile={profile} portfolio={portfolio} userId={user?.id || ""} onUpdate={handleUpdate} onSuccess={showSuccess} onError={showError} hideContactFields />
+
               <CreativeCanvasStatsForm portfolio={portfolio as any} userId={user?.id || ""} onUpdate={handleUpdate} onSuccess={showSuccess} onError={showError} />
             </div>
           );

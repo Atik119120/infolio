@@ -198,8 +198,4 @@ export default function PublicPortfolio() {
       return <FreelancerTheme {...themeProps} />;
   }
 }
-    case 'freelancer':
-    default:
-      return <FreelancerTheme {...themeProps} />;
-  }
-}
+

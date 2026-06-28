@@ -656,7 +656,7 @@ export default function CreativeCanvasTheme({
                 <span className="h-px w-10" style={{ background: C.ink }} />
                 <span className="text-[10px] font-bold tracking-[0.3em]">TOOLBOX</span>
               </div>
-              <h2 className="cc-display font-extrabold text-4xl md:text-5xl mb-8">{renderAccented(portfolio?.toolbox_heading || "Software\n*I master daily.*", C.primary)}</h2>
+              <h2 className="cc-display font-extrabold text-4xl md:text-5xl mb-8">{renderAccented((portfolio as any)?.toolbox_heading || "Software\n*I master daily.*", C.primary)}</h2>
               <div className="grid grid-cols-2 gap-0 border-l border-t" style={{ borderColor: C.ink }}>
                 {softwareList.map((s, i) => (
                   <motion.div

@@ -5,11 +5,6 @@ import { useEffect } from "react";
 
 import {
   FreelancerTheme,
-  SmallBusinessTheme,
-  PRDGraphicDesignerTheme,
-  PRDPhotographerTheme,
-  PRDDigitalMarketerTheme,
-  BiographyTheme,
   CreativeSidebarProTheme,
   DarkPhotographerTheme,
   CreativeCanvasTheme,

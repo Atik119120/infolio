@@ -392,6 +392,8 @@ export default function PortfolioEdit() {
       case "projects":
         if (activeTheme === "dark-photographer")
           return <PhotoGalleryForm portfolio={portfolio} projects={projects} userId={user?.id || ""} onUpdate={handleUpdate} onSuccess={showSuccess} onError={showError} />;
+        if (activeTheme === "creative-canvas")
+          return <SimpleProjectsForm projects={projects} userId={user?.id || ""} onUpdate={handleUpdate} onSuccess={showSuccess} onError={showError} />;
         return <ProjectsForm projects={projects} userId={user?.id || ""} onUpdate={handleUpdate} onSuccess={showSuccess} onError={showError} />;
       case "experience":
         return <ExperienceForm experiences={experiences} userId={user?.id || ""} onUpdate={handleUpdate} onSuccess={showSuccess} onError={showError} />;

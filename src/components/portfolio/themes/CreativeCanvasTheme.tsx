@@ -93,6 +93,22 @@ export default function CreativeCanvasTheme({
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  const renderAccented = (text: string, color: string) => {
+    const lines = text.split("\n");
+    return lines.map((line, li) => (
+      <span key={li}>
+        {line.split(/(\*[^*]+\*)/g).map((part, i) =>
+          part.startsWith("*") && part.endsWith("*") && part.length > 2 ? (
+            <span key={i} className="italic font-medium" style={{ color }}>{part.slice(1, -1)}</span>
+          ) : (
+            <span key={i}>{part}</span>
+          )
+        )}
+        {li < lines.length - 1 && <br />}
+      </span>
+    ));
+  };
+
   const name = portfolio?.brand_name || profile?.display_name || "Your Name";
   const headline = portfolio?.hero_headline || portfolio?.headline || "Graphic Designer & Visual Storyteller";
   const subline = portfolio?.hero_subheadline || "I design bold brands, playful illustrations, and editorial visuals that make people stop scrolling.";

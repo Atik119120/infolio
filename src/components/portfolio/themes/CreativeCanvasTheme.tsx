@@ -691,6 +691,26 @@ export default function CreativeCanvasTheme({
                         alt={`${s.name} logo`}
                         className="w-9 h-9 object-contain"
                         loading="lazy"
+                        onError={(e) => {
+                          const el = e.currentTarget as HTMLImageElement;
+                          const tried = el.dataset.tried || "";
+                          if (!tried.includes("plain")) {
+                            el.dataset.tried = tried + ",plain";
+                            el.src = `https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/${s.slug}/${s.slug}-plain.svg`;
+                          } else if (!tried.includes("simple")) {
+                            el.dataset.tried = tried + ",simple";
+                            el.src = `https://cdn.simpleicons.org/adobe${s.slug.replace(/^adobe/, "")}`;
+                          } else if (!tried.includes("simple2")) {
+                            el.dataset.tried = tried + ",simple2";
+                            el.src = `https://cdn.simpleicons.org/${s.slug}`;
+                          } else {
+                            el.style.display = "none";
+                            const fb = document.createElement("span");
+                            fb.textContent = s.name.charAt(0).toUpperCase();
+                            fb.className = "w-9 h-9 flex items-center justify-center rounded bg-black/10 font-bold text-sm";
+                            el.parentElement?.appendChild(fb);
+                          }
+                        }}
                       />
                     </motion.div>
                     <span className="font-semibold text-sm">{s.name}</span>

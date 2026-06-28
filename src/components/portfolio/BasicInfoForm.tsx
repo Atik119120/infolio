@@ -18,9 +18,10 @@ interface BasicInfoFormProps {
   onUpdate: () => void;
   onSuccess: (message: string) => void;
   onError: (message: string) => void;
+  hideContactFields?: boolean;
 }
 
-export function BasicInfoForm({ profile, portfolio, userId, onUpdate, onSuccess, onError }: BasicInfoFormProps) {
+export function BasicInfoForm({ profile, portfolio, userId, onUpdate, onSuccess, onError, hideContactFields }: BasicInfoFormProps) {
   const { perFileLimitBytes, isPro } = usePlan();
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);

@@ -55,6 +55,77 @@ const PRO_SKILLS = [
 const fonts =
   "https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,700;12..96,800&family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap";
 
+// Auto-resolve software logos from name. Tries SimpleIcons + Devicon with smart slug variants.
+const SLUG_ALIAS: Record<string, string[]> = {
+  photoshop: ["adobephotoshop", "photoshop"],
+  illustrator: ["adobeillustrator", "illustrator"],
+  indesign: ["adobeindesign", "indesign"],
+  lightroom: ["adobelightroom", "lightroom"],
+  lightroomclassic: ["adobelightroomclassic", "adobelightroom"],
+  xd: ["adobexd"],
+  adobexd: ["adobexd"],
+  aftereffects: ["adobeaftereffects", "aftereffects"],
+  premierepro: ["adobepremierepro", "premierepro"],
+  premiere: ["adobepremierepro", "premierepro"],
+  aero: ["adobecreativecloud"],
+  audition: ["adobeaudition"],
+  acrobat: ["adobeacrobatreader"],
+  fresco: ["adobefresco"],
+  substance: ["adobesubstance"],
+  dreamweaver: ["adobedreamweaver"],
+  lightroomcc: ["adobelightroom"],
+  ai: ["adobeillustrator"],
+  ps: ["adobephotoshop"],
+  ae: ["adobeaftereffects"],
+  pr: ["adobepremierepro"],
+  id: ["adobeindesign"],
+  lr: ["adobelightroom"],
+};
+
+function normalizeSlug(s: string) {
+  return (s || "").toLowerCase().replace(/[^a-z0-9]/g, "");
+}
+
+function AutoIcon({ name, slug }: { name: string; slug?: string }) {
+  const candidates = useMemo(() => {
+    const base = normalizeSlug(slug || name);
+    const fromName = normalizeSlug(name);
+    const set = new Set<string>();
+    [base, fromName].forEach((s) => {
+      if (!s) return;
+      (SLUG_ALIAS[s] || []).forEach((a) => set.add(a));
+      set.add(s);
+      if (!s.startsWith("adobe")) set.add("adobe" + s);
+    });
+    const slugs = Array.from(set);
+    const urls: string[] = [];
+    slugs.forEach((s) => urls.push(`https://cdn.simpleicons.org/${s}`));
+    slugs.forEach((s) => urls.push(`https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/${s}/${s}-original.svg`));
+    slugs.forEach((s) => urls.push(`https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/${s}/${s}-plain.svg`));
+    return urls;
+  }, [name, slug]);
+
+  const [idx, setIdx] = useState(0);
+  if (idx >= candidates.length) {
+    return (
+      <span className="w-9 h-9 flex items-center justify-center rounded bg-black/10 font-bold text-sm">
+        {(name || "?").charAt(0).toUpperCase()}
+      </span>
+    );
+  }
+  return (
+    <img
+      key={candidates[idx]}
+      src={candidates[idx]}
+      alt={`${name} logo`}
+      className="w-9 h-9 object-contain"
+      loading="lazy"
+      onError={() => setIdx((i) => i + 1)}
+    />
+  );
+}
+
+
 export default function CreativeCanvasTheme({
   profile, portfolio, skills, projects, services = [], socialLinks, experiences, education, userId,
 }: ThemeProps) {
@@ -686,32 +757,7 @@ export default function CreativeCanvasTheme({
                   >
                     <span className="cc-display text-[10px] font-bold absolute top-2 right-2 tracking-wider" style={{ color: C.muted }}>0{i + 1}</span>
                     <motion.div whileHover={{ rotate: [0, -10, 10, 0] }} transition={{ duration: 0.4 }} className="w-10 h-10 flex items-center justify-center shrink-0">
-                      <img
-                        src={`https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/${s.slug}/${s.slug}-original.svg`}
-                        alt={`${s.name} logo`}
-                        className="w-9 h-9 object-contain"
-                        loading="lazy"
-                        onError={(e) => {
-                          const el = e.currentTarget as HTMLImageElement;
-                          const tried = el.dataset.tried || "";
-                          if (!tried.includes("plain")) {
-                            el.dataset.tried = tried + ",plain";
-                            el.src = `https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/${s.slug}/${s.slug}-plain.svg`;
-                          } else if (!tried.includes("simple")) {
-                            el.dataset.tried = tried + ",simple";
-                            el.src = `https://cdn.simpleicons.org/adobe${s.slug.replace(/^adobe/, "")}`;
-                          } else if (!tried.includes("simple2")) {
-                            el.dataset.tried = tried + ",simple2";
-                            el.src = `https://cdn.simpleicons.org/${s.slug}`;
-                          } else {
-                            el.style.display = "none";
-                            const fb = document.createElement("span");
-                            fb.textContent = s.name.charAt(0).toUpperCase();
-                            fb.className = "w-9 h-9 flex items-center justify-center rounded bg-black/10 font-bold text-sm";
-                            el.parentElement?.appendChild(fb);
-                          }
-                        }}
-                      />
+                      <AutoIcon name={s.name} slug={s.slug} />
                     </motion.div>
                     <span className="font-semibold text-sm">{s.name}</span>
                   </motion.div>

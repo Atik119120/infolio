@@ -70,16 +70,6 @@ export default function ThemeDemo() {
 
   const renderTheme = () => {
     switch (themeName) {
-      case 'small-business':
-        return <SmallBusinessTheme {...demoData} />;
-      case 'prd-graphic-designer':
-        return <PRDGraphicDesignerTheme {...demoData} />;
-      case 'prd-photographer':
-        return <PRDPhotographerTheme {...demoData} />;
-      case 'prd-digital-marketer':
-        return <PRDDigitalMarketerTheme {...demoData} />;
-      case 'biography':
-        return <BiographyTheme {...demoData} />;
       case 'creative-sidebar-pro':
         return <CreativeSidebarProTheme {...demoData} />;
       case 'dark-photographer':

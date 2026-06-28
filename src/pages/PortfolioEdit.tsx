@@ -370,7 +370,7 @@ export default function PortfolioEdit() {
         if (activeTheme === "creative-canvas")
           return (
             <div className="space-y-6">
-              <SkillsForm skills={skills} userId={user?.id || ""} onUpdate={handleUpdate} onSuccess={showSuccess} onError={showError} />
+
               <CreativeCanvasHeadingsForm
                 portfolio={portfolio as any}
                 userId={user?.id || ""}

@@ -134,11 +134,12 @@ export default function CreativeCanvasTheme({
     return projects.filter(p => (p.tech_stack || []).includes(filter));
   }, [projects, filter]);
 
+  const savedStats = ((portfolio as any)?.about_stats) || {};
   const stats = [
-    { icon: Award, label: "Years", value: experiences?.length ? `${Math.max(1, experiences.length * 2)}+` : "5+" },
-    { icon: Briefcase, label: "Projects", value: projects.length ? `${projects.length}+` : "120+" },
-    { icon: Users, label: "Clients", value: "40+" },
-    { icon: Smile, label: "Awards", value: "08" },
+    { icon: Award, label: "Years", value: savedStats.years ?? (experiences?.length ? `${Math.max(1, experiences.length * 2)}+` : "5+") },
+    { icon: Briefcase, label: "Projects", value: savedStats.projects ?? (projects.length ? `${projects.length}+` : "120+") },
+    { icon: Users, label: "Clients", value: savedStats.clients ?? "40+" },
+    { icon: Smile, label: "Awards", value: savedStats.awards ?? "08" },
   ];
 
   const fadeUp = {

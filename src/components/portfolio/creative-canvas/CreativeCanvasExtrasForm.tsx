@@ -1,10 +1,75 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Plus, X, Loader2, GripVertical } from "lucide-react";
+
+const SLUG_ALIAS: Record<string, string[]> = {
+  photoshop: ["adobephotoshop", "photoshop"],
+  illustrator: ["adobeillustrator", "illustrator"],
+  indesign: ["adobeindesign"],
+  lightroom: ["adobelightroom"],
+  lightroomclassic: ["adobelightroomclassic", "adobelightroom"],
+  xd: ["adobexd"],
+  adobexd: ["adobexd"],
+  aftereffects: ["adobeaftereffects", "aftereffects"],
+  premierepro: ["adobepremierepro", "premierepro"],
+  premiere: ["adobepremierepro", "premierepro"],
+  audition: ["adobeaudition"],
+  acrobat: ["adobeacrobatreader"],
+  fresco: ["adobefresco"],
+  dreamweaver: ["adobedreamweaver"],
+  ai: ["adobeillustrator"],
+  ps: ["adobephotoshop"],
+  ae: ["adobeaftereffects"],
+  pr: ["adobepremierepro"],
+  id: ["adobeindesign"],
+  lr: ["adobelightroom"],
+};
+
+function normalize(s: string) {
+  return (s || "").toLowerCase().replace(/[^a-z0-9]/g, "");
+}
+
+function SoftwareIconPreview({ name, slug }: { name: string; slug?: string }) {
+  const candidates = useMemo(() => {
+    const base = normalize(slug || name);
+    const fromName = normalize(name);
+    const set = new Set<string>();
+    [base, fromName].forEach((s) => {
+      if (!s) return;
+      (SLUG_ALIAS[s] || []).forEach((a) => set.add(a));
+      set.add(s);
+      if (!s.startsWith("adobe")) set.add("adobe" + s);
+    });
+    const slugs = Array.from(set);
+    const urls: string[] = [];
+    slugs.forEach((s) => urls.push(`https://cdn.simpleicons.org/${s}`));
+    slugs.forEach((s) => urls.push(`https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/${s}/${s}-original.svg`));
+    slugs.forEach((s) => urls.push(`https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/${s}/${s}-plain.svg`));
+    return urls;
+  }, [name, slug]);
+  const [idx, setIdx] = useState(0);
+  if (idx >= candidates.length) {
+    return (
+      <span className="w-8 h-8 flex items-center justify-center rounded bg-muted text-xs font-bold shrink-0">
+        {(name || "?").charAt(0).toUpperCase()}
+      </span>
+    );
+  }
+  return (
+    <img
+      key={candidates[idx]}
+      src={candidates[idx]}
+      alt=""
+      className="w-8 h-8 object-contain shrink-0"
+      onError={() => setIdx((i) => i + 1)}
+    />
+  );
+}
+
 
 interface Props {
   portfolio: any;
@@ -99,13 +164,14 @@ export function CreativeCanvasExtrasForm({ portfolio, userId, onUpdate, onSucces
 
   const addSoftware = () => {
     const n = swName.trim();
-    const s = swSlug.trim().toLowerCase();
-    if (!n || !s) return onError("Both name and slug are required");
+    if (!n) return onError("Name is required");
     if (software.length >= 12) return onError("Max 12 software");
+    const s = n.toLowerCase().replace(/[^a-z0-9]/g, "");
     const next = [...software, { name: n, slug: s }];
     setSoftware(next); setSwName(""); setSwSlug("");
     saveSoftware(next);
   };
+
   const removeSoftware = (i: number) => {
     const next = software.filter((_, idx) => idx !== i);
     setSoftware(next); saveSoftware(next);
@@ -181,27 +247,20 @@ export function CreativeCanvasExtrasForm({ portfolio, userId, onUpdate, onSucces
           {saving && <Loader2 className="w-4 h-4 animate-spin text-muted-foreground" />}
         </CardTitle>
         <CardDescription>
-          Software shown in the "I master daily" section. The slug must match a{" "}
-          <a
-            href="https://devicon.dev"
-            target="_blank"
-            rel="noreferrer"
-            className="underline underline-offset-2"
-          >
-            Devicon
-          </a>{" "}
-          slug (e.g. {SLUG_HINTS}). Max 12.
+          Just type the software name — the original logo is fetched automatically (e.g. Photoshop, Illustrator, InDesign, Lightroom, Figma, Canva, Blender). Max 12.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className="grid sm:grid-cols-[1fr_1fr_auto] gap-2">
+        <div className="grid sm:grid-cols-[1fr_auto] gap-2">
           <div className="space-y-1.5">
-            <Label className="text-xs">Display Name</Label>
-            <Input value={swName} onChange={(e) => setSwName(e.target.value)} placeholder="Photoshop" maxLength={30} />
-          </div>
-          <div className="space-y-1.5">
-            <Label className="text-xs">Devicon Slug</Label>
-            <Input value={swSlug} onChange={(e) => setSwSlug(e.target.value)} placeholder="photoshop" maxLength={40} />
+            <Label className="text-xs">Software Name</Label>
+            <Input
+              value={swName}
+              onChange={(e) => setSwName(e.target.value)}
+              onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); addSoftware(); } }}
+              placeholder="Photoshop"
+              maxLength={30}
+            />
           </div>
           <div className="flex items-end">
             <Button type="button" onClick={addSoftware} className="w-full sm:w-auto">
@@ -220,12 +279,8 @@ export function CreativeCanvasExtrasForm({ portfolio, userId, onUpdate, onSucces
                 className="flex items-center gap-3 p-2.5 rounded-lg border bg-card"
               >
                 <GripVertical className="w-4 h-4 text-muted-foreground shrink-0" />
-                <img
-                  src={`https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/${s.slug}/${s.slug}-original.svg`}
-                  alt=""
-                  className="w-8 h-8 object-contain shrink-0"
-                  onError={(e) => ((e.currentTarget.style.opacity = "0.2"))}
-                />
+                <SoftwareIconPreview name={s.name} slug={s.slug} />
+
                 <div className="flex-1 min-w-0">
                   <div className="text-sm font-medium truncate">{s.name}</div>
                   <div className="text-xs text-muted-foreground truncate">{s.slug}</div>

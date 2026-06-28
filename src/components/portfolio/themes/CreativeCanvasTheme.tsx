@@ -550,18 +550,20 @@ export default function CreativeCanvasTheme({
                 <p className="text-base md:text-lg mb-8 max-w-xl whitespace-pre-wrap" style={{ color: C.muted, overflowWrap: "anywhere" }}>{aboutText}</p>
 
                 {/* stats — horizontal divider strip */}
-                <div className="grid grid-cols-2 md:grid-cols-4 border-y-2 divide-x-2 mb-8" style={{ borderColor: C.ink, ['--tw-divide-opacity' as any]: 1 }}>
-                  {stats.map((s, i) => (
-                    <div key={i} className="py-2.5 px-3 group hover:bg-black hover:text-white transition" style={{ borderColor: C.ink }}>
-                      <div className="flex items-center gap-2 mb-1">
-                        <s.icon size={12} className="opacity-60" />
-                        <span className="text-[9px] font-bold tracking-[0.2em] opacity-60">{String(i + 1).padStart(2, "0")}</span>
+                {stats.length > 0 && (
+                  <div className={`grid ${stats.length === 1 ? "grid-cols-1" : stats.length === 2 ? "grid-cols-2" : stats.length === 3 ? "grid-cols-3" : "grid-cols-2 md:grid-cols-4"} border-y-2 divide-x-2 mb-8`} style={{ borderColor: C.ink, ['--tw-divide-opacity' as any]: 1 }}>
+                    {stats.map((s, i) => (
+                      <div key={i} className="py-2.5 px-3 group hover:bg-black hover:text-white transition" style={{ borderColor: C.ink }}>
+                        <div className="flex items-center gap-2 mb-1">
+                          <s.icon size={12} className="opacity-60" />
+                          <span className="text-[9px] font-bold tracking-[0.2em] opacity-60">{String(i + 1).padStart(2, "0")}</span>
+                        </div>
+                        <div className="cc-display text-2xl md:text-3xl font-extrabold leading-none">{s.value}</div>
+                        <div className="text-[10px] font-semibold uppercase tracking-wider mt-1 opacity-70">{s.label}</div>
                       </div>
-                      <div className="cc-display text-2xl md:text-3xl font-extrabold leading-none">{s.value}</div>
-                      <div className="text-[10px] font-semibold uppercase tracking-wider mt-1 opacity-70">{s.label}</div>
-                    </div>
-                  ))}
-                </div>
+                    ))}
+                  </div>
+                )}
 
                 <div className="flex items-center gap-4 flex-wrap">
                   {website && (

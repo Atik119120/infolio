@@ -145,6 +145,9 @@ export default function PortfolioEdit() {
     } else if (activeTheme === "dark-photographer") {
       sectionToId.hero = "home";
       sectionToId.projects = "work";
+    } else if (activeTheme === "creative-sidebar-pro") {
+      sectionToId.hero = "home";
+      sectionToId.projects = "portfolio";
     }
     const target = sectionToId[activeSection];
     if (!target) return;
@@ -273,9 +276,12 @@ export default function PortfolioEdit() {
 
   // Map editor section -> anchor id rendered by themes
   const sectionAnchors: Partial<Record<SectionKey, string>> = {
-    hero: activeTheme === "dark-photographer" ? "home" : "hero",
+    hero: (activeTheme === "dark-photographer" || activeTheme === "creative-sidebar-pro" || activeTheme === "creative-canvas") ? "home" : "hero",
     about: "about", skills: "skills", services: "services",
-    projects: activeTheme === "dark-photographer" ? "work" : "projects",
+    projects: activeTheme === "dark-photographer" ? "work"
+      : activeTheme === "creative-canvas" ? "work"
+      : activeTheme === "creative-sidebar-pro" ? "portfolio"
+      : "projects",
     experience: "experience", education: "education",
     contact: "contact",
   };

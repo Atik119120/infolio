@@ -42,31 +42,6 @@ export const THEME_CONFIG: Record<string, ThemeConfig> = {
     tabs: ["theme", "basic", "customize", "branding", "skills", "services", "projects", "education", "contact", "social", "seo"],
     customizeFields: ALL_CUSTOMIZE,
   },
-  "small-business": {
-    tabs: ["theme", "basic", "customize", "branding", "skills", "services", "projects", "experience", "education", "social", "seo"],
-    customizeFields: ALL_CUSTOMIZE,
-  },
-  "prd-graphic-designer": {
-    tabs: ["theme", "basic", "customize", "branding", "skills", "services", "projects", "experience", "social", "seo"],
-    customizeFields: ALL_CUSTOMIZE,
-  },
-  "prd-photographer": {
-    tabs: ["theme", "basic", "customize", "branding", "services", "projects", "experience", "education", "social", "seo"],
-    customizeFields: ALL_CUSTOMIZE,
-  },
-  "prd-digital-marketer": {
-    tabs: ["theme", "basic", "customize", "branding", "services", "projects", "experience", "social", "seo"],
-    customizeFields: ALL_CUSTOMIZE,
-  },
-  "biography": {
-    tabs: ["theme", "basic", "customize", "branding", "projects", "experience", "education", "social", "seo"],
-    // Biography is a Facebook-style profile — no hero CTA, no hero subheadline.
-    customizeFields: ["hero_image", "hero_headline", "about_image", "about_text", "footer_text", "browser_title"],
-  },
-  "custom-code": {
-    tabs: ["theme", "customize"],
-    customizeFields: [],
-  },
 };
 
 export const DEFAULT_CONFIG: ThemeConfig = THEME_CONFIG["freelancer"];

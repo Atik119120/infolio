@@ -5,12 +5,7 @@ import { Button } from "@/components/ui/button";
 import { usePortfolioHead } from "@/hooks/usePortfolioHead";
 import {
   FreelancerTheme,
-  SmallBusinessTheme,
-  PRDGraphicDesignerTheme,
   CreativeCanvasTheme,
-  PRDPhotographerTheme,
-  PRDDigitalMarketerTheme,
-  BiographyTheme,
   CreativeSidebarProTheme,
   DarkPhotographerTheme,
   ThemeProfile,
@@ -222,16 +217,6 @@ function SubdomainPortfolio({ username }: { username: string }) {
   const selectedTheme = portfolio?.theme || 'freelancer';
 
   switch (selectedTheme) {
-    case 'small-business':
-      return <SmallBusinessTheme {...themeProps} />;
-    case 'prd-graphic-designer':
-      return <PRDGraphicDesignerTheme {...themeProps} />;
-    case 'prd-photographer':
-      return <PRDPhotographerTheme {...themeProps} />;
-    case 'prd-digital-marketer':
-      return <PRDDigitalMarketerTheme {...themeProps} />;
-    case 'biography':
-      return <BiographyTheme {...themeProps} />;
     case 'creative-sidebar-pro':
       return <CreativeSidebarProTheme {...themeProps} />;
     case 'dark-photographer':

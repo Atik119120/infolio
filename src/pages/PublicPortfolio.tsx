@@ -8,14 +8,7 @@ import { trackView } from "@/lib/trackView";
 
 import {
   FreelancerTheme,
-  SmallBusinessTheme,
-  PRDGraphicDesignerTheme,
   CreativeCanvasTheme,
-  PRDPhotographerTheme,
-  PRDDigitalMarketerTheme,
-  BiographyTheme,
-  CustomCodeTheme,
-  AdminUploadedTheme,
   CreativeSidebarProTheme,
   DarkPhotographerTheme,
   ThemeProfile,
@@ -193,25 +186,7 @@ export default function PublicPortfolio() {
 
   const selectedTheme = portfolio?.theme || 'freelancer';
 
-  // Admin-uploaded custom themes use the prefix `admin:` followed by the slug
-  if (selectedTheme.startsWith('admin:')) {
-    const slug = selectedTheme.slice('admin:'.length);
-    return <AdminUploadedTheme slug={slug} {...themeProps} />;
-  }
-
   switch (selectedTheme) {
-    case 'small-business':
-      return <SmallBusinessTheme {...themeProps} />;
-    case 'prd-graphic-designer':
-      return <PRDGraphicDesignerTheme {...themeProps} />;
-    case 'prd-photographer':
-      return <PRDPhotographerTheme {...themeProps} />;
-    case 'prd-digital-marketer':
-      return <PRDDigitalMarketerTheme {...themeProps} />;
-    case 'biography':
-      return <BiographyTheme {...themeProps} />;
-    case 'custom-code':
-      return <CustomCodeTheme {...themeProps} />;
     case 'creative-sidebar-pro':
       return <CreativeSidebarProTheme {...themeProps} />;
     case 'dark-photographer':
@@ -223,3 +198,4 @@ export default function PublicPortfolio() {
       return <FreelancerTheme {...themeProps} />;
   }
 }
+

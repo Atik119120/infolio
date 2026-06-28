@@ -404,9 +404,8 @@ export default function CreativeCanvasTheme({
                 <div className="cc-display font-extrabold leading-none mb-2" style={{ fontSize: "80px", color: C.primary }}>
                   &ldquo;
                 </div>
-                <h2 className="cc-display font-extrabold text-3xl md:text-5xl leading-[1.05] mb-6 -mt-4" style={{ overflowWrap: "anywhere" }}>
-                  Designing with <span style={{ color: C.primary }}>heart</span>,<br />
-                  building with <span className="italic" style={{ color: C.accent }}>craft.</span>
+                <h2 className="cc-display font-extrabold text-3xl md:text-5xl leading-[1.05] mb-6 -mt-4" style={{ overflowWrap: "anywhere", color: C.ink }}>
+                  {headline}
                 </h2>
                 <p className="text-base md:text-lg mb-8 max-w-xl whitespace-pre-wrap" style={{ color: C.muted, overflowWrap: "anywhere" }}>{aboutText}</p>
 

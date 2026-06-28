@@ -145,6 +145,9 @@ export default function PortfolioEdit() {
     } else if (activeTheme === "dark-photographer") {
       sectionToId.hero = "home";
       sectionToId.projects = "work";
+    } else if (activeTheme === "creative-sidebar-pro") {
+      sectionToId.hero = "home";
+      sectionToId.projects = "portfolio";
     }
     const target = sectionToId[activeSection];
     if (!target) return;

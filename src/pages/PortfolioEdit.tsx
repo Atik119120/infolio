@@ -309,18 +309,28 @@ export default function PortfolioEdit() {
 
 
   const isPhotographer = activeTheme === "dark-photographer";
+  // Theme-aware section label overrides (matches what each theme actually renders)
+  const themeLabels: Record<string, Partial<Record<SectionKey, string>>> = {
+    "freelancer": { hero: "Hero Section", about: "About Me", services: "Services", projects: "Projects" },
+    "creative-sidebar-pro": { hero: "Hero", about: "About", services: "My Services", projects: "Portfolio" },
+    "dark-photographer": { hero: "Hero Slideshow", about: "About", services: "Packages & Pricing", projects: "Work" },
+    "creative-canvas": { hero: "Hero", about: "About", services: "Services", projects: "Work" },
+  };
+  const L = (key: SectionKey, fallback: string) =>
+    themeLabels[activeTheme]?.[key] ?? fallback;
+
   const allSections: { value: SectionKey; label: string; icon: any; hint: string; requires?: string }[] = [
-    { value: "hero", label: isPhotographer ? "Hero Slideshow" : "Hero Section", icon: isPhotographer ? Images : Home, hint: isPhotographer ? "Banner slideshow & text" : "Main landing area", requires: "customize" },
-    { value: "about", label: "About Me", icon: User, hint: "Personal introduction", requires: "basic" },
-    { value: "skills", label: "Skills", icon: Sparkles, hint: "Tools and expertise" },
-    { value: "services", label: isPhotographer ? "Packages & Pricing" : "Services", icon: isPhotographer ? Wrench : Wrench, hint: isPhotographer ? "Shoot packages with price" : "What you offer" },
-    { value: "projects", label: isPhotographer ? "Work" : "Projects", icon: isPhotographer ? ImageIcon : FolderOpen, hint: isPhotographer ? "Photos & albums" : "Showcase your work" },
-    { value: "experience", label: "Experience", icon: Briefcase, hint: "Work history" },
-    { value: "education", label: "Education", icon: GraduationCap, hint: "Your education" },
+    { value: "hero", label: L("hero", isPhotographer ? "Hero Slideshow" : "Hero Section"), icon: isPhotographer ? Images : Home, hint: isPhotographer ? "Banner slideshow & text" : "Main landing area", requires: "customize" },
+    { value: "about", label: L("about", "About Me"), icon: User, hint: "Personal introduction", requires: "basic" },
+    { value: "skills", label: L("skills", "Skills"), icon: Sparkles, hint: "Tools and expertise" },
+    { value: "services", label: L("services", isPhotographer ? "Packages & Pricing" : "Services"), icon: Wrench, hint: isPhotographer ? "Shoot packages with price" : "What you offer" },
+    { value: "projects", label: L("projects", isPhotographer ? "Work" : "Projects"), icon: isPhotographer ? ImageIcon : FolderOpen, hint: isPhotographer ? "Photos & albums" : "Showcase your work" },
+    { value: "experience", label: L("experience", "Experience"), icon: Briefcase, hint: "Work history" },
+    { value: "education", label: L("education", "Education"), icon: GraduationCap, hint: "Your education" },
     { value: "branding", label: "Branding", icon: ImageIcon, hint: "Favicon", requires: "branding" },
     { value: "header", label: "Header Settings", icon: Palette, hint: "Logo & brand name", requires: "branding" },
     { value: "footer", label: "Footer Settings", icon: Type, hint: "Footer text", requires: "customize" },
-    { value: "contact", label: "Contact Info", icon: Mail, hint: "Email, phone, custom fields", requires: "social" },
+    { value: "contact", label: L("contact", "Contact Info"), icon: Mail, hint: "Email, phone, custom fields", requires: "social" },
     { value: "social", label: "Social Links", icon: Link2, hint: "Your social profiles" },
     { value: "visibility", label: "Sections (Show/Hide)", icon: EyeOff, hint: "Toggle sections on or off" },
     { value: "seo", label: "SEO", icon: Rocket, hint: "Search visibility" },

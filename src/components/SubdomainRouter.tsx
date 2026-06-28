@@ -5,12 +5,7 @@ import { Button } from "@/components/ui/button";
 import { usePortfolioHead } from "@/hooks/usePortfolioHead";
 import {
   FreelancerTheme,
-  SmallBusinessTheme,
-  PRDGraphicDesignerTheme,
   CreativeCanvasTheme,
-  PRDPhotographerTheme,
-  PRDDigitalMarketerTheme,
-  BiographyTheme,
   CreativeSidebarProTheme,
   DarkPhotographerTheme,
   ThemeProfile,

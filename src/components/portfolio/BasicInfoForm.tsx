@@ -56,6 +56,22 @@ export function BasicInfoForm({
 
   const doSave = async (silent = true) => {
     setSaving(true);
+    const portfolioUpdate = headlineField === "about_headline"
+      ? {
+          about_headline: formData.headline,
+          about_text: formData.bio,
+          location: formData.location,
+          phone: formData.phone,
+          website: formData.website,
+        }
+      : {
+          headline: formData.headline,
+          about_text: formData.bio,
+          location: formData.location,
+          phone: formData.phone,
+          website: formData.website,
+        };
+
     const [profileRes, portfolioRes] = await Promise.all([
       supabase
         .from("profiles")
@@ -63,13 +79,7 @@ export function BasicInfoForm({
         .eq("user_id", userId),
       supabase
         .from("portfolios")
-        .update({
-          [headlineField]: formData.headline,
-          about_text: formData.bio,
-          location: formData.location,
-          phone: formData.phone,
-          website: formData.website,
-        })
+        .update(portfolioUpdate)
         .eq("user_id", userId),
     ]);
     setSaving(false);

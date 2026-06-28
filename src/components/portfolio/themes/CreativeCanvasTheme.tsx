@@ -739,7 +739,6 @@ export default function CreativeCanvasTheme({
 
             <div className="columns-2 md:columns-3 lg:columns-4 gap-3 md:gap-4 [&>*]:mb-3 md:[&>*]:mb-4 [&>*]:break-inside-avoid">
               {filteredProjects.map((p, i) => {
-                const heights = ["aspect-[3/4]", "aspect-[4/5]", "aspect-square", "aspect-[3/5]", "aspect-[4/3]", "aspect-[2/3]", "aspect-[5/4]", "aspect-[3/4]"];
                 const tint = [C.secondary, C.accent, C.primary, C.ink][i % 4];
                 return (
                   <motion.div
@@ -752,11 +751,11 @@ export default function CreativeCanvasTheme({
                     className="group relative rounded-2xl overflow-hidden cursor-pointer shadow-sm hover:shadow-2xl"
                     onClick={() => p.image_url && setLightbox(p.image_url)}
                   >
-                    <div className={`relative ${heights[i % heights.length]} overflow-hidden`} style={{ background: tint }}>
+                    <div className="relative overflow-hidden" style={{ background: tint }}>
                       {p.image_url ? (
-                        <img src={p.image_url} alt={p.title} className="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
+                        <img src={p.image_url} alt={p.title} className="w-full h-auto block group-hover:scale-105 transition duration-500" />
                       ) : (
-                        <div className="w-full h-full flex items-center justify-center cc-display text-5xl font-extrabold opacity-30">{p.title.charAt(0)}</div>
+                        <div className="w-full aspect-[4/5] flex items-center justify-center cc-display text-5xl font-extrabold opacity-30">{p.title.charAt(0)}</div>
                       )}
                       {/* Hover overlay */}
                       <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition flex flex-col justify-between p-3 md:p-4" style={{ background: "linear-gradient(to top, rgba(0,0,0,0.85), rgba(0,0,0,0.1) 60%, transparent)" }}>

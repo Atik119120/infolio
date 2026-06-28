@@ -33,6 +33,7 @@ import { AboutPhotographerForm } from "@/components/portfolio/photographer/About
 import { PhotoGalleryForm } from "@/components/portfolio/photographer/PhotoGalleryForm";
 import { CreativeCanvasExtrasForm } from "@/components/portfolio/creative-canvas/CreativeCanvasExtrasForm";
 import { CreativeCanvasStatsForm } from "@/components/portfolio/creative-canvas/CreativeCanvasStatsForm";
+import { CreativeCanvasHeadingsForm } from "@/components/portfolio/creative-canvas/CreativeCanvasHeadingsForm";
 import { getThemeConfig } from "@/config/themeFeatures";
 import { cn } from "@/lib/utils";
 

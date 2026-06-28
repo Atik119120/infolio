@@ -232,11 +232,6 @@ const PROFILES: Record<string, Profile> = {
 
 export const THEME_TEMPLATES: Record<string, TemplateFn> = {
   freelancer: () => ({ name: "Theme 1 Site", theme: PROFILES.freelancer.theme, blocks: buildPage(PROFILES.freelancer) }),
-  "custom-code": () => ({
-    name: "Custom HTML Page",
-    theme: { primaryColor: "#dc2626", fontFamily: "Inter, sans-serif", background: "#ffffff" },
-    blocks: [createBlock("customCode")],
-  }),
 };
 
 export const getThemeTemplate = (themeId: string): { name: string; theme: PageContent["theme"]; blocks: Block[] } => {

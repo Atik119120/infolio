@@ -16,6 +16,7 @@ import { Button } from "@/components/ui/button";
 import { BasicInfoForm } from "@/components/portfolio/BasicInfoForm";
 import { SkillsForm } from "@/components/portfolio/SkillsForm";
 import { ProjectsForm } from "@/components/portfolio/ProjectsForm";
+import { SimpleProjectsForm } from "@/components/portfolio/creative-canvas/SimpleProjectsForm";
 import { ExperienceForm } from "@/components/portfolio/ExperienceForm";
 import { EducationForm } from "@/components/portfolio/EducationForm";
 import { SocialLinksForm } from "@/components/portfolio/SocialLinksForm";

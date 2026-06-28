@@ -179,7 +179,7 @@ export default function CreativeCanvasTheme({
   const [active, setActive] = useState("home");
   const [scrolled, setScrolled] = useState(false);
   const [filter, setFilter] = useState<string>("All");
-  const [lightbox, setLightbox] = useState<string | null>(null);
+  const [lightbox, setLightbox] = useState<{ url: string; title?: string; description?: string } | null>(null);
   const [showTop, setShowTop] = useState(false);
 
   useEffect(() => { window.scrollTo(0, 0); }, []);

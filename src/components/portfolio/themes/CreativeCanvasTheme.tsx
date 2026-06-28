@@ -346,10 +346,16 @@ export default function CreativeCanvasTheme({
       >
         <div className="max-w-7xl mx-auto px-5 md:px-8 flex items-center justify-between h-16 md:h-20">
           <button onClick={() => scrollTo("home")} className="flex items-center gap-2 cc-display font-extrabold text-xl">
-            <span className="w-8 h-8 rounded-lg flex items-center justify-center text-white" style={{ background: C.ink }}>
-              <Sparkles size={16} style={{ color: C.secondary }} />
-            </span>
-            <span>{name.split(" ")[0]}<span style={{ color: C.primary }}>.</span></span>
+            {portfolio?.logo_url ? (
+              <img src={portfolio.logo_url} alt={name} className="h-9 w-auto object-contain" />
+            ) : (
+              <>
+                <span className="w-8 h-8 rounded-lg flex items-center justify-center text-white" style={{ background: C.ink }}>
+                  <Sparkles size={16} style={{ color: C.secondary }} />
+                </span>
+                <span>{name.split(" ")[0]}<span style={{ color: C.primary }}>.</span></span>
+              </>
+            )}
           </button>
 
           <nav className="hidden lg:flex items-center gap-7 text-sm font-medium">

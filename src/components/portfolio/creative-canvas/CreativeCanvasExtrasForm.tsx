@@ -182,33 +182,28 @@ export function CreativeCanvasExtrasForm({ portfolio, userId, onUpdate, onSucces
           {saving && <Loader2 className="w-4 h-4 animate-spin text-muted-foreground" />}
         </CardTitle>
         <CardDescription>
-          Software shown in the "I master daily" section. The slug must match a{" "}
-          <a
-            href="https://devicon.dev"
-            target="_blank"
-            rel="noreferrer"
-            className="underline underline-offset-2"
-          >
-            Devicon
-          </a>{" "}
-          slug (e.g. {SLUG_HINTS}). Max 12.
+          Just type the software name — the original logo is fetched automatically (e.g. Photoshop, Illustrator, InDesign, Lightroom, Figma, Canva, Blender). Max 12.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className="grid sm:grid-cols-[1fr_1fr_auto] gap-2">
+        <div className="grid sm:grid-cols-[1fr_auto] gap-2">
           <div className="space-y-1.5">
-            <Label className="text-xs">Display Name</Label>
-            <Input value={swName} onChange={(e) => setSwName(e.target.value)} placeholder="Photoshop" maxLength={30} />
-          </div>
-          <div className="space-y-1.5">
-            <Label className="text-xs">Devicon Slug</Label>
-            <Input value={swSlug} onChange={(e) => setSwSlug(e.target.value)} placeholder="photoshop" maxLength={40} />
+            <Label className="text-xs">Software Name</Label>
+            <Input
+              value={swName}
+              onChange={(e) => setSwName(e.target.value)}
+              onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); addSoftware(); } }}
+              placeholder="Photoshop"
+              maxLength={30}
+            />
           </div>
           <div className="flex items-end">
             <Button type="button" onClick={addSoftware} className="w-full sm:w-auto">
               <Plus className="w-4 h-4 mr-1" /> Add
             </Button>
           </div>
+        </div>
+
         </div>
 
         {software.length === 0 ? (

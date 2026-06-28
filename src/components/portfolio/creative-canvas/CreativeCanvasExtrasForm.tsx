@@ -1,10 +1,75 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Plus, X, Loader2, GripVertical } from "lucide-react";
+
+const SLUG_ALIAS: Record<string, string[]> = {
+  photoshop: ["adobephotoshop", "photoshop"],
+  illustrator: ["adobeillustrator", "illustrator"],
+  indesign: ["adobeindesign"],
+  lightroom: ["adobelightroom"],
+  lightroomclassic: ["adobelightroomclassic", "adobelightroom"],
+  xd: ["adobexd"],
+  adobexd: ["adobexd"],
+  aftereffects: ["adobeaftereffects", "aftereffects"],
+  premierepro: ["adobepremierepro", "premierepro"],
+  premiere: ["adobepremierepro", "premierepro"],
+  audition: ["adobeaudition"],
+  acrobat: ["adobeacrobatreader"],
+  fresco: ["adobefresco"],
+  dreamweaver: ["adobedreamweaver"],
+  ai: ["adobeillustrator"],
+  ps: ["adobephotoshop"],
+  ae: ["adobeaftereffects"],
+  pr: ["adobepremierepro"],
+  id: ["adobeindesign"],
+  lr: ["adobelightroom"],
+};
+
+function normalize(s: string) {
+  return (s || "").toLowerCase().replace(/[^a-z0-9]/g, "");
+}
+
+function SoftwareIconPreview({ name, slug }: { name: string; slug?: string }) {
+  const candidates = useMemo(() => {
+    const base = normalize(slug || name);
+    const fromName = normalize(name);
+    const set = new Set<string>();
+    [base, fromName].forEach((s) => {
+      if (!s) return;
+      (SLUG_ALIAS[s] || []).forEach((a) => set.add(a));
+      set.add(s);
+      if (!s.startsWith("adobe")) set.add("adobe" + s);
+    });
+    const slugs = Array.from(set);
+    const urls: string[] = [];
+    slugs.forEach((s) => urls.push(`https://cdn.simpleicons.org/${s}`));
+    slugs.forEach((s) => urls.push(`https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/${s}/${s}-original.svg`));
+    slugs.forEach((s) => urls.push(`https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/${s}/${s}-plain.svg`));
+    return urls;
+  }, [name, slug]);
+  const [idx, setIdx] = useState(0);
+  if (idx >= candidates.length) {
+    return (
+      <span className="w-8 h-8 flex items-center justify-center rounded bg-muted text-xs font-bold shrink-0">
+        {(name || "?").charAt(0).toUpperCase()}
+      </span>
+    );
+  }
+  return (
+    <img
+      key={candidates[idx]}
+      src={candidates[idx]}
+      alt=""
+      className="w-8 h-8 object-contain shrink-0"
+      onError={() => setIdx((i) => i + 1)}
+    />
+  );
+}
+
 
 interface Props {
   portfolio: any;

@@ -952,11 +952,20 @@ export default function CreativeCanvasTheme({
             className="fixed inset-0 z-[80] flex items-center justify-center p-6"
             style={{ background: "rgba(0,0,0,0.92)" }}
           >
-            <button className="absolute top-5 right-5 text-white" onClick={() => setLightbox(null)}><X size={28} /></button>
-            <motion.img
-              initial={{ scale: 0.9 }} animate={{ scale: 1 }} exit={{ scale: 0.9 }}
-              src={lightbox} alt="" className="max-w-[92vw] max-h-[88vh] object-contain rounded-xl"
-            />
+            <button className="absolute top-5 right-5 text-white z-10" onClick={() => setLightbox(null)}><X size={28} /></button>
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }}
+              onClick={(e) => e.stopPropagation()}
+              className="flex flex-col items-center gap-4 max-w-[92vw] max-h-[92vh]"
+            >
+              <img src={lightbox.url} alt={lightbox.title || ""} className="max-w-[92vw] max-h-[70vh] object-contain rounded-xl" />
+              {(lightbox.title || lightbox.description) && (
+                <div className="text-center text-white max-w-2xl px-4">
+                  {lightbox.title && <h3 className="cc-display text-xl md:text-2xl font-bold mb-2">{lightbox.title}</h3>}
+                  {lightbox.description && <p className="text-sm md:text-base opacity-80 leading-relaxed">{lightbox.description}</p>}
+                </div>
+              )}
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>

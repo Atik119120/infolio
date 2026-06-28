@@ -749,7 +749,7 @@ export default function CreativeCanvasTheme({
                     transition={{ duration: 0.6, delay: (i % 8) * 0.06, ease: [0.16, 1, 0.3, 1] }}
                     whileHover={{ y: -4, rotate: i % 2 ? 0.5 : -0.5 }}
                     className="group relative rounded-2xl overflow-hidden cursor-pointer shadow-sm hover:shadow-2xl"
-                    onClick={() => p.image_url && setLightbox(p.image_url)}
+                    onClick={() => p.image_url && setLightbox({ url: p.image_url, title: p.title, description: p.description })}
                   >
                     <div className="relative overflow-hidden" style={{ background: tint }}>
                       {p.image_url ? (

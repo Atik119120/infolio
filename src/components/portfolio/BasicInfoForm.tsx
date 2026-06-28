@@ -19,9 +19,23 @@ interface BasicInfoFormProps {
   onSuccess: (message: string) => void;
   onError: (message: string) => void;
   hideContactFields?: boolean;
+  headlineField?: "headline" | "about_headline";
+  headlineLabel?: string;
+  headlinePlaceholder?: string;
 }
 
-export function BasicInfoForm({ profile, portfolio, userId, onUpdate, onSuccess, onError, hideContactFields }: BasicInfoFormProps) {
+export function BasicInfoForm({
+  profile,
+  portfolio,
+  userId,
+  onUpdate,
+  onSuccess,
+  onError,
+  hideContactFields,
+  headlineField = "headline",
+  headlineLabel = "Headline",
+  headlinePlaceholder = "Full Stack Developer",
+}: BasicInfoFormProps) {
   const { perFileLimitBytes, isPro } = usePlan();
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -29,7 +43,7 @@ export function BasicInfoForm({ profile, portfolio, userId, onUpdate, onSuccess,
 
   const [formData, setFormData] = useState({
     display_name: profile?.display_name || "",
-    headline: portfolio?.headline || "",
+    headline: headlineField === "about_headline" ? ((portfolio as any)?.about_headline || "") : (portfolio?.headline || ""),
     bio: (portfolio as any)?.about_text || portfolio?.bio || "",
     location: portfolio?.location || "",
     phone: portfolio?.phone || "",
@@ -50,7 +64,7 @@ export function BasicInfoForm({ profile, portfolio, userId, onUpdate, onSuccess,
       supabase
         .from("portfolios")
         .update({
-          headline: formData.headline,
+          [headlineField]: formData.headline,
           about_text: formData.bio,
           location: formData.location,
           phone: formData.phone,
@@ -199,13 +213,13 @@ export function BasicInfoForm({ profile, portfolio, userId, onUpdate, onSuccess,
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="headline">Headline</Label>
+            <Label htmlFor="headline">{headlineLabel}</Label>
             <Input
               id="headline"
               name="headline"
               value={formData.headline}
               onChange={handleChange}
-              placeholder="Full Stack Developer"
+              placeholder={headlinePlaceholder}
             />
           </div>
         </div>

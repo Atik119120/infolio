@@ -96,6 +96,7 @@ export default function CreativeCanvasTheme({
   const name = portfolio?.brand_name || profile?.display_name || "Your Name";
   const headline = portfolio?.hero_headline || portfolio?.headline || "Graphic Designer & Visual Storyteller";
   const subline = portfolio?.hero_subheadline || "I design bold brands, playful illustrations, and editorial visuals that make people stop scrolling.";
+  const aboutHeadline = portfolio?.about_headline || portfolio?.headline || "Designing with heart, building with craft.";
   const heroImg = portfolio?.hero_image_url || profile?.avatar_url;
   const aboutImg = portfolio?.about_image_url || profile?.avatar_url;
   const aboutText = portfolio?.about_text || portfolio?.bio || subline;
@@ -405,7 +406,7 @@ export default function CreativeCanvasTheme({
                   &ldquo;
                 </div>
                 <h2 className="cc-display font-extrabold text-3xl md:text-5xl leading-[1.05] mb-6 -mt-4" style={{ overflowWrap: "anywhere", color: C.ink }}>
-                  {headline}
+                  {aboutHeadline}
                 </h2>
                 <p className="text-base md:text-lg mb-8 max-w-xl whitespace-pre-wrap" style={{ color: C.muted, overflowWrap: "anywhere" }}>{aboutText}</p>
 

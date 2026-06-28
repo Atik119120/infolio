@@ -32,6 +32,7 @@ import { PhotographyPackagesForm } from "@/components/portfolio/photographer/Pho
 import { AboutPhotographerForm } from "@/components/portfolio/photographer/AboutPhotographerForm";
 import { PhotoGalleryForm } from "@/components/portfolio/photographer/PhotoGalleryForm";
 import { CreativeCanvasExtrasForm } from "@/components/portfolio/creative-canvas/CreativeCanvasExtrasForm";
+import { CreativeCanvasStatsForm } from "@/components/portfolio/creative-canvas/CreativeCanvasStatsForm";
 import { getThemeConfig } from "@/config/themeFeatures";
 import { cn } from "@/lib/utils";
 
@@ -323,6 +324,13 @@ export default function PortfolioEdit() {
       case "about":
         if (activeTheme === "dark-photographer")
           return <AboutPhotographerForm profile={profile} portfolio={portfolio} userId={user?.id || ""} onUpdate={handleUpdate} onSuccess={showSuccess} onError={showError} />;
+        if (activeTheme === "creative-canvas")
+          return (
+            <div className="space-y-6">
+              <BasicInfoForm profile={profile} portfolio={portfolio} userId={user?.id || ""} onUpdate={handleUpdate} onSuccess={showSuccess} onError={showError} />
+              <CreativeCanvasStatsForm portfolio={portfolio as any} userId={user?.id || ""} onUpdate={handleUpdate} onSuccess={showSuccess} onError={showError} />
+            </div>
+          );
         return <BasicInfoForm profile={profile} portfolio={portfolio} userId={user?.id || ""} onUpdate={handleUpdate} onSuccess={showSuccess} onError={showError} />;
       case "hero":
         if (activeTheme === "custom-code")

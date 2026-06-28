@@ -689,7 +689,7 @@ export default function CreativeCanvasTheme({
                 <span className="h-px w-10" style={{ background: C.ink }} />
                 <span className="text-[10px] font-bold tracking-[0.3em]">EDUCATION</span>
               </div>
-              <h2 className="cc-display font-extrabold text-4xl md:text-5xl mb-8">Learning<br /><span className="italic font-medium" style={{ color: C.primary }}>journey.</span></h2>
+              <h2 className="cc-display font-extrabold text-4xl md:text-5xl mb-8">{renderAccented((portfolio as any)?.education_heading || "Learning\n*journey.*", C.primary)}</h2>
               <div className="grid grid-cols-2 gap-0 border-2 rounded-2xl overflow-hidden" style={{ borderColor: C.ink }}>
                 {(education && education.length > 0 ? education : []).slice(0, 2).map((e, i) => (
                   <div key={e.id} className={`relative p-5 ${i === 0 ? "border-r-2" : ""}`} style={{ borderColor: C.ink }}>

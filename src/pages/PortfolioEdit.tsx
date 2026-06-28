@@ -45,6 +45,7 @@ export interface Profile {
 
 export interface Portfolio {
   headline: string | null;
+  about_headline?: string | null;
   bio: string | null;
   location: string | null;
   phone: string | null;
@@ -327,7 +328,18 @@ export default function PortfolioEdit() {
         if (activeTheme === "creative-canvas")
           return (
             <div className="space-y-6">
-              <BasicInfoForm profile={profile} portfolio={portfolio} userId={user?.id || ""} onUpdate={handleUpdate} onSuccess={showSuccess} onError={showError} hideContactFields />
+              <BasicInfoForm
+                profile={profile}
+                portfolio={portfolio}
+                userId={user?.id || ""}
+                onUpdate={handleUpdate}
+                onSuccess={showSuccess}
+                onError={showError}
+                hideContactFields
+                headlineField="about_headline"
+                headlineLabel="About Headline"
+                headlinePlaceholder="Designing with heart, building with craft."
+              />
 
               <CreativeCanvasStatsForm portfolio={portfolio as any} userId={user?.id || ""} onUpdate={handleUpdate} onSuccess={showSuccess} onError={showError} />
             </div>

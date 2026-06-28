@@ -22,6 +22,7 @@ export interface ThemePortfolio {
   hero_subheadline?: string | null;
   hero_cta_text?: string | null;
   hero_cta_link?: string | null;
+  about_headline?: string | null;
   about_image_url?: string | null;
   about_text?: string | null;
   footer_text?: string | null;

@@ -6,52 +6,101 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Plus, X, Loader2, GripVertical } from "lucide-react";
 
+const ICONIFY_ALIAS: Record<string, string[]> = {
+  photoshop: ["adobe-photoshop"],
+  adobephotoshop: ["adobe-photoshop"],
+  illustrator: ["adobe-illustrator"],
+  adobeillustrator: ["adobe-illustrator"],
+  indesign: ["adobe-indesign"],
+  adobeindesign: ["adobe-indesign"],
+  lightroom: ["adobe-lightroom"],
+  adobelightroom: ["adobe-lightroom"],
+  lightroomclassic: ["adobe-lightroom"],
+  adobelightroomclassic: ["adobe-lightroom"],
+  xd: ["adobe-xd"],
+  adobexd: ["adobe-xd"],
+  aftereffects: ["adobe-after-effects"],
+  adobeaftereffects: ["adobe-after-effects"],
+  premierepro: ["adobe-premiere"],
+  adobepremierepro: ["adobe-premiere"],
+  premiere: ["adobe-premiere"],
+  audition: ["adobe-audition"],
+  adobeaudition: ["adobe-audition"],
+  acrobat: ["adobe-acrobat"],
+  adobeacrobatreader: ["adobe-acrobat"],
+  figma: ["figma"],
+  blender: ["blender"],
+  sketch: ["sketch"],
+  framer: ["framer"],
+  webflow: ["webflow"],
+  ai: ["adobe-illustrator"],
+  ps: ["adobe-photoshop"],
+  ae: ["adobe-after-effects"],
+  pr: ["adobe-premiere"],
+  id: ["adobe-indesign"],
+  lr: ["adobe-lightroom"],
+};
+
 const SLUG_ALIAS: Record<string, string[]> = {
-  photoshop: ["adobephotoshop", "photoshop"],
-  illustrator: ["adobeillustrator", "illustrator"],
-  indesign: ["adobeindesign"],
-  lightroom: ["adobelightroom"],
-  lightroomclassic: ["adobelightroomclassic", "adobelightroom"],
-  xd: ["adobexd"],
-  adobexd: ["adobexd"],
-  aftereffects: ["adobeaftereffects", "aftereffects"],
-  premierepro: ["adobepremierepro", "premierepro"],
-  premiere: ["adobepremierepro", "premierepro"],
-  audition: ["adobeaudition"],
-  acrobat: ["adobeacrobatreader"],
-  fresco: ["adobefresco"],
-  dreamweaver: ["adobedreamweaver"],
-  ai: ["adobeillustrator"],
-  ps: ["adobephotoshop"],
-  ae: ["adobeaftereffects"],
-  pr: ["adobepremierepro"],
-  id: ["adobeindesign"],
-  lr: ["adobelightroom"],
+  photoshop: ["photoshop"],
+  adobephotoshop: ["photoshop"],
+  illustrator: ["illustrator"],
+  adobeillustrator: ["illustrator"],
+  xd: ["xd"],
+  adobexd: ["xd"],
+  aftereffects: ["aftereffects"],
+  adobeaftereffects: ["aftereffects"],
+  premierepro: ["premierepro"],
+  adobepremierepro: ["premierepro"],
+  premiere: ["premierepro"],
+  ai: ["illustrator"],
+  ps: ["photoshop"],
+  ae: ["aftereffects"],
+  pr: ["premierepro"],
 };
 
 function normalize(s: string) {
   return (s || "").toLowerCase().replace(/[^a-z0-9]/g, "");
 }
 
+function kebabName(s: string) {
+  return (s || "")
+    .toLowerCase()
+    .replace(/&/g, " and ")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+function buildLogoCandidates(name: string, slug?: string) {
+  const normalized = new Set<string>();
+  [slug, name].forEach((value) => {
+    const n = normalize(value || "");
+    if (n) normalized.add(n);
+  });
+
+  const iconify = new Set<string>();
+  const devicon = new Set<string>();
+  normalized.forEach((s) => {
+    (ICONIFY_ALIAS[s] || []).forEach((a) => iconify.add(a));
+    (SLUG_ALIAS[s] || []).forEach((a) => devicon.add(a));
+    devicon.add(s);
+    if (!s.startsWith("adobe")) devicon.add("adobe" + s);
+  });
+
+  const kebab = kebabName(name || slug || "");
+  if (kebab) iconify.add(kebab);
+
+  const urls: string[] = [];
+  iconify.forEach((s) => urls.push(`https://api.iconify.design/logos:${s}.svg`));
+  devicon.forEach((s) => urls.push(`https://raw.githubusercontent.com/devicons/devicon/master/icons/${s}/${s}-original.svg`));
+  devicon.forEach((s) => urls.push(`https://raw.githubusercontent.com/devicons/devicon/master/icons/${s}/${s}-plain.svg`));
+  return urls;
+}
+
 function SoftwareIconPreview({ name, slug }: { name: string; slug?: string }) {
-  const candidates = useMemo(() => {
-    const base = normalize(slug || name);
-    const fromName = normalize(name);
-    const set = new Set<string>();
-    [base, fromName].forEach((s) => {
-      if (!s) return;
-      (SLUG_ALIAS[s] || []).forEach((a) => set.add(a));
-      set.add(s);
-      if (!s.startsWith("adobe")) set.add("adobe" + s);
-    });
-    const slugs = Array.from(set);
-    const urls: string[] = [];
-    slugs.forEach((s) => urls.push(`https://cdn.simpleicons.org/${s}`));
-    slugs.forEach((s) => urls.push(`https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/${s}/${s}-original.svg`));
-    slugs.forEach((s) => urls.push(`https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/${s}/${s}-plain.svg`));
-    return urls;
-  }, [name, slug]);
+  const candidates = useMemo(() => buildLogoCandidates(name, slug), [name, slug]);
   const [idx, setIdx] = useState(0);
+  useEffect(() => setIdx(0), [name, slug]);
   if (idx >= candidates.length) {
     return (
       <span className="w-8 h-8 flex items-center justify-center rounded bg-muted text-xs font-bold shrink-0">

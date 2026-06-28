@@ -55,57 +55,103 @@ const PRO_SKILLS = [
 const fonts =
   "https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,700;12..96,800&family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap";
 
-// Auto-resolve software logos from name. Tries SimpleIcons + Devicon with smart slug variants.
+// Auto-resolve software logos from name. Tries Iconify Logos + Devicon raw with smart slug variants.
+const ICONIFY_ALIAS: Record<string, string[]> = {
+  photoshop: ["adobe-photoshop"],
+  adobephotoshop: ["adobe-photoshop"],
+  illustrator: ["adobe-illustrator"],
+  adobeillustrator: ["adobe-illustrator"],
+  indesign: ["adobe-indesign"],
+  adobeindesign: ["adobe-indesign"],
+  lightroom: ["adobe-lightroom"],
+  adobelightroom: ["adobe-lightroom"],
+  lightroomclassic: ["adobe-lightroom"],
+  adobelightroomclassic: ["adobe-lightroom"],
+  xd: ["adobe-xd"],
+  adobexd: ["adobe-xd"],
+  aftereffects: ["adobe-after-effects"],
+  adobeaftereffects: ["adobe-after-effects"],
+  premierepro: ["adobe-premiere"],
+  adobepremierepro: ["adobe-premiere"],
+  premiere: ["adobe-premiere"],
+  audition: ["adobe-audition"],
+  adobeaudition: ["adobe-audition"],
+  acrobat: ["adobe-acrobat"],
+  adobeacrobatreader: ["adobe-acrobat"],
+  figma: ["figma"],
+  blender: ["blender"],
+  sketch: ["sketch"],
+  framer: ["framer"],
+  webflow: ["webflow"],
+  ai: ["adobe-illustrator"],
+  ps: ["adobe-photoshop"],
+  ae: ["adobe-after-effects"],
+  pr: ["adobe-premiere"],
+  id: ["adobe-indesign"],
+  lr: ["adobe-lightroom"],
+};
+
 const SLUG_ALIAS: Record<string, string[]> = {
-  photoshop: ["adobephotoshop", "photoshop"],
-  illustrator: ["adobeillustrator", "illustrator"],
-  indesign: ["adobeindesign", "indesign"],
-  lightroom: ["adobelightroom", "lightroom"],
-  lightroomclassic: ["adobelightroomclassic", "adobelightroom"],
-  xd: ["adobexd"],
-  adobexd: ["adobexd"],
-  aftereffects: ["adobeaftereffects", "aftereffects"],
-  premierepro: ["adobepremierepro", "premierepro"],
-  premiere: ["adobepremierepro", "premierepro"],
-  aero: ["adobecreativecloud"],
-  audition: ["adobeaudition"],
-  acrobat: ["adobeacrobatreader"],
-  fresco: ["adobefresco"],
-  substance: ["adobesubstance"],
-  dreamweaver: ["adobedreamweaver"],
-  lightroomcc: ["adobelightroom"],
-  ai: ["adobeillustrator"],
-  ps: ["adobephotoshop"],
-  ae: ["adobeaftereffects"],
-  pr: ["adobepremierepro"],
-  id: ["adobeindesign"],
-  lr: ["adobelightroom"],
+  photoshop: ["photoshop"],
+  adobephotoshop: ["photoshop"],
+  illustrator: ["illustrator"],
+  adobeillustrator: ["illustrator"],
+  xd: ["xd"],
+  adobexd: ["xd"],
+  aftereffects: ["aftereffects"],
+  adobeaftereffects: ["aftereffects"],
+  premierepro: ["premierepro"],
+  adobepremierepro: ["premierepro"],
+  premiere: ["premierepro"],
+  ai: ["illustrator"],
+  ps: ["photoshop"],
+  ae: ["aftereffects"],
+  pr: ["premierepro"],
 };
 
 function normalizeSlug(s: string) {
   return (s || "").toLowerCase().replace(/[^a-z0-9]/g, "");
 }
 
+function kebabName(s: string) {
+  return (s || "")
+    .toLowerCase()
+    .replace(/&/g, " and ")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+function buildLogoCandidates(name: string, slug?: string) {
+  const normalized = new Set<string>();
+  [slug, name].forEach((value) => {
+    const n = normalizeSlug(value || "");
+    if (n) normalized.add(n);
+  });
+
+  const iconify = new Set<string>();
+  const devicon = new Set<string>();
+  normalized.forEach((s) => {
+    (ICONIFY_ALIAS[s] || []).forEach((a) => iconify.add(a));
+    (SLUG_ALIAS[s] || []).forEach((a) => devicon.add(a));
+    devicon.add(s);
+    if (!s.startsWith("adobe")) devicon.add("adobe" + s);
+  });
+
+  const kebab = kebabName(name || slug || "");
+  if (kebab) iconify.add(kebab);
+
+  const urls: string[] = [];
+  iconify.forEach((s) => urls.push(`https://api.iconify.design/logos:${s}.svg`));
+  devicon.forEach((s) => urls.push(`https://raw.githubusercontent.com/devicons/devicon/master/icons/${s}/${s}-original.svg`));
+  devicon.forEach((s) => urls.push(`https://raw.githubusercontent.com/devicons/devicon/master/icons/${s}/${s}-plain.svg`));
+  return urls;
+}
+
 function AutoIcon({ name, slug }: { name: string; slug?: string }) {
-  const candidates = useMemo(() => {
-    const base = normalizeSlug(slug || name);
-    const fromName = normalizeSlug(name);
-    const set = new Set<string>();
-    [base, fromName].forEach((s) => {
-      if (!s) return;
-      (SLUG_ALIAS[s] || []).forEach((a) => set.add(a));
-      set.add(s);
-      if (!s.startsWith("adobe")) set.add("adobe" + s);
-    });
-    const slugs = Array.from(set);
-    const urls: string[] = [];
-    slugs.forEach((s) => urls.push(`https://cdn.simpleicons.org/${s}`));
-    slugs.forEach((s) => urls.push(`https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/${s}/${s}-original.svg`));
-    slugs.forEach((s) => urls.push(`https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/${s}/${s}-plain.svg`));
-    return urls;
-  }, [name, slug]);
+  const candidates = useMemo(() => buildLogoCandidates(name, slug), [name, slug]);
 
   const [idx, setIdx] = useState(0);
+  useEffect(() => setIdx(0), [name, slug]);
   if (idx >= candidates.length) {
     return (
       <span className="w-9 h-9 flex items-center justify-center rounded bg-black/10 font-bold text-sm">

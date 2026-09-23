@@ -1,73 +1,144 @@
-# Welcome to your Lovable project
+# infolio
 
-## Project info
+আমি একটি full-stack web application তৈরি করতে চাই যার কাজ হবে users দের জন্য automated personal portfolio website তৈরি করা।
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+Core Features:
 
-## How can I edit this code?
+1. Authentication System
 
-There are several ways of editing your application.
+User registration & login (email + password)
 
-**Use Lovable**
+প্রতিটা user এর জন্য আলাদা dashboard
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+Login না করলে কোনো page access করা যাবে না
 
-Changes made via Lovable will be committed automatically to this repo.
 
-**Use your preferred IDE**
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+2. User Dashboard
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+Login করার পর user একটি dashboard পাবে
 
-Follow these steps:
+Dashboard এ থাকবে:
+
+Profile info edit করার option
+
+Portfolio website manage করার option
+
+Custom domain / subdomain manage করার option
+
+
+
+
+3. Portfolio Builder (Form Based)
+
+User dashboard এ ঢোকার পর একটি multi-step form থাকবে
+
+Form fields:
+
+Name
+
+Bio / About Me
+
+Profile Image upload
+
+Skills
+
+Projects (title, description, link, image)
+
+Social links
+
+Contact info
+
+
+User form submit করলে automatically একটি pre-designed theme/template এ data render হবে
+
+
+
+4. Theme System
+
+Initially 1টা clean, modern portfolio theme থাকবে
+
+Theme dynamic হবে (data database থেকে load হবে)
+
+Future এ multiple themes add করা যাবে এমন structure
+
+
+
+5. Live Portfolio Website
+
+Form submit করার সাথে সাথে user এর personal portfolio website live হয়ে যাবে
+
+URL structure:
+
+username.ourdomain.com (default subdomain)
+
+
+User চাইলে নিজের custom domain connect করতে পারবে
+
+
+
+6. Edit & Update System
+
+User যেকোনো সময় dashboard এ ঢুকে:
+
+Content edit করতে পারবে
+
+New project add/remove করতে পারবে
+
+Images update করতে পারবে
+
+
+Changes instantly live website এ reflect হবে
+
+
+
+7. Tech & Architecture
+
+Frontend: modern responsive UI
+
+Backend: API based architecture
+
+Database: user, portfolio data, domain mapping
+
+Secure authentication & authorization
+
+Scalable structure (multi-user support)
+
+
+
+8. Admin Ready Structure
+
+Future এ admin panel add করা যাবে
+
+Admin চাইলে users, themes, subdomains manage করতে পারবে
+
+
+
+
+Goal: এই system টা হবে একটা SaaS-style platform যেখানে users খুব সহজে কোনো coding ছাড়াই নিজের personal portfolio website বানাতে পারবে।
+
+
+---
+
+This project was built with [Lovable](https://lovable.dev).
+
+**Live app**: https://infolio.lovable.app
+
+## Build with Lovable
+
+Continue developing this project in the [Lovable editor](https://lovable.dev/projects/bb03667f-56a5-4aa9-848a-2b5108ef7569).
+
+- **Ship faster**: describe what you want to build and Lovable handles the code.
+- **Stay in sync**: every change made in Lovable is committed straight to this repository.
+- **Full ownership**: this code is yours. Push to `main` on GitHub and your changes sync back into Lovable, ready for your next prompt.
+
+## Development
+
+Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
 
 ```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
+git clone <this-repository-url>
+cd <repository-name>
 npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
 npm run dev
 ```
-
-**Edit a file directly in GitHub**
-
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
-
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)

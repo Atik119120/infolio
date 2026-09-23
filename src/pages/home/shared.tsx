@@ -33,7 +33,7 @@ export function FeatureCard({ icon, title, description }: { icon: React.ReactNod
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-50px" }}
       transition={{ duration: 0.4 }}
-      className="bg-card p-4 md:p-6 hover:bg-primary/5 transition-colors group relative"
+      className="bg-card rounded-2xl border border-border/80 shadow-sm p-4 md:p-6 hover:border-primary/40 hover:bg-primary/5 transition-all group relative"
     >
       <div className="w-10 h-10 rounded-xl bg-primary/10 text-primary grid place-items-center mb-4 group-hover:gradient-primary group-hover:text-white group-hover:shadow-md group-hover:shadow-primary/30 transition-all">
         {icon}

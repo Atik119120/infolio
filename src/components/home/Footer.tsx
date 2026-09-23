@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { Heart, MessageCircle, ArrowUpRight, Mail, Sparkles } from "lucide-react";
 import alphaLogo from "@/assets/alpha-portfolio-logo.png";
+import astropixelLogo from "@/assets/astropixel-logo.png";
 import { openWhatsApp } from "@/lib/whatsapp";
 
 export default function Footer() {
@@ -110,17 +111,26 @@ export default function Footer() {
           <p className="text-xs text-muted-foreground flex items-center gap-1.5">
             Made with <Heart className="w-3.5 h-3.5 text-red-500 fill-red-500" /> by Infolio Team
           </p>
-          <p className="text-xs text-muted-foreground">
-            A product of{" "}
+          <div className="text-xs text-muted-foreground flex items-center gap-2">
+            <span>A product of</span>
             <a
-              href="https://alphazero.online"
+              href="https://bepro.click"
               target="_blank"
               rel="noopener noreferrer"
-              className="font-semibold text-foreground hover:text-primary transition-colors"
+              className="inline-flex items-center hover:opacity-80 transition-opacity"
+              title="AstroPixel"
             >
-              AlphaZero
+              <img
+                src={astropixelLogo}
+                alt="AstroPixel"
+                className="h-5 w-auto object-contain"
+                onError={(e) => {
+                  (e.currentTarget as HTMLImageElement).src =
+                    "https://bepro.click/__l5e/assets-v1/a8be7ed3-6e88-4dc5-bd4d-9b1fa6ff1b69/astropixel-logo.png";
+                }}
+              />
             </a>
-          </p>
+          </div>
         </div>
       </div>
     </footer>

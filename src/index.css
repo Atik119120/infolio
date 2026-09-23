@@ -117,9 +117,9 @@
     --sidebar-ring: 187 90% 55%;
   }
 
-  /* Scoped: popup/dialog accents follow dashboard (white-on-black) instead of cyan */
-  [role="dialog"],
-  [role="alertdialog"] {
+  /* Scoped: popup/dialog accents follow dashboard in dark mode */
+  .dark [role="dialog"],
+  .dark [role="alertdialog"] {
     --primary: 0 0% 100%;
     --primary-foreground: 0 0% 4%;
     --ring: 0 0% 80%;
@@ -308,6 +308,9 @@
 }
 /* Dashboard B&W minimal scope — overrides design tokens for inner pages */
 .dashboard-bw {
+  color: inherit;
+}
+.dark .dashboard-bw {
   --background: 0 0% 0%;
   --foreground: 0 0% 100%;
   --card: 0 0% 4%;
@@ -327,15 +330,15 @@
   --ring: 0 0% 100%;
   color: hsl(0 0% 100%);
 }
-.dashboard-bw .gradient-hero,
-.dashboard-bw .gradient-primary,
-.dashboard-bw .gradient-text {
+.dark .dashboard-bw .gradient-hero,
+.dark .dashboard-bw .gradient-primary,
+.dark .dashboard-bw .gradient-text {
   background: transparent !important;
   background-image: none !important;
   color: hsl(0 0% 100%) !important;
   -webkit-text-fill-color: hsl(0 0% 100%) !important;
 }
-.dashboard-bw .shadow-glow { box-shadow: none !important; }
+.dark .dashboard-bw .shadow-glow { box-shadow: none !important; }
 
 @keyframes marquee {
   0% { transform: translateX(0); }

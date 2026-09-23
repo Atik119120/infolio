@@ -261,7 +261,7 @@ export default function Auth() {
               onBack={() => setShowOTP(false)}
             />
           ) : (
-          <Card className="border-0 shadow-xl">
+          <Card className="border border-border/80 shadow-xl bg-card">
             <CardHeader className="space-y-1 pb-6">
               <CardTitle className="text-2xl font-bold text-center">
                 {activeTab === "login" ? "Welcome back" : "Create an account"}

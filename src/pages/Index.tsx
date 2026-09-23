@@ -46,9 +46,9 @@ export default function Index() {
       {/* HERO */}
       <section className="relative isolate flex items-center min-h-[90vh] md:min-h-[100vh] pt-28 md:pt-36 pb-16 md:pb-20 px-6 overflow-hidden">
         <div aria-hidden className="absolute inset-0 -z-20 bg-background" />
-        <div aria-hidden className="absolute inset-0 -z-10 pointer-events-none"
-          style={{ background: "radial-gradient(ellipse 90% 70% at 50% 100%, hsl(187 90% 35% / 0.55), transparent 70%)" }} />
-        <div aria-hidden className="absolute inset-0 -z-10 pointer-events-none">
+        <div aria-hidden className="absolute inset-0 -z-10 pointer-events-none opacity-30 dark:opacity-100"
+          style={{ background: "radial-gradient(ellipse 90% 70% at 50% 100%, hsl(187 90% 45% / 0.4), transparent 70%)" }} />
+        <div aria-hidden className="absolute inset-0 -z-10 pointer-events-none opacity-40 dark:opacity-100">
           <GradientBars numBars={28} gradientFrom="hsl(187 90% 55%)" gradientTo="transparent" animationDuration={2.4} />
         </div>
         <div aria-hidden className="absolute inset-x-0 top-0 h-40 -z-10 pointer-events-none bg-gradient-to-b from-background to-transparent" />

@@ -109,17 +109,17 @@ export default function BuilderList() {
   }
 
   return (
-    <div className="space-y-6 text-white">
+    <div className="space-y-6 text-foreground">
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">Page Builder</h1>
-          <p className="text-sm text-white/50 mt-1">
+          <p className="text-sm text-muted-foreground mt-1">
             Drag-and-drop visual builder for custom pages.
           </p>
         </div>
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
-            <Button className="bg-white text-black hover:bg-white/90 gap-2">
+            <Button className="bg-primary text-primary-foreground hover:bg-primary/90 gap-2 shadow-sm">
               <Plus className="w-4 h-4" /> New Page
             </Button>
           </DialogTrigger>
@@ -156,13 +156,13 @@ export default function BuilderList() {
 
       {loading ? (
         <div className="flex justify-center py-20">
-          <Loader2 className="w-6 h-6 animate-spin text-white/40" />
+          <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
         </div>
       ) : pages.length === 0 ? (
-        <div className="text-center py-20 border-2 border-dashed border-white/10 rounded-xl">
-          <FileEdit className="w-10 h-10 text-white/40 mx-auto mb-3" />
-          <p className="font-medium text-white">No pages yet</p>
-          <p className="text-sm text-white/50 mt-1">Create your first page to get started.</p>
+        <div className="text-center py-20 border-2 border-dashed border-border rounded-xl bg-card/50">
+          <FileEdit className="w-10 h-10 text-muted-foreground mx-auto mb-3" />
+          <p className="font-medium text-foreground">No pages yet</p>
+          <p className="text-sm text-muted-foreground mt-1">Create your first page to get started.</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -172,26 +172,26 @@ export default function BuilderList() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.04 }}
-              className="group p-5 rounded-xl border border-white/10 bg-white/[0.02] hover:bg-white/[0.04] hover:border-white/20 transition-all"
+              className="group p-5 rounded-xl border border-border bg-card shadow-sm hover:border-primary/40 transition-all"
             >
               <div className="flex items-start justify-between mb-3">
                 <div className="min-w-0">
-                  <h3 className="font-semibold truncate text-white">{p.name}</h3>
-                  <p className="text-xs text-white/50 truncate">/p/{p.slug}</p>
+                  <h3 className="font-semibold truncate text-foreground">{p.name}</h3>
+                  <p className="text-xs text-muted-foreground truncate">/p/{p.slug}</p>
                 </div>
                 <span className={`text-[10px] font-medium uppercase tracking-wide px-2 py-0.5 rounded-full border ${
-                  p.is_published ? "border-white/30 text-white" : "border-white/10 text-white/50"
+                  p.is_published ? "border-primary/40 text-primary bg-primary/5" : "border-border text-muted-foreground"
                 }`}>
                   {p.is_published ? "Live" : "Draft"}
                 </span>
               </div>
-              <p className="text-[11px] text-white/40 mb-4">
+              <p className="text-[11px] text-muted-foreground mb-4">
                 Updated {new Date(p.updated_at).toLocaleDateString()}
               </p>
               <div className="flex gap-2">
                 <Button
                   size="sm"
-                  className="flex-1 gap-1.5 bg-white text-black hover:bg-white/90"
+                  className="flex-1 gap-1.5 bg-primary text-primary-foreground hover:bg-primary/90"
                   onClick={() => navigate(`/dashboard/builder/${p.id}`)}
                 >
                   <FileEdit className="w-3.5 h-3.5" /> Edit
@@ -200,7 +200,7 @@ export default function BuilderList() {
                   <Button
                     size="sm"
                     variant="outline"
-                    className="bg-transparent border-white/15 text-white hover:bg-white/5 hover:text-white"
+                    className="border-border text-foreground hover:bg-muted"
                     onClick={() => window.open(`/p/${p.slug}`, "_blank")}
                   >
                     <ExternalLink className="w-3.5 h-3.5" />
@@ -209,7 +209,7 @@ export default function BuilderList() {
                 <Button
                   size="sm"
                   variant="outline"
-                  className="bg-transparent border-white/15 text-white hover:bg-white/5 hover:text-white"
+                  className="border-border text-foreground hover:bg-muted"
                   onClick={() => removePage(p.id)}
                 >
                   <Trash2 className="w-3.5 h-3.5" />

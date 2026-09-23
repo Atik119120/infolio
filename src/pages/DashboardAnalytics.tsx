@@ -260,7 +260,7 @@ function StatCard({ icon, label, value }: { icon: React.ReactNode; label: string
       <CardContent className="p-4">
         <div className="flex items-center justify-between mb-2">
           <span className="text-xs text-muted-foreground uppercase tracking-wide">{label}</span>
-          <div className="w-8 h-8 rounded-lg border border-white/15 text-white flex items-center justify-center">{icon}</div>
+          <div className="w-8 h-8 rounded-lg border border-border bg-muted/50 text-foreground flex items-center justify-center">{icon}</div>
         </div>
         <p className="text-2xl font-bold tabular-nums">{value.toLocaleString()}</p>
       </CardContent>

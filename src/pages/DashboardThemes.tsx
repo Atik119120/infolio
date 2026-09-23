@@ -27,7 +27,7 @@ export default function DashboardThemes() {
   if (loading || !user) {
     return (
       <div className="flex items-center justify-center py-20">
-        <Loader2 className="w-6 h-6 animate-spin text-white/50" />
+        <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
       </div>
     );
   }
@@ -35,8 +35,8 @@ export default function DashboardThemes() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-semibold text-white tracking-tight">Themes</h1>
-        <p className="text-sm text-white/50 mt-1">
+        <h1 className="text-2xl font-semibold text-foreground tracking-tight">Themes</h1>
+        <p className="text-sm text-muted-foreground mt-1">
           Browse, preview, and select a theme for your portfolio.
         </p>
       </div>

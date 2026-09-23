@@ -1,12 +1,13 @@
 import { createRoot } from "react-dom/client";
 import { HelmetProvider } from "react-helmet-async";
+import { ThemeProvider } from "./contexts/ThemeContext";
 import App from "./App.tsx";
 import "./index.css";
 
-document.documentElement.classList.add("dark");
-
 createRoot(document.getElementById("root")!).render(
   <HelmetProvider>
-    <App />
+    <ThemeProvider>
+      <App />
+    </ThemeProvider>
   </HelmetProvider>
 );

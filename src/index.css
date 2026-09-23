@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,400;1,500;1,600&family=Newsreader:ital,opsz,wght@1,6..72,400;1,6..72,500&family=Roboto:wght@400;500&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -398,3 +400,19 @@ section p {
 /* Hide scrollbars on horizontal section carousels */
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+.font-editorial {
+  font-family: 'Playfair Display', 'Newsreader', Georgia, 'Times New Roman', serif !important;
+  font-style: italic !important;
+}
+
+.editorial-gradient {
+  background: linear-gradient(115deg, #6366f1 0%, #8b5cf6 38%, #c084fc 72%, #e879f9 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.dark .editorial-gradient {
+  background: linear-gradient(115deg, #818cf8 0%, #a855f7 38%, #c084fc 72%, #f472b6 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}

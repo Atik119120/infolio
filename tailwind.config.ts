@@ -122,6 +122,7 @@ export default {
       fontFamily: {
         sans: ["Inter", "system-ui", "sans-serif"],
         display: ["Cal Sans", "Inter", "system-ui", "sans-serif"],
+        editorial: ["'Instrument Serif'", "'Playfair Display'", "Georgia", "serif"],
       },
     },
   },

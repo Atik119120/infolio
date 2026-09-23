@@ -55,32 +55,88 @@ export default function Index() {
 
         <div className="container mx-auto relative z-10">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className="max-w-3xl mx-auto text-center">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-primary/30 bg-primary/10 text-primary mb-6">
-              <Sparkles className="w-3 h-3" />
-              <span className="text-[11px] font-semibold tracking-[0.18em] uppercase">Build in minutes</span>
+            <div className="inline-flex items-center rounded-full border border-border/80 bg-background/80 backdrop-blur-md p-1 shadow-sm shadow-black/5 mb-6">
+              <div className="flex -space-x-1.5">
+                <img
+                  className="rounded-full ring-2 ring-background w-5 h-5 object-cover"
+                  src="https://cdn.21st.dev/assets/localized/8ab4cd865aa6b62352300cf71c5805c86d8523505636e2a499cda7932a803953.jpg"
+                  width={20}
+                  height={20}
+                  alt="Avatar 01"
+                />
+                <img
+                  className="rounded-full ring-2 ring-background w-5 h-5 object-cover"
+                  src="https://cdn.21st.dev/assets/localized/a2ee1266115ad682a19f5d4752ea8efa7eefa3ae03e658f500cbb3e1a6145b0b.jpg"
+                  width={20}
+                  height={20}
+                  alt="Avatar 02"
+                />
+                <img
+                  className="rounded-full ring-2 ring-background w-5 h-5 object-cover"
+                  src="https://cdn.21st.dev/assets/localized/f8db32ee1fe8c51fa678e3325eee3f8bf72a3a8cc8947784d5ef9c7bf5fb8adb.jpg"
+                  width={20}
+                  height={20}
+                  alt="Avatar 03"
+                />
+                <img
+                  className="rounded-full ring-2 ring-background w-5 h-5 object-cover"
+                  src="https://cdn.21st.dev/assets/localized/449ffab8e7b480176aaea3dd5578119223a41e2e0c92c805a5a6b71ca4cbdd14.jpg"
+                  width={20}
+                  height={20}
+                  alt="Avatar 04"
+                />
+              </div>
+              <p className="px-2.5 text-xs text-muted-foreground">
+                Trusted by <strong className="font-semibold text-foreground">60K+</strong>{" "}
+                developers.
+              </p>
             </div>
 
-            <h1 className="text-5xl md:text-7xl font-semibold leading-[1.02] tracking-[-0.04em] mb-6 lg:text-7xl">
-              Build your <span className="gradient-text">portfolio</span>,<br />the smart way.
+            <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-[5.25rem] tracking-tight mb-6 leading-[1.18] text-foreground">
+              <span
+                className="block"
+                style={{ fontFamily: "'Roboto', Arial, 'Helvetica Neue', Helvetica, sans-serif", fontWeight: 500 }}
+              >
+                Build Your{" "}
+                <span
+                  className="font-editorial text-[1.1em] editorial-gradient tracking-normal select-none inline-block px-1"
+                  style={{ fontFamily: "'Playfair Display', 'Newsreader', Georgia, serif", fontStyle: "italic", fontWeight: 500 }}
+                >
+                  Portfolio
+                </span>
+              </span>
+              <span
+                className="block mt-1 sm:mt-2"
+                style={{ fontFamily: "'Roboto', Arial, 'Helvetica Neue', Helvetica, sans-serif", fontWeight: 500 }}
+              >
+                The{" "}
+                <span
+                  className="font-editorial text-[1.1em] editorial-gradient tracking-normal select-none inline-block px-1"
+                  style={{ fontFamily: "'Playfair Display', 'Newsreader', Georgia, serif", fontStyle: "italic", fontWeight: 500 }}
+                >
+                  Smart
+                </span>{" "}
+                Way.
+              </span>
             </h1>
 
             <p className="text-base md:text-xl text-muted-foreground max-w-2xl mx-auto mb-6 leading-relaxed">
               Pick a theme, fill a form, share your link. Beautiful portfolios for creators, developers and freelancers — without writing a single line of code.
             </p>
 
-            <div className="bg-card border border-primary/20 rounded-full p-1.5 flex items-center gap-2 max-w-xl mx-auto shadow-lg shadow-primary/10">
-              <div className="flex-1 flex items-center pl-4 min-w-0">
-                <span className="text-muted-foreground text-sm font-medium hidden sm:inline">infolio.online/</span>
+            <div className="bg-card border border-primary/25 rounded-2xl p-1.5 sm:p-2 flex items-center gap-2 max-w-xl mx-auto shadow-xl shadow-primary/10 transition-all focus-within:border-primary/50 focus-within:ring-2 focus-within:ring-primary/20">
+              <div className="flex-1 flex items-center pl-3 sm:pl-4 min-w-0">
+                <span className="text-muted-foreground text-sm font-semibold hidden sm:inline select-none">infolio.online/</span>
                 <input
                   value={username}
                   onChange={(e) => setUsername(e.target.value.replace(/[^a-z0-9_-]/gi, "").toLowerCase())}
                   placeholder="username"
-                  className="flex-1 bg-transparent outline-none px-2 py-2.5 text-sm font-medium placeholder:text-muted-foreground/60 min-w-0"
+                  className="flex-1 bg-transparent outline-none px-2 py-2 text-sm sm:text-base font-medium placeholder:text-muted-foreground/60 min-w-0"
                   onKeyDown={(e) => e.key === "Enter" && handleClaim()}
                 />
               </div>
-              <Button onClick={handleClaim} size="sm" className="rounded-xl gradient-primary text-white font-semibold px-5 group">
-                Claim <ArrowRight className="ml-1.5 w-4 h-4 transition-transform group-hover:translate-x-0.5" />
+              <Button onClick={handleClaim} size="default" className="rounded-xl gradient-primary text-white font-semibold px-6 group shrink-0">
+                Claim <ArrowRight className="ml-1.5 w-4 h-4 transition-transform group-hover:translate-x-1" />
               </Button>
             </div>
 

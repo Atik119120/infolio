@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { openWhatsApp } from "@/lib/whatsapp";
 import {
-  MessageCircle, Menu, X, LogIn,
+  MessageCircle, Menu, X, LogIn, ArrowRight,
 } from "lucide-react";
 import alphaLogo from "@/assets/alpha-portfolio-logo.png";
 
@@ -28,8 +28,9 @@ export default function SiteHeader() {
           <Button variant="ghost" size="sm" onClick={() => navigate("/auth")} className="hidden sm:inline-flex text-sm gap-1.5">
             <LogIn className="w-4 h-4" /> Login
           </Button>
-          <Button size="sm" className="hidden sm:inline-flex rounded-full gradient-primary text-white hover:opacity-90 text-sm shadow-md shadow-primary/20" onClick={() => navigate("/auth")}>
+          <Button size="sm" className="hidden sm:inline-flex rounded-xl gradient-primary text-white text-xs font-semibold px-4 group" onClick={() => navigate("/auth")}>
             Get started
+            <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5" />
           </Button>
           <button
             onClick={() => setOpen((v) => !v)}
@@ -53,8 +54,9 @@ export default function SiteHeader() {
             <button onClick={() => { close(); navigate("/auth"); }} className="text-left flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-muted-foreground hover:text-foreground hover:bg-muted transition-colors">
               <LogIn className="w-4 h-4" /> Login
             </button>
-            <Button size="sm" className="mt-1 w-full rounded-full gradient-primary text-white hover:opacity-90 text-sm shadow-md shadow-primary/20" onClick={() => { close(); navigate("/auth"); }}>
+            <Button size="sm" className="mt-1 w-full rounded-xl gradient-primary text-white text-sm font-semibold group flex items-center justify-center gap-1.5" onClick={() => { close(); navigate("/auth"); }}>
               Get started
+              <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5" />
             </Button>
           </div>
         </div>

@@ -137,11 +137,11 @@ export default function ThemeDemoSection() {
         <div className="text-center">
           <Button
             size="lg"
-            className="rounded-full gradient-primary hover:opacity-90 transition-opacity text-sm px-7 shadow-lg shadow-primary/30"
+            className="rounded-xl gradient-primary text-white text-sm font-semibold px-8 group hover:opacity-95"
             onClick={() => navigate("/themes")}
           >
             View All Themes
-            <ArrowRight className="ml-2 w-4 h-4" />
+            <ArrowRight className="ml-2 w-4 h-4 transition-transform group-hover:translate-x-1" />
           </Button>
         </div>
       </div>

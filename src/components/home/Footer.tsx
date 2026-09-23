@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { Heart, MessageCircle, ArrowUpRight, Mail, Sparkles } from "lucide-react";
+import { MessageCircle, ArrowUpRight, ArrowRight, Mail, Sparkles } from "lucide-react";
 import alphaLogo from "@/assets/alpha-portfolio-logo.png";
 import astropixelLogo from "@/assets/astropixel-logo.png";
 import { openWhatsApp } from "@/lib/whatsapp";
@@ -30,10 +30,10 @@ export default function Footer() {
           </div>
           <button
             onClick={() => navigate("/auth")}
-            className="group inline-flex items-center gap-2 px-6 py-3 rounded-full gradient-primary text-white text-sm font-semibold shadow-lg shadow-primary/30 hover:opacity-95 transition"
+            className="group inline-flex items-center gap-2 px-6 py-3 rounded-xl gradient-primary text-white text-sm font-semibold hover:opacity-95 transition"
           >
             Get started free
-            <ArrowUpRight className="w-4 h-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+            <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
           </button>
         </div>
 
@@ -107,9 +107,6 @@ export default function Footer() {
         <div className="container mx-auto px-6 py-5 flex flex-col md:flex-row items-center justify-between gap-3">
           <p className="text-xs text-muted-foreground">
             © {currentYear} Infolio. All rights reserved.
-          </p>
-          <p className="text-xs text-muted-foreground flex items-center gap-1.5">
-            Made with <Heart className="w-3.5 h-3.5 text-red-500 fill-red-500" /> by Infolio Team
           </p>
           <div className="text-xs text-muted-foreground flex items-center gap-2">
             <span>A product of</span>

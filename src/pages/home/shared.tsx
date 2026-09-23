@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { Check, ShieldCheck, Cloud, Sparkles, BadgeCheck, Lock, Server, ArrowUpRight } from "lucide-react";
+import { Check, ShieldCheck, Cloud, Sparkles, BadgeCheck, Lock, Server, ArrowUpRight, ArrowRight } from "lucide-react";
 
 export function Eyebrow({ text }: { text: string }) {
   return (
@@ -130,8 +130,16 @@ export function PlanCard({ plan, billing, onClick }: { plan: Plan; billing: "mon
           </li>
         ))}
       </ul>
-      <Button onClick={onClick} className={`w-full rounded-full mt-5 ${plan.highlight ? "gradient-primary text-white hover:opacity-90 shadow-md shadow-primary/30" : ""}`} variant={plan.highlight ? "default" : "outline"} size="sm">
+      <Button
+        onClick={onClick}
+        className={`w-full rounded-xl mt-5 font-semibold group flex items-center justify-center gap-1.5 ${
+          plan.highlight ? "gradient-primary text-white hover:opacity-95" : "border-border/80 hover:border-primary/40"
+        }`}
+        variant={plan.highlight ? "default" : "outline"}
+        size="sm"
+      >
         {plan.badge === "Upcoming" ? "Notify me" : "Get started"}
+        <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5" />
       </Button>
     </motion.div>
   );

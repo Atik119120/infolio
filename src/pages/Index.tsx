@@ -44,11 +44,11 @@ export default function Index() {
       </Helmet>
 
       {/* HERO */}
-      <section className="relative isolate flex items-center min-h-[90vh] md:min-h-[100vh] pt-28 md:pt-36 pb-16 md:pb-20 px-6 overflow-hidden">
+      <section className="relative isolate flex items-center min-h-[90vh] md:min-h-[100vh] pt-28 md:pt-36 pb-24 sm:pb-32 md:pb-40 px-6 overflow-hidden bg-gradient-to-b from-slate-100/90 via-sky-50/40 to-slate-200/80">
         <div aria-hidden className="absolute inset-0 -z-20 bg-background" />
-        <div aria-hidden className="absolute inset-0 -z-10 pointer-events-none opacity-30 dark:opacity-100"
+        <div aria-hidden className="absolute inset-0 -z-10 pointer-events-none opacity-40 dark:opacity-100"
           style={{ background: "radial-gradient(ellipse 90% 70% at 50% 100%, hsl(187 90% 45% / 0.4), transparent 70%)" }} />
-        <div aria-hidden className="absolute inset-0 -z-10 pointer-events-none opacity-40 dark:opacity-100">
+        <div aria-hidden className="absolute inset-0 -z-10 pointer-events-none opacity-50 dark:opacity-100">
           <GradientBars numBars={28} gradientFrom="hsl(187 90% 55%)" gradientTo="transparent" animationDuration={2.4} />
         </div>
         <div aria-hidden className="absolute inset-x-0 top-0 h-40 -z-10 pointer-events-none bg-gradient-to-b from-background to-transparent" />
@@ -79,8 +79,8 @@ export default function Index() {
                   onKeyDown={(e) => e.key === "Enter" && handleClaim()}
                 />
               </div>
-              <Button onClick={handleClaim} size="sm" className="rounded-full gradient-primary text-white hover:opacity-90 px-5 shadow-md shadow-primary/30">
-                Claim <ArrowRight className="ml-1.5 w-4 h-4" />
+              <Button onClick={handleClaim} size="sm" className="rounded-xl gradient-primary text-white font-semibold px-5 group">
+                Claim <ArrowRight className="ml-1.5 w-4 h-4 transition-transform group-hover:translate-x-0.5" />
               </Button>
             </div>
 
@@ -89,139 +89,134 @@ export default function Index() {
               <span className="inline-flex items-center gap-1.5"><Check className="w-4 h-4 text-primary" /> No credit card</span>
               <span className="inline-flex items-center gap-1.5"><Check className="w-4 h-4 text-primary" /> Live in 5 min</span>
             </div>
-
-            <div className="mt-3 flex items-center justify-center">
-              <button onClick={() => navigate("/themes")} className="group inline-flex items-center gap-2 px-4 py-2 rounded-full border border-primary/30 bg-primary/5 hover:bg-primary/10 hover:border-primary/50 text-primary text-sm font-medium transition-all">
-                <Palette className="w-4 h-4" />
-                View all themes
-                <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5" />
-              </button>
-            </div>
           </motion.div>
         </div>
       </section>
 
-      {/* THREE STEPS */}
-      <section className="py-6 md:py-8 px-6 relative overflow-hidden">
-        <div aria-hidden className="absolute inset-0 -z-10 pointer-events-none">
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] rounded-full bg-primary/10 blur-[120px]" />
-        </div>
-        <div className="container mx-auto max-w-6xl">
-          <div className="grid lg:grid-cols-2 gap-6 lg:gap-8 items-center">
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true, margin: "-50px" }}
-              transition={{ duration: 0.5 }}
-            >
-              <h2 className="text-3xl md:text-4xl lg:text-5xl font-semibold tracking-[-0.03em] text-foreground mb-4 leading-tight">
-                Three steps to<br />your digital hub.
-              </h2>
-              <div className="space-y-4">
-                {[
-                  { num: "1", title: "Claim your identity", desc: "Sign up for free and secure your unique username." },
-                  { num: "2", title: "Add your content", desc: "Paste your links, socials, portfolio pieces, or stores." },
-                  { num: "3", title: "Share everywhere", desc: "Put your Infolio link in your Instagram, TikTok, or email signature." },
-                ].map((step) => (
-                  <div key={step.num} className="flex items-start gap-5">
-                    <div className="shrink-0 w-10 h-10 rounded-full border border-primary/50 text-primary grid place-items-center text-sm font-semibold mt-0.5">
-                      {step.num}
+      {/* CONTENT SECTIONS WRAPPER — Rounded white sheet overlapping the hero */}
+      <div className="relative z-20 -mt-6 sm:-mt-8 md:-mt-10 bg-white rounded-t-[16px] sm:rounded-t-[22px] md:rounded-t-[26px] border-t border-slate-200/80 shadow-[0_-15px_35px_rgba(15,23,42,0.05)] overflow-hidden">
+        {/* THREE STEPS */}
+        <section className="pt-12 sm:pt-16 pb-8 md:pb-12 px-6 relative overflow-hidden">
+          <div aria-hidden className="absolute inset-0 -z-10 pointer-events-none">
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] rounded-full bg-primary/10 blur-[120px]" />
+          </div>
+          <div className="container mx-auto max-w-6xl">
+            <div className="grid lg:grid-cols-2 gap-6 lg:gap-8 items-center">
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true, margin: "-50px" }}
+                transition={{ duration: 0.5 }}
+              >
+                <h2 className="text-3xl md:text-4xl lg:text-5xl font-semibold tracking-[-0.03em] text-foreground mb-4 leading-tight">
+                  Three steps to<br />your digital hub.
+                </h2>
+                <div className="space-y-4">
+                  {[
+                    { num: "1", title: "Claim your identity", desc: "Sign up for free and secure your unique username." },
+                    { num: "2", title: "Add your content", desc: "Paste your links, socials, portfolio pieces, or stores." },
+                    { num: "3", title: "Share everywhere", desc: "Put your Infolio link in your Instagram, TikTok, or email signature." },
+                  ].map((step) => (
+                    <div key={step.num} className="flex items-start gap-5">
+                      <div className="shrink-0 w-10 h-10 rounded-full border border-primary/50 text-primary grid place-items-center text-sm font-semibold mt-0.5">
+                        {step.num}
+                      </div>
+                      <div>
+                        <h3 className="text-foreground font-semibold text-base mb-1">{step.title}</h3>
+                        <p className="text-muted-foreground text-sm leading-relaxed">{step.desc}</p>
+                      </div>
                     </div>
-                    <div>
-                      <h3 className="text-foreground font-semibold text-base mb-1">{step.title}</h3>
-                      <p className="text-muted-foreground text-sm leading-relaxed">{step.desc}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true, margin: "-50px" }}
-              transition={{ duration: 0.5, delay: 0.15 }}
-              className="relative"
-            >
-              <div className="rounded-3xl overflow-hidden border border-border shadow-2xl">
-                <img
-                  src={stepsImage}
-                  alt="Team collaborating"
-                  className="w-full h-auto object-cover"
-                  loading="lazy"
-                  width={1024}
-                  height={768}
-                />
-              </div>
-              <div className="absolute -bottom-6 -left-6 md:bottom-6 md:left-[-2rem] lg:left-[-2.5rem] max-w-xs">
-                <div className="bg-card/80 backdrop-blur rounded-2xl p-5 border border-border shadow-xl">
-                  <Quote className="w-5 h-5 text-primary mb-2" />
-                  <p className="text-foreground text-sm leading-relaxed mb-3">
-                    "It only took me 2 minutes to set up, and now all my clients know exactly where to find our work."
-                  </p>
-                  <p className="text-primary text-xs font-medium">
-                    — Sarah C., Owner Grek
-                  </p>
+                  ))}
                 </div>
-              </div>
-            </motion.div>
-          </div>
-        </div>
-      </section>
+              </motion.div>
 
-      {/* FEATURES */}
-      <section className="py-6 md:py-8 px-6 border-t border-border/60">
-        <div className="container mx-auto max-w-5xl">
-          <SectionHeader eyebrow="Features" title="Built for creators" subtitle="Everything you need to publish a stunning portfolio — no code required." />
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
-            <FeatureCard icon={<Palette className="w-5 h-5" />} title="Premium Themes" description="Beautiful themes for every profession." />
-            <FeatureCard icon={<Zap className="w-5 h-5" />} title="No-Code Builder" description="Drag, drop, publish — live preview." />
-            <FeatureCard icon={<Rocket className="w-5 h-5" />} title="Instant Publish" description="Go live in seconds, worldwide." />
-            <FeatureCard icon={<Globe className="w-5 h-5" />} title="Free Subdomain" description="yourname.infolio.online free." />
-            <FeatureCard icon={<Server className="w-5 h-5" />} title="Custom Domain" description="Your own domain with auto SSL." />
-            <FeatureCard icon={<Search className="w-5 h-5" />} title="SEO Tools" description="Meta, sitemap, social tags." />
-            <FeatureCard icon={<Image className="w-5 h-5" />} title="Project Gallery" description="Showcase work with images & videos." />
-            <FeatureCard icon={<Cloud className="w-5 h-5" />} title="Global CDN" description="Fast loading from anywhere." />
-          </div>
-        </div>
-      </section>
-
-      {/* PRICING */}
-      <section className="py-6 md:py-8 px-6 border-t border-border/60">
-        <div className="container mx-auto max-w-7xl">
-          <SectionHeader eyebrow="Pricing" title="Plans for every stage" subtitle="Start free with a subdomain. Upgrade as your work grows." />
-          <div className="mt-8 flex justify-center">
-            <div className="inline-flex items-center p-1 rounded-full border border-border bg-card">
-              <button onClick={() => setBilling("monthly")} className={`px-5 py-1.5 rounded-full text-sm font-medium transition-all ${billing === "monthly" ? "gradient-primary text-white shadow-md shadow-primary/30" : "text-muted-foreground hover:text-foreground"}`}>Monthly</button>
-              <button onClick={() => setBilling("yearly")} className={`px-5 py-1.5 rounded-full text-sm font-medium transition-all inline-flex items-center gap-1.5 ${billing === "yearly" ? "gradient-primary text-white shadow-md shadow-primary/30" : "text-muted-foreground hover:text-foreground"}`}>
-                Yearly <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-warning/20 text-warning">save 15%</span>
-              </button>
+              <motion.div
+                initial={{ opacity: 0, x: 20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true, margin: "-50px" }}
+                transition={{ duration: 0.5, delay: 0.15 }}
+                className="relative"
+              >
+                <div className="rounded-3xl overflow-hidden border border-border shadow-2xl">
+                  <img
+                    src={stepsImage}
+                    alt="Team collaborating"
+                    className="w-full h-auto object-cover"
+                    loading="lazy"
+                    width={1024}
+                    height={768}
+                  />
+                </div>
+                <div className="absolute -bottom-6 -left-6 md:bottom-6 md:left-[-2rem] lg:left-[-2.5rem] max-w-xs">
+                  <div className="bg-card/80 backdrop-blur rounded-2xl p-5 border border-border shadow-xl">
+                    <Quote className="w-5 h-5 text-primary mb-2" />
+                    <p className="text-foreground text-sm leading-relaxed mb-3">
+                      "It only took me 2 minutes to set up, and now all my clients know exactly where to find our work."
+                    </p>
+                    <p className="text-primary text-xs font-medium">
+                      — Sarah C., Owner Grek
+                    </p>
+                  </div>
+                </div>
+              </motion.div>
             </div>
           </div>
-          <div className="mt-6 grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
-            {PLANS.map((plan) => (
-              <PlanCard key={plan.name} plan={plan} billing={billing} onClick={() => navigate("/auth")} />
-            ))}
-          </div>
-          <p className="mt-5 text-center text-xs text-muted-foreground">All prices in BDT (৳). Pay via bKash, Nagad or Rocket. Cancel anytime.</p>
-        </div>
-      </section>
+        </section>
 
-      {/* FINAL CTA */}
-      <section className="py-6 md:py-8 px-6 border-t border-border/60 relative overflow-hidden">
-        <div aria-hidden className="absolute inset-0 -z-10 pointer-events-none">
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[400px] rounded-full bg-primary/10 blur-[140px]" />
-        </div>
-        <div className="container mx-auto max-w-3xl text-center">
-          <h2 className="text-3xl md:text-5xl font-semibold tracking-[-0.025em] mb-4">Ready to ship?</h2>
-          <p className="text-muted-foreground mb-5">Claim your free subdomain and publish in minutes.</p>
-          <div className="flex items-center justify-center gap-3 flex-wrap">
-            <Button onClick={() => navigate("/auth")} size="lg" className="rounded-full gradient-primary text-white hover:opacity-90 shadow-lg shadow-primary/30">
-              Get started free <ArrowRight className="ml-1.5 w-4 h-4" />
-            </Button>
+        {/* FEATURES */}
+        <section className="py-10 md:py-14 px-6 border-t border-border/60">
+          <div className="container mx-auto max-w-5xl">
+            <SectionHeader eyebrow="Features" title="Built for creators" subtitle="Everything you need to publish a stunning portfolio — no code required." />
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
+              <FeatureCard icon={<Palette className="w-5 h-5" />} title="Premium Themes" description="Beautiful themes for every profession." />
+              <FeatureCard icon={<Zap className="w-5 h-5" />} title="No-Code Builder" description="Drag, drop, publish — live preview." />
+              <FeatureCard icon={<Rocket className="w-5 h-5" />} title="Instant Publish" description="Go live in seconds, worldwide." />
+              <FeatureCard icon={<Globe className="w-5 h-5" />} title="Free Subdomain" description="yourname.infolio.online free." />
+              <FeatureCard icon={<Server className="w-5 h-5" />} title="Custom Domain" description="Your own domain with auto SSL." />
+              <FeatureCard icon={<Search className="w-5 h-5" />} title="SEO Tools" description="Meta, sitemap, social tags." />
+              <FeatureCard icon={<Image className="w-5 h-5" />} title="Project Gallery" description="Showcase work with images & videos." />
+              <FeatureCard icon={<Cloud className="w-5 h-5" />} title="Global CDN" description="Fast loading from anywhere." />
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+
+        {/* PRICING */}
+        <section className="py-10 md:py-14 px-6 border-t border-border/60">
+          <div className="container mx-auto max-w-7xl">
+            <SectionHeader eyebrow="Pricing" title="Plans for every stage" subtitle="Start free with a subdomain. Upgrade as your work grows." />
+            <div className="mt-8 flex justify-center">
+              <div className="inline-flex items-center p-1 rounded-xl border border-border bg-card">
+                <button onClick={() => setBilling("monthly")} className={`px-5 py-1.5 rounded-lg text-sm font-semibold transition-all ${billing === "monthly" ? "gradient-primary text-white" : "text-muted-foreground hover:text-foreground"}`}>Monthly</button>
+                <button onClick={() => setBilling("yearly")} className={`px-5 py-1.5 rounded-lg text-sm font-semibold transition-all inline-flex items-center gap-1.5 ${billing === "yearly" ? "gradient-primary text-white" : "text-muted-foreground hover:text-foreground"}`}>
+                  Yearly <span className="text-[10px] px-1.5 py-0.5 rounded-md bg-warning/20 text-warning">save 15%</span>
+                </button>
+              </div>
+            </div>
+            <div className="mt-6 grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+              {PLANS.map((plan) => (
+                <PlanCard key={plan.name} plan={plan} billing={billing} onClick={() => navigate("/auth")} />
+              ))}
+            </div>
+            <p className="mt-5 text-center text-xs text-muted-foreground">All prices in BDT (৳). Pay via bKash, Nagad or Rocket. Cancel anytime.</p>
+          </div>
+        </section>
+
+        {/* FINAL CTA */}
+        <section className="py-10 md:py-14 px-6 border-t border-border/60 relative overflow-hidden">
+          <div aria-hidden className="absolute inset-0 -z-10 pointer-events-none">
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[400px] rounded-full bg-primary/10 blur-[140px]" />
+          </div>
+          <div className="container mx-auto max-w-3xl text-center">
+            <h2 className="text-3xl md:text-5xl font-semibold tracking-[-0.025em] mb-4">Ready to ship?</h2>
+            <p className="text-muted-foreground mb-5">Claim your free subdomain and publish in minutes.</p>
+            <div className="flex items-center justify-center gap-3 flex-wrap">
+              <Button onClick={() => navigate("/auth")} size="lg" className="rounded-xl gradient-primary text-white font-semibold text-base px-8 py-3.5 group">
+                Get started free <ArrowRight className="ml-2 w-4 h-4 transition-transform group-hover:translate-x-1" />
+              </Button>
+            </div>
+          </div>
+        </section>
+      </div>
 
       <Footer />
     </div>

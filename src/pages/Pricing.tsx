@@ -24,10 +24,10 @@ export default function Pricing() {
         <div className="container mx-auto max-w-7xl">
           <SectionHeader eyebrow="Pricing" title="Plans for every stage" subtitle="Start free with a subdomain. Upgrade as your work grows." />
           <div className="mt-8 flex justify-center">
-            <div className="inline-flex p-1 rounded-full border border-border bg-card">
-              <button onClick={() => setBilling("monthly")} className={`px-5 py-1.5 rounded-full text-sm font-medium transition-all ${billing === "monthly" ? "gradient-primary text-white shadow-md shadow-primary/30" : "text-muted-foreground hover:text-foreground"}`}>Monthly</button>
-              <button onClick={() => setBilling("yearly")} className={`px-5 py-1.5 rounded-full text-sm font-medium transition-all inline-flex items-center gap-1.5 ${billing === "yearly" ? "gradient-primary text-white shadow-md shadow-primary/30" : "text-muted-foreground hover:text-foreground"}`}>
-                Yearly <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-warning/20 text-warning">save 15%</span>
+            <div className="inline-flex p-1 rounded-xl border border-border bg-card">
+              <button onClick={() => setBilling("monthly")} className={`px-5 py-1.5 rounded-lg text-sm font-semibold transition-all ${billing === "monthly" ? "gradient-primary text-white" : "text-muted-foreground hover:text-foreground"}`}>Monthly</button>
+              <button onClick={() => setBilling("yearly")} className={`px-5 py-1.5 rounded-lg text-sm font-semibold transition-all inline-flex items-center gap-1.5 ${billing === "yearly" ? "gradient-primary text-white" : "text-muted-foreground hover:text-foreground"}`}>
+                Yearly <span className="text-[10px] px-1.5 py-0.5 rounded-md bg-warning/20 text-warning">save 15%</span>
               </button>
             </div>
           </div>
